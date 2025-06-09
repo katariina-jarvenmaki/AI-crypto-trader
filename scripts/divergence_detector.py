@@ -1,8 +1,11 @@
 # divergence_detector.py
+import os
 import pandas as pd
 import pandas_ta as ta
 from scipy.signal import find_peaks
 from datetime import datetime, timedelta
+from scripts.signal_logger import log_signal
+from scripts.signal_limiter import is_signal_allowed, update_signal_log
 
 class DivergenceDetector:
     def __init__(self, df: pd.DataFrame, rsi_length: int = 14):
@@ -27,7 +30,7 @@ class DivergenceDetector:
     def _is_recent(self, timestamp, minutes=30):
         return self.now - timestamp <= timedelta(minutes=minutes)
 
-    def detect_bearish_divergence(self):
+    def detect_bearish_divergence(self, symbol="UNKNOWN", interval="1h"):
         peaks, _ = self._find_peaks_and_troughs()
         signals = []
         for i in range(1, len(peaks)):
@@ -36,16 +39,19 @@ class DivergenceDetector:
             if not self._is_recent(time):
                 continue
             if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - 0.5 and \
-               self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * 1.001:
-                signals.append({
-                    'type': 'bear',
-                    'index': curr,
-                    'price': self.df['close'].iloc[curr],
-                    'time': time
-                })
+            self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * 1.001:
+                if is_signal_allowed(symbol, interval, "sell", time):
+                    update_signal_log(symbol, interval, "sell", time)
+                    log_signal("sell", f"divergence/{symbol}")
+                    signals.append({
+                        'type': 'bear',
+                        'index': curr,
+                        'price': self.df['close'].iloc[curr],
+                        'time': time
+                    })
         return signals[-1] if signals else None
 
-    def detect_bullish_divergence(self):
+    def detect_bullish_divergence(self, symbol="UNKNOWN", interval="1h"):
         _, troughs = self._find_peaks_and_troughs()
         signals = []
         for i in range(1, len(troughs)):
@@ -54,19 +60,24 @@ class DivergenceDetector:
             if not self._is_recent(time):
                 continue
             if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + 1.5 and \
-               self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * 0.998:
-                signals.append({
-                    'type': 'bull',
-                    'index': curr,
-                    'price': self.df['close'].iloc[curr],
-                    'time': time
-                })
+            self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * 0.998:
+                if is_signal_allowed(symbol, interval, "buy", time):
+                    update_signal_log(symbol, interval, "buy", time)
+                    log_signal("buy", f"divergence/{symbol}")
+                    signals.append({
+                        'type': 'bull',
+                        'index': curr,
+                        'price': self.df['close'].iloc[curr],
+                        'time': time
+                    })
         return signals[-1] if signals else None
 
-    def detect_all_divergences(self):
-        bear = self.detect_bearish_divergence()
-        bull = self.detect_bullish_divergence()
+    def detect_all_divergences(self, symbol="UNKNOWN", interval="1h"):
+        bear = self.detect_bearish_divergence(symbol, interval)
+        bull = self.detect_bullish_divergence(symbol, interval)
         signals = [s for s in [bear, bull] if s is not None]
-        if not signals:
-            return None
-        return max(signals, key=lambda x: x['index'])
+        return max(signals, key=lambda x: x['index']) if signals else None
+
+        # ✅ Logita vain kerran
+        log_signal("sell" if best['type'] == "bear" else "buy", "divergence_detector.py")
+        return best
