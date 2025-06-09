@@ -81,3 +81,5 @@ build/
 out/
 
 # App
+credentials.py
+configs/credentials.py

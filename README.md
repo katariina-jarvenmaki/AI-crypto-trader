@@ -37,6 +37,11 @@ python3 main.py
 
 **4. Testing**
 
+Test Binance-integration status
+```bash
+python3 scripts/binance_api_client.py
+```
+
 Test BTCC-integration status
 ```bash
 python3 scripts/btcc_api_client.py
