@@ -9,11 +9,37 @@ Just a multiplatform AI crypto trader
 pip install ta python-binance pandas_ta scipy
 ```
 
-**2. Install libraries**
+**2. Make a credentials.py to configs-folder**
+
+Contents:
+```bash
+# configs/credentials.py
+
+# BINANCE API
+BINANCE_API_KEY = 'your_api_key'
+BINANCE_API_SECRET = 'your_secret_key'
+
+# BTCC API
+BTCC_API_KEY = "your_api_key"
+BTCC_SECRET_KEY = "your_secret_key"
+BTCC_USERNAME = "your_email"
+BTCC_PASSWORD = "your_password"
+BTCC_COMPANYID = "1"
+```
+Input your own data...
+
+**3. Usage guide**
 
 Run the app on default platform (Binance) with default symbol (BTCUSDC) and automatic market state detection
 ```bash
 python3 main.py
+```
+
+**4. Testing**
+
+Test BTCC-integration status
+```bash
+python3 scripts/btcc_api_client.py
 ```
 
 ## Future plans
