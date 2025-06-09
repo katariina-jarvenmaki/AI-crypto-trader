@@ -1,28 +1,33 @@
-# main.py
-
 import sys
 from scripts.platform_selection import get_selected_platform
-from scripts.binance_interface import fetch_multi_ohlcv, get_all_current_prices
+from scripts.symbol_selection import get_selected_symbols
+from scripts.binance_api_client import fetch_multi_ohlcv, get_all_current_prices
 
-# Platform selection
+arg_list = sys.argv[1:]  # Komentoriviparametrit ilman tiedostonimeä
+
+# 1. Platformin valinta
 try:
-    selected_platform = get_selected_platform(sys.argv[1:])
+    selected_platform = get_selected_platform(arg_list)
 except ValueError as e:
     print(f"[ERROR] {e}")
     sys.exit(1)
 
-# Haetaan OHLCV-data
-# ohlcv = fetch_multi_ohlcv(selected_symbol, limit=20)
+# 2. Symbolit ilman platform-parametria
+symbol_args = arg_list[1:] if selected_platform.lower() == arg_list[0].lower() else arg_list
 
-# Haetaan live-hinnat
-# live_prices = get_all_current_prices(selected_platform)
+# 3. Symbolien valinta
+try:
+    selected_symbols = get_selected_symbols(selected_platform, symbol_args)
+except Exception as e:
+    print(f"[ERROR] {e}")
+    sys.exit(1)
 
-# Tulostus
-# for symbol in selected_platform:
-#    print(f"\n📊 {symbol} - Hinta nyt: {live_prices.get(symbol, 'N/A')}")
+# 4. Tulostus
+print(f"✅ Selected platform: {selected_platform}")
+print(f"✅ Selected symbols: {selected_symbols}")
 
-
-# Printing to console
-print(f"Selected platform: {selected_platform}")
-print("Select coinpair")
-
+# 5. Esimerkki käyttö API-klientin kanssa (voit poistaa kommentit)
+ohlcv_data = fetch_multi_ohlcv(selected_symbols, limit=20)
+live_prices = get_all_current_prices(selected_symbols)
+for symbol in selected_symbols:
+    print(f"\n📊 {symbol} - Live price: {live_prices.get(symbol, 'N/A')}")
