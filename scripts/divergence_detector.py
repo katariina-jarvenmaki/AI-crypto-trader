@@ -9,10 +9,10 @@ from scripts.signal_limiter import is_signal_allowed, update_signal_log
 
 class DivergenceDetector:
     def __init__(self, df: pd.DataFrame, rsi_length: int = 14):
-        self.df = df.copy()  # ✅ Aseta ensin self.df
+        self.df = df.copy()
 
         if self.df.index.name == 'timestamp':
-            self.df = self.df.reset_index()  # Muunna indeksistä sarake
+            self.df = self.df.reset_index()
 
         if 'timestamp' not in self.df.columns:
             raise ValueError("DataFrame must contain a 'timestamp' column.")
@@ -20,7 +20,7 @@ class DivergenceDetector:
         self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], utc=True)
         self.df.set_index('timestamp', inplace=True)
         self.df['rsi'] = ta.rsi(self.df['close'], length=rsi_length)
-        self.now = pd.Timestamp.utcnow().tz_convert("UTC")  
+        self.now = pd.Timestamp.utcnow().tz_convert("UTC")
 
     def _find_peaks_and_troughs(self):
         peaks, _ = find_peaks(self.df['rsi'])
@@ -40,8 +40,9 @@ class DivergenceDetector:
                 continue
             if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - 0.5 and \
             self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * 1.001:
-                if is_signal_allowed(symbol, interval, "sell", time):
-                    update_signal_log(symbol, interval, "sell", time)
+                # Lisätty strategy="divergence"
+                if is_signal_allowed(symbol, interval, "sell", time, strategy="divergence"):
+                    update_signal_log(symbol, interval, "sell", time, strategy="divergence")
                     log_signal("sell", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bear',
@@ -61,8 +62,9 @@ class DivergenceDetector:
                 continue
             if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + 1.5 and \
             self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * 0.998:
-                if is_signal_allowed(symbol, interval, "buy", time):
-                    update_signal_log(symbol, interval, "buy", time)
+                # Lisätty strategy="divergence"
+                if is_signal_allowed(symbol, interval, "buy", time, strategy="divergence"):
+                    update_signal_log(symbol, interval, "buy", time, strategy="divergence")
                     log_signal("buy", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bull',
@@ -76,8 +78,8 @@ class DivergenceDetector:
         bear = self.detect_bearish_divergence(symbol, interval)
         bull = self.detect_bullish_divergence(symbol, interval)
         signals = [s for s in [bear, bull] if s is not None]
-        return max(signals, key=lambda x: x['index']) if signals else None
-
-        # ✅ Logita vain kerran
-        log_signal("sell" if best['type'] == "bear" else "buy", "divergence_detector.py")
-        return best
+        if signals:
+            latest_signal = max(signals, key=lambda x: x['index'])
+            latest_signal['strategy'] = 'divergence'
+            return latest_signal
+        return None

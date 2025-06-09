@@ -47,7 +47,9 @@ while True:
 
         if override_signal and i == 0:
             signal = override_signal
-            print(f"🚨 Final signal for {symbol}: {signal.upper()} (override)")
+            strategy = "override"
+            print(f"⚠️ Override signal activated for {symbol}")
+            print(f"🚨 Final signal for {symbol}: {signal.upper()} ({strategy})")
             continue
 
         data_by_interval = fetch_ohlcv_for_intervals(symbol=symbol, intervals=["1h"], limit=100)
@@ -64,18 +66,19 @@ while True:
         divergence = detector.detect_all_divergences(symbol=symbol, interval="1h")
         if divergence:
             signal_type = "buy" if divergence["type"] == "bull" else "sell"
-            print(f"📈 Divergence signal detected: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
-            print(f"🚨 Final signal for {symbol}: {signal_type.upper()} (divergence)")
-            continue
+            strategy = divergence.get("strategy", "unknown")
+            print(f"📈 {strategy.capitalize()} signal detected: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
+            print(f"🚨 Final signal for {symbol}: {signal_type.upper()} ({strategy})")
 
         rsi_result = rsi_analyzer(symbol)
         rsi_signal = rsi_result.get("signal")
         rsi_value = rsi_result.get("rsi")
         rsi_interval = rsi_result.get("interval", "1h")  # default, jos funktio ei palauta
-
+        
         if rsi_signal in valid_signals:
-            print(f"📉 RSI signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")
-            print(f"🚨 Final signal for {symbol}: {rsi_signal.upper()} (RSI)")
+            strategy = rsi_result.get("strategy", "rsi")
+            print(f"📉 {strategy.upper()} signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")
+            print(f"🚨 Final signal for {symbol}: {rsi_signal.upper()} ({strategy})")
         else:
             print(f"⚪ No RSI signal for {symbol} | Interval: {rsi_interval} | RSI: {rsi_value}")
 

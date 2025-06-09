@@ -41,21 +41,25 @@ def rsi_analyzer(symbol):
             check_sell = True
 
         if check_buy and latest_rsi <= thresholds["buy"]:
-            if is_signal_allowed(symbol, interval, "buy", now):
-                update_signal_log(symbol, interval, "buy", now)
+            # Lisätty strategy="rsi"
+            if is_signal_allowed(symbol, interval, "buy", now, strategy="rsi"):
+                update_signal_log(symbol, interval, "buy", now, strategy="rsi")
                 return {
                     "signal": "buy",
                     "interval": interval,
-                    "rsi": round(latest_rsi, 2)
+                    "rsi": round(latest_rsi, 2),
+                    "strategy": "rsi"
                 }
 
         elif check_sell and latest_rsi >= thresholds["sell"]:
-            if is_signal_allowed(symbol, interval, "sell", now):
-                update_signal_log(symbol, interval, "sell", now)
+            # Lisätty strategy="rsi"
+            if is_signal_allowed(symbol, interval, "sell", now, strategy="rsi"):
+                update_signal_log(symbol, interval, "sell", now, strategy="rsi")
                 return {
                     "signal": "sell",
                     "interval": interval,
-                    "rsi": round(latest_rsi, 2)
+                    "rsi": round(latest_rsi, 2),
+                    "strategy": "rsi"
                 }
 
         previous_rsi = latest_rsi
@@ -63,5 +67,6 @@ def rsi_analyzer(symbol):
     return {
         "signal": "none",
         "interval": last_checked_interval,
-        "rsi": last_checked_rsi
+        "rsi": last_checked_rsi,
+        "strategy": "rsi"
     }
