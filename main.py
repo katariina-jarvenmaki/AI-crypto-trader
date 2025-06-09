@@ -1,3 +1,4 @@
+#main.py
 import pandas as pd
 import sys
 import time
@@ -41,10 +42,10 @@ while True:
     print(f"✅ Selected platform: {selected_platform}")
     print(f"✅ Selected symbols: {selected_symbols}")
 
-    for symbol in selected_symbols:
+    for i, symbol in enumerate(selected_symbols):
         print(f"\n🔍 Processing symbol: {symbol}")
 
-        if override_signal:
+        if override_signal and i == 0:
             signal = override_signal
             print(f"🚨 Final signal for {symbol}: {signal.upper()} (override)")
             continue
@@ -77,7 +78,6 @@ while True:
             print(f"🚨 Final signal for {symbol}: {rsi_signal.upper()} (RSI)")
         else:
             print(f"⚪ No RSI signal for {symbol} | Interval: {rsi_interval} | RSI: {rsi_value}")
-
 
     print("🕒 Sleeping for 5 minutes...\n")
     time.sleep(300)

@@ -30,9 +30,26 @@ Input your own data...
 
 **3. Usage guide**
 
-Run the app on default platform (Binance) with default symbol (BTCUSDC) and automatic market state detection
+Run the app on default platform (Binance) with default coinpair (BTCUSDC) and automatic market state detection
 ```bash
 python3 main.py
+```
+
+Run the app on specified platform with default coinpair (BTCUSDC) and automatic market state detection
+```bash
+python3 main.py binance
+```
+
+Run the app on specified coinpair and automatic market state detection
+```bash
+python3 main.py binance ETHUSDC
+python3 main.py binance ETHUSDC SOLUSDC XRPUSDC ADAUSDC HBARUSDC
+```
+
+Force the buy / sell -signal to start buying / selling right away (it does it only for first coinpair):
+```bash
+python3 main.py ETHUSDC buy
+python3 main.py ETHUSDC sell
 ```
 
 **4. Testing**
