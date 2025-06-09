@@ -14,6 +14,26 @@ from configs.binance_config import BINANCE_INTERVALS  # <-- tuodaan konfiguroidu
 client = Client(api_key=BINANCE_API_KEY, api_secret=BINANCE_API_SECRET)
 
 ### --- OHLCV useille symboleille ja konfiguroiduille intervalleille ---
+def fetch_ohlcv_for_intervals(symbol: str, intervals: list, limit: int = 100):
+    """Hakee OHLCV-datat yhdelle symbolille useilta aikaväleiltä."""
+    result = {}
+    for interval in intervals:
+        try:
+            klines = client.get_klines(symbol=symbol, interval=interval, limit=limit)
+            df = pd.DataFrame(klines, columns=[
+                'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                'close_time', 'quote_asset_volume', 'number_of_trades',
+                'taker_buy_base_volume', 'taker_buy_quote_volume', 'ignore'
+            ])
+            df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume']]
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            df.set_index('timestamp', inplace=True)
+            df = df.astype(float)
+            result[interval] = df
+        except BinanceAPIException as e:
+            print(f"⚠️ OHLCV fetch error for {symbol} - {interval}: {e.message}")
+    return result
+
 def fetch_multi_ohlcv(selected_symbol: list, limit=10):
     """Hakee OHLCV-dataa kaikille käyttäjän valitsemille symboleille ja konfiguroiduille intervalleille."""
     result = {}

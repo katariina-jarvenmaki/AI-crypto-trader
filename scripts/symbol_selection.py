@@ -14,11 +14,11 @@ def get_selected_symbols(platform: str, symbol_args: list):
     supported_symbols = platform_config.SUPPORTED_SYMBOLS
     default_symbol = platform_config.DEFAULT_SYMBOL
 
-    if symbol_args:
-        invalid_symbols = [s for s in symbol_args if s not in supported_symbols]
-        if invalid_symbols:
-            raise ValueError(f"Unsupported symbols for {platform}: {', '.join(invalid_symbols)}. "
-                             f"Supported: {', '.join(supported_symbols)}")
-        return symbol_args
-    else:
-        return [default_symbol]
+    # Suodatetaan pois tunnetut ei-symboliargumentit (esim. signaalit)
+    known_non_symbols = {"buy", "sell"}
+    filtered_args = [s for s in symbol_args if s.upper() in supported_symbols]
+
+    if not filtered_args and symbol_args:
+        raise ValueError(f"No valid symbols found in arguments. Supported: {', '.join(supported_symbols)}")
+
+    return filtered_args if filtered_args else [default_symbol]
