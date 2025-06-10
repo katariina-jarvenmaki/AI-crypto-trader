@@ -56,12 +56,12 @@ python3 main.py ETHUSDC sell
 
 Test Binance-integration status
 ```bash
-python3 scripts/binance_api_client.py
+python3 integrations/binance_api_client.py
 ```
 
 Test BTCC-integration status
 ```bash
-python3 scripts/btcc_api_client.py
+python3 integrations/btcc_api_client.py
 ```
 
 ## Future plans

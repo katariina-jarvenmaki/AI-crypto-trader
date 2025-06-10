@@ -1,7 +1,7 @@
 # runner.py
-from scripts.divergence_detector import DivergenceDetector
-from scripts.rsi_analyzer import rsi_analyzer
-from scripts.binance_api_client import fetch_ohlcv_for_intervals
+from signals.divergence_detector import DivergenceDetector
+from signals.rsi_analyzer import rsi_analyzer
+from integrations.binance_api_client import fetch_ohlcv_for_intervals
 import pandas as pd
 
 def run_analysis_for_symbol(symbol, override_signal=None):

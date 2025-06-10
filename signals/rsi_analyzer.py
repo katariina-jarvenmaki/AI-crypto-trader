@@ -3,7 +3,7 @@ import pandas as pd
 import ta
 from datetime import datetime
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
-from scripts.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.binance_api_client import fetch_ohlcv_for_intervals
 from configs.config import RSI_THRESHOLDS, RSI_PERIOD, DEFAULT_BUY_LIMIT, DEFAULT_SELL_LIMIT, TIMEZONE
 from pytz import timezone
 import pytz

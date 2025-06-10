@@ -3,8 +3,8 @@ import time
 import pytz
 import pandas as pd
 from configs.config import TIMEZONE
-from scripts.args_parser import parse_arguments
-from runner import run_analysis_for_symbol
+from core.args_parser import parse_arguments
+from core.runner import run_analysis_for_symbol
 
 def main():
 
