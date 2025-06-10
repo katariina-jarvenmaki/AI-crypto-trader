@@ -7,6 +7,8 @@ from scripts.symbol_selection import get_selected_symbols
 from scripts.binance_api_client import fetch_multi_ohlcv, fetch_ohlcv_for_intervals, get_all_current_prices
 from scripts.divergence_detector import DivergenceDetector
 from scripts.rsi_analyzer import rsi_analyzer
+from configs.config import TIMEZONE
+import pytz
 
 arg_list = sys.argv[1:]  # Komentoriviparametrit ilman tiedostonimeä
 
@@ -36,7 +38,8 @@ if len(arg_list) >= 2 and arg_list[-1].lower() in valid_signals:
 
 # 🔁 Toistetaan 5 minuutin välein
 while True:
-    print(f"\n⏱️ Running signal analysis loop at {pd.Timestamp.utcnow()}")
+    now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
+    print(f"\n🕒 Starting signal analysis loop {now:%Y-%m-%d %H:%M:%S %Z}")
 
     # 4. Tulostus
     print(f"✅ Selected platform: {selected_platform}")

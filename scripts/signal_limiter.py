@@ -28,7 +28,6 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
            .get(strategy)
     )
 
-    # Backward compatibility: if strategy dict not used, get the flat timestamp
     if last_time_str is None:
         last_time_str = (
             log.get(symbol, {})
@@ -43,6 +42,9 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 
     try:
         last_time = datetime.fromisoformat(last_time_str)
+        if last_time.tzinfo is None:
+            from pytz import UTC
+            last_time = last_time.replace(tzinfo=UTC)
     except ValueError:
         return True
 

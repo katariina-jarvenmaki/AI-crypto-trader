@@ -1,5 +1,9 @@
 # configs/config.py
 from datetime import timedelta
+import pytz
+
+# TIMEZONE
+TIMEZONE = pytz.timezone("Europe/Helsinki")
 
 # PLATFORMS
 SUPPORTED_PLATFORMS = [

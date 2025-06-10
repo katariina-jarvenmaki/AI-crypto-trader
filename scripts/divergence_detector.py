@@ -4,6 +4,7 @@ import pandas as pd
 import pandas_ta as ta
 from scipy.signal import find_peaks
 from datetime import datetime, timedelta
+import pytz
 from scripts.signal_logger import log_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from configs.config import (
@@ -13,6 +14,7 @@ from configs.config import (
     BULLISH_RSI_DIFF,
     BULLISH_PRICE_FACTOR,
     RECENT_THRESHOLD_MINUTES,
+    TIMEZONE
 )
 
 class DivergenceDetector:
@@ -25,10 +27,10 @@ class DivergenceDetector:
         if 'timestamp' not in self.df.columns:
             raise ValueError("DataFrame must contain a 'timestamp' column.")
 
-        self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], utc=True)
+        self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], utc=True).dt.tz_convert(TIMEZONE)
         self.df.set_index('timestamp', inplace=True)
         self.df['rsi'] = ta.rsi(self.df['close'], length=rsi_length)
-        self.now = pd.Timestamp.utcnow().tz_convert("UTC")
+        self.now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
 
     def _find_peaks_and_troughs(self):
         peaks, _ = find_peaks(self.df['rsi'])

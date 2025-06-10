@@ -4,7 +4,9 @@ import ta
 from datetime import datetime
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from scripts.binance_api_client import fetch_ohlcv_for_intervals
-from configs.config import RSI_THRESHOLDS, RSI_PERIOD, DEFAULT_BUY_LIMIT, DEFAULT_SELL_LIMIT
+from configs.config import RSI_THRESHOLDS, RSI_PERIOD, DEFAULT_BUY_LIMIT, DEFAULT_SELL_LIMIT, TIMEZONE
+from pytz import timezone
+import pytz
 
 INTERVALS = list(RSI_THRESHOLDS.keys())
 
@@ -28,7 +30,13 @@ def rsi_analyzer(symbol):
 
         rsi_series = calculate_rsi(df['close'])
         latest_rsi = rsi_series.dropna().iloc[-1]
-        now = df.index[-1] if isinstance(df.index, pd.DatetimeIndex) else pd.to_datetime(df['timestamp'].iloc[-1])
+        if isinstance(df.index, pd.DatetimeIndex):
+            last_timestamp = df.index[-1]
+            if last_timestamp.tzinfo is None:
+                last_timestamp = last_timestamp.tz_localize('UTC')
+            now = datetime.now(pytz.timezone(TIMEZONE.zone)) 
+        else:
+            now = datetime.now(pytz.timezone(TIMEZONE.zone)) 
 
         last_checked_rsi = round(latest_rsi, 2)
         last_checked_interval = interval
