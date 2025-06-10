@@ -65,6 +65,12 @@ python3 scripts/btcc_api_client.py
 ```
 
 ## Future plans
+* More crypto signals:
+  * MA Crossover	Buy/Sell	Trend-seuranta
+  * MACD	Buy/Sell	Momentum
+  * Bollinger	Buy/Sell	Range-breakout
+  * Volume Spike	Entry Trigger	Usean muun kanssa
+  * Heikin Ashi	Trend Reversal	Visuaalisesti vahva
 * When to start buying:
   * When diverge_detector gives buy signal (overrides rsi atleast partly)
   * When rsi_analyzer gives buy signal  
