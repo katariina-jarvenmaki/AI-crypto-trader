@@ -17,9 +17,9 @@ def run_analysis_for_symbol(symbol, override_signal=None):
     df = data_by_interval.get("1h")
 
     if df is not None and not df.empty:
-        if 'open_time' in df.columns:
-            df = df.rename(columns={'open_time': 'timestamp'})
-        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms', utc=True)
+        # If 'timestamp' is the index, reset it to make it a column
+        if df.index.name == 'timestamp':
+            df = df.reset_index()
 
         detector = DivergenceDetector(df)
         divergence = detector.detect_all_divergences(symbol=symbol, interval="1h")
