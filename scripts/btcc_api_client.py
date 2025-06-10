@@ -1,4 +1,4 @@
-# btcc_api_client.py
+# scripts/btcc_api_client.py
 
 import hashlib
 import urllib.parse
@@ -8,8 +8,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configs.credentials import BTCC_USERNAME, BTCC_PASSWORD, BTCC_API_KEY, BTCC_SECRET_KEY, BTCC_COMPANYID
-
-BTCC_API_URL = "https://api1.btloginc.com:9081"
+from configs.btcc_config import BTCC_API_URL
 
 def btcc_create_signature(params: dict, secret_key: str) -> str:
     sorted_params = sorted(params.items())

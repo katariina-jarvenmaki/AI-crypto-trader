@@ -4,11 +4,11 @@ import ta
 from datetime import datetime
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from scripts.binance_api_client import fetch_ohlcv_for_intervals
-from configs.config import RSI_THRESHOLDS
+from configs.config import RSI_THRESHOLDS, RSI_PERIOD, DEFAULT_BUY_LIMIT, DEFAULT_SELL_LIMIT
 
 INTERVALS = list(RSI_THRESHOLDS.keys())
 
-def calculate_rsi(close_prices, period=14):
+def calculate_rsi(close_prices, period=RSI_PERIOD):
     rsi = ta.momentum.RSIIndicator(close=close_prices, window=period)
     return rsi.rsi()
 
@@ -33,15 +33,17 @@ def rsi_analyzer(symbol):
         last_checked_rsi = round(latest_rsi, 2)
         last_checked_interval = interval
 
+        buy_limit = thresholds.get("buy_limit", DEFAULT_BUY_LIMIT)
+        sell_limit = thresholds.get("sell_limit", DEFAULT_SELL_LIMIT)
+
         if previous_rsi is not None:
-            check_buy = previous_rsi <= thresholds.get("buy_limit", float("inf"))
-            check_sell = previous_rsi >= thresholds.get("sell_limit", float("-inf"))
+            check_buy = previous_rsi <= buy_limit
+            check_sell = previous_rsi >= sell_limit
         else:
             check_buy = True
             check_sell = True
 
         if check_buy and latest_rsi <= thresholds["buy"]:
-            # Lisätty strategy="rsi"
             if is_signal_allowed(symbol, interval, "buy", now, strategy="rsi"):
                 update_signal_log(symbol, interval, "buy", now, strategy="rsi")
                 return {
@@ -50,9 +52,10 @@ def rsi_analyzer(symbol):
                     "rsi": round(latest_rsi, 2),
                     "strategy": "rsi"
                 }
+            else:
+                continue
 
         elif check_sell and latest_rsi >= thresholds["sell"]:
-            # Lisätty strategy="rsi"
             if is_signal_allowed(symbol, interval, "sell", now, strategy="rsi"):
                 update_signal_log(symbol, interval, "sell", now, strategy="rsi")
                 return {
@@ -61,6 +64,8 @@ def rsi_analyzer(symbol):
                     "rsi": round(latest_rsi, 2),
                     "strategy": "rsi"
                 }
+            else:
+                continue
 
         previous_rsi = latest_rsi
 

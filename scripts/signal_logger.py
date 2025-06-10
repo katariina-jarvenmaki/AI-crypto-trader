@@ -1,7 +1,5 @@
 from datetime import datetime
-import os
-
-LOG_FILE = "signals.log"
+from configs.config import SIGNAL_LOG_TEXT
 
 def log_signal(signal_type: str, source: str, extra_info: dict = None):
     """Kirjaa signaalin tiedostoon ja tulostaa sen konsoliin."""
@@ -14,6 +12,5 @@ def log_signal(signal_type: str, source: str, extra_info: dict = None):
 
     print(message)
 
-    # Luo logitiedosto, jos sitä ei ole
-    with open(LOG_FILE, "a") as f:
+    with open(SIGNAL_LOG_TEXT, "a") as f:
         f.write(message + "\n")

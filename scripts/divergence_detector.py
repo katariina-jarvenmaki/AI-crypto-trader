@@ -1,4 +1,4 @@
-# divergence_detector.py
+# scripts/divergence_detector.py
 import os
 import pandas as pd
 import pandas_ta as ta
@@ -6,9 +6,17 @@ from scipy.signal import find_peaks
 from datetime import datetime, timedelta
 from scripts.signal_logger import log_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
+from configs.config import (
+    RSI_LENGTH,
+    BEARISH_RSI_DIFF,
+    BEARISH_PRICE_FACTOR,
+    BULLISH_RSI_DIFF,
+    BULLISH_PRICE_FACTOR,
+    RECENT_THRESHOLD_MINUTES,
+)
 
 class DivergenceDetector:
-    def __init__(self, df: pd.DataFrame, rsi_length: int = 14):
+    def __init__(self, df: pd.DataFrame, rsi_length: int = RSI_LENGTH):
         self.df = df.copy()
 
         if self.df.index.name == 'timestamp':
@@ -27,7 +35,7 @@ class DivergenceDetector:
         troughs, _ = find_peaks(-self.df['rsi'])
         return peaks, troughs
 
-    def _is_recent(self, timestamp, minutes=30):
+    def _is_recent(self, timestamp, minutes=RECENT_THRESHOLD_MINUTES):
         return self.now - timestamp <= timedelta(minutes=minutes)
 
     def detect_bearish_divergence(self, symbol="UNKNOWN", interval="1h"):
@@ -38,9 +46,8 @@ class DivergenceDetector:
             time = self.df.index[curr]
             if not self._is_recent(time):
                 continue
-            if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - 0.5 and \
-            self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * 1.001:
-                # Lisätty strategy="divergence"
+            if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - BEARISH_RSI_DIFF and \
+               self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * BEARISH_PRICE_FACTOR:
                 if is_signal_allowed(symbol, interval, "sell", time, strategy="divergence"):
                     update_signal_log(symbol, interval, "sell", time, strategy="divergence")
                     log_signal("sell", f"divergence/{symbol}")
@@ -60,9 +67,8 @@ class DivergenceDetector:
             time = self.df.index[curr]
             if not self._is_recent(time):
                 continue
-            if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + 1.5 and \
-            self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * 0.998:
-                # Lisätty strategy="divergence"
+            if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + BULLISH_RSI_DIFF and \
+               self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * BULLISH_PRICE_FACTOR:
                 if is_signal_allowed(symbol, interval, "buy", time, strategy="divergence"):
                     update_signal_log(symbol, interval, "buy", time, strategy="divergence")
                     log_signal("buy", f"divergence/{symbol}")

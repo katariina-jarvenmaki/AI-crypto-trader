@@ -1,9 +1,7 @@
 import json
 import os
-from datetime import datetime, timedelta
-
-LOG_FILE = "signals_log.json"
-SIGNAL_TIMEOUT = timedelta(hours=1)
+from datetime import datetime
+from configs.config import LOG_FILE, SIGNAL_TIMEOUT
 
 def load_signal_log():
     if os.path.exists(LOG_FILE):
@@ -32,13 +30,11 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 
     # Backward compatibility: if strategy dict not used, get the flat timestamp
     if last_time_str is None:
-        # Try old flat structure
         last_time_str = (
             log.get(symbol, {})
                .get(interval, {})
                .get(signal_type)
         )
-        # If still dict, it's not compatible old format
         if isinstance(last_time_str, dict):
             return True
 

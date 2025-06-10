@@ -1,4 +1,4 @@
-#main.py
+# main.py
 import pandas as pd
 import sys
 import time
@@ -74,7 +74,7 @@ while True:
         rsi_signal = rsi_result.get("signal")
         rsi_value = rsi_result.get("rsi")
         rsi_interval = rsi_result.get("interval", "1h")  # default, jos funktio ei palauta
-        
+
         if rsi_signal in valid_signals:
             strategy = rsi_result.get("strategy", "rsi")
             print(f"📉 {strategy.upper()} signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")

@@ -1,4 +1,5 @@
 # configs/config.py
+from datetime import timedelta
 
 # PLATFORMS
 SUPPORTED_PLATFORMS = [
@@ -6,7 +7,32 @@ SUPPORTED_PLATFORMS = [
 ]
 DEFAULT_PLATFORM = "Binance"
 
-# RSI_THRESHOLDS
+# DIVERGENCE SETTINGS
+# scripts/divergence_detector.py
+
+# RSI:n pituus
+RSI_LENGTH = 14
+
+# Herkkyysarvot divergencelle
+BEARISH_RSI_DIFF = 0.5
+BEARISH_PRICE_FACTOR = 1.001
+
+BULLISH_RSI_DIFF = 1.5
+BULLISH_PRICE_FACTOR = 0.998
+
+# Signaalin "tuoreus" minuutteina
+RECENT_THRESHOLD_MINUTES = 30
+
+# RSI ANALYZER SETTINGS
+# scripts/rsi_analyzer.py
+
+RSI_PERIOD = 14
+
+# Oletusrajat, joita käytetään jos niitä ei määritelty RSI_THRESHOLDS:ssa
+DEFAULT_BUY_LIMIT = 100
+DEFAULT_SELL_LIMIT = 0
+
+# Thresholds
 RSI_THRESHOLDS = {
     "1w": {"buy": 35, "sell": 70, "buy_limit": None, "sell_limit": None},  # ylimmältä tasolta ei rajoja
     "1d": {"buy": 30, "sell": 70, "buy_limit": 70, "sell_limit": 55},      # limit-arvot määrittävät paljonko ylempi taso rajoittaa tätä tasoa
@@ -20,3 +46,12 @@ RSI_THRESHOLDS = {
     "1m": {"buy": 28, "sell": 72, "buy_limit": 35, "sell_limit": 65}
 }
 
+# SIGNAL LIMITER SETTINGS
+# scripts/signal_limiter.py
+LOG_FILE = "signals_log.json"
+SIGNAL_TIMEOUT = timedelta(hours=1)
+
+# SIGNAL LOGGER SETTINGS
+# scripts/signal_logger.py
+SIGNAL_LOG_JSON = "signals_log.json"
+SIGNAL_LOG_TEXT = "signals.log"
