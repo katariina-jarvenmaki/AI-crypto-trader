@@ -19,13 +19,13 @@ def save_signal_log(log):
     with open(LOG_FILE, "w") as f:
         json.dump(log, f, indent=4)
 
-def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetime, strategy: str = "default") -> bool:
+def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default") -> bool:
     log = load_signal_log()
     last_time_str = (
         log.get(symbol, {})
            .get(interval, {})
            .get(signal_type, {})
-           .get(strategy)
+           .get(mode)
     )
 
     if last_time_str is None:
@@ -50,9 +50,9 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 
     return now - last_time >= SIGNAL_TIMEOUT
 
-def update_signal_log(symbol: str, interval: str, signal_type: str, now: datetime, strategy: str = "default"):
+def update_signal_log(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default"):
     log = load_signal_log()
     log.setdefault(symbol, {}) \
        .setdefault(interval, {}) \
-       .setdefault(signal_type, {})[strategy] = now.isoformat()
+       .setdefault(signal_type, {})[mode] = now.isoformat()
     save_signal_log(log)

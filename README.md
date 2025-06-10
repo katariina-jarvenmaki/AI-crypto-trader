@@ -43,7 +43,7 @@ python3 main.py binance
 Run the app on specified coinpair and automatic market state detection
 ```bash
 python3 main.py binance ETHUSDC
-python3 main.py binance ETHUSDC SOLUSDC XRPUSDC ADAUSDC HBARUSDC
+python3 main.py binance BTCUSDC ETHUSDC SOLUSDC XRPUSDC ADAUSDC HBARUSDC
 ```
 
 Force the buy / sell -signal to start buying / selling right away (it does it only for first coinpair and only on first round):

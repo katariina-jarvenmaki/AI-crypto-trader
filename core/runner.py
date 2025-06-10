@@ -9,5 +9,5 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
     # Get the signals for the symbols
     signal_info = get_signal(symbol=symbol, interval=None, is_first_run=is_first_run, override_signal=override_signal)
     final_signal = signal_info.get("signal")
-    strategy = signal_info.get("strategy")
+    mode = signal_info.get("mode")
     interval = signal_info.get("interval")

@@ -50,8 +50,8 @@ class DivergenceDetector:
                 continue
             if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - BEARISH_RSI_DIFF and \
                self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * BEARISH_PRICE_FACTOR:
-                if is_signal_allowed(symbol, interval, "sell", time, strategy="divergence"):
-                    update_signal_log(symbol, interval, "sell", time, strategy="divergence")
+                if is_signal_allowed(symbol, interval, "sell", time, mode="divergence"):
+                    update_signal_log(symbol, interval, "sell", time, mode="divergence")
                     log_signal("sell", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bear',
@@ -71,8 +71,8 @@ class DivergenceDetector:
                 continue
             if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + BULLISH_RSI_DIFF and \
                self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * BULLISH_PRICE_FACTOR:
-                if is_signal_allowed(symbol, interval, "buy", time, strategy="divergence"):
-                    update_signal_log(symbol, interval, "buy", time, strategy="divergence")
+                if is_signal_allowed(symbol, interval, "buy", time, mode="divergence"):
+                    update_signal_log(symbol, interval, "buy", time, mode="divergence")
                     log_signal("buy", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bull',
@@ -88,6 +88,6 @@ class DivergenceDetector:
         signals = [s for s in [bear, bull] if s is not None]
         if signals:
             latest_signal = max(signals, key=lambda x: x['index'])
-            latest_signal['strategy'] = 'divergence'
+            latest_signal['mode'] = 'divergence'
             return latest_signal
         return None

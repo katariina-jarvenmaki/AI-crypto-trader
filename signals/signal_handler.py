@@ -15,16 +15,16 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         override_signal (str): An optional override signal ("buy" or "sell").
 
     Returns:
-        dict: A dictionary containing 'signal', 'strategy', and 'interval'.
+        dict: A dictionary containing 'signal', 'mode', and 'interval'.
               Returns an empty dictionary if no signal is found.
     """
-    signal_info = {"signal": None, "strategy": None, "interval": None}
+    signal_info = {"signal": None, "mode": None, "interval": None}
 
     # 1. Check for override signal (highest priority)
     if override_signal and is_first_run:
         print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
         signal_info["signal"] = override_signal
-        signal_info["strategy"] = "override"
+        signal_info["mode"] = "override"
         return signal_info
 
     # Fetch data for divergence and RSI analysis
@@ -44,10 +44,10 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     divergence = detector.detect_all_divergences(symbol=symbol, interval=interval)
     if divergence:
         signal_type = "buy" if divergence["type"] == "bull" else "sell"
-        strategy = divergence.get("strategy", "divergence")
-        print(f"📈 {strategy.capitalize()} signal detected for {symbol}: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
+        mode = divergence.get("mode", "divergence")
+        print(f"📈 {mode.capitalize()} signal detected for {symbol}: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
         signal_info["signal"] = signal_type
-        signal_info["strategy"] = strategy
+        signal_info["mode"] = mode
         return signal_info
 
     # 3. Check for RSI signal (lowest priority)
@@ -57,10 +57,10 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     rsi_interval = rsi_result.get("interval", interval)
 
     if rsi_signal in ["buy", "sell"]:
-        strategy = rsi_result.get("strategy", "rsi")
-        print(f"📉 {strategy.upper()} signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")
+        mode = rsi_result.get("mode", "rsi")
+        print(f"📉 {mode.upper()} signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")
         signal_info["signal"] = rsi_signal
-        signal_info["strategy"] = strategy
+        signal_info["mode"] = mode
         signal_info["interval"] = rsi_interval
         return signal_info
     else:
