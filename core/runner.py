@@ -37,20 +37,22 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     market_state = market_info.get("state")
     started_on = market_info.get("started_on")
 
-    # Create the log entries
-    now = datetime.now(pytz.timezone(TIMEZONE.zone))
-    update_signal_log(
-        symbol=symbol,
-        interval=interval,
-        signal_type=final_signal,
-        now=now,
-        mode=mode,
-        market_state=market_state,
-        started_on=started_on
-    )
-
     # Check riskmanagement
-    riskmanagement = check_riskmanagement(symbol=symbol, signal=final_signal)
+    risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
+
+    # Only log if signal strength is "strong" or "weak"
+    if risk_strength in ("strong", "weak"):
+        now = datetime.now(pytz.timezone(TIMEZONE.zone))
+        update_signal_log(
+            symbol=symbol,
+            interval=interval,
+            signal_type=final_signal,
+            now=now,
+            mode=mode,
+            market_state=market_state,
+            started_on=started_on,
+            momentum_strength=risk_strength
+        )
 
     # Print results
     if mode == "override":

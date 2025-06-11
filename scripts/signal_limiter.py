@@ -62,7 +62,8 @@ def update_signal_log(
     now: datetime,
     mode: str = "default",
     market_state: str = None,
-    started_on: str = None
+    started_on: str = None,
+    momentum_strength: str = None
 ):
     log = load_signal_log()
 
@@ -76,6 +77,8 @@ def update_signal_log(
         signal_entry["market_state"] = market_state
     if started_on:
         signal_entry["started_on"] = started_on
+    if momentum_strength:
+        signal_entry["momentum_strength"] = momentum_strength 
 
     # 🔍 Search for any different previous state
     previous_state = None

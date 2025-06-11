@@ -18,10 +18,12 @@ def check_riskmanagement(symbol: str, signal: str):
     print(f"📊 Volume: {result['volume'][0]:.0f} → {result['volume'][1]:.0f}")
     print(f"🧠 Interpretation: {result['interpretation']}")
 
-    strength = result["signal_strength"]
+    strength = result["momentum_strength"]
     if strength == "strong":
         print("✅ Signal is STRONG → OK to act.")
     elif strength == "weak":
         print("🟡 Signal is WEAK → Optional, watch volume.")
     else:
         print("❌ Signal is NONE → Skip or monitor.")
+
+    return strength 
