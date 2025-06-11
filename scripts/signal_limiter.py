@@ -50,9 +50,16 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 
     return now - last_time >= SIGNAL_TIMEOUT
 
-def update_signal_log(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default"):
+def update_signal_log(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default", market_info: dict = None):
     log = load_signal_log()
-    log.setdefault(symbol, {}) \
-       .setdefault(interval, {}) \
-       .setdefault(signal_type, {})[mode] = now.isoformat()
+    signal_entry = log.setdefault(symbol, {}) \
+                      .setdefault(interval, {}) \
+                      .setdefault(signal_type, {})
+
+    signal_entry[mode] = now.isoformat()
+
+    if market_info:
+        signal_entry["market_state"] = market_info.get("state")
+        signal_entry["started_on"] = market_info.get("started_on")
+
     save_signal_log(log)

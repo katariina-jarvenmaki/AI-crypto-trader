@@ -53,7 +53,6 @@ def rsi_analyzer(symbol):
 
         if check_buy and latest_rsi <= thresholds["buy"]:
             if is_signal_allowed(symbol, interval, "buy", now, mode="rsi"):
-                update_signal_log(symbol, interval, "buy", now, mode="rsi")
                 return {
                     "signal": "buy",
                     "interval": interval,
@@ -65,7 +64,6 @@ def rsi_analyzer(symbol):
 
         elif check_sell and latest_rsi >= thresholds["sell"]:
             if is_signal_allowed(symbol, interval, "sell", now, mode="rsi"):
-                update_signal_log(symbol, interval, "sell", now, mode="rsi")
                 return {
                     "signal": "sell",
                     "interval": interval,
