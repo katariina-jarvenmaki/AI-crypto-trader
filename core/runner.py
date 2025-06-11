@@ -17,7 +17,7 @@ from scripts.signal_limiter import is_signal_allowed, update_signal_log
 import pandas as pd
 
 # Symbol processing loop
-def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
+def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_mode=None):
     print(f"\n🔍 Processing symbol: {symbol}")
 
     # Get the signals for the symbols
@@ -27,12 +27,14 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
 
-    # ✅ Continue only, if a signal 'buy' or 'sell'
+    # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
         return
 
-    # Get market state
+    # Get market state info
     market_info = get_market_state(symbol=symbol)
+    market_state = market_info.get("state")
+    started_on = market_info.get("started_on")
 
     # Create the log entries
     now = datetime.now(pytz.timezone(TIMEZONE.zone))
@@ -42,13 +44,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
         signal_type=final_signal,
         now=now,
         mode=mode,
-        market_info=market_info
+        market_state=market_state,
+        started_on=started_on
     )
 
     # Print results
     if mode == "override":
-            print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
+        print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
     elif mode == "divergence":
-        print(f"📈 {mode.upper()} signal detected for {symbol}: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
+        print(f"📈 {mode.upper()} signal detected for {symbol}: {final_signal.upper()}")
     elif mode == "rsi":
         print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
+    

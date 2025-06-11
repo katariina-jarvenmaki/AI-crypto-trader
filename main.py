@@ -33,7 +33,8 @@ def main():
             if global_is_first_run and i == 0:
                 current_override_signal = override_signal 
         
-            run_analysis_for_symbol(symbol=symbol, 
+            run_analysis_for_symbol(
+                symbol=symbol, 
                 is_first_run=global_is_first_run, 
                 override_signal=current_override_signal)
 
