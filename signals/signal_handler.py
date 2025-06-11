@@ -1,4 +1,10 @@
 # signal_handler.py
+#
+# 1. Checks override signal (highest priority)
+# 2. Checks Divergence signals
+# 3. Checks RSI signals (lowest priority)
+# 6. Returns results
+#
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
 from integrations.binance_api_client import fetch_ohlcv_for_intervals
@@ -22,7 +28,6 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
 
     # 1. Check for override signal (highest priority)
     if override_signal and is_first_run:
-        print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
         signal_info["signal"] = override_signal
         signal_info["mode"] = "override"
         return signal_info
@@ -45,7 +50,6 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     if divergence:
         signal_type = "buy" if divergence["type"] == "bull" else "sell"
         mode = divergence.get("mode", "divergence")
-        print(f"📈 {mode.capitalize()} signal detected for {symbol}: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
         signal_info["signal"] = signal_type
         signal_info["mode"] = mode
         return signal_info
@@ -56,12 +60,13 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     rsi_value = rsi_result.get("rsi")
     rsi_interval = rsi_result.get("interval", interval)
 
+    # Collect values to return
     if rsi_signal in ["buy", "sell"]:
         mode = rsi_result.get("mode", "rsi")
-        print(f"📉 {mode.upper()} signal detected for {symbol}: {rsi_signal.upper()} | Interval: {rsi_interval} | RSI: {rsi_value}")
         signal_info["signal"] = rsi_signal
         signal_info["mode"] = mode
         signal_info["interval"] = rsi_interval
+        signal_info["rsi"] = rsi_value
         return signal_info
     else:
         print(f"⚪ No RSI signal for {symbol} | Interval: {rsi_interval} | RSI: {rsi_value}")

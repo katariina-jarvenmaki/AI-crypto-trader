@@ -1,4 +1,7 @@
-# scripts/divergence_detector.py
+# signals/divergence_detector.py
+#
+# This tries to find divergences, both bull and bear then returns a signal
+#
 import os
 import pandas as pd
 import pandas_ta as ta
@@ -18,6 +21,7 @@ from configs.config import (
 )
 
 class DivergenceDetector:
+
     def __init__(self, df: pd.DataFrame, rsi_length: int = RSI_LENGTH):
         self.df = df.copy()
 
@@ -40,6 +44,7 @@ class DivergenceDetector:
     def _is_recent(self, timestamp, minutes=RECENT_THRESHOLD_MINUTES):
         return self.now - timestamp <= timedelta(minutes=minutes)
 
+    # Check for bear divergence
     def detect_bearish_divergence(self, symbol="UNKNOWN", interval="1h"):
         peaks, _ = self._find_peaks_and_troughs()
         signals = []
@@ -61,6 +66,7 @@ class DivergenceDetector:
                     })
         return signals[-1] if signals else None
 
+    # Check for bull divergence
     def detect_bullish_divergence(self, symbol="UNKNOWN", interval="1h"):
         _, troughs = self._find_peaks_and_troughs()
         signals = []

@@ -1,8 +1,9 @@
+# scripts/signal_loggeer.py
 from datetime import datetime
 from configs.config import SIGNAL_LOG_TEXT
 
 def log_signal(signal_type: str, source: str, extra_info: dict = None):
-    """Kirjaa signaalin tiedostoon ja tulostaa sen konsoliin."""
+    """Writes signal to the log and then prints message to console."""
     from configs.config import TIMEZONE
     now = datetime.now(TIMEZONE).strftime("%Y-%m-%d %H:%M:%S %Z")
     message = f"[{now}] SIGNAL from {source}: {signal_type.upper()}"

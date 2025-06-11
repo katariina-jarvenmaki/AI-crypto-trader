@@ -10,17 +10,21 @@ import pytz
 
 INTERVALS = list(RSI_THRESHOLDS.keys())
 
+# Calculate RSI
 def calculate_rsi(close_prices, period=RSI_PERIOD):
     rsi = ta.momentum.RSIIndicator(close=close_prices, window=period)
     return rsi.rsi()
 
+# Run RSI analyzer
 def rsi_analyzer(symbol):
+
     data_by_interval = fetch_ohlcv_for_intervals(symbol=symbol, intervals=INTERVALS, limit=200)
 
     previous_rsi = None
     last_checked_rsi = None
     last_checked_interval = None
 
+    # Go through intervals
     for interval in INTERVALS:
         df = data_by_interval.get(interval)
         thresholds = RSI_THRESHOLDS.get(interval)
@@ -51,6 +55,7 @@ def rsi_analyzer(symbol):
             check_buy = True
             check_sell = True
 
+        # Define values to return
         if check_buy and latest_rsi <= thresholds["buy"]:
             if is_signal_allowed(symbol, interval, "buy", now, mode="rsi"):
                 return {

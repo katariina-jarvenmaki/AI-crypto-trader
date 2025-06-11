@@ -1,4 +1,4 @@
-# utils/args_parser.py
+# core/args_parser.py
 import sys
 from scripts.platform_selection import get_selected_platform
 from scripts.symbol_selection import get_selected_symbols

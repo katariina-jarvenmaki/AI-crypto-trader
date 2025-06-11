@@ -1,4 +1,4 @@
-# scripts/btcc_api_client.py
+# integrations/btcc_api_client.py
 
 import hashlib
 import urllib.parse

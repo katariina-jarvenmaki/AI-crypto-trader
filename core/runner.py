@@ -1,3 +1,12 @@
+# core/runner.py
+#
+# 1. Get raw signals
+# 2. Do market analyzes
+# 3. Riskmanagement
+# 4. Strategy selection
+# 5. Run the strategies
+# 6. Returns results
+#
 from datetime import datetime
 import pytz 
 from pytz import timezone
@@ -7,6 +16,7 @@ from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 import pandas as pd
 
+# Symbol processing loop
 def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
     print(f"\n🔍 Processing symbol: {symbol}")
 
@@ -15,15 +25,16 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
     final_signal = signal_info.get("signal")
     mode = signal_info.get("mode")
     interval = signal_info.get("interval")
+    rsi = signal_info.get("rsi")
 
-    # ✅ Jatka vain jos signaali on 'buy' tai 'sell'
+    # ✅ Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
-        print("⚪ No actionable signal")
         return
 
     # Get market state
     market_info = get_market_state(symbol=symbol)
 
+    # Create the log entries
     now = datetime.now(pytz.timezone(TIMEZONE.zone))
     update_signal_log(
         symbol=symbol,
@@ -33,3 +44,11 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None):
         mode=mode,
         market_info=market_info
     )
+
+    # Print results
+    if mode == "override":
+            print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
+    elif mode == "divergence":
+        print(f"📈 {mode.upper()} signal detected for {symbol}: {signal_type.upper()} (price: {divergence['price']}, time: {divergence['time']})")
+    elif mode == "rsi":
+        print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")

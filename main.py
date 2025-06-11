@@ -17,6 +17,7 @@ def main():
     
     global_is_first_run = True 
     
+    # Start a turn
     while True:
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)

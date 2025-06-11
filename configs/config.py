@@ -14,17 +14,16 @@ DEFAULT_PLATFORM = "Binance"
 # DIVERGENCE SETTINGS
 # scripts/divergence_detector.py
 
-# RSI:n pituus
 RSI_LENGTH = 14
 
-# Herkkyysarvot divergencelle
+# Sensitivity values
 BEARISH_RSI_DIFF = 0.5
 BEARISH_PRICE_FACTOR = 1.001
 
 BULLISH_RSI_DIFF = 1.5
 BULLISH_PRICE_FACTOR = 0.998
 
-# Signaalin "tuoreus" minuutteina
+# Signal agelimit in minutes
 RECENT_THRESHOLD_MINUTES = 30
 
 # RSI ANALYZER SETTINGS
@@ -32,22 +31,22 @@ RECENT_THRESHOLD_MINUTES = 30
 
 RSI_PERIOD = 14
 
-# Oletusrajat, joita käytetään jos niitä ei määritelty RSI_THRESHOLDS:ssa
+# Default values, if others are not defined
 DEFAULT_BUY_LIMIT = 100
 DEFAULT_SELL_LIMIT = 0
 
 # Thresholds
 RSI_THRESHOLDS = {
-    "1w": {"buy": 35, "sell": 70, "buy_limit": None, "sell_limit": None},  # ylimmältä tasolta ei rajoja
-    "1d": {"buy": 30, "sell": 70, "buy_limit": 70, "sell_limit": 55},      # limit-arvot määrittävät paljonko ylempi taso rajoittaa tätä tasoa
+    "1w": {"buy": 35, "sell": 70, "buy_limit": None, "sell_limit": None},  # No limits on highest level
+    "1d": {"buy": 30, "sell": 70, "buy_limit": 70, "sell_limit": 55},      # Limit-values define how much higher level limits this one 
     "4h": {"buy": 30, "sell": 70, "buy_limit": 65, "sell_limit": 40},
     "2h": {"buy": 30, "sell": 70, "buy_limit": 60, "sell_limit": 40},
-    "1h": {"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 45},
-    "30m":{"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 50},
-    "15m":{"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 55},
-    "5m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 60},
-    "3m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 65},
-    "1m": {"buy": 28, "sell": 72, "buy_limit": 35, "sell_limit": 70}
+    "1h": {"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 40},
+    "30m":{"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 45},
+    "15m":{"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 45},
+    "5m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 55},
+    "3m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 60},
+    "1m": {"buy": 28, "sell": 72, "buy_limit": 35, "sell_limit": 65}
 }
 
 # SIGNAL LIMITER SETTINGS

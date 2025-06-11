@@ -1,4 +1,5 @@
-# scripts/binance_api_client.py
+# integrations/binance_api_client.py
+
 from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException
@@ -6,14 +7,14 @@ import pandas as pd
 import sys
 import os
 
-# Polut ja avaimet
+# Paths, confs and credentials
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configs.credentials import BINANCE_API_KEY, BINANCE_API_SECRET
-from configs.binance_config import BINANCE_INTERVALS  # <-- tuodaan konfiguroidut intervalit
+from configs.binance_config import BINANCE_INTERVALS
 
 client = Client(api_key=BINANCE_API_KEY, api_secret=BINANCE_API_SECRET)
 
-### --- OHLCV useille symboleille ja konfiguroiduille intervalleille ---
+### --- OHLCV for multible symbols and intervals ---
 def fetch_ohlcv_for_intervals(symbol: str, intervals: list, limit: int = 100):
     """Hakee OHLCV-datat yhdelle symbolille useilta aikaväleiltä."""
     result = {}
@@ -57,7 +58,7 @@ def fetch_multi_ohlcv(selected_symbol: list, limit=10):
     return result
 
 
-### --- Hae reaaliaikaiset hinnat kaikille valituille symboleille ---
+### --- Get real prices for selected symbols ---
 def get_all_current_prices(selected_symbol: list):
     """Hakee reaaliaikaiset hinnat kaikille valituille symboleille yhdellä kutsulla."""
     try:
@@ -68,7 +69,7 @@ def get_all_current_prices(selected_symbol: list):
         return {}
 
 
-### --- Spot Trading (ei muutoksia) ---
+### --- Spot Trading ---
 def place_market_order(symbol: str, side: str, quantity: float):
     try:
         return client.create_order(
@@ -96,7 +97,7 @@ def place_limit_order(symbol: str, side: str, quantity: float, price: float):
         print(f"❌ API error: {e.message}")
         return None
 
-### --- Yksittäinen hinnanhaku (jos tarvitaan symbolikohtaisesti) ---
+### --- Single price search ---
 def get_current_price(symbol: str):
     try:
         ticker = client.get_symbol_ticker(symbol=symbol)
@@ -108,7 +109,7 @@ def get_current_price(symbol: str):
 if __name__ == "__main__":
     print("✅ Binance API Integration Test")
 
-    # 1. Testaa yhteys
+    # 1. Test connection
     try:
         client.ping()
         print("✅ Connection to Binance API: OK")
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ ERROR: Unexpected issue with Binance connection: {e}")
     
-    # 2. Testaa hinta
+    # 2. Test price
     test_symbol = "BTCUSDT"
     try:
         price = get_current_price(test_symbol)
@@ -127,8 +128,8 @@ if __name__ == "__main__":
             print(f"❌ ERROR: Failed to fetch price for {test_symbol}")
     except Exception as e:
         print(f"❌ ERROR: Exception during price fetch: {e}")
-    
-    # 3. Testaa tilin tiedot (API-avain oikeudet)
+
+    # 3. Test account info (API permissions)
     try:
         account_info = client.get_account()
         if "balances" in account_info:

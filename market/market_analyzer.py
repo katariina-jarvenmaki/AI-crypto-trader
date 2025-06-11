@@ -1,10 +1,16 @@
-# market_analyzer.py
+# market/market_analyzer.py
+#
+# Uses EMA20, EMA50, RSI, ADX and Volume_MA20 to analyze
+# General direction of the current market. Returns
+# a market state and it's start time
+#
 import pandas as pd
 import numpy as np
 from ta.trend import EMAIndicator, ADXIndicator
 from ta.momentum import RSIIndicator
 
 class MarketAnalyzer:
+
     def __init__(self, df: pd.DataFrame, timeframe: str = "1d", use_volume_filter: bool = True):
         """
         df: DataFrame, jossa on sarakkeet ['timestamp', 'open', 'high', 'low', 'close', 'volume']
@@ -17,6 +23,7 @@ class MarketAnalyzer:
         self.use_volume_filter = use_volume_filter
         self._calculate_indicators()
 
+    # Indicator calculation
     def _calculate_indicators(self):
         self.df['EMA20'] = EMAIndicator(close=self.df['close'], window=20).ema_indicator()
         self.df['EMA50'] = EMAIndicator(close=self.df['close'], window=50).ema_indicator()
@@ -25,6 +32,7 @@ class MarketAnalyzer:
         self.df['ADX'] = adx.adx()
         self.df['Volume_MA20'] = self.df['volume'].rolling(window=20).mean()
 
+    # Check if bull market
     def is_bull_market(self, i: int = -1) -> bool:
         row = self.df.iloc[i]
         return (
@@ -34,6 +42,7 @@ class MarketAnalyzer:
             (not self.use_volume_filter or row['volume'] > row['Volume_MA20'])
         )
 
+    # Check if bear market
     def is_bear_market(self, i: int = -1) -> bool:
         row = self.df.iloc[i]
         return (
@@ -43,6 +52,7 @@ class MarketAnalyzer:
             (not self.use_volume_filter or row['volume'] > row['Volume_MA20'])
         )
 
+    # Check if sideways market
     def is_sideways_market(self, i: int = -1) -> bool:
         row = self.df.iloc[i]
         ema_diff_ratio = abs(row['EMA20'] - row['EMA50']) / row['EMA50']
@@ -52,6 +62,7 @@ class MarketAnalyzer:
             35 < row['RSI'] < 65
         )
 
+    # Check if volatile market without clear direction
     def is_volatile_market(self, i: int = -1, window_size: int = 20) -> bool:
         if i < window_size - 1:
             return False
@@ -61,6 +72,7 @@ class MarketAnalyzer:
         row = self.df.iloc[i]
         return (price_range / mean_price) > 0.07 and row['ADX'] > 20
 
+    # Check if bullish consolidation
     def is_bullish_consolidation(self, i: int = -1) -> bool:
         if i < 19:
             return False
@@ -74,6 +86,7 @@ class MarketAnalyzer:
             in_range
         )
 
+    # Check if bearish consolidation
     def is_bearish_consolidation(self, i: int = -1) -> bool:
         if i < 19:
             return False
@@ -87,6 +100,7 @@ class MarketAnalyzer:
             in_range
         )
 
+    # Define the market state
     def get_market_state(self, i: int = -1) -> str:
         if self.is_bull_market(i):
             return "bull"
@@ -103,6 +117,7 @@ class MarketAnalyzer:
         else:
             return "unknown"
 
+    # Return the market state info
     def get_market_state_with_start_date(self) -> dict:
         """
         Palauttaa nykyisen markkinatilan sekä päivämäärän, jolloin kyseinen tila alkoi.
