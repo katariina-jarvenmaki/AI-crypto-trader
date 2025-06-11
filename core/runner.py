@@ -14,6 +14,7 @@ from market.market_handler import get_market_state
 from configs.config import TIMEZONE
 from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
+from riskmanagement.riskmanagement_handler import check_riskmanagement
 import pandas as pd
 
 # Symbol processing loop
@@ -47,6 +48,9 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         market_state=market_state,
         started_on=started_on
     )
+
+    # Check riskmanagement
+    riskmanagement = check_riskmanagement(symbol=symbol, signal=final_signal)
 
     # Print results
     if mode == "override":
