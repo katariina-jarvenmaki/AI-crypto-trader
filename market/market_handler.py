@@ -24,5 +24,4 @@ def get_market_state(symbol: str) -> dict:
     market_info["started_on"] = market_state_data["started_on"]
 
     # Inform user about the market state
-    print(f"📊 Market state: {market_info['state']}, started on: {market_info['started_on']}")
     return market_info

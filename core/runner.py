@@ -62,6 +62,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Print results
     if risk_strength == "strong":
+        print(f"📊 Market state: {arket_state}, started on: {started_on}")
         if mode == "override":
             print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
         elif mode == "divergence":
