@@ -58,3 +58,7 @@ SIGNAL_TIMEOUT = timedelta(hours=1)
 # scripts/signal_logger.py
 SIGNAL_LOG_JSON = "signals_log.json"
 SIGNAL_LOG_TEXT = "signals.log"
+
+# LOG BASED SIGNAL
+# signals/log_based_signal.py
+LOG_BASED_SIGNAL_TIMEOUT = timedelta(hours=1)

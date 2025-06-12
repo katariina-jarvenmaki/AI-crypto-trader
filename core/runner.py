@@ -45,18 +45,19 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Only log if signal strength is "strong" or "weak"
     if risk_strength in ("strong", "weak"):
-        now = datetime.now(pytz.timezone(TIMEZONE.zone))
-        update_signal_log(
-            symbol=symbol,
-            interval=interval,
-            signal_type=final_signal,
-            now=now,
-            mode=mode,
-            market_state=market_state,
-            started_on=started_on,
-            momentum_strength=risk_strength,
-            status=status
-        )
+        if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
+            now = datetime.now(pytz.timezone(TIMEZONE.zone))
+            update_signal_log(
+                symbol=symbol,
+                interval=interval,
+                signal_type=final_signal,
+                now=now,
+                mode=mode,
+                market_state=market_state,
+                started_on=started_on,
+                momentum_strength=risk_strength,
+                status=status
+            )
 
     # Print results
     if mode == "override":
@@ -65,4 +66,5 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         print(f"📈 {mode.upper()} signal detected for {symbol}: {final_signal.upper()}")
     elif mode == "rsi":
         print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
-    
+    elif mode == "log":
+        print(f"📒 LOG signal reused for {symbol}: {final_signal.upper()} | Interval: {interval}")
