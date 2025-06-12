@@ -1,8 +1,30 @@
 # signals/log_based_signal.py
-from configs.config import TIMEZONE, LOG_BASED_SIGNAL_TIMEOUT
 from scripts.signal_limiter import load_signal_log
 from datetime import datetime, timedelta
 import pytz
+import pandas as pd
+from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from configs.config import (
+    TIMEZONE,
+    LOG_BASED_SIGNAL_TIMEOUT,
+    RSI_FILTER_ENABLED,
+    RSI_FILTER_INTERVAL,
+    RSI_FILTER_PERIOD,
+    RSI_FILTER_BUY_MAX,
+    RSI_FILTER_SELL_MIN
+)
+
+def calculate_rsi(df, period=14):
+    delta = df['close'].diff()
+    gain = delta.where(delta > 0, 0.0)
+    loss = -delta.where(delta < 0, 0.0)
+
+    avg_gain = gain.rolling(window=period, min_periods=period).mean()
+    avg_loss = loss.rolling(window=period, min_periods=period).mean()
+
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
 
 def get_log_based_signal(symbol: str) -> dict:
     log = load_signal_log()
@@ -20,11 +42,9 @@ def get_log_based_signal(symbol: str) -> dict:
             if not entry or not isinstance(entry, dict):
                 continue
 
-            # If status is "complete" ignore
             if entry.get("status") == "complete":
                 continue
 
-            # Check timestamp
             time_str = entry.get("time") or entry.get("rsi") or entry.get("timestamp") or entry.get("datetime")
             if not time_str:
                 continue
@@ -36,7 +56,6 @@ def get_log_based_signal(symbol: str) -> dict:
             except ValueError:
                 continue
 
-            # Check, if is new enough
             if now - ts > LOG_BASED_SIGNAL_TIMEOUT:
                 continue
 
@@ -49,7 +68,6 @@ def get_log_based_signal(symbol: str) -> dict:
     if not valid_entries:
         return {}
 
-    # Järjestetään ensin intervalli-pituuden ja sitten ajan mukaan
     def interval_sort_key(entry):
         unit_weight = {"m": 1, "h": 60, "d": 1440}
         try:
@@ -60,6 +78,29 @@ def get_log_based_signal(symbol: str) -> dict:
             return (0, entry["time"].timestamp())
 
     best_entry = sorted(valid_entries, key=interval_sort_key, reverse=True)[0]
+
+    if RSI_FILTER_ENABLED:
+        try:
+            ohlcv = fetch_ohlcv_for_intervals(symbol, intervals=[RSI_FILTER_INTERVAL], limit=100)
+            df_rsi = ohlcv.get(RSI_FILTER_INTERVAL)
+
+            if df_rsi is None or df_rsi.empty:
+                print(f"❌ RSI data puuttuu symbolilta {symbol} – signaali blokataan")
+                return {}
+
+            rsi_series = calculate_rsi(df_rsi, period=RSI_FILTER_PERIOD)
+            latest_rsi = rsi_series.dropna().iloc[-1]
+
+            if best_entry["signal"] == "buy" and latest_rsi > RSI_FILTER_BUY_MAX:
+                print(f"ℹ️ RSI {latest_rsi:.2f} > BUY_MAX {RSI_FILTER_BUY_MAX} -> ei buy-signaalia")
+                return {}
+            elif best_entry["signal"] == "sell" and latest_rsi < RSI_FILTER_SELL_MIN:
+                print(f"ℹ️ RSI {latest_rsi:.2f} < SELL_MIN {RSI_FILTER_SELL_MIN} -> ei sell-signaalia")
+                return {}
+
+        except Exception as e:
+            print(f"⚠️ RSI-suodatus epäonnistui symbolille {symbol}: {e}")
+            return {}
 
     return {
         "signal": best_entry["signal"],

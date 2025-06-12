@@ -62,3 +62,10 @@ SIGNAL_LOG_TEXT = "signals.log"
 # LOG BASED SIGNAL
 # signals/log_based_signal.py
 LOG_BASED_SIGNAL_TIMEOUT = timedelta(hours=24)
+
+# Rsi-filter settings
+RSI_FILTER_ENABLED = True
+RSI_FILTER_INTERVAL = '4h'
+RSI_FILTER_PERIOD = 14
+RSI_FILTER_BUY_MAX = 48     # BUY only if RSI < 48
+RSI_FILTER_SELL_MIN = 52    # SELL only if RSI > 52
