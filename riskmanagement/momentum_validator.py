@@ -23,24 +23,22 @@ def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, interv
             if recent_price_momentum > 0 and recent_volume > previous_volume:
                 strength = "strong"
                 interp = "Price turning up with increasing volume."
-            elif recent_price_momentum > previous_price_momentum and recent_price_momentum > 0:
+            elif recent_price_momentum > previous_price_momentum:
                 strength = "weak"
-                interp = "Bearish momentum weakening, possible bottom forming."
+                interp = "Downtrend weakening, but volume confirmation missing."
             else:
                 strength = "none"
                 interp = "No clear bullish shift."
-
         elif signal.lower() == "sell":
             if recent_price_momentum < 0 and recent_volume > previous_volume:
                 strength = "strong"
                 interp = "Price turning down with increasing volume."
-            elif recent_price_momentum < previous_price_momentum and recent_price_momentum < 0:
+            elif recent_price_momentum < previous_price_momentum:
                 strength = "weak"
-                interp = "Bullish momentum weakening, possible top forming."
+                interp = "Uptrend weakening, but no strong confirmation."
             else:
                 strength = "none"
                 interp = "No clear bearish shift."
-
         else:
             strength = "unknown"
             interp = "Unknown signal."
