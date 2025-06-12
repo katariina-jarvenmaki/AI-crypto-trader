@@ -92,10 +92,10 @@ def get_log_based_signal(symbol: str) -> dict:
             latest_rsi = rsi_series.dropna().iloc[-1]
 
             if best_entry["signal"] == "buy" and latest_rsi > RSI_FILTER_BUY_MAX:
-                print(f"ℹ️ RSI {latest_rsi:.2f} > BUY_MAX {RSI_FILTER_BUY_MAX} -> ei buy-signaalia")
+                # print(f"ℹ️ RSI {latest_rsi:.2f} > BUY_MAX {RSI_FILTER_BUY_MAX} -> ei buy-signaalia")
                 return {}
             elif best_entry["signal"] == "sell" and latest_rsi < RSI_FILTER_SELL_MIN:
-                print(f"ℹ️ RSI {latest_rsi:.2f} < SELL_MIN {RSI_FILTER_SELL_MIN} -> ei sell-signaalia")
+                # print(f"ℹ️ RSI {latest_rsi:.2f} < SELL_MIN {RSI_FILTER_SELL_MIN} -> ei sell-signaalia")
                 return {}
 
         except Exception as e:

@@ -20,10 +20,10 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None):
     # print(f"📈 5min momentum strength: {strength.upper()} → {interpretation}")
 
     if strength == "strong":
-        print("✅ Momentum is STRONG")
+        print(f"✅ Momentum ({signal}) is STRONG")
     elif strength == "weak":
-        print("🟡 Momentum is WEAK")
+        print(f"🟡 Momentum ({signal}) is WEAK")
     else:
-        print("❌ Momentum is NONE")
+        print(f"❌ Momentum ({signal}) is NONE")
 
     return strength
