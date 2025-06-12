@@ -25,27 +25,45 @@ def save_signal_log(log):
 # Check if signal is allowed to let through (used in rsi_analyzer.py)
 def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default") -> bool:
     log = load_signal_log()
-    last_time_str = (
+
+    signal_entry = (
         log.get(symbol, {})
            .get(interval, {})
            .get(signal_type, {})
-           .get(mode)
     )
 
-    if last_time_str is None:
-        last_time_str = (
-            log.get(symbol, {})
-               .get(interval, {})
-               .get(signal_type)
-        )
-        if isinstance(last_time_str, dict):
+    # If no entry -> accept signal
+    if not signal_entry:
+        return True
+
+    entry_for_mode = signal_entry.get(mode)
+
+    # If no entry mode -> accept signal
+    if not entry_for_mode:
+        return True
+
+    # Check for old format
+    if isinstance(entry_for_mode, str):
+        try:
+            last_time = datetime.fromisoformat(entry_for_mode)
+            if last_time.tzinfo is None:
+                from pytz import UTC
+                last_time = last_time.replace(tzinfo=UTC)
+            return now - last_time >= SIGNAL_TIMEOUT
+        except ValueError:
             return True
 
-    if last_time_str is None:
+    # If status is empty, ignore entry
+    if entry_for_mode.get("status") == "complete":
+        return True
+
+    # Check the timestamp
+    time_str = entry_for_mode.get("time") or entry_for_mode.get("rsi") or entry_for_mode.get("timestamp") or entry_for_mode.get("datetime")
+    if not time_str:
         return True
 
     try:
-        last_time = datetime.fromisoformat(last_time_str)
+        last_time = datetime.fromisoformat(time_str)
         if last_time.tzinfo is None:
             from pytz import UTC
             last_time = last_time.replace(tzinfo=UTC)
