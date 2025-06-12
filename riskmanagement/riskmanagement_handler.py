@@ -6,12 +6,12 @@ from riskmanagement.momentum_validator import verify_signal_with_momentum_and_vo
 def check_riskmanagement(symbol: str, signal: str):
     print(f"Riskmanagement for {symbol} {signal}")
 
-    ohlcv_data = fetch_ohlcv_for_intervals(symbol, intervals=["1h"], limit=30)
-    if not ohlcv_data or "1h" not in ohlcv_data or ohlcv_data["1h"].empty:
+    ohlcv_data = fetch_ohlcv_for_intervals(symbol, intervals=["5m"], limit=30)
+    if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️ No OHLCV data available.")
         return
 
-    df = ohlcv_data["1h"]
+    df = ohlcv_data["5m"]
     result = verify_signal_with_momentum_and_volume(df, signal)
 
     print(f"📈 Price momentum: {result['momentum'][0]:.4f} → {result['momentum'][1]:.4f}")

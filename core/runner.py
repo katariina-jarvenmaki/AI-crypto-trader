@@ -16,9 +16,11 @@ from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 import pandas as pd
+import random
 
 # Symbol processing loop
 def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_mode=None):
+
     print(f"\n🔍 Processing symbol: {symbol}")
 
     # Get the signals for the symbols
@@ -28,9 +30,11 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
 
-    # Continue only, if a signal 'buy' or 'sell'
+    # Jos signaali ei ole 'buy' tai 'sell', asetetaan satunnainen testimoodi
     if final_signal not in ("buy", "sell"):
-        return
+        final_signal = random.choice(["buy", "sell"])
+        mode = "test"
+        print(f"🧪 TEST MODE: Random signal generated for {symbol}: {final_signal.upper()}")
 
     # Get market state info
     market_info = get_market_state(symbol=symbol)
