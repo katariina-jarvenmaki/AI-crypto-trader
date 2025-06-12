@@ -55,13 +55,10 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         signal_info["interval"] = rsi_interval
         signal_info["rsi"] = rsi_value
         return signal_info
-    else:
-        print(f"⚪ No RSI signal for {symbol} | Interval: {rsi_interval} | RSI: {rsi_value}")
 
     # 4. Log-based signal (lowest priority)
     log_signal = get_log_based_signal(symbol)
     if log_signal and log_signal.get("signal") in ["buy", "sell"]:
-        print(f"📝 Log-based signal detected for {symbol}: {log_signal}")
         return log_signal
 
     return {}

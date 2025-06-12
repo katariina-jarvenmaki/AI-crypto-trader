@@ -40,8 +40,6 @@ def get_log_based_signal(symbol: str) -> dict:
             if now - ts > LOG_BASED_SIGNAL_TIMEOUT:
                 continue
 
-            print(f"Valid log entry found for {symbol}: interval={interval}, signal={signal_type}, time={ts.isoformat()}")
-
             valid_entries.append({
                 "signal": signal_type,
                 "interval": interval,

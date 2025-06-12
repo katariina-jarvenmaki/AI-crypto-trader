@@ -61,4 +61,4 @@ SIGNAL_LOG_TEXT = "signals.log"
 
 # LOG BASED SIGNAL
 # signals/log_based_signal.py
-LOG_BASED_SIGNAL_TIMEOUT = timedelta(hours=1)
+LOG_BASED_SIGNAL_TIMEOUT = timedelta(hours=2)

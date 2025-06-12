@@ -1,29 +1,27 @@
 # riskmanagement/riskmanagement_handler.py
+from typing import List
 
 from integrations.binance_api_client import fetch_ohlcv_for_intervals
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
 
-def check_riskmanagement(symbol: str, signal: str):
-    print(f"Riskmanagement for {symbol} {signal}")
+def check_riskmanagement(symbol: str, signal: str, intervals=None):
+    if intervals is None:
+        intervals = [3, 5, 15, 30]
 
     ohlcv_data = fetch_ohlcv_for_intervals(symbol, intervals=["30m"], limit=30)
     if not ohlcv_data or "30m" not in ohlcv_data or ohlcv_data["30m"].empty:
-        print("⚠️ No OHLCV data available.")
+        print("⚠️  Riskmanagement: No OHLCV data available.")
         return
 
     df = ohlcv_data["30m"]
-    result = verify_signal_with_momentum_and_volume(df, signal)
-
-    print(f"📈 Price momentum: {result['momentum'][0]:.4f} → {result['momentum'][1]:.4f}")
-    print(f"📊 Volume: {result['volume'][0]:.0f} → {result['volume'][1]:.0f}")
-    print(f"🧠 Interpretation: {result['interpretation']}")
+    result = verify_signal_with_momentum_and_volume(df, signal, intervals=intervals)
 
     strength = result["momentum_strength"]
     if strength == "strong":
-        print("✅ Signal is STRONG → OK to act.")
+        print("✅ Momentum is STRONG →  OK to act.")
     elif strength == "weak":
-        print("🟡 Signal is WEAK → Optional, watch volume.")
+        print("🟡 Momentum is WEAK →  Optional, watch volume.")
     else:
-        print("❌ Signal is NONE → Skip or monitor.")
+        print("❌ Momentum is NONE →  Skip.")
 
-    return strength 
+    return strength

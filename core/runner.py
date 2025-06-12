@@ -30,6 +30,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
+        print(f"⚪ No signal for {symbol}")
         return
 
     # Get market state info
@@ -67,4 +68,5 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     elif mode == "rsi":
         print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
     elif mode == "log":
-        print(f"📒 LOG signal reused for {symbol}: {final_signal.upper()} | Interval: {interval}")
+        print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
+    
