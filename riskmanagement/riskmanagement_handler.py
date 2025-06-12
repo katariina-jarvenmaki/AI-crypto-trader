@@ -6,7 +6,7 @@ from riskmanagement.momentum_validator import verify_signal_with_momentum_and_vo
 
 def check_riskmanagement(symbol: str, signal: str, intervals=None):
     if intervals is None:
-        intervals = [3, 5, 15, 30]
+        intervals = [5, 15]
 
     ohlcv_data = fetch_ohlcv_for_intervals(symbol, intervals=["30m"], limit=30)
     if not ohlcv_data or "30m" not in ohlcv_data or ohlcv_data["30m"].empty:
@@ -17,11 +17,16 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None):
     result = verify_signal_with_momentum_and_volume(df, signal, intervals=intervals)
 
     strength = result["momentum_strength"]
+    merged_score = result.get("merged_score", None)
+    interpretation = result.get("interpretation", "")
+
+    print(f"📈 Merged momentum strength: {strength.upper()} (score: {merged_score})")
+
     if strength == "strong":
-        print("✅ Momentum is STRONG →  OK to act.")
+        print("✅ Momentum is STRONG → OK to act")
     elif strength == "weak":
-        print("🟡 Momentum is WEAK →  Optional, watch volume.")
+        print("🟡 Momentum is WEAK → Optional, watch volume")
     else:
-        print("❌ Momentum is NONE →  Skip.")
+        print("❌ Momentum is NONE → Skip")
 
     return strength

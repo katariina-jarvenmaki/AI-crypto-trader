@@ -61,12 +61,13 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             )
 
     # Print results
-    if mode == "override":
-        print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
-    elif mode == "divergence":
-        print(f"📈 {mode.upper()} signal detected for {symbol}: {final_signal.upper()}")
-    elif mode == "rsi":
-        print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
-    elif mode == "log":
-        print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
-    
+    if risk_strength == "strong":
+        if mode == "override":
+            print(f"⚠️  Override signal activated for {symbol}: {override_signal.upper()}")
+        elif mode == "divergence":
+            print(f"📈 {mode.upper()} signal detected for {symbol}: {final_signal.upper()}")
+        elif mode == "rsi":
+            print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
+        elif mode == "log":
+            print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
+        
