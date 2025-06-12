@@ -63,7 +63,8 @@ def update_signal_log(
     mode: str = "default",
     market_state: str = None,
     started_on: str = None,
-    momentum_strength: str = None
+    momentum_strength: str = None,
+    status: str = None
 ):
     log = load_signal_log()
 
@@ -79,6 +80,8 @@ def update_signal_log(
         signal_entry["started_on"] = started_on
     if momentum_strength:
         signal_entry["momentum_strength"] = momentum_strength 
+    if status:
+        signal_entry["status"] = status
 
     # 🔍 Search for any different previous state
     previous_state = None
@@ -86,8 +89,9 @@ def update_signal_log(
         for _signal_data in _interval_data.values():
             if isinstance(_signal_data, dict):
                 logged_state = _signal_data.get("market_state")
-                if logged_state and logged_state != market_state:
+                if logged_state and market_state and logged_state != market_state:
                     previous_state = logged_state
+
     if previous_state:
         signal_entry["previous_market_state"] = previous_state
 

@@ -38,7 +38,10 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     started_on = market_info.get("started_on")
 
     # Check riskmanagement
+    status = None
     risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
+    if risk_strength == "strong":
+        status = "complete"
 
     # Only log if signal strength is "strong" or "weak"
     if risk_strength in ("strong", "weak"):
@@ -51,7 +54,8 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             mode=mode,
             market_state=market_state,
             started_on=started_on,
-            momentum_strength=risk_strength
+            momentum_strength=risk_strength,
+            status=status
         )
 
     # Print results
