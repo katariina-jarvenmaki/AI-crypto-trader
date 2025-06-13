@@ -28,8 +28,8 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
 
-    # Continue only, if a signal 'buy' or 'sell'
-    if final_signal not in ("buy", "sell"):
+    # Continue only, if a signal 'long' or 'sell'
+    if final_signal not in ("long", "sell"):
         print(f"⚪ No signal for {symbol}")
         return
 

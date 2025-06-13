@@ -16,7 +16,7 @@ def get_selected_symbols(platform: str, symbol_args: list):
     default_symbol = platform_config.DEFAULT_SYMBOL
 
     # Suodatetaan pois tunnetut ei-symboliargumentit (esim. signaalit)
-    known_non_symbols = {"buy", "sell"}
+    known_non_symbols = {"long", "sell"}
     filtered_args = [s for s in symbol_args if s.upper() in supported_symbols]
 
     if not filtered_args and symbol_args:

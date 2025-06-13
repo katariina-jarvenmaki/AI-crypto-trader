@@ -1,14 +1,14 @@
 {
     "BTCUSDC": {
         "null": {
-            "buy": {
+            "long": {
                 "override": "2025-06-11T23:04:04.156435+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00"
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:47:43.456664+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",
@@ -16,7 +16,7 @@
             }
         },
         "null": {
-            "buy": {
+            "long": {
                 "override": "2025-06-11T20:36:54.032170+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",
@@ -29,7 +29,7 @@
                 "market_state": "bull",
                 "started_on": "2025-06-11T12:00:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:16:17.024732+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",
@@ -44,7 +44,7 @@
             }
         },
         "5m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:06:16.354610+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",
@@ -54,7 +54,7 @@
     },
     "ETHUSDC": {
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T23:04:08.454740+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T20:00:00"
@@ -77,7 +77,7 @@
             }
         },
         "3m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:17:08.945643+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T18:00:00",
@@ -90,7 +90,7 @@
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T12:55:29.344206+03:00"
             }
         },
@@ -135,14 +135,14 @@
     },
     "SOLUSDC": {
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T23:04:12.565687+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00"
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:44:35.550584+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -162,7 +162,7 @@
                 "market_state": "bull",
                 "started_on": "2025-06-11T12:00:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:47:51.649289+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -170,7 +170,7 @@
             }
         },
         "5m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:54:33.352107+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -180,14 +180,14 @@
     },
     "XRPUSDC": {
         "5m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T23:04:18.286631+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T17:00:00"
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:50:04.274123+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T17:00:00"
@@ -197,7 +197,7 @@
             "sell": {
                 "rsi": "2025-06-11T11:07:59.395883+03:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:00:09.123175+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T17:00:00"
@@ -212,7 +212,7 @@
             "sell": {
                 "rsi": "2025-06-11T11:40:16.841889+03:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:01:05.174477+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T17:00:00"
@@ -228,7 +228,7 @@
     },
     "ADAUSDC": {
         "15m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T23:04:22.279354+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T19:00:00"
@@ -238,7 +238,7 @@
             "sell": {
                 "rsi": "2025-06-11T09:58:04.256656+03:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:50:09.882077+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -251,7 +251,7 @@
             }
         },
         "5m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:48:01.682154+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -271,7 +271,7 @@
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:17:20.108021+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-11T17:00:00",
@@ -286,7 +286,7 @@
                 "market_state": "bull",
                 "started_on": "2025-06-11T12:00:00"
             },
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T21:17:23.806058+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",
@@ -294,7 +294,7 @@
             }
         },
         "1m": {
-            "buy": {
+            "long": {
                 "rsi": "2025-06-11T20:44:47.430098+03:00",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-11T16:00:00",

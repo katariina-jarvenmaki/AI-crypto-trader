@@ -37,16 +37,16 @@ DEFAULT_SELL_LIMIT = 0
 
 # Thresholds
 RSI_THRESHOLDS = {
-    "1w": {"buy": 35, "sell": 70, "buy_limit": None, "sell_limit": None},  # No limits on highest level
-    "1d": {"buy": 30, "sell": 70, "buy_limit": 70, "sell_limit": 55},      # Limit-values define how much higher level limits this one 
-    "4h": {"buy": 30, "sell": 70, "buy_limit": 65, "sell_limit": 40},
-    "2h": {"buy": 30, "sell": 70, "buy_limit": 60, "sell_limit": 40},
-    "1h": {"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 40},
-    "30m":{"buy": 30, "sell": 70, "buy_limit": 55, "sell_limit": 45},
-    "15m":{"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 45},
-    "5m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 55},
-    "3m": {"buy": 28, "sell": 70, "buy_limit": 45, "sell_limit": 60},
-    "1m": {"buy": 28, "sell": 72, "buy_limit": 35, "sell_limit": 65}
+    "1w": {"long": 35, "sell": 70, "long_limit": None, "sell_limit": None},  # No limits on highest level
+    "1d": {"long": 30, "sell": 70, "long_limit": 70, "sell_limit": 55},      # Limit-values define how much higher level limits this one 
+    "4h": {"long": 30, "sell": 70, "long_limit": 65, "sell_limit": 40},
+    "2h": {"long": 30, "sell": 70, "long_limit": 60, "sell_limit": 40},
+    "1h": {"long": 30, "sell": 70, "long_limit": 55, "sell_limit": 40},
+    "30m":{"long": 30, "sell": 70, "long_limit": 55, "sell_limit": 45},
+    "15m":{"long": 28, "sell": 70, "long_limit": 45, "sell_limit": 45},
+    "5m": {"long": 28, "sell": 70, "long_limit": 45, "sell_limit": 55},
+    "3m": {"long": 28, "sell": 70, "long_limit": 45, "sell_limit": 60},
+    "1m": {"long": 28, "sell": 72, "long_limit": 35, "sell_limit": 65}
 }
 
 # SIGNAL LIMITER SETTINGS

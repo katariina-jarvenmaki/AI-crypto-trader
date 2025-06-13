@@ -74,7 +74,7 @@ def place_market_order(symbol: str, side: str, quantity: float):
     try:
         return client.create_order(
             symbol=symbol,
-            side=SIDE_BUY if side.lower() == "buy" else SIDE_SELL,
+            side=SIDE_BUY if side.lower() == "long" else SIDE_SELL,
             type=ORDER_TYPE_MARKET,
             quantity=quantity
         )
@@ -87,7 +87,7 @@ def place_limit_order(symbol: str, side: str, quantity: float, price: float):
     try:
         return client.create_order(
             symbol=symbol,
-            side=SIDE_BUY if side.lower() == "buy" else SIDE_SELL,
+            side=SIDE_BUY if side.lower() == "long" else SIDE_SELL,
             type=ORDER_TYPE_LIMIT,
             timeInForce=TIME_IN_FORCE_GTC,
             quantity=quantity,

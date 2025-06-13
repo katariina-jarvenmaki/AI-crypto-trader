@@ -37,7 +37,7 @@ def get_log_based_signal(symbol: str) -> dict:
     valid_entries = []
 
     for interval, signals in symbol_log.items():
-        for signal_type in ['buy', 'sell']:
+        for signal_type in ['long', 'sell']:
             entry = signals.get(signal_type)
             if not entry or not isinstance(entry, dict):
                 continue
