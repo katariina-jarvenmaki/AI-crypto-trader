@@ -15,6 +15,8 @@ from configs.config import TIMEZONE
 from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
+from strategy.strategy_handler import StrategyHandler
+
 import pandas as pd
 
 # Symbol processing loop
@@ -53,6 +55,17 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
         if risk_strength == "strong":
             status = "complete"
+
+    # Strategy handler
+    if risk_strength == "strong":
+        strategy_handler = StrategyHandler()
+        strategy_plan = strategy_handler.determine_strategy(
+            market_state=market_state,
+            signal=final_signal,
+            mode=mode,
+            interval=interval
+        )
+        print(f"📌 Strategy: {strategy_plan['selected_strategies']} in {strategy_plan['market_strategy']}")
 
     # Only log if signal strength is "strong" or "weak"
     if risk_strength in ("strong", "weak"):
