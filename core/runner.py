@@ -4,8 +4,10 @@
 # 2. Do market analyzes
 # 3. Riskmanagement
 # 4. Strategy selection
-# 5. Run the strategies
-# 6. Returns results
+# 5. Calculate minium price
+# 6. Make a long order with 1%tp and 10%sl
+# 7. Selling in loop?
+# 8. Updating stop losses
 #
 from datetime import datetime
 import pytz 
