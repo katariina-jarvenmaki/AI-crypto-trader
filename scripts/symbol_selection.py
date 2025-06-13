@@ -1,4 +1,5 @@
 # scripts/symbol_selection.py
+
 import importlib
 
 def get_selected_symbols(platform: str, symbol_args: list):

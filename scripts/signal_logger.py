@@ -1,4 +1,5 @@
 # scripts/signal_loggeer.py
+
 from datetime import datetime
 from configs.config import SIGNAL_LOG_TEXT
 
