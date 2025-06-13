@@ -9,8 +9,8 @@ from core.runner import run_analysis_for_symbol
 def main():
 
     try:
-        selected_platform, selected_symbols, override_signal = parse_arguments() # Tässä se on 'override_signal'
-        
+        selected_platform, selected_symbols, override_signal, long_only, short_only = parse_arguments()
+
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
@@ -34,9 +34,12 @@ def main():
                 current_override_signal = override_signal 
         
             run_analysis_for_symbol(
-                symbol=symbol, 
-                is_first_run=global_is_first_run, 
-                override_signal=current_override_signal)
+                symbol=symbol,
+                is_first_run=global_is_first_run,
+                override_signal=current_override_signal,
+                long_only=long_only,
+                short_only=short_only
+            )
 
         global_is_first_run = False 
 

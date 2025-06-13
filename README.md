@@ -52,6 +52,12 @@ python3 main.py ETHUSDC buy
 python3 main.py ETHUSDC sell
 ```
 
+Restrict to long-only or short-only (Doesn't accect force the buy / sell):
+```bash
+python3 main.py ETHUSDC long-only
+python3 main.py ETHUSDC short-only
+```
+
 **4. Testing**
 
 Test Binance-integration status

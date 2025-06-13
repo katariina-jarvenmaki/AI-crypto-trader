@@ -18,11 +18,19 @@ from riskmanagement.riskmanagement_handler import check_riskmanagement
 import pandas as pd
 
 # Symbol processing loop
-def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_mode=None):
+def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_mode=None, long_only=False, short_only=False):
+
     print(f"\n🔍 Processing symbol: {symbol}")
 
     # Get the signals for the symbols
-    signal_info = get_signal(symbol=symbol, interval=None, is_first_run=is_first_run, override_signal=override_signal)
+    signal_info = get_signal(
+        symbol=symbol,
+        interval=None,
+        is_first_run=is_first_run,
+        override_signal=override_signal,
+        long_only=long_only,
+        short_only=short_only
+    )
     final_signal = signal_info.get("signal")
     mode = signal_info.get("mode")
     interval = signal_info.get("interval")
@@ -30,7 +38,6 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
-        print(f"⚪ No signal for {symbol}")
         return
 
     # Get market state info
