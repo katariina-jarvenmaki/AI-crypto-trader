@@ -75,7 +75,7 @@ RSI_FILTER_SELL_MIN = 40    # SELL only if RSI > 52
 # scripts/min_buy_calc.py
 
 # MINIMUM TRADE VALUE (fallback)
-DEFAULT_MIN_NOTIONAL = 10.0  
+DEFAULT_MIN_NOTIONAL = 5.0  
 
 # BUY MULTIPLIER (can be adjusted by strategy)
 BUY_PRICE_MULTIPLIER = 1  
