@@ -17,6 +17,7 @@ from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from scripts.min_buy_calc import calculate_minimum_valid_purchase
+from scripts.spot_order_handler import place_spot_trade_with_tp_sl
 
 import pandas as pd
 
@@ -98,7 +99,22 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     # Calculate the price
     if risk_strength == "strong":
         result = calculate_minimum_valid_purchase(symbol)
+
+        # Laske osto ja tee kaupat
         if result:
             print(f"✅ Minimiosto laskettu {symbol}: {result['qty']} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
+            
+            order_result = place_spot_trade_with_tp_sl(
+                symbol=symbol,
+                qty=result["qty"],
+                entry_price=result["price"],
+                tick_size=result["step_size"]
+            )
+
+            if order_result:
+                print(f"✅ Kauppa suoritettu ja TP/SL asetettu: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
+            else:
+                print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
+
         else:
             print("❌ Minimioston laskenta epäonnistui.")
