@@ -47,9 +47,12 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Check riskmanagement
     status = None
-    risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
-    if risk_strength == "strong":
-        status = "complete"
+    if override_signal:
+        risk_strength = "strong"
+    else:
+        risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
+        if risk_strength == "strong":
+            status = "complete"
 
     # Only log if signal strength is "strong" or "weak"
     if risk_strength in ("strong", "weak"):

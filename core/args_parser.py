@@ -18,11 +18,6 @@ def parse_arguments():
     symbol_args = args[1:] if selected_platform.lower() == args[0].lower() else args
     selected_symbols = get_selected_symbols(selected_platform, symbol_args)
 
-    override_signal = None
-    if symbol_args:
-        last_arg = symbol_args[-1].lower()
-        if last_arg in ["buy", "sell"]:
-            override_signal = last_arg
-            selected_symbols = selected_symbols[:-1]  # Remove override signal from symbols
+    override_signal = args[-1].lower() if args[-1].lower() in ["buy", "sell"] else None
 
     return selected_platform, selected_symbols, override_signal, long_only, short_only
