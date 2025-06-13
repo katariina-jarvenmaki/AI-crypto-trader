@@ -16,6 +16,7 @@ from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
+from scripts.min_buy_calc import calculate_minimum_valid_purchase
 
 import pandas as pd
 
@@ -65,7 +66,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             mode=mode,
             interval=interval
         )
-        print(f"📌 Strategy: {strategy_plan['selected_strategies']} in {strategy_plan['market_strategy']}")
+        print(f"📌 Strategy: {strategy_plan['selected_strategies']} in {strategy_plan['market_strategy']}. Market state: {market_state}, started on: {started_on}")
 
     # Only log if signal strength is "strong" or "weak"
     if risk_strength in ("strong", "weak"):
@@ -93,4 +94,11 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             print(f"📉 {mode.upper()} signal detected for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
         elif mode == "log":
             print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
-        print(f"📊 Market state: {market_state}, started on: {started_on}")
+
+    # Calculate the price
+    if risk_strength == "strong":
+        result = calculate_minimum_valid_purchase(symbol)
+        if result:
+            print(f"✅ Minimiosto laskettu {symbol}: {result['qty']} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
+        else:
+            print("❌ Minimioston laskenta epäonnistui.")

@@ -70,3 +70,12 @@ RSI_FILTER_INTERVAL = '4h'
 RSI_FILTER_PERIOD = 14
 RSI_FILTER_BUY_MAX = 65     # BUY only if RSI < 48
 RSI_FILTER_SELL_MIN = 40    # SELL only if RSI > 52
+
+# MINIUM PRICE CALCULATION
+# scripts/min_buy_calc.py
+
+# MINIMUM TRADE VALUE (fallback)
+DEFAULT_MIN_NOTIONAL = 10.0  
+
+# BUY MULTIPLIER (can be adjusted by strategy)
+BUY_PRICE_MULTIPLIER = 1  
