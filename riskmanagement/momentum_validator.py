@@ -19,7 +19,7 @@ def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, interv
         recent_volume = df['volume'][-interval:].mean()
         previous_volume = df['volume'][-2*interval:-interval].mean()
 
-        if signal.lower() == "long":
+        if signal.lower() == "buy":
             if recent_price_momentum > 0 and recent_volume > previous_volume:
                 strength = "strong"
                 interp = "Price turning up with increasing volume."

@@ -77,9 +77,9 @@ class DivergenceDetector:
                 continue
             if self.df['rsi'].iloc[curr] > self.df['rsi'].iloc[prev] + BULLISH_RSI_DIFF and \
                self.df['close'].iloc[curr] < self.df['close'].iloc[prev] * BULLISH_PRICE_FACTOR:
-                if is_signal_allowed(symbol, interval, "long", time, mode="divergence"):
-                    update_signal_log(symbol, interval, "long", time, mode="divergence")
-                    log_signal("long", f"divergence/{symbol}")
+                if is_signal_allowed(symbol, interval, "buy", time, mode="divergence"):
+                    update_signal_log(symbol, interval, "buy", time, mode="divergence")
+                    log_signal("buy", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bull',
                         'index': curr,

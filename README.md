@@ -46,9 +46,9 @@ python3 main.py binance ETHUSDC
 python3 main.py binance BTCUSDC ETHUSDC SOLUSDC XRPUSDC ADAUSDC HBARUSDC
 ```
 
-Force the long / sell -signal to start longing / selling right away (it does it only for first coinpair and only on first round):
+Force the buy / sell -signal to start buying / selling right away (it does it only for first coinpair and only on first round):
 ```bash
-python3 main.py ETHUSDC long
+python3 main.py ETHUSDC buy
 python3 main.py ETHUSDC sell
 ```
 
@@ -71,13 +71,13 @@ python3 integrations/btcc_api_client.py
   * Bollinger	Buy/Sell	Range-breakout
   * Volume Spike	Entry Trigger	Usean muun kanssa
   * Heikin Ashi	Trend Reversal	Visuaalisesti vahva
-* When to start longing:
-  * When diverge_detector gives long signal (overrides rsi atleast partly)
-  * When rsi_analyzer gives long signal  
+* When to start buying:
+  * When diverge_detector gives buy signal (overrides rsi atleast partly)
+  * When rsi_analyzer gives buy signal  
 * When to selling:
   * When diverge_detector gives sell signal (overrides rsi atleast partly)
   * When rsi_analyzer gives sell signal 
-* Selecting longing or selling method:
+* Selecting buying or selling method:
   * Market_analyzer
 * More Analyzers:
   * VolumeSpikeDetector > Hyvä trigger breakout / breakdown
