@@ -99,7 +99,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
 
     # Calculate the price
-    if risk_strength == "strong":
+    if risk_strength == "strong" and final_signal == "buy":
         result = calculate_minimum_valid_purchase(symbol)
 
         # Laske osto ja tee kaupat

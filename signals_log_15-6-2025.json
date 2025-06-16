@@ -1,0 +1,178 @@
+{
+    "SOLUSDC": {
+        "5m": {
+            "sell": {
+                "rsi": "2025-06-15T18:30:55.606026+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T14:00:00",
+                "momentum_strength": "weak",
+                "log": "2025-06-15T11:25:11.804740+03:00",
+                "status": "complete",
+                "previous_market_state": "neutral_sideways"
+            }
+        },
+        "15m": {
+            "sell": {
+                "rsi": "2025-06-15T22:11:57.249316+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T18:00:00",
+                "momentum_strength": "weak",
+                "log": "2025-06-15T11:19:43.707324+03:00",
+                "status": "complete",
+                "previous_market_state": "neutral_sideways"
+            }
+        },
+        "3m": {
+            "sell": {
+                "rsi": "2025-06-15T18:36:17.043093+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T14:00:00",
+                "momentum_strength": "weak",
+                "log": "2025-06-15T17:31:44.441343+03:00",
+                "status": "complete"
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": "2025-06-15T22:06:35.911566+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T18:00:00",
+                "momentum_strength": "weak",
+                "previous_market_state": "neutral_sideways",
+                "log": "2025-06-15T18:57:47.606411+03:00",
+                "status": "complete"
+            }
+        },
+        "30m": {
+            "sell": {
+                "rsi": "2025-06-15T22:33:25.966026+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T18:00:00",
+                "momentum_strength": "weak",
+                "previous_market_state": "neutral_sideways",
+                "log": "2025-06-15T19:03:17.543397+03:00",
+                "status": "complete"
+            }
+        },
+        "1m": {
+            "buy": {
+                "rsi": "2025-06-15T23:16:32.920748+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-15T20:00:00",
+                "momentum_strength": "weak"
+            }
+        }
+    },
+    "HBARUSDC": {
+        "5m": {
+            "buy": {
+                "rsi": "2025-06-15T04:05:46.771380+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-14T21:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T05:16:09.457013+03:00",
+                "status": "complete"
+            },
+            "sell": {
+                "rsi": "2025-06-15T09:03:21.674676+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-14T21:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T11:14:30.154109+03:00",
+                "status": "complete"
+            }
+        }
+    },
+    "XRPUSDC": {
+        "5m": {
+            "sell": {
+                "rsi": "2025-06-15T07:47:20.427823+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-14T21:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T09:14:02.769689+03:00",
+                "status": "complete"
+            }
+        }
+    },
+    "ADAUSDC": {
+        "5m": {
+            "sell": {
+                "rsi": "2025-06-15T16:11:03.240766+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T12:00:00",
+                "momentum_strength": "weak",
+                "log": "2025-06-15T11:19:53.333377+03:00",
+                "status": "complete"
+            },
+            "buy": {
+                "rsi": "2025-06-15T12:51:35.648694+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T10:00:00",
+                "momentum_strength": "strong",
+                "previous_market_state": "neutral_sideways",
+                "log": "2025-06-15T13:29:28.541465+03:00",
+                "status": "complete"
+            }
+        },
+        "3m": {
+            "buy": {
+                "rsi": "2025-06-15T11:08:57.659859+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T08:00:00",
+                "momentum_strength": "strong",
+                "previous_market_state": "unknown",
+                "log": "2025-06-15T11:25:21.430666+03:00",
+                "status": "complete"
+            }
+        },
+        "1m": {
+            "buy": {
+                "rsi": "2025-06-15T23:16:42.139435+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T12:00:00",
+                "momentum_strength": "weak"
+            }
+        }
+    },
+    "BTCUSDC": {
+        "5m": {
+            "sell": {
+                "rsi": "2025-06-15T09:02:58.326252+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T06:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T09:24:42.702366+03:00",
+                "status": "complete"
+            },
+            "buy": {
+                "rsi": "2025-06-15T12:29:47.061336+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T06:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T13:45:24.559378+03:00",
+                "status": "complete"
+            }
+        },
+        "3m": {
+            "buy": {
+                "rsi": "2025-06-15T10:09:04.513072+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T06:00:00",
+                "momentum_strength": "strong",
+                "log": "2025-06-15T11:03:16.871482+03:00",
+                "status": "complete"
+            }
+        }
+    },
+    "ETHUSDC": {
+        "5m": {
+            "buy": {
+                "rsi": "2025-06-15T23:16:27.904686+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-15T02:00:00",
+                "momentum_strength": "weak"
+            }
+        }
+    }
+}
