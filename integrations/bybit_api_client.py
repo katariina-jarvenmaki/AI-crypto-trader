@@ -16,8 +16,8 @@ client = HTTP(api_key=BYBIT_API_KEY, api_secret=BYBIT_API_SECRET)
 # --- Asetukset ---
 DEFAULT_LEVERAGE = 1
 CATEGORY = "linear"  # Käytetään vivullista perpetual-kauppaa
-TP_MULTIPLIER = 1.02  # +2%
-SL_MULTIPLIER = 0.97  # -3%
+TP_MULTIPLIER = 1.3  # +30%
+SL_MULTIPLIER = 0.9  # -10%
 
 # --- OHLCV yhdelle symbolille ja usealle aikavälille ---
 def fetch_ohlcv_for_intervals(symbol: str, intervals: list, limit: int = 100):
