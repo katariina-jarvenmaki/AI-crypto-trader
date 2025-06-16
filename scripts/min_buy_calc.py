@@ -53,3 +53,41 @@ def calculate_minimum_valid_purchase(symbol):
     except Exception as e:
         print(f"❌ Virhe minimioston laskennassa: {e}")
         return None
+
+
+def calculate_minimum_valid_bybit_purchase(symbol):
+    try:
+        exchange_info = get_bybit_symbol_info(symbol)
+        price = get_bybit_price(symbol)
+
+        if not exchange_info or not price:
+            return None
+
+        lot_size_filter = exchange_info.get("lot_size_filter", {})
+        min_qty = float(lot_size_filter.get("min_order_qty", 0.001))
+        step_size = float(lot_size_filter.get("qty_step", 0.001))
+
+        min_notional = 5.0  # oletetaan 5 USD, voidaan hakea tarkemmin
+
+        qty = min_qty
+        cost = qty * price
+
+        while cost < min_notional:
+            qty += step_size
+            qty = round_step_size(qty, step_size)
+            cost = qty * price
+
+            if qty > 10000:
+                print("⚠️ Turvaraja Bybitin ostossa saavutettu")
+                return None
+
+        return {
+            "qty": qty,
+            "price": round(price, 2),
+            "cost": round(cost, 2),
+            "step_size": step_size
+        }
+
+    except Exception as e:
+        print(f"❌ Bybitin minimioston laskentavirhe: {e}")
+        return None

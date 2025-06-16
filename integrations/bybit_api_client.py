@@ -14,8 +14,10 @@ from configs.bybit_config import BYBIT_INTERVALS
 client = HTTP(api_key=BYBIT_API_KEY, api_secret=BYBIT_API_SECRET)
 
 # --- Asetukset ---
-DEFAULT_LEVERAGE = 5
+DEFAULT_LEVERAGE = 1
 CATEGORY = "linear"  # Käytetään vivullista perpetual-kauppaa
+TP_MULTIPLIER = 1.02  # +2%
+SL_MULTIPLIER = 0.97  # -3%
 
 # --- OHLCV yhdelle symbolille ja usealle aikavälille ---
 def fetch_ohlcv_for_intervals(symbol: str, intervals: list, limit: int = 100):
@@ -121,3 +123,24 @@ if __name__ == "__main__":
             print("❌ ERROR: Unexpected account info response.")
     except Exception as e:
         print(f"❌ ERROR during account info check: {e}")
+
+def place_leveraged_bybit_order(symbol: str, qty: float, price: float):
+    try:
+        # Aseta ostotoimeksianto (BUY)
+        buy_order = place_limit_order(symbol=symbol, side="Buy", quantity=qty, price=price)
+        if not buy_order:
+            return None
+
+        # Laske TP ja SL hinnat
+        tp_price = round(price * TP_MULTIPLIER, 2)
+        sl_price = round(price * SL_MULTIPLIER, 2)
+
+        # Voit halutessasi asettaa TP/SL erikseen, esim. käyttämällä `take_profit` ja `stop_loss` kenttiä
+        return {
+            "tp_price": tp_price,
+            "sl_price": sl_price,
+            "buy_order": buy_order
+        }
+    except Exception as e:
+        print(f"❌ Bybit leveraged order failed: {e}")
+        return None

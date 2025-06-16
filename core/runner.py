@@ -18,8 +18,9 @@ from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
-from scripts.min_buy_calc import calculate_minimum_valid_purchase
 from scripts.spot_order_handler import place_spot_trade_with_tp_sl
+from scripts.min_buy_calc import calculate_minimum_valid_purchase, calculate_minimum_valid_bybit_purchase
+from integrations.bybit_api_client import place_leveraged_bybit_order
 
 import pandas as pd
 
@@ -118,5 +119,21 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             else:
                 print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
 
-        else:
-            print("❌ Minimioston laskenta epäonnistui.")
+            # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
+            bybit_symbol = symbol.replace("USDC", "USDT")
+            bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
+            if bybit_result:
+                print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
+
+                bybit_order_result = place_leveraged_bybit_order(
+                    symbol=bybit_symbol,
+                    qty=bybit_result["qty"],
+                    price=bybit_result["price"]
+                )
+
+                if bybit_order_result:
+                    print(f"✅ Bybit-kauppa suoritettu: TP @ {bybit_order_result['tp_price']}, SL @ {bybit_order_result['sl_price']}")
+                else:
+                    print(f"❌ Bybit-kaupan suoritus epäonnistui symbolille {bybit_symbol}")
+            else:
+                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
