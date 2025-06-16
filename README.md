@@ -19,6 +19,10 @@ Contents:
 BINANCE_API_KEY = 'your_api_key'
 BINANCE_API_SECRET = 'your_secret_key'
 
+# BYBIT
+BYBIT_API_KEY = "your_real_api_key"
+BYBIT_API_SECRET = "your_real_api_secret"
+
 # BTCC API
 BTCC_API_KEY = "your_api_key"
 BTCC_SECRET_KEY = "your_secret_key"
