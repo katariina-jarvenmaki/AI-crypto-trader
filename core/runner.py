@@ -56,6 +56,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     status = None
     if override_signal:
         risk_strength = "strong"
+        status = "complete"
     else:
         risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
         if risk_strength == "strong":
@@ -72,7 +73,21 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         )
         print(f"📌 Strategy: {strategy_plan['selected_strategies']} in {strategy_plan['market_strategy']}. Market state: {market_state}, started on: {started_on}")
 
-    # Only log if signal strength is "strong" or "weak"
+    # Only log if signal is not from log or override
+    if risk_strength in ("strong", "weak", "none") and mode not in ("log", "override"):
+        now = datetime.now(pytz.timezone(TIMEZONE.zone))
+        update_signal_log(
+            symbol=symbol,
+            interval=interval,
+            signal_type=final_signal,
+            now=now,
+            mode=mode,
+            market_state=market_state,
+            started_on=started_on,
+            momentum_strength=risk_strength,
+            status=status  # "complete" tai "rejected"
+        )
+        
     if risk_strength in ("strong", "weak"):
         if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
             now = datetime.now(pytz.timezone(TIMEZONE.zone))
