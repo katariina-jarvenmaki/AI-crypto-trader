@@ -69,8 +69,11 @@ def get_bybit_price(symbol: str):
 def place_market_order(symbol: str, side: str, quantity: float, leverage: int = DEFAULT_LEVERAGE):
     try:
         # Aseta vivutus (tarvittaessa vain kerran per symboli)
-        client.set_leverage(category=CATEGORY, symbol=symbol, buyLeverage=leverage, sellLeverage=leverage)
-
+        client.spot_margin_trade_set_leverage(
+            leverage=leverage
+        )
+        print(response)
+        
         return client.place_order(
             category=CATEGORY,
             symbol=symbol,

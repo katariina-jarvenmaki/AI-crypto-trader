@@ -123,24 +123,28 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         if result:
             print(f"✅ Minimiosto laskettu {symbol}: {quantity} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
             
-            order_result = place_spot_trade_with_tp_sl(
-                symbol=symbol,
-                qty=quantity,
-                entry_price=result["price"],
-                tick_size=result["step_size"]
-            )
+            # order_result = place_spot_trade_with_tp_sl(
+            #     symbol=symbol,
+            #     qty=quantity,
+            #     entry_price=result["price"],
+            #     tick_size=result["step_size"]
+            # )
 
-            if order_result:
-                print(f"✅ Kauppa suoritettu ja TP/SL asetettu: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
-            else:
-                print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
+            # if order_result:
+            #     print(f"✅ Kauppa suoritettu ja TP/SL asetettu: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
+            # else:
+            #     print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
 
-            🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
+            # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
             bybit_symbol = symbol.replace("USDC", "USDT")
             bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
             if bybit_result is None:
                 print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
                 return
+            
+            info = get_bybit_symbol_info("HBARUSDT")
+            print(info)
+
 
             balance = get_available_balance("USDT")
             if balance < bybit_result["cost"]:
