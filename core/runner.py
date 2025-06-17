@@ -20,7 +20,7 @@ from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from scripts.spot_order_handler import place_spot_trade_with_tp_sl
 from scripts.min_buy_calc import calculate_minimum_valid_purchase, calculate_minimum_valid_bybit_purchase
-from integrations.bybit_api_client import place_leveraged_bybit_order
+from integrations.bybit_api_client import place_leveraged_bybit_order, get_available_balance, get_bybit_symbol_info
 
 import pandas as pd
 
@@ -87,7 +87,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             momentum_strength=risk_strength,
             status=status  # "complete" tai "rejected"
         )
-        
+
     if risk_strength in ("strong", "weak"):
         if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
             now = datetime.now(pytz.timezone(TIMEZONE.zone))
@@ -114,17 +114,18 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         elif mode == "log":
             print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
 
-    # Calculate the price
+    # Calculate the pricegit 
     if risk_strength == "strong" and final_signal == "buy":
         result = calculate_minimum_valid_purchase(symbol)
+        quantity = "{:.8f}".format(result['qty'])
 
         # Laske osto ja tee kaupat
         if result:
-            print(f"✅ Minimiosto laskettu {symbol}: {result['qty']} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
+            print(f"✅ Minimiosto laskettu {symbol}: {quantity} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
             
             order_result = place_spot_trade_with_tp_sl(
                 symbol=symbol,
-                qty=result["qty"],
+                qty=quantity,
                 entry_price=result["price"],
                 tick_size=result["step_size"]
             )
@@ -134,16 +135,26 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             else:
                 print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
 
-            # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
+            🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
             bybit_symbol = symbol.replace("USDC", "USDT")
             bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
+            if bybit_result is None:
+                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
+                return
+
+            balance = get_available_balance("USDT")
+            if balance < bybit_result["cost"]:
+                print(f"❌ Ei tarpeeksi saldoa (saldo: {balance} < {bybit_result['cost']})")
+                return
+
             if bybit_result:
                 print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
 
                 bybit_order_result = place_leveraged_bybit_order(
                     symbol=bybit_symbol,
                     qty=bybit_result["qty"],
-                    price=bybit_result["price"]
+                    price=bybit_result["price"],
+                    leverage=3
                 )
 
                 if bybit_order_result:

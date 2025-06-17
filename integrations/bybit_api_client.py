@@ -11,10 +11,10 @@ from configs.credentials import BYBIT_API_KEY, BYBIT_API_SECRET
 from configs.bybit_config import BYBIT_INTERVALS
 
 # Bybit V5 unified trading client
-client = HTTP(api_key=BYBIT_API_KEY, api_secret=BYBIT_API_SECRET)
+client = HTTP(api_key=BYBIT_API_KEY, api_secret=BYBIT_API_SECRET, testnet=False)
 
 # --- Asetukset ---
-DEFAULT_LEVERAGE = 1
+DEFAULT_LEVERAGE = 2
 CATEGORY = "linear"  # Käytetään vivullista perpetual-kauppaa
 TP_MULTIPLIER = 1.3  # +30%
 SL_MULTIPLIER = 0.9  # -10%
@@ -57,12 +57,12 @@ def get_all_current_prices(selected_symbols: list):
         return {}
 
 # --- Yksittäinen hinta ---
-def get_current_price(symbol: str):
+def get_bybit_price(symbol: str):
     try:
         response = client.get_tickers(category=CATEGORY, symbol=symbol)
         return float(response["result"]["list"][0]["lastPrice"])
     except Exception as e:
-        print(f"❌ Hintahaku epäonnistui: {e}")
+        print(f"❌ Bybitin hintahaku epäonnistui: {e}")
         return None
 
 # --- Markkinatoimeksianto vivulla ---
@@ -83,22 +83,27 @@ def place_market_order(symbol: str, side: str, quantity: float, leverage: int = 
         return None
 
 # --- Limittitoimeksianto vivulla ---
-def place_limit_order(symbol: str, side: str, quantity: float, price: float, leverage: int = DEFAULT_LEVERAGE):
+def place_leveraged_bybit_order(symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
-        client.set_leverage(category=CATEGORY, symbol=symbol, buyLeverage=leverage, sellLeverage=leverage)
+        rounded_qty = round_bybit_quantity(symbol, qty)
 
-        return client.place_order(
-            category=CATEGORY,
-            symbol=symbol,
-            side=side.upper(),
-            orderType="Limit",
-            qty=str(quantity),
-            price=str(price),
-            timeInForce="GTC"
-        )
+        # Tässä välitetään leverage eteenpäin!
+        buy_order = place_market_order(symbol=symbol, side="Buy", quantity=rounded_qty, leverage=leverage)
+        if not buy_order:
+            return None
+
+        tp_price = round(price * TP_MULTIPLIER, 2)
+        sl_price = round(price * SL_MULTIPLIER, 2)
+
+        return {
+            "tp_price": tp_price,
+            "sl_price": sl_price,
+            "buy_order": buy_order
+        }
     except Exception as e:
-        print(f"❌ Limit order with leverage failed: {e}")
+        print(f"❌ Bybit leveraged order failed: {e}")
         return None
+
 
 # --- Testaus ---
 if __name__ == "__main__":
@@ -124,10 +129,32 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ ERROR during account info check: {e}")
 
-def place_leveraged_bybit_order(symbol: str, qty: float, price: float):
+def get_available_balance(asset="USDT"):
     try:
+        response = client.get_wallet_balance(accountType="UNIFIED")
+        coins = response["result"]["list"][0]["coin"]
+
+        for coin in coins:
+            if coin["coin"] == asset:
+                # Joustavasti haetaan joko availableToTrade, availableBalance tai equity
+                return float(
+                    coin.get("availableToTrade") or
+                    coin.get("availableBalance") or
+                    coin.get("equity") or 0.0
+                )
+
+        return 0.0
+    except Exception as e:
+        print(f"⚠️ Saldohaun virhe: {str(e)}")
+        return 0.0
+
+def place_leveraged_bybit_order(symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
+    try:
+        # ✅ Pyöristä määrä ennen tilausta
+        rounded_qty = round_bybit_quantity(symbol, qty)
+
         # Aseta ostotoimeksianto (BUY)
-        buy_order = place_limit_order(symbol=symbol, side="Buy", quantity=qty, price=price)
+        buy_order = place_market_order(symbol=symbol, side="Buy", quantity=rounded_qty)
         if not buy_order:
             return None
 
@@ -135,7 +162,6 @@ def place_leveraged_bybit_order(symbol: str, qty: float, price: float):
         tp_price = round(price * TP_MULTIPLIER, 2)
         sl_price = round(price * SL_MULTIPLIER, 2)
 
-        # Voit halutessasi asettaa TP/SL erikseen, esim. käyttämällä `take_profit` ja `stop_loss` kenttiä
         return {
             "tp_price": tp_price,
             "sl_price": sl_price,
@@ -144,3 +170,27 @@ def place_leveraged_bybit_order(symbol: str, qty: float, price: float):
     except Exception as e:
         print(f"❌ Bybit leveraged order failed: {e}")
         return None
+
+def get_bybit_symbol_info(symbol: str):
+    try:
+        response = client.get_instruments_info(category=CATEGORY, symbol=symbol)
+        print(client.get_instruments_info(category="linear", symbol="HBARUSDT"))
+        if response and "result" in response and "list" in response["result"]:
+            return response["result"]["list"][0]
+        else:
+            print(f"⚠️ Ei saatu symbolitietoja Bybitiltä: {symbol}")
+            return None
+    except Exception as e:
+        print(f"❌ Virhe Bybit-symbolitiedon haussa: {e}")
+        return None
+
+# --- Symbolikohtainen määrän pyöristys Bybit-kaupoissa ---
+BYBIT_QUANTITY_ROUNDING = {
+    "HBARUSDT": 0,
+    "ETHUSDT": 2,
+    "BTCUSDT": 3
+}
+
+def round_bybit_quantity(symbol: str, qty: float) -> float:
+    decimals = BYBIT_QUANTITY_ROUNDING.get(symbol.upper(), 4)
+    return round(qty, decimals)

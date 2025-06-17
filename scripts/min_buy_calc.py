@@ -1,10 +1,19 @@
 import math
-from integrations.binance_api_client import client, get_current_price
+from integrations.binance_api_client import client
+from integrations.bybit_api_client import get_bybit_price, get_bybit_symbol_info, round_bybit_quantity
 from configs import config
 
 def round_step_size(quantity, step_size):
     precision = int(round(-math.log10(step_size), 0))
     return round(quantity, precision)
+
+def get_current_price(symbol):
+    try:
+        ticker = client.get_symbol_ticker(symbol=symbol)
+        return float(ticker["price"])
+    except Exception as e:
+        print(f"❌ Hintahaku epäonnistui symbolille {symbol}: {e}")
+        return None
 
 def calculate_minimum_valid_purchase(symbol):
     try:
@@ -56,6 +65,10 @@ def calculate_minimum_valid_purchase(symbol):
 
 
 def calculate_minimum_valid_bybit_purchase(symbol):
+    info = get_bybit_symbol_info(symbol)
+    if info is None:
+        print(f"❌ Bybit-symbolitietoa ei löytynyt symbolille {symbol}")
+        return None
     try:
         exchange_info = get_bybit_symbol_info(symbol)
         price = get_bybit_price(symbol)
