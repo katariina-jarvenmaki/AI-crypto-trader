@@ -4,7 +4,7 @@ from typing import List
 from integrations.binance_api_client import fetch_ohlcv_for_intervals
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
 
-def check_riskmanagement(symbol: str, signal: str, intervals=None):
+def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.2):
 
     # 5m interval request for volume check
     if intervals is None:
@@ -16,7 +16,7 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None):
 
     # Verify the momentum / volume
     df = ohlcv_data["5m"]
-    result = verify_signal_with_momentum_and_volume(df, signal, intervals=intervals)
+    result = verify_signal_with_momentum_and_volume(df, signal, intervals=intervals, volume_multiplier=volume_multiplier)
     strength = result["momentum_strength"]
     interpretation = result.get("interpretation", "")
 

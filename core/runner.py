@@ -58,7 +58,13 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         risk_strength = "strong"
         status = "complete"
     else:
-        risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal)
+        # Määrittele dynaaminen volyymikerroin
+        if (market_state in ("unknown", "bear") and final_signal == "buy") or \
+        (market_state in ("unknown", "bull") and final_signal == "sell"):
+            volume_multiplier = 1.2
+        else:
+            volume_multiplier = 1.0
+        risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal, volume_multiplier=volume_multiplier)
         if risk_strength == "strong":
             status = "complete"
 

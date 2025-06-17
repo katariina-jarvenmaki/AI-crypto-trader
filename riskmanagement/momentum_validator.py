@@ -1,9 +1,12 @@
-# riskmanagement/momentum_validator.py
-
 from typing import List, Dict
 import pandas as pd
 
-def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, intervals: List[int] = [5]) -> dict:
+def verify_signal_with_momentum_and_volume(
+    df: pd.DataFrame,
+    signal: str,
+    intervals: List[int] = [5],
+    volume_multiplier: float = 1.2  # 👈 Default / test value
+) -> dict:
     result = {
         "momentum_strength": "none",
         "momentum": None,
@@ -21,10 +24,13 @@ def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, interv
         recent_volume = df['volume'][-interval:].mean()
         previous_volume = df['volume'][-2*interval:-interval].mean()
 
+        # 🧠 Käytetään volyymikerrointa
+        volume_condition = recent_volume > volume_multiplier * previous_volume
+
         if signal.lower() == "buy":
-            if recent_price_momentum > 0 and recent_volume > previous_volume:
+            if recent_price_momentum > 0 and volume_condition:
                 strength = "strong"
-                interp = "Price turning up with increasing volume."
+                interp = "Price turning up with significantly increasing volume."
             elif recent_price_momentum > previous_price_momentum:
                 strength = "weak"
                 interp = "Downtrend weakening, but volume confirmation missing."
@@ -32,9 +38,9 @@ def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, interv
                 strength = "none"
                 interp = "No clear bullish shift."
         elif signal.lower() == "sell":
-            if recent_price_momentum < 0 and recent_volume > previous_volume:
+            if recent_price_momentum < 0 and volume_condition:
                 strength = "strong"
-                interp = "Price turning down with increasing volume."
+                interp = "Price turning down with significantly increasing volume."
             elif recent_price_momentum < previous_price_momentum:
                 strength = "weak"
                 interp = "Uptrend weakening, but no strong confirmation."
@@ -55,7 +61,5 @@ def verify_signal_with_momentum_and_volume(df: pd.DataFrame, signal: str, interv
             "volume": result["volume"],
             "comment": interp
         }
-
-        # print(f"Interval: {interval} | Strength: {strength.upper()} | {interp}")
 
     return result
