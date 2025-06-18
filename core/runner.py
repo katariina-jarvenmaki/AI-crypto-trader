@@ -1,14 +1,5 @@
 # core/runner.py
-#
-# 1. Get raw signals
-# 2. Do market analyzes
-# 3. Riskmanagement
-# 4. Strategy selection
-# 5. Calculate minium price
-# 6. Make a long order with 1%tp and 10%sl
-# 7. Selling in loop?
-# 8. Updating stop losses
-#
+
 from datetime import datetime
 import pytz 
 from pytz import timezone
@@ -62,6 +53,8 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         if (market_state in ("unknown", "bear") and final_signal == "buy") or \
         (market_state in ("unknown", "bull") and final_signal == "sell"):
             volume_multiplier = 1.2
+        elif (market_state == "neutral_sideways" and final_signal in ("buy", "sell")):
+            volume_multiplier = 1.1
         else:
             volume_multiplier = 1.0
         risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal, volume_multiplier=volume_multiplier)
@@ -148,10 +141,6 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
                 return
             
-            info = get_bybit_symbol_info("HBARUSDT")
-            print(info)
-
-
             balance = get_available_balance("USDT")
             if balance < bybit_result["cost"]:
                 print(f"❌ Ei tarpeeksi saldoa (saldo: {balance} < {bybit_result['cost']})")
