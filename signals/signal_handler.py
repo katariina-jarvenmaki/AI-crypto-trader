@@ -7,7 +7,7 @@
 #
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
-from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 import pandas as pd
 
 from signals.log_based_signal import get_log_based_signal  # Muista importoida tämä
@@ -31,7 +31,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         disallowed = None
 
     # Fetch data for divergence and RSI analysis
-    data_by_interval = fetch_ohlcv_for_intervals(symbol=symbol, intervals=["1h"], limit=100)
+    data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=["1h"], limit=100)
     df = data_by_interval.get("1h")
     if df is None or df.empty:
         print(f"Skipping signal analysis for {symbol} on {interval}: No data available.")

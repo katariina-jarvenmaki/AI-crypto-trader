@@ -4,7 +4,7 @@ from scripts.signal_limiter import load_signal_log
 from datetime import datetime, timedelta
 import pytz
 import pandas as pd
-from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from configs.config import (
     TIMEZONE,
     LOG_BASED_SIGNAL_TIMEOUT,
@@ -82,7 +82,7 @@ def get_log_based_signal(symbol: str) -> dict:
 
     if RSI_FILTER_ENABLED:
         try:
-            ohlcv = fetch_ohlcv_for_intervals(symbol, intervals=[RSI_FILTER_INTERVAL], limit=100)
+            ohlcv, _ = fetch_ohlcv_fallback(symbol, intervals=[RSI_FILTER_INTERVAL], limit=100)
             df_rsi = ohlcv.get(RSI_FILTER_INTERVAL)
 
             if df_rsi is None or df_rsi.empty:

@@ -12,6 +12,14 @@ SUPPORTED_PLATFORMS = [
 ]
 DEFAULT_PLATFORM = "Binance"
 
+# OHLCV INTEGRATIONS (from least used to most to save requests)
+MULTI_INTERVAL_EXCHANGE_PRIORITY = ["okx", "kucoin", "binance", "bybit"]
+DEFAULT_INTERVALS = [
+    "1m", "3m", "5m", "15m", "30m",
+    "1h", "2h", "4h", "1d", "1w"
+]
+DEFAULT_OHLCV_LIMIT = 200
+
 # DIVERGENCE SETTINGS
 # scripts/divergence_detector.py
 

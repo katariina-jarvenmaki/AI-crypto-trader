@@ -5,7 +5,7 @@ import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
-from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
 
 def generate_signals(df: pd.DataFrame) -> pd.DataFrame:
@@ -74,7 +74,7 @@ def calculate_summary(trades: list):
 if __name__ == "__main__":
     symbol = "HBARUSDT"
     interval = "5m"  # Binance interval
-    candles = fetch_ohlcv_for_intervals(symbol, [interval], limit=500)
+    candles, _  = fetch_ohlcv_fallback(symbol, [interval], limit=500)
 
     if interval in candles:
         df = candles[interval]

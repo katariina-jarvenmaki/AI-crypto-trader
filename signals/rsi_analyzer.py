@@ -4,7 +4,7 @@ import pandas as pd
 import ta
 from datetime import datetime
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
-from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from configs.config import RSI_THRESHOLDS, RSI_PERIOD, DEFAULT_BUY_LIMIT, DEFAULT_SELL_LIMIT, TIMEZONE
 from pytz import timezone
 import pytz
@@ -19,7 +19,7 @@ def calculate_rsi(close_prices, period=RSI_PERIOD):
 # Run RSI analyzer
 def rsi_analyzer(symbol):
 
-    data_by_interval = fetch_ohlcv_for_intervals(symbol=symbol, intervals=INTERVALS, limit=200)
+    data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200)
 
     previous_rsi = None
     last_checked_rsi = None

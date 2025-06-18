@@ -1,7 +1,7 @@
 # riskmanagement/riskmanagement_handler.py
 
 from typing import List
-from integrations.binance_api_client import fetch_ohlcv_for_intervals
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
 
 def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.2):
@@ -9,7 +9,7 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multip
     # 5m interval request for volume check
     if intervals is None:
         intervals = [5]
-    ohlcv_data = fetch_ohlcv_for_intervals(symbol, intervals=["5m"], limit=30)
+    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
     if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️  Riskmanagement: No OHLCV data available.")
         return
