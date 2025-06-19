@@ -27,5 +27,18 @@
             }
         ],
         "short": []
+    },
+    "SOLUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-19T20:41:53.627357+03:00",
+                "qty": 0.035,
+                "price": 144.84,
+                "leverage": 4,
+                "first_stop_loss_price": null,
+                "set_stop_loss_price": null
+            }
+        ],
+        "short": []
     }
 }
