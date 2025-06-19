@@ -140,6 +140,7 @@ BYBIT_QUANTITY_ROUNDING = {
     "BTCUSDT": 3
 }
 
+# Testattu ja toimii, jos vipua ei ole jo asetettu symbolille
 def set_leverage(symbol: str, leverage: int, category: str = "linear"):
     
     try:
@@ -153,7 +154,7 @@ def set_leverage(symbol: str, leverage: int, category: str = "linear"):
                 break
 
         if current_leverage == leverage:
-            print(f"ℹ️ Leverage is already set to {leverage}x for {symbol}. No changes needed.")
+            # print(f"ℹ️ Leverage is already set to {leverage}x for {symbol}. No changes needed.")
             return
 
         # Asetetaan vivutus, jos eri
@@ -164,14 +165,14 @@ def set_leverage(symbol: str, leverage: int, category: str = "linear"):
                 buyLeverage=str(leverage),
                 sellLeverage=str(leverage)
             )
-            print(f"✅ Vipu asetettu: {symbol} @ {leverage}x → {response}")
+            # print(f"✅ Vipu asetettu: {symbol} @ {leverage}x → {response}")
         elif category == "spot_margin":
             response = client.spot_margin_trade_set_leverage(
                 leverage=str(leverage)
             )
-            print(f"✅ Spot-margin vipu asetettu: {symbol} @ {leverage}x → {response}")
+            # print(f"✅ Spot-margin vipu asetettu: {symbol} @ {leverage}x → {response}")
         else:
-            print(f"⚠️ Tuntematon kategoria: {category}")
+            print(f"⚠️ Tuntematon kategoria vivun asetuksessa: {category}")
     except Exception as e:
         print(f"❌ Vivun asetus epäonnistui: {e}")
 
