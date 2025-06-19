@@ -92,7 +92,7 @@ def get_available_balance(asset="USDT"):
 def place_leveraged_bybit_order(symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
         # Aseta hedge mode ennen mitään muuta
-        set_hedge_mode(symbol=symbol, category=CATEGORY)
+        set_hedge_mode(coin="USDT", category=CATEGORY)
 
         # Aseta vipu
         set_leverage(symbol, leverage)
@@ -173,30 +173,30 @@ def round_bybit_quantity(symbol: str, qty: float) -> float:
     decimals = BYBIT_QUANTITY_ROUNDING.get(symbol.upper(), 4)
     return round(qty, decimals)
 
-def set_hedge_mode(symbol: str, category: str = "linear"):
+def set_hedge_mode(category: str = "linear", coin: str = "USDT"):
     try:
-        # Tarkista onko mitään positioita auki — jos on, ei voi vaihtaa tilaa
-        response = client.get_positions(category=category, symbol=symbol)
-        positions = response.get("result", {}).get("list", [])
-
-        open_position_exists = any(
-            float(pos.get("size", 0)) > 0 for pos in positions
-        )
-
-        if open_position_exists:
-            print(f"⚠️ Hedge-modea ei voida vaihtaa, koska avoimia positioita on jo olemassa.")
+        # Tarkista onko mitään positioita tai avoimia toimeksiantoja
+        response_pos = client.get_positions(category=category, symbol=symbol)
+        open_positions = response_pos.get("result", {}).get("list", [])
+        if any(float(pos.get("size", 0)) > 0 for pos in open_positions):
+            print(f"⚠️ Ei voida vaihtaa hedge-modea: Avoimia positioita on olemassa.")
             return
 
-        # Asetetaan hedge-mode koko tilille
+        response_orders = client.get_open_orders(category=category, symbol=symbol)
+        open_orders = response_orders.get("result", {}).get("list", [])
+        if open_orders:
+            print(f"⚠️ Ei voida vaihtaa hedge-modea: Avoimia toimeksiantoja on olemassa.")
+            return
+
+        # Ei symbolia → vaihdetaan koko coinille, esim. kaikki USDT-parit
         response = client.switch_position_mode(
             category=category,
-            symbol=symbol.upper(),
-            mode=3  # Hedge Mode
+            coin=coin.upper(),
+            mode=3  # Hedge-mode
         )
-        print(f"✅ Hedge-tila asetettu: {response}")
+        print(f"✅ Hedge-tila asetettu coin-tasolla ({coin.upper()}): {response}")
     except Exception as e:
-        print(f"❌ Position mode -asetuksen virhe: {e}")
-
+        print(f"❌ Hedge-mode -asetuksen virhe (coin): {e}")
 
 def has_open_position(symbol: str, category: str = "linear") -> bool:
     try:
