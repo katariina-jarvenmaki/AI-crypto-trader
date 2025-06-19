@@ -91,23 +91,20 @@ def get_available_balance(asset="USDT"):
 
 def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
-        # Aseta hedge mode ennen mitään muuta
         set_hedge_mode(client, symbol=symbol, coin="USDT", category=CATEGORY)
-
-        # Aseta vipu
         set_leverage(symbol, leverage)
 
-        # Pyöristä määrä
         rounded_qty = round_bybit_quantity(symbol, qty)
 
-        # Suorita ostotoimeksianto
+        # 🛠️ Lisää positionIdx=1, koska olet hedge-moodissa
         buy_order = client.place_order(
             category=CATEGORY,
             symbol=symbol,
             side="Buy",
             orderType="Market",
             qty=str(rounded_qty),
-            isLeverage=1
+            isLeverage=1,
+            positionIdx=1
         )
 
         # Laske TP/SL
@@ -144,14 +141,28 @@ BYBIT_QUANTITY_ROUNDING = {
 }
 
 def set_leverage(symbol: str, leverage: int, category: str = "linear"):
+    
     try:
+        # Tarkista nykyinen vipu ensin
+        current_leverage = None
+        response = client.get_positions(category=category, symbol=symbol)
+        positions = response.get("result", {}).get("list", [])
+        for pos in positions:
+            if pos["symbol"] == symbol:
+                current_leverage = float(pos.get("leverage", 0))
+                break
+
+        if current_leverage == leverage:
+            print(f"ℹ️ Leverage is already set to {leverage}x for {symbol}. No changes needed.")
+            return
+
+        # Asetetaan vivutus, jos eri
         if category == "linear":  # Futures / Perpetuals
             response = client.set_leverage(
                 category="linear",
                 symbol=symbol,
-                buyLeverage=leverage,
-                sellLeverage=leverage,
-                positionIdx=1  # tai 2 shortille
+                buyLeverage=str(leverage),
+                sellLeverage=str(leverage)
             )
             print(f"✅ Vipu asetettu: {symbol} @ {leverage}x → {response}")
         elif category == "spot_margin":
@@ -183,7 +194,7 @@ def set_hedge_mode(client, symbol: str, category: str = "linear", coin: str = "U
         mode_values = {int(pos.get("positionIdx",0)) for pos in positions if pos["symbol"] == symbol}
         current_idx = mode_values.pop() if mode_values else 0
         if current_idx in (1,2):
-            print(f"✅ Hedge-tila on jo asetettu. Ei muutoksia. {current_idx}")
+            # print(f"✅ Hedge-tila on jo asetettu. Ei muutoksia. {current_idx}")
             return
         else:
             # Tarkista avoimet positiot
