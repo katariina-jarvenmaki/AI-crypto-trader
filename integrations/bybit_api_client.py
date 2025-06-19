@@ -91,7 +91,9 @@ def get_available_balance(asset="USDT"):
 
 def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
-        set_hedge_mode(client, symbol=symbol, coin="USDT", category=CATEGORY)
+
+        # Aseta vipu
+        set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
         set_leverage(symbol, leverage)
 
         rounded_qty = round_bybit_quantity(symbol, qty)
@@ -180,12 +182,26 @@ def round_bybit_quantity(symbol: str, qty: float) -> float:
     info = get_bybit_symbol_info(symbol)
     if info and "lotSizeFilter" in info:
         step_size = float(info["lotSizeFilter"]["qtyStep"])
+        # Laske desimaalit step_sizen perusteella
         precision = abs(int(round(-math.log10(step_size))))
-        return round(qty, precision)
+        
+        # Kerro qty kymmenen potenssiin precision ja pyöristä ylöspäin
+        multiplier = 10 ** precision
+        rounded_qty = math.ceil(qty * multiplier) / multiplier
+        
+        # Lisätään 1 askel ylimääräistä tarkkuutta
+        # eli pyöristetään vielä yhdellä desimaalilla tarkemmin ylöspäin:
+        extra_precision = precision + 1
+        multiplier_extra = 10 ** extra_precision
+        rounded_qty = math.ceil(rounded_qty * multiplier_extra) / multiplier_extra
+        
+        return rounded_qty
+    
     # fallback
     decimals = BYBIT_QUANTITY_ROUNDING.get(symbol.upper(), 4)
-    return round(qty, decimals)
-
+    multiplier = 10 ** decimals
+    return math.ceil(qty * multiplier) / multiplier
+    
 # Testattu ja toimii, kunhan vaan kaikki positiot on suljettu ja modea vaihtelee: 0 = one way mode & 3 = hedge
 def set_hedge_mode(client, symbol: str, category: str = "linear", coin: str = "USDT"):
 
