@@ -20,7 +20,8 @@ from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from scripts.spot_order_handler import place_spot_trade_with_tp_sl
 from scripts.min_buy_calc import calculate_minimum_valid_purchase, calculate_minimum_valid_bybit_purchase
-from integrations.bybit_api_client import place_leveraged_bybit_order, get_available_balance, get_bybit_symbol_info
+from integrations.bybit_api_client import place_leveraged_bybit_order, get_available_balance, get_bybit_symbol_info, client as bybit_client
+
 
 import pandas as pd
 
@@ -159,6 +160,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
 
                 bybit_order_result = place_leveraged_bybit_order(
+                    client=bybit_client,
                     symbol=bybit_symbol,
                     qty=bybit_result["qty"],
                     price=bybit_result["price"],
