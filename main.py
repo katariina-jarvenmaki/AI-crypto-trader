@@ -44,8 +44,8 @@ def main():
 
         global_is_first_run = False 
 
-        print("\n🕒 Sleeping for 5 minutes...")
-        time.sleep(300)
+        print("\n🕒 Sleeping to next round...")
+        time.sleep(180)
 
 if __name__ == "__main__":
     main()

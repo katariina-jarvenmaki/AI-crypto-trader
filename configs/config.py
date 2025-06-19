@@ -60,7 +60,7 @@ RSI_THRESHOLDS = {
 
 # SIGNAL LIMITER SETTINGS
 # scripts/signal_limiter.py
-LOG_FILE = "signals_log.json"
+LOG_FILE = "logs/signals_log.json"
 SIGNAL_TIMEOUT = timedelta(hours=1)
 
 # SIGNAL LOGGER SETTINGS
@@ -87,3 +87,5 @@ DEFAULT_MIN_NOTIONAL = 5.0
 
 # BUY MULTIPLIER (can be adjusted by strategy)
 BUY_PRICE_MULTIPLIER = 1  
+
+TRADE_LOG_FILE = "logs/order_log.json"

@@ -84,4 +84,3 @@ out/
 credentials.py
 configs/credentials.py
 old_logs/
-signals_log.json
