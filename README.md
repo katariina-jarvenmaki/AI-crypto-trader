@@ -74,6 +74,10 @@ Test BTCC-integration status
 python3 integrations/btcc_api_client.py
 ```
 
+##  Tested with
+
+Tested with Tested with Ubuntu 20.04, Python 3.10.18, Pip 25.1.1 and Numby 1.26.4
+
 ## Future plans
 * More crypto signals:
   * MA Crossover	Buy/Sell	Trend-seuranta
