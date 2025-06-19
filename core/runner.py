@@ -144,13 +144,24 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             # else:
             #     print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
 
+            # Määritellään kolikkokohtainen leverage
+            leverage_map = {
+                "BTCUSDT": 7,
+                "ETHUSDT": 4,
+                "SOLUSDT": 4,
+                "XRPUSDT": 3
+            }
+
+            # Oletusarvo muille
+            default_leverage = 2
+
             # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
             bybit_symbol = symbol.replace("USDC", "USDT")
             bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
             if bybit_result is None:
                 print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
                 return
-            
+
             balance = get_available_balance("USDT")
             if balance < bybit_result["cost"]:
                 print(f"❌ Ei tarpeeksi saldoa (saldo: {balance} < {bybit_result['cost']})")
@@ -159,12 +170,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             if bybit_result:
                 print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
 
+                # Haetaan symbolille leverage, tai käytetään oletusta
+                leverage = leverage_map.get(bybit_symbol, default_leverage)
+
                 bybit_order_result = place_leveraged_bybit_order(
                     client=bybit_client,
                     symbol=bybit_symbol,
                     qty=bybit_result["qty"],
                     price=bybit_result["price"],
-                    leverage=2
+                    leverage=leverage
                 )
 
                 if bybit_order_result:
