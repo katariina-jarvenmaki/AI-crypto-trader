@@ -162,7 +162,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                     symbol=bybit_symbol,
                     qty=bybit_result["qty"],
                     price=bybit_result["price"],
-                    leverage=3
+                    leverage=2
                 )
 
                 if bybit_order_result:

@@ -4,6 +4,7 @@ from pybit.unified_trading import HTTP
 import pandas as pd
 import sys
 import os
+import math
 
 # Polut ja konfiguraatiot
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -90,6 +91,9 @@ def get_available_balance(asset="USDT"):
 
 def place_leveraged_bybit_order(symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
+        # Aseta hedge mode ennen mitään muuta
+        set_hedge_mode(symbol=symbol, category=CATEGORY)
+
         # Aseta vipu
         set_leverage(symbol, leverage)
 
@@ -120,7 +124,6 @@ def place_leveraged_bybit_order(symbol: str, qty: float, price: float, leverage:
         print(f"❌ Bybit leveraged order failed: {e}")
         return None
 
-
 def get_bybit_symbol_info(symbol: str):
     try:
         response = client.get_instruments_info(category=CATEGORY, symbol=symbol)
@@ -139,10 +142,6 @@ BYBIT_QUANTITY_ROUNDING = {
     "ETHUSDT": 2,
     "BTCUSDT": 3
 }
-
-def round_bybit_quantity(symbol: str, qty: float) -> float:
-    decimals = BYBIT_QUANTITY_ROUNDING.get(symbol.upper(), 4)
-    return round(qty, decimals)
 
 def set_leverage(symbol: str, leverage: int, category: str = "linear"):
     try:
@@ -164,6 +163,52 @@ def set_leverage(symbol: str, leverage: int, category: str = "linear"):
     except Exception as e:
         print(f"❌ Vivun asetus epäonnistui: {e}")
 
+def round_bybit_quantity(symbol: str, qty: float) -> float:
+    info = get_bybit_symbol_info(symbol)
+    if info and "lotSizeFilter" in info:
+        step_size = float(info["lotSizeFilter"]["qtyStep"])
+        precision = abs(int(round(-math.log10(step_size))))
+        return round(qty, precision)
+    # fallback
+    decimals = BYBIT_QUANTITY_ROUNDING.get(symbol.upper(), 4)
+    return round(qty, decimals)
+
+def set_hedge_mode(symbol: str, category: str = "linear"):
+    try:
+        # Tarkista onko mitään positioita auki — jos on, ei voi vaihtaa tilaa
+        response = client.get_positions(category=category, symbol=symbol)
+        positions = response.get("result", {}).get("list", [])
+
+        open_position_exists = any(
+            float(pos.get("size", 0)) > 0 for pos in positions
+        )
+
+        if open_position_exists:
+            print(f"⚠️ Hedge-modea ei voida vaihtaa, koska avoimia positioita on jo olemassa.")
+            return
+
+        # Asetetaan hedge-mode koko tilille
+        response = client.switch_position_mode(
+            category=category,
+            symbol=symbol.upper(),
+            mode=3  # Hedge Mode
+        )
+        print(f"✅ Hedge-tila asetettu: {response}")
+    except Exception as e:
+        print(f"❌ Position mode -asetuksen virhe: {e}")
+
+
+def has_open_position(symbol: str, category: str = "linear") -> bool:
+    try:
+        response = client.get_positions(category=category, symbol=symbol)
+        positions = response.get("result", {}).get("list", [])
+        for pos in positions:
+            if float(pos.get("size", 0)) > 0:
+                return True
+        return False
+    except Exception as e:
+        print(f"⚠️ Positioiden tarkistus epäonnistui: {e}")
+        return False
 
 # --- Testaus ---
 if __name__ == "__main__":
