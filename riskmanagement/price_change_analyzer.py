@@ -1,3 +1,5 @@
+# riskmanagement/price_change_analyzer.py
+
 import pandas as pd
 from datetime import datetime, timedelta
 import pytz
@@ -6,10 +8,14 @@ from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fa
 
 
 def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
-    """
-    Laskee prosentuaalisen hinnan muutoksen nykyhetkeen verrattuna eri aikaväleillä yhdelle symbolille Binance-datan pohjalta.
-    """
-    # Haetaan 5m-kynttilöitä 24h ajalta (n. 288 kynttilää)
+    from configs.config import TIMEZONE
+    import pytz
+
+    # 🕒 Varmistetaan, että current_time on UTC-aikaa
+    if current_time.tzinfo is None:
+        current_time = pytz.timezone(TIMEZONE.zone).localize(current_time)
+    current_time = current_time.astimezone(pytz.UTC)
+
     ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=300)
 
     if ohlcv_data is None or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
@@ -22,7 +28,7 @@ def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
     df["timestamp"] = pd.to_datetime(df["timestamp"])
 
     if df['timestamp'].dt.tz is None:
-        df['timestamp'] = df['timestamp'].dt.tz_localize(pytz.timezone(TIMEZONE.zone))
+        df['timestamp'] = df['timestamp'].dt.tz_localize(pytz.UTC)  # OHLCV data oletetaan olevan UTC
 
     timeframes = {
         "24h": timedelta(hours=24),
@@ -43,16 +49,23 @@ def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
 
     for label, delta in timeframes.items():
         past_time = current_time - delta
-        past_data = df[df["timestamp"] <= past_time]
+        df["timedelta"] = (df["timestamp"] - past_time).abs()
 
-        if not past_data.empty:
-            past_price = past_data.iloc[-1]["price"]
-            actual_time = past_data.iloc[-1]["timestamp"]
+        # Hae vain lähimmät datapisteet, joiden ero <= 10 minuuttia
+        filtered_df = df[df["timedelta"] <= timedelta(minutes=10)]
 
-            change_pct = ((current_price - past_price) / past_price) * 100
-            result[label] = round(change_pct, 2)
-        else:
-            print(f"⚠️ No data found for {label} (<= {past_time.isoformat()})")
+        if filtered_df.empty:
+            print(f"⚠️ [{label}] Ei sopivaa datapistettä (yli 10 min ero)")
             result[label] = None
+            continue
+
+        closest_row = filtered_df.loc[filtered_df["timedelta"].idxmin()]
+        past_price = closest_row["price"]
+        actual_time = closest_row["timestamp"]
+
+        change_pct = ((current_price - past_price) / past_price) * 100
+        result[label] = round(change_pct, 2)
+
+        print(f"🔍 [{label}] Past price: {past_price}, Time: {actual_time}, Current price: {current_price}, Change: {result[label]}%")
 
     return result

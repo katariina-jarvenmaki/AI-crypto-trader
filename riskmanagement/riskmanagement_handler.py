@@ -37,14 +37,14 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multip
 
     # Estä osto jos jokin muutos on yli +1 %
     if signal == "buy":
-        if any(change > 1 for change in price_changes.values()):
-            print("⛔ Estetty signaali: Hinta on noussut jo yli +1 %")
+        if any(change > 2 for change in price_changes.values()):
+            print("⛔ Estetty signaali: Hinta on noussut jo yli +2 %")
             return "none"
 
-    # Estä myynti jos jokin muutos on alle -1 %
+    # Estä myynti jos jokin muutos on alle -2 %
     elif signal == "sell":
         if any(change < -1 for change in price_changes.values()):
-            print("⛔ Estetty signaali: Hinta on laskenut jo alle -1 %")
+            print("⛔ Estetty signaali: Hinta on laskenut jo alle -2 %")
             return "none"
 
     # Tulosta momentum-analyysin tulos
