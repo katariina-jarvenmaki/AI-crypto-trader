@@ -74,6 +74,11 @@ Test BTCC-integration status
 python3 integrations/btcc_api_client.py
 ```
 
+Test price change calculation
+```bash
+python3 price_change_test.py
+```
+
 ##  Tested with
 
 Tested with Tested with Ubuntu 20.04, Python 3.10.18, Pip 25.1.1 and Numby 1.26.4
