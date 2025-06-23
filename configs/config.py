@@ -92,21 +92,32 @@ TRADE_LOG_FILE = "logs/order_log.json"
 
 PRICE_CHANGE_LIMITS = {
     "buy": {
-        "24h": 3.0,
-        "18h": 2.5,
-        "12h": 2.0,
-        "6h": 1.5,
+        "24h": 6.0,
+        "18h": 6.0,
+        "12h": 4.0,
+        "6h": 2.0,
         "4h": 1.0,
         "3h": 0.5,
         "2h": 0.2,
     },
     "sell": {
-        "24h": -3.0,
-        "18h": -2.5,
-        "12h": -2.0,
-        "6h": -1.5,
+        "24h": -6.0,
+        "18h": -6.0,
+        "12h": -4.0,
+        "6h": -2.0,
         "4h": -1.0,
         "3h": -0.5,
         "2h": -0.2,
     },
 }
+
+# Stop loss -prosentit
+BUY_FIRST_STOP_LOSS_PERCENT = 0.0006  # 0.06% Minium with ETH
+BUY_SET_STOP_LOSS_PERCENT = 0.0036   # 0.36% Minium with ETH
+BUY_TRAILING_STOP_LOSS_PERCENT = 0.0036 # 0.36% Minium with ETH
+BUY_CLOSE_ORDER_LIMIT = 1.015
+
+SELL_FIRST_STOP_LOSS_PERCENT = 0.0006  # 0.06% Minium with ETH
+SELL_SET_STOP_LOSS_PERCENT = 0.0036   # 0.36% Minium with ETH
+SELL_TRAILING_STOP_LOSS_PERCENT = 0.0036 # 0.36% Minium with ETH
+SELL_CLOSE_ORDER_LIMIT = 0.985

@@ -188,9 +188,9 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                     from scripts.trade_order_logger import log_trade
                     log_trade(
                         symbol=bybit_symbol,
-                        direction="long",  # Vaihda dynaamisesti jos strategia antaa shortin
+                        direction="long",  # tai "short" dynaamisesti
                         qty=bybit_result["qty"],
-                        price=bybit_result["price"],
+                        price=bybit_result["price"], 
                         leverage=leverage
                     )
 

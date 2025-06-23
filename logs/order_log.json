@@ -1,0 +1,76 @@
+{
+    "ADAUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-23T14:01:45.440579+03:00",
+                "qty": 9.212,
+                "price": 0.54,
+                "leverage": 2,
+                "first_stop_loss_price": 0.540324,
+                "set_stop_loss_price": 0.541944,
+                "trailing_stop_loss_percent": 0.0036
+            }
+        ],
+        "short": []
+    },
+    "ETHUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-23T14:43:12.547177+03:00",
+                "qty": 0.003,
+                "price": 2247.66,
+                "leverage": 4,
+                "first_stop_loss_price": 2249.008596,
+                "set_stop_loss_price": 2255.751576,
+                "trailing_stop_loss_percent": 0.0036,
+                "close_order_limit": 2281.3749
+            }
+        ],
+        "short": []
+    },
+    "HBARUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-23T14:53:28.701204+03:00",
+                "qty": 36.676,
+                "price": 0.14,
+                "leverage": 2,
+                "first_stop_loss_price": 0.140084,
+                "set_stop_loss_price": 0.140504,
+                "trailing_stop_loss_percent": 0.0036,
+                "close_order_limit": 0.1421
+            }
+        ],
+        "short": []
+    },
+    "SOLUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-23T19:45:33.611634+03:00",
+                "qty": 0.038,
+                "price": 132.42,
+                "leverage": 4,
+                "first_stop_loss_price": 132.737808,
+                "set_stop_loss_price": 134.326848,
+                "trailing_stop_loss_percent": 0.0036,
+                "close_order_limit": 134.4063
+            }
+        ],
+        "short": []
+    },
+    "XRPUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-23T19:45:54.175667+03:00",
+                "qty": 2.525,
+                "price": 1.98,
+                "leverage": 3,
+                "first_stop_loss_price": 1.983564,
+                "set_stop_loss_price": 2.001384,
+                "trailing_stop_loss_percent": 0.0036,
+                "close_order_limit": 2.0097
+            }
+        ],
+        "short": []
+    }
+}
