@@ -76,7 +76,7 @@ python3 integrations/btcc_api_client.py
 
 Test price change calculation
 ```bash
-python3 price_change_test.py
+python3 -m tests.price_change_backtest
 ```
 
 ##  Tested with

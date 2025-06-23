@@ -3,9 +3,29 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import pytz
-from configs.config import TIMEZONE
+from configs.config import TIMEZONE, PRICE_CHANGE_LIMITS
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
+def should_block_signal(signal: str, price_changes: dict) -> bool:
+    limits = PRICE_CHANGE_LIMITS.get(signal, {})
+
+    for timeframe, change in price_changes.items():
+        if change is None:
+            continue
+
+        threshold = limits.get(timeframe)
+        if threshold is None:
+            continue
+
+        if signal == "buy" and change > threshold:
+            print(f"⛔ Estetty BUY-signaali: [{timeframe}] Muutos {change}% ylittää rajan {threshold}%")
+            return True
+
+        if signal == "sell" and change < threshold:
+            print(f"⛔ Estetty SELL-signaali: [{timeframe}] Muutos {change}% alittaa rajan {threshold}%")
+            return True
+
+    return False
 
 def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
     from configs.config import TIMEZONE

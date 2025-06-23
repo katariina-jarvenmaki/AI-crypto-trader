@@ -6,7 +6,7 @@ import pandas as pd
 from configs.config import TIMEZONE
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
-from riskmanagement.price_change_analyzer import calculate_price_changes
+from riskmanagement.price_change_analyzer import calculate_price_changes, should_block_signal
 
 def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.2):
 
@@ -32,20 +32,11 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multip
     else:
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
 
-    price_changes = calculate_price_changes(symbol=symbol, current_time=now)
+    # Hinta muutos tarkistus
+    price_changes = calculate_price_changes(symbol, now)
+    if should_block_signal(signal, price_changes):
+        return "none"
     print(f"📊 Price change % for {symbol} (from past): {price_changes}")
-
-    # Estä osto jos jokin muutos on yli +1 %
-    if signal == "buy":
-        if any(change > 2 for change in price_changes.values()):
-            print("⛔ Estetty signaali: Hinta on noussut jo yli +2 %")
-            return "none"
-
-    # Estä myynti jos jokin muutos on alle -2 %
-    elif signal == "sell":
-        if any(change < -1 for change in price_changes.values()):
-            print("⛔ Estetty signaali: Hinta on laskenut jo alle -2 %")
-            return "none"
 
     # Tulosta momentum-analyysin tulos
     if strength == "strong":

@@ -89,3 +89,24 @@ DEFAULT_MIN_NOTIONAL = 5.0
 BUY_PRICE_MULTIPLIER = 1  
 
 TRADE_LOG_FILE = "logs/order_log.json"
+
+PRICE_CHANGE_LIMITS = {
+    "buy": {
+        "24h": 3.0,
+        "18h": 2.5,
+        "12h": 2.0,
+        "6h": 1.5,
+        "4h": 1.0,
+        "3h": 0.5,
+        "2h": 0.2,
+    },
+    "sell": {
+        "24h": -3.0,
+        "18h": -2.5,
+        "12h": -2.0,
+        "6h": -1.5,
+        "4h": -1.0,
+        "3h": -0.5,
+        "2h": -0.2,
+    },
+}
