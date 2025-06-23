@@ -70,13 +70,13 @@
     "ADAUSDC": {
         "1d": {
             "buy": {
-                "rsi": "2025-06-23T19:59:35.447931+03:00",
-                "market_state": "bear",
-                "started_on": "2025-06-23T16:00:00",
-                "momentum_strength": "weak",
+                "rsi": "2025-06-23T21:03:09.687490+03:00",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-23T17:00:00",
+                "momentum_strength": "none",
                 "log": "2025-06-23T14:01:40.845803+03:00",
                 "status": "complete",
-                "previous_market_state": "unknown"
+                "previous_market_state": "bear"
             }
         },
         "1m": {
@@ -143,10 +143,10 @@
         },
         "5m": {
             "sell": {
-                "rsi": "2025-06-23T16:45:46.703331+03:00",
+                "rsi": "2025-06-23T21:03:25.765436+03:00",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-23T09:00:00",
-                "momentum_strength": "none",
+                "started_on": "2025-06-23T17:00:00",
+                "momentum_strength": "weak",
                 "previous_market_state": "unknown"
             },
             "buy": {

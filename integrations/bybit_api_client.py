@@ -9,7 +9,11 @@ import math
 # Polut ja konfiguraatiot
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configs.credentials import BYBIT_API_KEY, BYBIT_API_SECRET
-from configs.bybit_config import BYBIT_INTERVALS
+from configs.bybit_config import  (
+    BYBIT_INTERVALS,
+    DEFAULT_BYBIT_TAKE_PROFIT_PERCENT,
+    DEFAULT_BYBIT_STOP_LOSS_PERCENT
+)
 
 # Bybit V5 unified trading client
 client = HTTP(
@@ -91,14 +95,11 @@ def get_available_balance(asset="USDT"):
 
 def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
     try:
-
-        # Aseta vipu
         set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
         set_leverage(symbol, leverage)
 
         rounded_qty = round_bybit_quantity(symbol, qty)
 
-        # 🛠️ Lisää positionIdx=1, koska olet hedge-moodissa
         buy_order = client.place_order(
             category=CATEGORY,
             symbol=symbol,
@@ -109,9 +110,23 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, l
             positionIdx=1
         )
 
-        # Laske TP/SL
-        tp_price = round(price * TP_MULTIPLIER, 2)
-        sl_price = round(price * SL_MULTIPLIER, 2)
+        # Lasketaan SL ja TP hinnat
+        sl_price = round(price * (1 - DEFAULT_BYBIT_STOP_LOSS_PERCENT), 2)
+        tp_price = round(price * (1 + DEFAULT_BYBIT_TAKE_PROFIT_PERCENT), 2)
+
+        # Asetetaan SL ja TP
+        client.set_trading_stop(
+            category="linear",
+            symbol=symbol,
+            takeProfit=str(tp_price),
+            stopLoss=str(sl_price),
+            tpTriggerBy="MarkPrice",
+            slTriggerBy="MarkPrice",
+            tpslMode="Full",
+            tpOrderType="Market",
+            slOrderType="Market",
+            positionIdx=1
+        )
 
         return {
             "tp_price": tp_price,
