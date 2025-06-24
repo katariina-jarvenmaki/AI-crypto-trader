@@ -1,4 +1,4 @@
-# scripts/rsi_analyzer.py
+# signals/rsi_analyzer.py
 
 import pandas as pd
 import ta

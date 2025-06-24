@@ -1,3 +1,4 @@
+#riskmanagement/momentum_validator.py
 from typing import List, Dict
 import pandas as pd
 from configs.config import VOLUME_MULTIPLIERS
@@ -7,8 +8,7 @@ def verify_signal_with_momentum_and_volume(
     signal: str,
     symbol: str,
     intervals: List[int] = [5],
-    volume_multiplier: float = None,  # None tarkoittaa: käytä conffia
-    default_volume_multiplier: float = 1.5
+    volume_multiplier: float = None  # None tarkoittaa: käytä conffia
 ) -> dict:
     result = {
         "momentum_strength": "none",
@@ -21,9 +21,10 @@ def verify_signal_with_momentum_and_volume(
     df['price_change'] = df['close'].diff()
     df['volume_change'] = df['volume'].diff()
 
-    # 🔁 Käytä conffia vain jos ei ole annettu erikseen
+    # Hae default multiplier configista, jos volume_multiplier ei ole annettu
+    config_multiplier = VOLUME_MULTIPLIERS.get(symbol.upper(), {}).get(signal.lower())
     if volume_multiplier is None:
-        volume_multiplier = VOLUME_MULTIPLIERS.get(symbol.upper(), {}).get(signal.lower(), default_volume_multiplier)
+        volume_multiplier = config_multiplier if config_multiplier is not None else default_volume_multiplier
 
     for interval in intervals:
         recent_price_momentum = df['price_change'][-interval:].mean()
