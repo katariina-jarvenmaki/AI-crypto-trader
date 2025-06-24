@@ -18,9 +18,9 @@ from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
-from scripts.spot_order_handler import place_spot_trade_with_tp_sl
-from scripts.min_buy_calc import calculate_minimum_valid_purchase, calculate_minimum_valid_bybit_purchase
-from integrations.bybit_api_client import place_leveraged_bybit_order, get_available_balance, get_bybit_symbol_info, client as bybit_client
+from trade.execute_binance_long import execute_binance_long
+from trade.execute_bybit_long import execute_bybit_long
+from trade.execute_bybit_short import execute_bybit_short
 from scripts.trade_order_logger import log_trade
 
 import pandas as pd
@@ -126,85 +126,29 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     #***** STRATEGIES *****#
 
+    print(f"Add strategy logic here...")
+
     #***** BUYING *****#
+
+    if final_signal == "buy":
+
+        # Binance
+        binance_result = execute_binance_long(symbol, risk_strength)
+        if binance_result:
+            log_trade(**binance_result)
+
+        # Bybit
+        bybit_result = execute_bybit_long(symbol, risk_strength, bybit_client)
+        if bybit_result:
+            log_trade(**bybit_result)
 
     #***** SELLING *****#
 
+    if final_signal == "sell":
+
+        # Bybit
+        bybit_result = execute_bybit_short(symbol, risk_strength, bybit_client)
+        if bybit_result:
+            log_trade(**bybit_result)
+
     #***** STOP LOSSES *****#
-
-
-
-    # Calculate the price
-    if risk_strength == "strong" and final_signal == "buy":
-        result = calculate_minimum_valid_purchase(symbol)
-        quantity = "{:.8f}".format(result['qty'])
-
-        # Laske osto ja tee kaupat
-        if result:
-            print(f"✅ Minimiosto laskettu {symbol}: {quantity} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
-            
-            # order_result = place_spot_trade_with_tp_sl(
-            #     symbol=symbol,
-            #     qty=quantity,
-            #     entry_price=result["price"],
-            #     tick_size=result["step_size"]
-            # )
-
-            # if order_result:
-            #     print(f"✅ Kauppa suoritettu ja TP/SL asetettu: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
-            # else:
-            #     print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
-
-            # Määritellään kolikkokohtainen leverage
-            leverage_map = {
-                "BTCUSDT": 7,
-                "ETHUSDT": 4,
-                "SOLUSDT": 4,
-                "XRPUSDT": 3
-            }
-
-            # Oletusarvo muille
-            default_leverage = 2
-
-            # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
-            bybit_symbol = symbol.replace("USDC", "USDT")
-            bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
-            if bybit_result is None:
-                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
-                return
-
-            balance = get_available_balance("USDT")
-            if balance < bybit_result["cost"]:
-                print(f"❌ Ei tarpeeksi saldoa (saldo: {balance} < {bybit_result['cost']})")
-                return
-
-            if bybit_result:
-                print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
-
-                # Haetaan symbolille leverage, tai käytetään oletusta
-                leverage = leverage_map.get(bybit_symbol, default_leverage)
-
-                bybit_order_result = place_leveraged_bybit_order(
-                    client=bybit_client,
-                    symbol=bybit_symbol,
-                    qty=bybit_result["qty"],
-                    price=bybit_result["price"],
-                    leverage=leverage
-                )
-
-                if bybit_order_result:
-                    print(f"✅ Bybit-kauppa suoritettu: TP @ {bybit_order_result['tp_price']}, SL @ {bybit_order_result['sl_price']}")
-
-                    # ⬇️ TÄSSÄ LISÄTÄÄN LOKITUS
-                    from scripts.trade_order_logger import log_trade
-                    log_trade(
-                        symbol=bybit_symbol,
-                        direction="long",  # tai "short" dynaamisesti
-                        qty=bybit_result["qty"],
-                        price=bybit_result["price"], 
-                        leverage=leverage
-                    )
-                else:
-                    print(f"❌ Bybit-kaupan suoritus epäonnistui symbolille {bybit_symbol}")
-            else:
-                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")

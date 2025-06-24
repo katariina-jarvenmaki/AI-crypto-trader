@@ -28,9 +28,11 @@ def verify_signal_with_momentum_and_volume(
         volume_multiplier = config_multiplier if config_multiplier is not None else 1.0  # fallback default
 
     # 🔁 Mukauta multiplier markkinatilanteen mukaan
-    if market_state in ("unknown", "bear") and signal == "buy":
-        volume_multiplier += 0.2
-    elif market_state in ("unknown", "bull") and signal == "sell":
+    if market_state == "bull" and signal == "sell":
+        volume_multiplier += 0.3
+    elif market_state == "bear" and signal == "buy":
+        volume_multiplier += 0.3
+    elif market_state == "unknown" and signal in ("buy", "sell"):
         volume_multiplier += 0.2
     elif market_state == "neutral_sideways" and signal in ("buy", "sell"):
         volume_multiplier += 0.1

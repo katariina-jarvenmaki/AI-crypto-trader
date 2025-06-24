@@ -134,3 +134,13 @@ VOLUME_MULTIPLIERS = {
     # Default arvot
     'DEFAULT': {'buy': 1.5, 'sell': 1.5},
 }
+
+# ByBit order leverage
+leverage_map = {
+    "BTCUSDT": 7,
+    "ETHUSDT": 4,
+    "SOLUSDT": 4,
+    "XRPUSDT": 3
+}
+
+default_leverage = 2
