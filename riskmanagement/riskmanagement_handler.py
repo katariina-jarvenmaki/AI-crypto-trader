@@ -8,7 +8,7 @@ from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fa
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
 from riskmanagement.price_change_analyzer import calculate_price_changes, should_block_signal
 
-def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.2):
+def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.5):
 
     if intervals is None:
         intervals = [5]
@@ -19,7 +19,7 @@ def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multip
         return
 
     df = ohlcv_data["5m"]
-    result = verify_signal_with_momentum_and_volume(df, signal, intervals=intervals, volume_multiplier=volume_multiplier)
+    result = verify_signal_with_momentum_and_volume(df, signal, symbol, intervals=intervals)
     strength = result["momentum_strength"]
     interpretation = result.get("interpretation", "")
 

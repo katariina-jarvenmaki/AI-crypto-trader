@@ -1,6 +1,7 @@
 import sys
 import os
 import pandas as pd
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -9,11 +10,11 @@ from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fa
 
 
 def generate_signals(df: pd.DataFrame) -> pd.DataFrame:
-    """Luo osto-/myyntisignaaleja yksinkertaisen momentuman perusteella."""
+    """Luo osto-/myyntisignaaleja yksinkertaisen momentumin perusteella."""
     df['price_change'] = df['close'].diff()
     df['signal'] = None
 
-    for i in range(2, len(df)):
+    for i in range(4, len(df)):
         recent = df['price_change'].iloc[i-2:i].mean()
         prev = df['price_change'].iloc[i-4:i-2].mean()
 
@@ -24,11 +25,13 @@ def generate_signals(df: pd.DataFrame) -> pd.DataFrame:
     
     return df
 
+
 def backtest(df: pd.DataFrame, interval: int = 5):
     df = generate_signals(df)
     trades = []
     position = None
     entry_price = 0.0
+    volume_multiplier_used = None
 
     for i in range(interval * 2, len(df)):  # leave enough lookback for momentum
         row = df.iloc[:i]
@@ -36,8 +39,10 @@ def backtest(df: pd.DataFrame, interval: int = 5):
         signal = current['signal']
 
         if signal in ['buy', 'sell']:
-            momentum = verify_signal_with_momentum_and_volume(row, signal, intervals=[interval])
-            strength = momentum['momentum_strength']
+            result = verify_signal_with_momentum_and_volume(row, signal, symbol, intervals=[interval])
+
+            strength = result.get('momentum_strength', '')
+            volume_multiplier_used = result.get('volume_multiplier', None)
 
             if strength == 'strong':
                 if position is None:
@@ -47,9 +52,10 @@ def backtest(df: pd.DataFrame, interval: int = 5):
                         'action': signal,
                         'entry_time': current.name,
                         'entry_price': entry_price,
+                        'volume_multiplier': volume_multiplier_used
                     })
                 elif position != signal:
-                    # Close current position
+                    # Close position
                     exit_price = current['close']
                     pnl = (exit_price - entry_price) if position == 'buy' else (entry_price - exit_price)
                     trades[-1].update({
@@ -61,6 +67,7 @@ def backtest(df: pd.DataFrame, interval: int = 5):
 
     return trades
 
+
 def calculate_summary(trades: list):
     closed_trades = [t for t in trades if 'exit_price' in t]
     total_pnl = sum(t['pnl'] for t in closed_trades)
@@ -71,10 +78,18 @@ def calculate_summary(trades: list):
     print(f"Total P&L: {total_pnl:.2f}")
     print(f"Win Rate: {win_rate:.2%}")
 
+
 if __name__ == "__main__":
-    symbol = "HBARUSDT"
-    interval = "5m"  # Binance interval
-    candles, _  = fetch_ohlcv_fallback(symbol, [interval], limit=500)
+    # Käyttö: python backtest.py BTCUSDT 5m
+    symbol = sys.argv[1] if len(sys.argv) > 1 else "HBARUSDT"
+    interval = sys.argv[2] if len(sys.argv) > 2 else "5m"
+
+    # Hae eiliseltä (klo 00:00–00:00)
+    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    start_time = today - timedelta(days=1)
+    end_time = today
+
+    candles, _ = fetch_ohlcv_fallback(symbol, [interval], limit=576, start_time=start_time, end_time=end_time)
 
     if interval in candles:
         df = candles[interval]
@@ -83,4 +98,4 @@ if __name__ == "__main__":
             print(t)
         calculate_summary(trades)
     else:
-        print(f"❌ Failed to fetch data for {interval}")
+        print(f"❌ Failed to fetch data for {symbol} at interval {interval}")

@@ -3,10 +3,9 @@ import requests
 import pandas as pd
 from configs.config import DEFAULT_INTERVALS, DEFAULT_OHLCV_LIMIT
 
-def fetch_ohlcv_bybit(symbol, intervals=None, limit=None):
+def fetch_ohlcv_bybit(symbol, intervals=None, limit=None, start_time=None, end_time=None):
     intervals = intervals or DEFAULT_INTERVALS
     limit = limit or DEFAULT_OHLCV_LIMIT
-
     interval_map = {
         '1m': '1', '3m': '3', '5m': '5', '15m': '15', '30m': '30',
         '1h': '60', '2h': '120', '4h': '240', '1d': 'D', '1w': 'W'
@@ -24,6 +23,12 @@ def fetch_ohlcv_bybit(symbol, intervals=None, limit=None):
                 "interval": mapped,
                 "limit": limit
             }
+
+            if start_time:
+                params["start"] = int(start_time.timestamp() * 1000)
+            if end_time:
+                params["end"] = int(end_time.timestamp() * 1000)
+
             r = requests.get(base_url, params=params).json()
             rows = r['result']['list']
 
@@ -40,4 +45,3 @@ def fetch_ohlcv_bybit(symbol, intervals=None, limit=None):
             result[interval] = pd.DataFrame()
 
     return result, "ByBit"
-

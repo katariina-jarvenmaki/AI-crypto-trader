@@ -10,7 +10,7 @@ from integrations.binance_api_client import client
 MAX_RETRIES = 3
 RETRY_DELAY = 2  # seconds
 
-def fetch_ohlcv_binance(symbol, intervals=None, limit=None):
+def fetch_ohlcv_binance(symbol, intervals=None, limit=None, start_time=None, end_time=None):
     intervals = intervals or DEFAULT_INTERVALS
     limit = limit or DEFAULT_OHLCV_LIMIT
     result = {}
@@ -19,7 +19,19 @@ def fetch_ohlcv_binance(symbol, intervals=None, limit=None):
         success = False
         for _ in range(MAX_RETRIES):
             try:
-                klines = client.get_klines(symbol=symbol, interval=interval, limit=limit)
+                params = {
+                    "symbol": symbol,
+                    "interval": interval,
+                    "limit": limit
+                }
+
+                if start_time:
+                    params["startTime"] = int(start_time.timestamp() * 1000)
+                if end_time:
+                    params["endTime"] = int(end_time.timestamp() * 1000)
+
+                klines = client.get_klines(**params)
+
                 df = pd.DataFrame(klines, columns=[
                     'timestamp', 'open', 'high', 'low', 'close', 'volume',
                     'close_time', 'quote_asset_volume', 'number_of_trades',
@@ -31,7 +43,8 @@ def fetch_ohlcv_binance(symbol, intervals=None, limit=None):
                 df = df.astype(float)
                 result[interval] = df.sort_index()
                 success = True
-                break  # break retry loop if successful
+                break
+
             except (BinanceAPIException, ReadTimeout):
                 time.sleep(RETRY_DELAY)
 
@@ -39,4 +52,5 @@ def fetch_ohlcv_binance(symbol, intervals=None, limit=None):
             raise Exception(f"Binance fetch failed for {symbol} ({interval})")
 
     return result, "Binance"
+
 

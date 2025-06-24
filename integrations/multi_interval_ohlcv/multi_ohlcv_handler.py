@@ -13,7 +13,7 @@ FETCH_FUNCTIONS = {
     'bybit': fetch_ohlcv_bybit
 }
 
-def fetch_ohlcv_fallback(symbol, intervals=None, limit=None):
+def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None):
     intervals = intervals or DEFAULT_INTERVALS
     limit = limit or DEFAULT_OHLCV_LIMIT
     errors = {}
@@ -26,7 +26,11 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None):
 
         try:
             logging.info(f"🔍 Yritetään hakea OHLCV-tietoja {symbol} ({intervals}) alustalta {exchange}")
-            data_by_interval, source_exchange = fetch_fn(symbol, intervals, limit)
+            # Pass optional times to fetch functions
+            data_by_interval, source_exchange = fetch_fn(
+                symbol, intervals, limit=limit,
+                start_time=start_time, end_time=end_time
+            )
 
             if any(not df.empty for df in data_by_interval.values()):
                 logging.info(f"✅ Haku onnistui: {symbol} ({source_exchange})")

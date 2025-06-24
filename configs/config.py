@@ -121,3 +121,13 @@ SELL_FIRST_STOP_LOSS_PERCENT = 0.0006  # 0.06% Minium with ETH
 SELL_SET_STOP_LOSS_PERCENT = 0.0036   # 0.36% Minium with ETH
 SELL_TRAILING_STOP_LOSS_PERCENT = 0.0036 # 0.36% Minium with ETH
 SELL_CLOSE_ORDER_LIMIT = 0.985
+
+# Volume multipliers per symbol and signal
+VOLUME_MULTIPLIERS = {
+    'BTCUSDC': {'buy': 1.2, 'sell': 1.2},
+    'ETHUSDC': {'buy': 1.2, 'sell': 1.2},
+    'SOLUSDC': {'buy': 1.2, 'sell': 1.3},
+    'XRPUSDC': {'buy': 1.2, 'sell': 1.4},
+    'ADAUSDC': {'buy': 1.2, 'sell': 1.5},
+    'HBARUSDC': {'buy': 1.2, 'sell': 1.5},
+}

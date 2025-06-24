@@ -74,6 +74,11 @@ Test BTCC-integration status
 python3 integrations/btcc_api_client.py
 ```
 
+Test momentum strategy
+```bash
+python3 -m tests.backtest_momentum_strategy BTCUSDC
+```
+
 Test price change calculation
 ```bash
 python3 -m tests.price_change_backtest
