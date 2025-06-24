@@ -2,11 +2,12 @@
     "BTCUSDC": {
         "null": {
             "sell": {
-                "log": "2025-06-24T16:52:00.319339+03:00",
-                "market_state": "neutral_sideways",
-                "started_on": "2025-06-24T13:00:00",
+                "log": "2025-06-24T21:24:52.170473+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T18:00:00",
                 "momentum_strength": "strong",
-                "status": "complete"
+                "status": "complete",
+                "previous_market_state": "neutral_sideways"
             }
         },
         "1m": {
@@ -39,11 +40,12 @@
     "ETHUSDC": {
         "null": {
             "sell": {
-                "log": "2025-06-24T18:55:39.473746+03:00",
-                "market_state": "unknown",
-                "started_on": "2025-06-24T15:00:00",
+                "log": "2025-06-24T21:28:05.607025+03:00",
+                "market_state": "bull",
+                "started_on": "2025-06-24T16:00:00",
                 "momentum_strength": "strong",
-                "status": "complete"
+                "status": "complete",
+                "previous_market_state": "unknown"
             }
         },
         "1m": {
@@ -76,6 +78,16 @@
                 "market_state": "unknown",
                 "started_on": "2025-06-24T16:00:00",
                 "momentum_strength": "none"
+            }
+        },
+        "null": {
+            "sell": {
+                "log": "2025-06-24T21:31:18.015985+03:00",
+                "market_state": "bull",
+                "started_on": "2025-06-24T16:00:00",
+                "momentum_strength": "strong",
+                "status": "complete",
+                "previous_market_state": "unknown"
             }
         }
     },

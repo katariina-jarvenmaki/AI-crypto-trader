@@ -1,3 +1,4 @@
+# trade/execute_bybit_long.py
 from scripts.min_buy_calc import calculate_minimum_valid_bybit_purchase
 from integrations.bybit_api_client import (
     place_leveraged_bybit_order,
@@ -7,7 +8,7 @@ from integrations.bybit_api_client import (
 )
 from configs.config import leverage_map, default_leverage
 
-def execute_bybit_short(symbol, risk_strength, client):
+def execute_bybit_short(symbol, risk_strength):
     # Only proceed if the risk level is strong
     if risk_strength != "strong":
         return None
@@ -34,12 +35,11 @@ def execute_bybit_short(symbol, risk_strength, client):
 
     # Place leveraged short order
     order_result = place_leveraged_bybit_order(
-        client=client,
+        client=bybit_client,
         symbol=bybit_symbol,
         qty=result["qty"],
         price=result["price"],
-        leverage=leverage,
-        side="sell"  # 👈 this tells the order is a short (market SELL to open short position)
+        leverage=leverage
     )
 
     if order_result:

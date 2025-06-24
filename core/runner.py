@@ -138,7 +138,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             log_trade(**binance_result)
 
         # Bybit
-        bybit_result = execute_bybit_long(symbol, risk_strength, bybit_client)
+        bybit_result = execute_bybit_long(symbol, risk_strength)
         if bybit_result:
             log_trade(**bybit_result)
 
@@ -147,7 +147,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     if final_signal == "sell":
 
         # Bybit
-        bybit_result = execute_bybit_short(symbol, risk_strength, bybit_client)
+        bybit_result = execute_bybit_short(symbol, risk_strength)
         if bybit_result:
             log_trade(**bybit_result)
 

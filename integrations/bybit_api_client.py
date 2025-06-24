@@ -93,7 +93,7 @@ def get_available_balance(asset="USDT"):
         print(f"⚠️ Saldohaun virhe: {str(e)}")
         return 0.0
 
-def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE):
+def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
     try:
         set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
         set_leverage(symbol, leverage)
@@ -103,7 +103,7 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, l
         buy_order = client.place_order(
             category=CATEGORY,
             symbol=symbol,
-            side="Buy",
+            side=side,
             orderType="Market",
             qty=str(rounded_qty),
             isLeverage=1,
