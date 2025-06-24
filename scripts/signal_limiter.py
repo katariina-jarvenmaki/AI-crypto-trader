@@ -3,7 +3,8 @@
 import json
 import os
 from datetime import datetime
-from configs.config import LOG_FILE, SIGNAL_TIMEOUT
+from pytz import UTC
+from configs.config import LOG_FILE, SIGNAL_TIMEOUT, TIMEZONE
 
 # Load the signal log
 def load_signal_log():
@@ -25,6 +26,12 @@ def save_signal_log(log):
 
 # Check if signal is allowed to let through (used in rsi_analyzer.py)
 def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetime, mode: str = "default") -> bool:
+    # Varmista että now on oikeassa aikavyöhykkeessä
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
+    else:
+        now = now.astimezone(TIMEZONE)
+
     log = load_signal_log()
 
     signal_entry = (
@@ -48,13 +55,14 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
         try:
             last_time = datetime.fromisoformat(entry_for_mode)
             if last_time.tzinfo is None:
-                from pytz import UTC
-                last_time = last_time.replace(tzinfo=UTC)
+                last_time = last_time.replace(tzinfo=UTC).astimezone(TIMEZONE)
+            else:
+                last_time = last_time.astimezone(TIMEZONE)
             return now - last_time >= SIGNAL_TIMEOUT
         except ValueError:
             return True
 
-    # If status is empty, ignore entry
+    # If status is complete, accept signal
     if entry_for_mode.get("status") == "complete":
         return True
 
@@ -66,8 +74,9 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
     try:
         last_time = datetime.fromisoformat(time_str)
         if last_time.tzinfo is None:
-            from pytz import UTC
-            last_time = last_time.replace(tzinfo=UTC)
+            last_time = last_time.replace(tzinfo=UTC).astimezone(TIMEZONE)
+        else:
+            last_time = last_time.astimezone(TIMEZONE)
     except ValueError:
         return True
 
@@ -87,6 +96,12 @@ def update_signal_log(
     price_change: str = None,
     volume_multiplier: float = None
 ):
+    # Varmista että now on oikeassa aikavyöhykkeessä
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
+    else:
+        now = now.astimezone(TIMEZONE)
+
     log = load_signal_log()
 
     signal_entry = log.setdefault(symbol, {}) \

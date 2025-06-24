@@ -6,8 +6,12 @@ import pandas as pd
 from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
 from core.runner import run_analysis_for_symbol 
+from scripts.log_cleaner import run_log_cleanup
 
 def main():
+
+    # Suoritetaan logien siivous ennen sovelluksen ajoa
+    run_log_cleanup()
 
     try:
         selected_platform, selected_symbols, override_signal, long_only, short_only = parse_arguments()

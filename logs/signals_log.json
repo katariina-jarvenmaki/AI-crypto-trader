@@ -27,18 +27,18 @@
                 "started_on": "2025-06-24T11:00:00",
                 "momentum_strength": "none"
             }
-        }
-    },
-    "SOLUSDC": {
+        },
         "null": {
-            "buy": {
-                "log": "2025-06-24T16:56:58.090078+03:00",
+            "sell": {
+                "log": "2025-06-24T18:55:39.473746+03:00",
                 "market_state": "unknown",
-                "started_on": "2025-06-24T12:00:00",
+                "started_on": "2025-06-24T15:00:00",
                 "momentum_strength": "strong",
                 "status": "complete"
             }
-        },
+        }
+    },
+    "SOLUSDC": {
         "null": {
             "buy": {
                 "log": "2025-06-24T17:00:00.270970+03:00",
@@ -70,11 +70,12 @@
     "ADAUSDC": {
         "null": {
             "sell": {
-                "log": "2025-06-24T15:21:05.828123+03:00",
-                "market_state": "neutral_sideways",
-                "started_on": "2025-06-24T08:00:00",
+                "log": "2025-06-24T17:59:42.346167+03:00",
+                "market_state": "bull",
+                "started_on": "2025-06-24T14:00:00",
                 "momentum_strength": "strong",
-                "status": "complete"
+                "status": "complete",
+                "previous_market_state": "neutral_sideways"
             }
         }
     },
