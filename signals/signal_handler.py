@@ -129,3 +129,4 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             "log_bias_interval": highest_bias["interval"] if highest_bias else None
         }
 
+    return {} 
