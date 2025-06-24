@@ -20,10 +20,10 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     # 1. Override signal (highest priority)
     if override_signal and is_first_run:
         if long_only and override_signal == "sell":
-            print(f"❌ Override signal '{override_signal}' blocked by long-only.")
+            print(f"❌ Override signal '{override_signal}' blocked by long-only mode.")
             return {}
         if short_only and override_signal == "buy":
-            print(f"❌ Override signal '{override_signal}' blocked by short-only.")
+            print(f"❌ Override signal '{override_signal}' blocked by short-only mode.")
             return {}
         return {"signal": override_signal, "mode": "override"}
 
@@ -50,7 +50,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     if divergence:
         signal_type = "buy" if divergence["type"] == "bull" else "sell"
         if disallowed == signal_type:
-            print(f"❌ Divergence signal '{signal_type}' blocked by long-only/short-only.")
+            print(f"❌ Divergence signal '{signal_type}' blocked by long-only or short-only mode.")
             return {}
         return {"signal": signal_type, "mode": divergence.get("mode", "divergence"), "interval": interval}
 
@@ -59,7 +59,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     rsi_signal = rsi_result.get("signal")
     if rsi_signal in ["buy", "sell"]:
         if disallowed == rsi_signal:
-            print(f"❌ RSI signal '{rsi_signal}' blocked by long-only/short-only.")
+            print(f"❌ RSI signal '{rsi_signal}' blocked by long-only or short-only mode.")
             return {}
         return {
             "signal": rsi_signal,
@@ -91,7 +91,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     if suggested_signal in ["buy", "sell"]:
         log_signal = get_log_based_signal(symbol)
 
-        # Etsi hierarkkisesti pitkäaikaisin logisignaali, joka ei ole "complete"
+        # Find the highest-priority log signal that is not "complete"
         highest_bias = None
         hierarchy = ["1w", "1d", "4h", "2h", "1h", "30m", "15m", "5m", "3m", "1m"]
 
@@ -106,21 +106,21 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
                 if highest_bias:
                     break
 
-        # Estä signaali jos momentum menee biasia vastaan
+        # Block signal if momentum contradicts long-term log bias
         if highest_bias:
             bias_dir = highest_bias["signal"]
             if suggested_signal != bias_dir:
-                print(f"⛔ Momentum {suggested_signal.upper()} ristiriidassa pitkän aikavälin logi-biasin {bias_dir.upper()} ({highest_bias['interval']}) kanssa.")
+                print(f"⛔ Momentum {suggested_signal.upper()} contradicts long-term log bias {bias_dir.upper()} ({highest_bias['interval']})")
                 return {}
 
-        # Estä jos long-/short-only rajoite on päällä
+        # Block if long-only/short-only restriction is active
         if disallowed == suggested_signal:
-            print(f"❌ Log-filtered momentum '{suggested_signal}' blocked by long-only/short-only.")
+            print(f"❌ Log-filtered momentum '{suggested_signal}' blocked by long-only or short-only mode.")
             return {}
 
-        # ✅ Hyväksytty signaali
+        # ✅ Accept signal
         bias_info = f"{highest_bias['signal'].upper()} bias from {highest_bias['interval']}" if highest_bias else "no active bias"
-        print(f"✅ Momentum signal {suggested_signal.upper()} confirmed by log bias – {bias_info}")
+        print(f"✅ Momentum signal {suggested_signal.upper()} confirmed by log – {bias_info}")
 
         return {
             "signal": suggested_signal,
@@ -129,4 +129,5 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             "log_bias_interval": highest_bias["interval"] if highest_bias else None
         }
 
-    return {} 
+    print(f"⚪ No signal for {symbol}")
+    return {}
