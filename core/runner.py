@@ -56,18 +56,14 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Check riskmanagement
     status = None
-    risk_strength = check_riskmanagement(
+    risk_strength, price_changes, volume_multiplier = check_riskmanagement(
         symbol=symbol,
         signal=final_signal,
         market_state=market_state,
-        override_signal=override_signal
+        override_signal=(mode in ["override", "divergence"])
     )
     if risk_strength == "strong":
         status = "complete"
-
-
-
-
 
     # Strategy handler
     if risk_strength == "strong":
@@ -78,9 +74,10 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             mode=mode,
             interval=interval
         )
-        print(f"📌 Strategy: {strategy_plan['selected_strategies']} in {strategy_plan['market_strategy']}. Market state: {market_state}, started on: {started_on}")
+        print(f"📌 Strategy: {strategy_plan['selected_strategies']}")
 
-    # Only log if signal is not from log or override
+    # Do the logging
+    selected_change_text = str(price_changes) if price_changes else "n/a"
     if risk_strength in ("strong", "weak", "none") and mode not in ("log", "override"):
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
         update_signal_log(
@@ -92,9 +89,10 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             market_state=market_state,
             started_on=started_on,
             momentum_strength=risk_strength,
-            status=status  # "complete" tai "rejected"
+            status=status,
+            price_change=selected_change_text,
+            volume_multiplier=volume_multiplier 
         )
-
     if risk_strength in ("strong", "weak"):
         if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
             now = datetime.now(pytz.timezone(TIMEZONE.zone))
@@ -107,7 +105,9 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 market_state=market_state,
                 started_on=started_on,
                 momentum_strength=risk_strength,
-                status=status
+                status=status,
+                price_change=selected_change_text,
+                volume_multiplier=volume_multiplier 
             )
 
     # Print results
@@ -121,78 +121,3 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         elif mode == "log":
             print(f"📝 Log-based signal detected for {symbol}: {final_signal.upper()} | Interval: {interval}")
 
-    # Calculate the pricegit 
-    if risk_strength == "strong" and final_signal == "buy":
-        result = calculate_minimum_valid_purchase(symbol)
-        quantity = "{:.8f}".format(result['qty'])
-
-        # Laske osto ja tee kaupat
-        if result:
-            print(f"✅ Minimiosto laskettu {symbol}: {quantity} kpl @ {result['price']:.4f} → yhteensä {result['cost']:.2f} USD")
-            
-            # order_result = place_spot_trade_with_tp_sl(
-            #     symbol=symbol,
-            #     qty=quantity,
-            #     entry_price=result["price"],
-            #     tick_size=result["step_size"]
-            # )
-
-            # if order_result:
-            #     print(f"✅ Kauppa suoritettu ja TP/SL asetettu: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
-            # else:
-            #     print(f"❌ Kaupan suoritus epäonnistui symbolille {symbol}")
-
-            # Määritellään kolikkokohtainen leverage
-            leverage_map = {
-                "BTCUSDT": 7,
-                "ETHUSDT": 4,
-                "SOLUSDT": 4,
-                "XRPUSDT": 3
-            }
-
-            # Oletusarvo muille
-            default_leverage = 2
-
-            # 🔁 Tee lisäksi Bybit-osto oikealla minimimäärällä
-            bybit_symbol = symbol.replace("USDC", "USDT")
-            bybit_result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
-            if bybit_result is None:
-                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")
-                return
-
-            balance = get_available_balance("USDT")
-            if balance < bybit_result["cost"]:
-                print(f"❌ Ei tarpeeksi saldoa (saldo: {balance} < {bybit_result['cost']})")
-                return
-
-            if bybit_result:
-                print(f"📦 Bybit minimiosto laskettu: {bybit_result['qty']} kpl @ {bybit_result['price']} USD → {bybit_result['cost']} USD")
-
-                # Haetaan symbolille leverage, tai käytetään oletusta
-                leverage = leverage_map.get(bybit_symbol, default_leverage)
-
-                bybit_order_result = place_leveraged_bybit_order(
-                    client=bybit_client,
-                    symbol=bybit_symbol,
-                    qty=bybit_result["qty"],
-                    price=bybit_result["price"],
-                    leverage=leverage
-                )
-
-                if bybit_order_result:
-                    print(f"✅ Bybit-kauppa suoritettu: TP @ {bybit_order_result['tp_price']}, SL @ {bybit_order_result['sl_price']}")
-
-                    # ⬇️ TÄSSÄ LISÄTÄÄN LOKITUS
-                    from scripts.trade_order_logger import log_trade
-                    log_trade(
-                        symbol=bybit_symbol,
-                        direction="long",  # tai "short" dynaamisesti
-                        qty=bybit_result["qty"],
-                        price=bybit_result["price"], 
-                        leverage=leverage
-                    )
-
-                else:
-                    print(f"❌ Bybit-kaupan suoritus epäonnistui symbolille {bybit_symbol}")
-            else:
-                print(f"❌ Bybit minimioston laskenta epäonnistui symbolille {bybit_symbol}")

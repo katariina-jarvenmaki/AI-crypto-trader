@@ -10,7 +10,8 @@ from riskmanagement.price_change_analyzer import check_price_change_risk
 def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, intervals=None):
 
     if override_signal:
-        return "strong"
+        # return dummy defaults in override mode
+        return "strong", {}, 1.0
 
     if intervals is None:
         intervals = [5]
@@ -19,17 +20,19 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
     if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️  Riskmanagement: No OHLCV data available.")
-        return
+        return "none", {}, 1.0
+
     df = ohlcv_data["5m"]
 
     # Price change risk check
-    price_risk_result = check_price_change_risk(symbol, signal, df)
+    price_risk_result, price_changes = check_price_change_risk(symbol, signal, df)
     if price_risk_result == "none":
-        return "none"
+        return "none", price_changes, 1.0  # Ensure the return has consistent structure
 
     # Momentum and market check
     result = verify_signal_with_momentum_and_volume(df, signal, symbol, intervals=intervals, market_state=market_state)
     strength = result["momentum_strength"]
+    volume_multiplier = result.get("volume_multiplier", 1.0)
     interpretation = result.get("interpretation", "")
 
     # Print momentum analysis result
@@ -40,4 +43,4 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     else:
         print(f"❌ Momentum to {signal} is NONE")
 
-    return strength
+    return strength, price_changes, volume_multiplier

@@ -2,9 +2,9 @@
     "BTCUSDC": {
         "null": {
             "sell": {
-                "log": "2025-06-24T14:16:10.382545+03:00",
+                "log": "2025-06-24T15:52:41.667773+03:00",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-24T11:00:00",
+                "started_on": "2025-06-24T12:00:00",
                 "momentum_strength": "strong",
                 "status": "complete"
             }
@@ -13,9 +13,9 @@
     "ETHUSDC": {
         "null": {
             "sell": {
-                "log": "2025-06-24T13:51:46.978034+03:00",
+                "log": "2025-06-24T15:39:36.466056+03:00",
                 "market_state": "unknown",
-                "started_on": "2025-06-24T10:00:00",
+                "started_on": "2025-06-24T12:00:00",
                 "momentum_strength": "strong",
                 "status": "complete"
             }
@@ -27,20 +27,21 @@
                 "started_on": "2025-06-24T11:00:00",
                 "momentum_strength": "none"
             }
+        },
+        "null": {
+            "sell": {
+                "log": "2025-06-24T16:44:38.551271+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T12:00:00",
+                "momentum_strength": "strong",
+                "status": "complete"
+            }
         }
     },
     "SOLUSDC": {
         "null": {
             "sell": {
-                "momentum_filtered": "2025-06-24T13:10:19.854876+03:00",
-                "market_state": "unknown",
-                "started_on": "2025-06-24T10:00:00",
-                "momentum_strength": "none"
-            }
-        },
-        "null": {
-            "sell": {
-                "log": "2025-06-24T15:33:17.374061+03:00",
+                "log": "2025-06-24T16:24:49.169010+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-24T12:00:00",
                 "momentum_strength": "strong",
@@ -84,6 +85,15 @@
                 "market_state": "unknown",
                 "started_on": "2025-06-24T11:00:00",
                 "momentum_strength": "none"
+            }
+        },
+        "null": {
+            "sell": {
+                "log": "2025-06-24T16:21:21.877573+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T13:00:00",
+                "momentum_strength": "strong",
+                "status": "complete"
             }
         }
     }

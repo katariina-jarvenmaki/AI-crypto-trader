@@ -6,7 +6,7 @@ import pytz
 from configs.config import TIMEZONE, PRICE_CHANGE_LIMITS
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
-def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> str:
+def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> tuple[str, dict]:
     """
     Checks price changes and decides whether a signal should be blocked.
     Returns:
@@ -29,10 +29,10 @@ def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> str:
     # Calculate price changes
     price_changes = calculate_price_changes(symbol, now)
     if should_block_signal(signal, price_changes):
-        return "none"
+        return "none", price_changes
 
     print(f"📊 Price change % for {symbol} (from past): {price_changes}")
-    return None
+    return None, price_changes
 
 def should_block_signal(signal: str, price_changes: dict) -> bool:
     limits = PRICE_CHANGE_LIMITS.get(signal, {})

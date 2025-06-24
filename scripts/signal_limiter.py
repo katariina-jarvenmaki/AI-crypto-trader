@@ -83,7 +83,9 @@ def update_signal_log(
     market_state: str = None,
     started_on: str = None,
     momentum_strength: str = None,
-    status: str = None
+    status: str = None,
+    price_change: str = None,
+    volume_multiplier: float = None
 ):
     log = load_signal_log()
 
