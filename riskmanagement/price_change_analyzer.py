@@ -31,7 +31,7 @@ def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> tuple
     if should_block_signal(signal, price_changes):
         return "none", price_changes
 
-    print(f"📊 Price change % for {symbol} (from past): {price_changes}")
+    print(f"🏷️  Price change % for {symbol} (from past): {price_changes}")
     return None, price_changes
 
 def should_block_signal(signal: str, price_changes: dict) -> bool:
