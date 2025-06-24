@@ -123,6 +123,7 @@ SELL_TRAILING_STOP_LOSS_PERCENT = 0.0036 # 0.36% Minium with ETH
 SELL_CLOSE_ORDER_LIMIT = 0.985
 
 # Volume multipliers per symbol and signal
+# These are base numbers that momentum_validator.py will modify
 VOLUME_MULTIPLIERS = {
     'BTCUSDC': {'buy': 1.2, 'sell': 1.2},
     'ETHUSDC': {'buy': 1.2, 'sell': 1.2},

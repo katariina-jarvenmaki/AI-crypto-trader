@@ -52,24 +52,22 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     market_info = get_market_state(symbol=symbol)
     market_state = market_info.get("state")
     started_on = market_info.get("started_on")
+    print(f"📊 Market state: {market_state}, started on: {started_on}")
 
     # Check riskmanagement
     status = None
-    if override_signal:
-        risk_strength = "strong"
+    risk_strength = check_riskmanagement(
+        symbol=symbol,
+        signal=final_signal,
+        market_state=market_state,
+        override_signal=override_signal
+    )
+    if risk_strength == "strong":
         status = "complete"
-    else:
-        # Määrittele dynaaminen volyymikerroin
-        if (market_state in ("unknown", "bear") and final_signal == "buy") or \
-        (market_state in ("unknown", "bull") and final_signal == "sell"):
-            volume_multiplier = 1.2
-        elif (market_state == "neutral_sideways" and final_signal in ("buy", "sell")):
-            volume_multiplier = 1.1
-        else:
-            volume_multiplier = 1.0
-        risk_strength = check_riskmanagement(symbol=symbol, signal=final_signal, volume_multiplier=volume_multiplier)
-        if risk_strength == "strong":
-            status = "complete"
+
+
+
+
 
     # Strategy handler
     if risk_strength == "strong":

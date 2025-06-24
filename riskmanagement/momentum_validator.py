@@ -8,7 +8,8 @@ def verify_signal_with_momentum_and_volume(
     signal: str,
     symbol: str,
     intervals: List[int] = [5],
-    volume_multiplier: float = None  # None tarkoittaa: käytä conffia
+    market_state: str = None,
+    volume_multiplier: float = None
 ) -> dict:
     result = {
         "momentum_strength": "none",
@@ -21,10 +22,23 @@ def verify_signal_with_momentum_and_volume(
     df['price_change'] = df['close'].diff()
     df['volume_change'] = df['volume'].diff()
 
-    # Hae default multiplier configista, jos volume_multiplier ei ole annettu
+    # Hae default multiplier configista
     config_multiplier = VOLUME_MULTIPLIERS.get(symbol.upper(), {}).get(signal.lower())
     if volume_multiplier is None:
-        volume_multiplier = config_multiplier if config_multiplier is not None else default_volume_multiplier
+        volume_multiplier = config_multiplier if config_multiplier is not None else 1.0  # fallback default
+
+    # 🔁 Mukauta multiplier markkinatilanteen mukaan
+    if market_state in ("unknown", "bear") and signal == "buy":
+        volume_multiplier += 0.2
+    elif market_state in ("unknown", "bull") and signal == "sell":
+        volume_multiplier += 0.2
+    elif market_state == "neutral_sideways" and signal in ("buy", "sell"):
+        volume_multiplier += 0.1
+    elif market_state == "bull" and signal == "buy":
+        volume_multiplier -= 0.1
+    elif market_state == "bear" and signal == "sell":
+        volume_multiplier -= 0.1
+    print(f"🔁 Used volume multiplier: {volume_multiplier} with {market_state} market state")
 
     for interval in intervals:
         recent_price_momentum = df['price_change'][-interval:].mean()

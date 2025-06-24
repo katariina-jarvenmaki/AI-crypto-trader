@@ -2,20 +2,30 @@
     "BTCUSDC": {
         "null": {
             "sell": {
-                "momentum_filtered": "2025-06-24T13:09:42.787818+03:00",
+                "log": "2025-06-24T14:16:10.382545+03:00",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-24T10:00:00",
-                "momentum_strength": "weak"
+                "started_on": "2025-06-24T11:00:00",
+                "momentum_strength": "strong",
+                "status": "complete"
             }
         }
     },
     "ETHUSDC": {
         "null": {
             "sell": {
-                "momentum_filtered": "2025-06-24T13:10:01.013284+03:00",
+                "log": "2025-06-24T13:51:46.978034+03:00",
                 "market_state": "unknown",
                 "started_on": "2025-06-24T10:00:00",
-                "momentum_strength": "weak"
+                "momentum_strength": "strong",
+                "status": "complete"
+            }
+        },
+        "1m": {
+            "buy": {
+                "rsi": "2025-06-24T14:21:24.447931+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T11:00:00",
+                "momentum_strength": "none"
             }
         }
     },
@@ -27,6 +37,15 @@
                 "started_on": "2025-06-24T10:00:00",
                 "momentum_strength": "none"
             }
+        },
+        "null": {
+            "sell": {
+                "log": "2025-06-24T15:33:17.374061+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T12:00:00",
+                "momentum_strength": "strong",
+                "status": "complete"
+            }
         }
     },
     "XRPUSDC": {
@@ -37,14 +56,33 @@
                 "started_on": "2025-06-24T10:00:00",
                 "momentum_strength": "none"
             }
+        },
+        "1m": {
+            "buy": {
+                "rsi": "2025-06-24T14:22:05.409426+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T11:00:00",
+                "momentum_strength": "none"
+            }
         }
     },
     "ADAUSDC": {
         "null": {
             "sell": {
-                "momentum_filtered": "2025-06-24T13:10:57.238435+03:00",
+                "log": "2025-06-24T15:21:05.828123+03:00",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-24T07:00:00",
+                "started_on": "2025-06-24T08:00:00",
+                "momentum_strength": "strong",
+                "status": "complete"
+            }
+        }
+    },
+    "HBARUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": "2025-06-24T14:22:43.398389+03:00",
+                "market_state": "unknown",
+                "started_on": "2025-06-24T11:00:00",
                 "momentum_strength": "none"
             }
         }

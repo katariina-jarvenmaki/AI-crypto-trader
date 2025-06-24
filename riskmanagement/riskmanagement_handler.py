@@ -3,42 +3,36 @@
 from datetime import datetime
 import pytz
 import pandas as pd
-from configs.config import TIMEZONE
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
-from riskmanagement.price_change_analyzer import calculate_price_changes, should_block_signal
+from riskmanagement.price_change_analyzer import check_price_change_risk
 
-def check_riskmanagement(symbol: str, signal: str, intervals=None, volume_multiplier=1.5):
+def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, intervals=None):
+
+    if override_signal:
+        return "strong"
 
     if intervals is None:
         intervals = [5]
 
+    # Fetch OHLCV for timestamp reference
     ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
     if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️  Riskmanagement: No OHLCV data available.")
         return
-
     df = ohlcv_data["5m"]
-    result = verify_signal_with_momentum_and_volume(df, signal, symbol, intervals=intervals)
+
+    # Price change risk check
+    price_risk_result = check_price_change_risk(symbol, signal, df)
+    if price_risk_result == "none":
+        return "none"
+
+    # Momentum and market check
+    result = verify_signal_with_momentum_and_volume(df, signal, symbol, intervals=intervals, market_state=market_state)
     strength = result["momentum_strength"]
     interpretation = result.get("interpretation", "")
 
-    # Hae nykyinen aika ja price change -data
-    if isinstance(df.index, pd.DatetimeIndex):
-        last_timestamp = df.index[-1]
-        if last_timestamp.tzinfo is None:
-            last_timestamp = last_timestamp.tz_localize('UTC')
-        now = datetime.now(pytz.timezone(TIMEZONE.zone))
-    else:
-        now = datetime.now(pytz.timezone(TIMEZONE.zone))
-
-    # Hinta muutos tarkistus
-    price_changes = calculate_price_changes(symbol, now)
-    if should_block_signal(signal, price_changes):
-        return "none"
-    print(f"📊 Price change % for {symbol} (from past): {price_changes}")
-
-    # Tulosta momentum-analyysin tulos
+    # Print momentum analysis result
     if strength == "strong":
         print(f"✅ Momentum to {signal} is STRONG")
     elif strength == "weak":
