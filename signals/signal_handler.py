@@ -1,9 +1,12 @@
 # signals/signal_handler.py
 #
 # 1. Checks override signal (highest priority)
+# Defines disallowed signals
 # 2. Checks Divergence signals
 # 3. Checks RSI signals (lowest priority)
-# 6. Returns results
+# Uses momentum to guide analysis
+# 4. Checks log signal according to momentum
+# Returns results
 #
 from signals.determine_momentum import determine_signal_with_momentum_and_volume
 from signals.divergence_detector import DivergenceDetector
@@ -27,7 +30,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             return {}
         return {"signal": override_signal, "mode": "override"}
 
-    # 2. Define disallowed signal
+    # Define disallowed signal
     if long_only:
         disallowed = "sell"
     elif short_only:
@@ -35,7 +38,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     else:
         disallowed = None
 
-    # 3. Divergence check
+    # 2. Divergence check
     data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=["1h"], limit=100)
     df = data_by_interval.get("1h")
     if df is None or df.empty:
@@ -50,16 +53,17 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     if divergence:
         signal_type = "buy" if divergence["type"] == "bull" else "sell"
         if disallowed == signal_type:
-            print(f"❌ Divergence signal '{signal_type}' blocked by long-only or short-only mode.")
+            print(f"❌ Divergence signal '{signal_type}' blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
+        print(f"📢 Divergence signal detected.")
         return {"signal": signal_type, "mode": divergence.get("mode", "divergence"), "interval": interval}
 
-    # 4. RSI signal
+    # 3. RSI signal
     rsi_result = rsi_analyzer(symbol)
     rsi_signal = rsi_result.get("signal")
     if rsi_signal in ["buy", "sell"]:
         if disallowed == rsi_signal:
-            print(f"❌ RSI signal '{rsi_signal}' blocked by long-only or short-only mode.")
+            print(f"❌ RSI signal '{rsi_signal}' blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
         return {
             "signal": rsi_signal,
@@ -87,7 +91,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if momentum_result.get("momentum_strength") in ["strong", "weak"]:
             print(f"📈 Momentum guide suggests {suggested_signal.upper()} ({momentum_result.get('momentum_strength')})")
 
-    # 5. Log-based signal if suggested_signal exists
+    # 4. Log-based signal if suggested_signal exists
     if suggested_signal in ["buy", "sell"]:
         log_signal = get_log_based_signal(symbol)
 
@@ -115,19 +119,23 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
 
         # Block if long-only/short-only restriction is active
         if disallowed == suggested_signal:
-            print(f"❌ Log-filtered momentum '{suggested_signal}' blocked by long-only or short-only mode.")
+            print(f"❌ Log-filtered momentum '{suggested_signal}' blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
 
         # ✅ Accept signal
-        bias_info = f"{highest_bias['signal'].upper()} bias from {highest_bias['interval']}" if highest_bias else "no active bias"
-        print(f"✅ Momentum signal {suggested_signal.upper()} confirmed by log – {bias_info}")
+        if highest_bias:
+            bias_info = f"{highest_bias['signal'].upper()} bias from {highest_bias['interval']}"
+            print(f"✅ Momentum signal {suggested_signal.upper()} confirmed by log – {bias_info}")
+        else:
+            print(f"ℹ️ No active log bias found – accepting momentum signal {suggested_signal.upper()} without log confirmation")
 
-        return {
+        result = {
             "signal": suggested_signal,
-            "mode": "log",
-            "interval": interval,
+            "mode": "log" if highest_bias else "momentum",
+            "interval": highest_bias["interval"] if highest_bias else interval,
             "log_bias_interval": highest_bias["interval"] if highest_bias else None
         }
+        return result
 
     print(f"⚪ No signal for {symbol}")
     return {}

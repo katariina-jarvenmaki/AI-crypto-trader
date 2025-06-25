@@ -1,3 +1,5 @@
+# scripts/min_buy_calc.py
+
 import math
 from integrations.binance_api_client import client
 from integrations.bybit_api_client import get_bybit_price, get_bybit_symbol_info, round_bybit_quantity

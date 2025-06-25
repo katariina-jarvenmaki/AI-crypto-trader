@@ -1,4 +1,5 @@
 # integrations/multi_interval_ohlcv/fetch_ohlcv_okx_for_intervals.py
+
 import requests
 import pandas as pd
 from configs.config import DEFAULT_INTERVALS, DEFAULT_OHLCV_LIMIT

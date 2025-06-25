@@ -1,4 +1,5 @@
 # integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+
 import logging
 from configs.config import MULTI_INTERVAL_EXCHANGE_PRIORITY, DEFAULT_OHLCV_LIMIT, DEFAULT_INTERVALS
 from integrations.multi_interval_ohlcv.fetch_ohlcv_okx_for_intervals import fetch_ohlcv_okx

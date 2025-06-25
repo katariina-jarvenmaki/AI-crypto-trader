@@ -1,4 +1,5 @@
 # signals/determine_momentum.py
+
 from typing import List
 import pandas as pd
 from configs.config import VOLUME_MULTIPLIERS

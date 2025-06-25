@@ -1,4 +1,4 @@
-# trading/spot_order_handler.py
+# scripts/spot_order_handler.py
 
 from integrations.binance_api_client import client
 from integrations.binance_api_client import get_current_price

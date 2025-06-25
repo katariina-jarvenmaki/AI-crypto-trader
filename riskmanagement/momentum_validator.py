@@ -1,4 +1,5 @@
 #riskmanagement/momentum_validator.py
+
 from typing import List, Dict
 import pandas as pd
 from configs.config import VOLUME_MULTIPLIERS

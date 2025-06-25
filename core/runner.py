@@ -43,6 +43,10 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     mode = signal_info.get("mode")
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
+    print(f"Signal: {final_signal }")
+    print(f"Mode: {mode}")
+    print(f"Interval: {interval}")
+    print(f"RSI: {rsi}")
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
@@ -66,6 +70,8 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         status = "complete"
 
     # Strategy handler
+    # 4. Determine strategy
+    strategy_plan = None
     if risk_strength == "strong":
         strategy_handler = StrategyHandler()
         strategy_plan = strategy_handler.determine_strategy(
@@ -74,12 +80,22 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             mode=mode,
             interval=interval
         )
-        print(f"📌 Strategy: {strategy_plan['selected_strategies']}")
+        if strategy_plan:
+            print(f"📌 Strategy: {strategy_plan['selected_strategies']}")
 
     # Do the logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
     if risk_strength in ("strong", "weak", "none") and mode not in ("log", "override"):
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
+        print(f"Interval: {interval}")
+        print(f"Now: {now}")
+        print(f"Mode: {mode}")
+        print(f"Market state: {market_state}")
+        print(f"Started on: {started_on}")
+        print(f"Momemntum Strength: {risk_strength}")
+        print(f"Status: {status}")
+        print(f"Price Change: {selected_change_text}")
+        print(f"Volume Multiplier: {volume_multiplier}")
         update_signal_log(
             symbol=symbol,
             interval=interval,
@@ -96,6 +112,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     if risk_strength in ("strong", "weak"):
         if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
             now = datetime.now(pytz.timezone(TIMEZONE.zone))
+            print(f"Interval: {interval}")
+            print(f"Now: {now}")
+            print(f"Mode: {mode}")
+            print(f"Market state: {market_state}")
+            print(f"Started on: {started_on}")
+            print(f"Momemntum Strength: {risk_strength}")
+            print(f"Status: {status}")
+            print(f"Price Change: {selected_change_text}")
+            print(f"Volume Multiplier: {volume_multiplier}")
             update_signal_log(
                 symbol=symbol,
                 interval=interval,
