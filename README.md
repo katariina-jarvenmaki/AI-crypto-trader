@@ -6,7 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib
 ```
 
 **2. Make a credentials.py to configs-folder**
@@ -82,6 +82,11 @@ python3 -m tests.backtest_momentum_strategy BTCUSDC
 Test price change calculation
 ```bash
 python3 -m tests.price_change_backtest
+```
+
+Test log momentum signal limits
+```bash
+python3 -m tests.test_rsi_deviation_signal
 ```
 
 ##  Tested with

@@ -5,20 +5,17 @@
 # 2. Checks Divergence signals
 # 3. Checks RSI signals (lowest priority)
 # Uses momentum to guide analysis
-# 4. Checks log signal according to momentum
+# 4. Checks log signal
+# 5. Checks momentum signal
 # Returns results
 #
-from signals.determine_momentum import determine_signal_with_momentum_and_volume
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
+from signals.momentum_signal import get_momentum_signal
+from signals.log_signal import get_log_signal
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
-import pandas as pd
-
-from signals.log_based_signal import get_log_based_signal  # Muista importoida tämä
 
 def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_signal: str = None, long_only: bool = False, short_only: bool = False) -> dict:
-
-    signal_info = {"signal": None, "mode": None, "interval": None}
 
     # 1. Override signal (highest priority)
     if override_signal and is_first_run:
@@ -30,7 +27,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             return {}
         return {"signal": override_signal, "mode": "override"}
 
-    # Define disallowed signal
+    # Määritä mikä signaali on estetty
     if long_only:
         disallowed = "sell"
     elif short_only:
@@ -72,70 +69,40 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             "rsi": rsi_result.get("rsi")
         }
 
-    # Momentum guide analysis (non-overriding)
-    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
-    suggested_signal = None
+    # 4. Momentum + log
+    momentum_result, momentum_guide = get_momentum_signal(symbol)
 
-    if ohlcv_data and "5m" in ohlcv_data and not ohlcv_data["5m"].empty:
-        df_5m = ohlcv_data["5m"]
-        momentum_result = determine_signal_with_momentum_and_volume(df_5m, symbol, intervals=[5])
+    if momentum_guide:
+        print(f"📊 Momentum guide: {momentum_guide['suggested_signal']} ({momentum_guide['strength']})")
 
-        suggested_signal = momentum_result.get("suggested_signal")
-        signal_info["momentum_guide"] = {
-            "suggested_signal": suggested_signal,
-            "strength": momentum_result.get("momentum_strength"),
-            "interpretation": momentum_result.get("interpretation"),
-            "volume_multiplier": momentum_result.get("volume_multiplier")
-        }
+    if momentum_result:
+        raw_signal = momentum_result["signal"]
 
-        if momentum_result.get("momentum_strength") in ["strong", "weak"]:
-            print(f"📈 Momentum guide suggests {suggested_signal.upper()} ({momentum_result.get('momentum_strength')})")
+        # Vahvistus logista
+        log_result = get_log_signal(symbol)
+        if log_result and log_result["signal"] == raw_signal:
+            if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
+                print(f"❌ Log-confirmed signal '{raw_signal}' blocked by mode.")
+            else:
+                print(f"✅ Log confirmed momentum signal: {raw_signal}")
+                return {
+                    "signal": raw_signal,
+                    "mode": "log",
+                    "interval": log_result["interval"],
+                    "log_bias_interval": log_result["interval"]
+                }
 
-    # 4. Log-based signal if suggested_signal exists
-    if suggested_signal in ["buy", "sell"]:
-        log_signal = get_log_based_signal(symbol)
-
-        # Find the highest-priority log signal that is not "complete"
-        highest_bias = None
-        hierarchy = ["1w", "1d", "4h", "2h", "1h", "30m", "15m", "5m", "3m", "1m"]
-
-        if log_signal:
-            for tf in hierarchy:
-                if tf in log_signal:
-                    for side in ["buy", "sell"]:
-                        entry = log_signal[tf].get(side)
-                        if entry and entry.get("status") != "complete":
-                            highest_bias = {"interval": tf, "signal": side}
-                            break
-                if highest_bias:
-                    break
-
-        # Block signal if momentum contradicts long-term log bias
-        if highest_bias:
-            bias_dir = highest_bias["signal"]
-            if suggested_signal != bias_dir:
-                print(f"⛔ Momentum {suggested_signal.upper()} contradicts long-term log bias {bias_dir.upper()} ({highest_bias['interval']})")
-                return {}
-
-        # Block if long-only/short-only restriction is active
-        if disallowed == suggested_signal:
-            print(f"❌ Log-filtered momentum '{suggested_signal}' blocked by {'long-only' if long_only else 'short-only'} mode.")
-            return {}
-
-        # ✅ Accept signal
-        if highest_bias:
-            bias_info = f"{highest_bias['signal'].upper()} bias from {highest_bias['interval']}"
-            print(f"✅ Momentum signal {suggested_signal.upper()} confirmed by log – {bias_info}")
+        # Palataan suodatettuun momentum-signaaliin
+        if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
+            print(f"❌ Momentum signal '{raw_signal}' blocked by mode.")
         else:
-            print(f"ℹ️ No active log bias found – accepting momentum signal {suggested_signal.upper()} without log confirmation")
-
-        result = {
-            "signal": suggested_signal,
-            "mode": "log" if highest_bias else "momentum",
-            "interval": highest_bias["interval"] if highest_bias else interval,
-            "log_bias_interval": highest_bias["interval"] if highest_bias else None
-        }
-        return result
+            print(f"✔️ Using filtered momentum signal: {raw_signal}")
+            return {
+                "signal": raw_signal,
+                "mode": "momentum",
+                "interval": momentum_result["interval"],
+                "log_bias_interval": None
+            }
 
     print(f"⚪ No signal for {symbol}")
     return {}
