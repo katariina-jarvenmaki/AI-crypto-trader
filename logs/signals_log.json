@@ -127,6 +127,43 @@
                     "momentum_strength": "none",
                     "previous_market_state": "neutral_sideways",
                     "status": "unused"
+                },
+                "momentum": {
+                    "time": "2025-06-26T17:56:52.426573+03:00",
+                    "market_state": "unknown",
+                    "started_on": "2025-06-26T09:00:00",
+                    "momentum_strength": "weak",
+                    "status": "unused",
+                    "price_change": "{'24h': -0.17, '18h': -0.31, '12h': -0.44, '6h': -0.28, '4h': 0.06, '3h': 0.12, '2h': 0.31}",
+                    "volume_multiplier": 1.4,
+                    "reverse_signal_info": {
+                        "momentum_strength": "weak",
+                        "momentum": [
+                            -44.75571428571441,
+                            6.980666666667093
+                        ],
+                        "volume": [
+                            28.179325333333335,
+                            35.921124
+                        ],
+                        "interpretation": "Downtrend weakening, but volume confirmation missing.",
+                        "per_interval": {
+                            "15min": {
+                                "strength": "weak",
+                                "momentum": [
+                                    -44.75571428571441,
+                                    6.980666666667093
+                                ],
+                                "volume": [
+                                    28.179325333333335,
+                                    35.921124
+                                ],
+                                "comment": "Downtrend weakening, but volume confirmation missing."
+                            }
+                        },
+                        "volume_multiplier": 1.4
+                    },
+                    "previous_market_state": "bull"
                 }
             },
             "buy": {
@@ -405,35 +442,35 @@
                     "status": "unused"
                 },
                 "momentum": {
-                    "time": "2025-06-26T17:35:49.513905+03:00",
+                    "time": "2025-06-26T17:53:01.107533+03:00",
                     "market_state": "neutral_sideways",
                     "started_on": "2025-06-26T05:00:00",
                     "momentum_strength": "weak",
                     "status": "unused",
-                    "price_change": "{'24h': -1.76, '18h': -0.98, '12h': -1.5, '6h': -1.36, '4h': -0.26, '3h': -0.3, '2h': -0.19}",
+                    "price_change": "{'24h': -1.74, '18h': -1.36, '12h': -2.12, '6h': -1.2, '4h': -0.28, '3h': -0.35, '2h': 0.1}",
                     "volume_multiplier": 1.3,
                     "previous_market_state": "unknown",
                     "reverse_signal_info": {
                         "momentum_strength": "strong",
                         "momentum": [
-                            -0.14142857142857274,
-                            -0.021333333333332878
+                            -0.15428571428571405,
+                            -0.030000000000001137
                         ],
                         "volume": [
-                            3567.6294,
-                            5636.75
+                            3421.8587333333335,
+                            5915.352600000001
                         ],
                         "interpretation": "Price turning down with significantly increasing volume.",
                         "per_interval": {
                             "15min": {
                                 "strength": "strong",
                                 "momentum": [
-                                    -0.14142857142857274,
-                                    -0.021333333333332878
+                                    -0.15428571428571405,
+                                    -0.030000000000001137
                                 ],
                                 "volume": [
-                                    3567.6294,
-                                    5636.75
+                                    3421.8587333333335,
+                                    5915.352600000001
                                 ],
                                 "comment": "Price turning down with significantly increasing volume."
                             }
@@ -698,14 +735,41 @@
         "1h": {
             "buy": {
                 "rsi": {
-                    "time": "2025-06-26T16:51:55.249271+03:00",
+                    "time": "2025-06-26T17:53:19.847819+03:00",
                     "market_state": "unknown",
                     "started_on": "2025-06-26T13:00:00",
                     "momentum_strength": "none",
                     "status": "unused",
-                    "price_change": "{'24h': -3.68, '18h': -3.01, '12h': -2.8, '6h': -2.7, '4h': -2.11, '3h': -1.92, '2h': -1.83}",
+                    "price_change": "{'24h': -3.38, '18h': -3.05, '12h': -3.3, '6h': -2.73, '4h': -2.1, '3h': -1.9, '2h': -1.27}",
                     "volume_multiplier": 1.4,
-                    "previous_market_state": "neutral_sideways"
+                    "previous_market_state": "neutral_sideways",
+                    "reverse_signal_info": {
+                        "momentum_strength": "strong",
+                        "momentum": [
+                            -0.0014571428571428552,
+                            -0.003139999999999995
+                        ],
+                        "volume": [
+                            188051.37333333332,
+                            608412.1866666666
+                        ],
+                        "interpretation": "Price turning down with significantly increasing volume.",
+                        "per_interval": {
+                            "15min": {
+                                "strength": "strong",
+                                "momentum": [
+                                    -0.0014571428571428552,
+                                    -0.003139999999999995
+                                ],
+                                "volume": [
+                                    188051.37333333332,
+                                    608412.1866666666
+                                ],
+                                "comment": "Price turning down with significantly increasing volume."
+                            }
+                        },
+                        "volume_multiplier": 1.5999999999999999
+                    }
                 }
             }
         }
@@ -769,34 +833,34 @@
         "5m": {
             "buy": {
                 "momentum": {
-                    "time": "2025-06-26T17:36:31.500270+03:00",
+                    "time": "2025-06-26T17:53:41.859369+03:00",
                     "market_state": "neutral_sideways",
                     "started_on": "2025-06-26T14:00:00",
                     "momentum_strength": "weak",
                     "status": "unused",
-                    "price_change": "{'24h': -3.26, '18h': -2.31, '12h': -2.57, '6h': -2.5, '4h': -1.01, '3h': -1.15, '2h': -0.3}",
+                    "price_change": "{'24h': -3.45, '18h': -2.83, '12h': -3.62, '6h': -2.37, '4h': -1.54, '3h': -1.26, '2h': -0.14}",
                     "volume_multiplier": 1.3,
                     "reverse_signal_info": {
                         "momentum_strength": "strong",
                         "momentum": [
-                            -0.0005642857142857156,
-                            -0.00047999999999999893
+                            -0.0006785714285714252,
+                            -0.000553333333333339
                         ],
                         "volume": [
-                            151841.20666666664,
-                            374544.32
+                            142094.25333333333,
+                            396355.31999999995
                         ],
                         "interpretation": "Price turning down with significantly increasing volume.",
                         "per_interval": {
                             "15min": {
                                 "strength": "strong",
                                 "momentum": [
-                                    -0.0005642857142857156,
-                                    -0.00047999999999999893
+                                    -0.0006785714285714252,
+                                    -0.000553333333333339
                                 ],
                                 "volume": [
-                                    151841.20666666664,
-                                    374544.32
+                                    142094.25333333333,
+                                    396355.31999999995
                                 ],
                                 "comment": "Price turning down with significantly increasing volume."
                             }

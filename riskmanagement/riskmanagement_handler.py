@@ -8,9 +8,10 @@ from riskmanagement.momentum_validator import verify_signal_with_momentum_and_vo
 from riskmanagement.price_change_analyzer import check_price_change_risk
 
 def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, intervals=None, mode: str = None):
+    
     if override_signal:
         # return dummy defaults in override mode
-        return "strong", {}, 1.0
+        return "strong", {}, 1.0, {"momentum_strength": "n/a", "interpretation": "override mode"}
 
     # Market state check for momentum-mode
     if mode == "momentum":
