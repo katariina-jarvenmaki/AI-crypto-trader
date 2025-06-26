@@ -131,7 +131,7 @@ def update_signal_log(
     if volume_multiplier is not None:
         mode_entry["volume_multiplier"] = volume_multiplier
     if reverse_signal_info:
-        mode_entry["reverse_signal_info"] = reverse_signal_info
+        mode_entry["reverse_strength"] = reverse_signal_info.get("momentum_strength")
 
     # Tarkista previous_market_state muiden analyysien alta
     previous_state = None

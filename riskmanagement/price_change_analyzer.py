@@ -46,11 +46,9 @@ def should_block_signal(signal: str, price_changes: dict) -> bool:
             continue
 
         if signal == "buy" and change > threshold:
-            print(f"⛔ Blocked BUY signal: [{timeframe}] Change {change}% exceeds threshold {threshold}%")
             return True
 
         if signal == "sell" and change < threshold:
-            print(f"⛔ Blocked SELL signal: [{timeframe}] Change {change}% is below threshold {threshold}%")
             return True
 
     return False

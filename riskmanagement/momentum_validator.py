@@ -41,7 +41,6 @@ def verify_signal_with_momentum_and_volume(
         volume_multiplier -= 0.1
     elif market_state == "bear" and signal == "sell":
         volume_multiplier -= 0.1
-    print(f"🔁 Used volume multiplier: {volume_multiplier} with {market_state} market state")
 
     for interval in intervals:
         recent_price_momentum = df['price_change'][-interval:].mean()
@@ -85,6 +84,8 @@ def verify_signal_with_momentum_and_volume(
             "volume": result["volume"],
             "comment": interp
         }
+
+        # print(f"🔁 Used volume multiplier for {interval}min interval: {volume_multiplier} with {market_state} market state")
 
     result["volume_multiplier"] = volume_multiplier
     return result
