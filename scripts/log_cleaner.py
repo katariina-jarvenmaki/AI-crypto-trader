@@ -17,9 +17,14 @@ def save_json(path, data):
         json.dump(data, f, indent=4)
 
 def extract_date_from_log_entry(entry):
-    timestamp = entry.get("log") or entry.get("rsi") or entry.get("started_on")
-    if timestamp:
-        return datetime.fromisoformat(timestamp.split("+")[0])
+    if not isinstance(entry, dict):
+        return None
+
+    for key, signal_data in entry.items():
+        if isinstance(signal_data, dict) and signal_data.get("status") == "complete":
+            timestamp = signal_data.get("time") or signal_data.get("started_on")
+            if timestamp and isinstance(timestamp, str):
+                return datetime.fromisoformat(timestamp.split("+")[0])
     return None
 
 def archive_complete_logs():
@@ -37,17 +42,22 @@ def archive_complete_logs():
 
     for pair, timeframes in list(current_data.items()):
         for tf, actions in list(timeframes.items()):
-            for direction, log_data in list(actions.items()):
-                log_date = extract_date_from_log_entry(log_data)
-                if (
-                    log_date
-                    and log_date.date() == yesterday.date()
-                    and log_data.get("status") == "complete"
-                ):
-                    archive_data.setdefault(pair, {}).setdefault(tf, {})[direction] = log_data
-                    del current_data[pair][tf][direction]
+            for direction, indicators in list(actions.items()):
+                if not isinstance(indicators, dict):
+                    continue
+                for indicator, log_data in list(indicators.items()):
+                    log_date = extract_date_from_log_entry({indicator: log_data})
+                    if (
+                        log_date
+                        and log_date.date() == yesterday.date()
+                        and log_data.get("status") == "complete"
+                    ):
+                        archive_data.setdefault(pair, {}).setdefault(tf, {}).setdefault(direction, {})[indicator] = log_data
+                        del current_data[pair][tf][direction][indicator]
 
-            # Clean up empty structures
+                # Clean up empty structures
+                if not current_data[pair][tf][direction]:
+                    del current_data[pair][tf][direction]
             if not current_data[pair][tf]:
                 del current_data[pair][tf]
         if not current_data[pair]:

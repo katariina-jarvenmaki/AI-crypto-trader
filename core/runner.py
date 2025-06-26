@@ -95,8 +95,8 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             symbol=symbol,
             interval=interval,
             signal_type=final_signal,
-            now=now,
             mode=mode,
+            now=now,
             market_state=market_state,
             started_on=started_on,
             momentum_strength=risk_strength,
@@ -121,29 +121,29 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     #***** STRATEGIES *****#
 
-    print(f"Add strategy logic here...")
+    # print(f"Add strategy logic here...")
 
     #***** BUYING *****#
 
-    if final_signal == "buy":
+    # if final_signal == "buy":
 
         # Binance
-        binance_result = execute_binance_long(symbol, risk_strength)
-        if binance_result:
-            log_trade(**binance_result)
+        # binance_result = execute_binance_long(symbol, risk_strength)
+        # if binance_result:
+        #     log_trade(**binance_result)
 
         # Bybit
-        bybit_result = execute_bybit_long(symbol, risk_strength)
-        if bybit_result:
-            log_trade(**bybit_result)
+        # bybit_result = execute_bybit_long(symbol, risk_strength)
+        # if bybit_result:
+        #     log_trade(**bybit_result)
 
     #***** SELLING *****#
 
-    if final_signal == "sell":
+    # if final_signal == "sell":
 
         # Bybit
-        bybit_result = execute_bybit_short(symbol, risk_strength)
-        if bybit_result:
-            log_trade(**bybit_result)
+        # bybit_result = execute_bybit_short(symbol, risk_strength)
+        # if bybit_result:
+        #     log_trade(**bybit_result)
 
     #***** STOP LOSSES *****#
