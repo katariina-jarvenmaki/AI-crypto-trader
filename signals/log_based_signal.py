@@ -78,13 +78,9 @@ def get_log_based_signal(symbol: str, signal_type: str = None) -> dict:
         return {}
 
     def interval_sort_key(entry):
-        unit_weight = {"m": 1, "h": 60, "d": 1440}
-        try:
-            num = int(''.join(filter(str.isdigit, entry["interval"])))
-            unit = ''.join(filter(str.isalpha, entry["interval"]))
-            return (unit_weight.get(unit, 1) * num, entry["time"].timestamp())
-        except:
-            return (0, entry["time"].timestamp())
+        interval_rank = {"1m": 0, "3m": 1, "5m": 2, "15m": 3, "30m": 4, "1h": 5, "2h": 6, "4h": 7, "1d": 8, "1w": 9}
+        rank = interval_rank.get(entry["interval"], -1) 
+        return (rank, entry["time"].timestamp())
 
     best_entry = sorted(valid_entries, key=interval_sort_key, reverse=True)[0]
 

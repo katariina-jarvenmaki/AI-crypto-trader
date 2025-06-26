@@ -61,6 +61,6 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
 
     # Print momentum analysis result
     print(f"✅ Momentum to {signal.upper()} is {strength.upper()}")
-    print(f"↩️  Reverse momentum {reverse_signal.upper()} 15min: {reverse_result.get('momentum_strength', 'n/a').upper()} - {reverse_result.get('interpretation', '')}")
+    print(f"↩️  Reverse momentum {reverse_signal.upper()} is {reverse_result.get('momentum_strength', 'n/a').upper()}")
 
     return strength, price_changes, volume_multiplier, reverse_result

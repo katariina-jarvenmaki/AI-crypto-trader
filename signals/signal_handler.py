@@ -1,5 +1,14 @@
 # signals/signal_handler.py
-
+#
+# 1. Checks override signal (highest priority)
+# Defines disallowed signals
+# 2. Checks Divergence signals
+# 3. Checks RSI signals (lowest priority)
+# Uses momentum to guide analysis
+# 4. Checks log signal
+# 5. Checks momentum signal
+# Returns results
+#
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
 from signals.momentum_signal import get_momentum_signal, determine_signal_with_momentum_and_volume
@@ -16,6 +25,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if short_only and override_signal == "buy":
             print(f"❌ Override signal '{override_signal}' blocked by short-only mode.")
             return {}
+        print(f"📢 Override '{override_signal}' signal detected.")
         return {"signal": override_signal, "mode": "override"}
 
     # Määritä mikä signaali on estetty
@@ -43,8 +53,12 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if disallowed == signal_type:
             print(f"❌ Divergence signal '{signal_type}' blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
-        print(f"📢 Divergence signal detected.")
-        return {"signal": signal_type, "mode": divergence.get("mode", "divergence"), "interval": interval}
+        print(f"📢 Divergence '{signal_type}' signal detected.")
+        return {
+            "signal": signal_type, 
+            "mode": divergence.get("mode", "divergence"), 
+            "interval": interval
+        }
 
     # 3. RSI signal
     rsi_result = rsi_analyzer(symbol)
@@ -53,6 +67,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if disallowed == rsi_signal:
             print(f"❌ RSI signal '{rsi_signal}' blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
+        print(f"📢 RSI '{rsi_signal}' signal detected, interval '{rsi_result.get('interval', interval)}' and rsi '{rsi_result.get('rsi')}'")
         return {
             "signal": rsi_signal,
             "mode": rsi_result.get("mode", "rsi"),
@@ -70,8 +85,9 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
 
     momentum_result = determine_signal_with_momentum_and_volume(df_5m, symbol, intervals=[5])
     suggested_signal = momentum_result.get("suggested_signal")
+    momentum_strength = momentum_result.get("momentum_strength")
     if suggested_signal:
-        print(f"📊 Momentum guide suggests: {suggested_signal}")
+        print(f"📊 Momentum guide suggests: {suggested_signal} ({momentum_strength})")
 
     log_result = get_log_signal(symbol, signal_type=suggested_signal)
     if log_result:
@@ -79,10 +95,10 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
             print(f"❌ Log signal '{raw_signal}' blocked by mode.")
         else:
-            print(f"✅ Using log-based signal: {raw_signal}")
+            print(f"📢 Log-based '{raw_signal}' signal detected.")
             return {
                 "signal": raw_signal,
-                "mode": log_result.get("mode", "log"),
+                "mode": "log",
                 "interval": log_result["interval"],
                 "log_bias_interval": log_result["interval"]
             }
@@ -98,7 +114,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             if (long_only and signal_value == "sell") or (short_only and signal_value == "buy"):
                 print(f"❌ Momentum signal '{signal_value}' blocked by mode.")
             else:
-                print(f"✅ Using filtered momentum signal: {signal_value}")
+                print(f"📢 Momentum signal '{signal_value}' signal detected.")
                 return {
                     "signal": signal_value,
                     "mode": "momentum",

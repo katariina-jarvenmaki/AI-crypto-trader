@@ -55,10 +55,10 @@ def get_momentum_signal(symbol: str):
             rsi_latest = rsi_1h.dropna().iloc[-1]
 
             if suggested_signal == "buy" and rsi_latest > RSI_FILTER_BUY_MAX:
-                print(f"❌ RSI-suodatus esti buy-signaalin (RSI={rsi_latest:.2f} > {RSI_FILTER_BUY_MAX})")
+                print(f"❌ RSI-filter denied a buy-signal (RSI={rsi_latest:.2f} > {RSI_FILTER_BUY_MAX})")
                 return None, momentum_info
             elif suggested_signal == "sell" and rsi_latest < RSI_FILTER_SELL_MIN:
-                print(f"❌ RSI-suodatus esti sell-signaalin (RSI={rsi_latest:.2f} < {RSI_FILTER_SELL_MIN})")
+                print(f"❌ RSI-filter denied a sell-signal (RSI={rsi_latest:.2f} < {RSI_FILTER_SELL_MIN})")
                 return None, momentum_info
         except Exception as e:
             print(f"⚠️ RSI-suodatus epäonnistui: {e}")
