@@ -11,7 +11,7 @@ def round_price(price, tick_size):
 def place_spot_trade_with_tp_sl(symbol, qty, entry_price, tick_size):
     try:
         # ✅ Osto (MARKET)
-        print(f"📥 Placing MARKET BUY for {symbol} - Qty: {qty}")
+        # print(f"📥 Placing MARKET BUY for {symbol} - Qty: {qty}")
         buy_order = client.create_order(
             symbol=symbol,
             side='BUY',
@@ -20,7 +20,7 @@ def place_spot_trade_with_tp_sl(symbol, qty, entry_price, tick_size):
         )
 
         # ⬆️ Take Profit
-        tp_price = round_price(entry_price * 1.01, tick_size)
+        tp_price = round_price(entry_price * 1.005, tick_size)
         print(f"🎯 Setting TAKE PROFIT @ {tp_price}")
         client.create_order(
             symbol=symbol,
@@ -51,5 +51,5 @@ def place_spot_trade_with_tp_sl(symbol, qty, entry_price, tick_size):
         }
 
     except Exception as e:
-        print(f"❌ Trade execution failed: {e}")
+        # print(f"❌ Trade execution failed: {e}")
         return None

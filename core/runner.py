@@ -123,21 +123,21 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # print(f"Add strategy logic here...")
 
-    #***** BUYING *****#
+    #***** LONGS *****#
 
-    # if final_signal == "buy":
+    if final_signal == "buy":
 
         # Binance
-        # binance_result = execute_binance_long(symbol, risk_strength)
-        # if binance_result:
-        #     log_trade(**binance_result)
+        binance_result = execute_binance_long(symbol, risk_strength)
+        if binance_result:
+            log_trade(**binance_result)
 
         # Bybit
         # bybit_result = execute_bybit_long(symbol, risk_strength)
         # if bybit_result:
         #     log_trade(**bybit_result)
 
-    #***** SELLING *****#
+    #***** SHORTS *****#
 
     # if final_signal == "sell":
 

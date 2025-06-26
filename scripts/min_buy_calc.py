@@ -39,7 +39,7 @@ def calculate_minimum_valid_purchase(symbol):
             min_notional = float(filters["MIN_NOTIONAL"]["minNotional"])
         else:
             min_notional = config.DEFAULT_MIN_NOTIONAL
-            print(f"⚠️  MIN_NOTIONAL-filter puuttuu symbolilta {symbol}, käytetään oletusarvoa {min_notional}")
+            # print(f"⚠️  MIN_NOTIONAL-filter puuttuu symbolilta {symbol}, käytetään oletusarvoa {min_notional}")
 
         qty = min_qty
         cost = qty * price
