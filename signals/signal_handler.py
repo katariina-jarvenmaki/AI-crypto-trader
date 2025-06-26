@@ -9,6 +9,7 @@
 # 5. Checks momentum signal
 # Returns results
 #
+
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
 from signals.momentum_signal import get_momentum_signal
@@ -69,7 +70,22 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             "rsi": rsi_result.get("rsi")
         }
 
-    # 4. Momentum + log
+    # 4. Logipohjainen signaali (ennen momentumia)
+    log_result = get_log_signal(symbol)
+    if log_result:
+        raw_signal = log_result["signal"]
+        if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
+            print(f"❌ Log signal '{raw_signal}' blocked by mode.")
+        else:
+            print(f"✅ Using log-based signal: {raw_signal}")
+            return {
+                "signal": raw_signal,
+                "mode": log_result.get("mode", "log"),
+                "interval": log_result["interval"],
+                "log_bias_interval": log_result["interval"]
+            }
+
+    # 5. Momentum-signaali (jos log ei palauttanut mitään)
     momentum_result, momentum_guide = get_momentum_signal(symbol)
 
     if momentum_guide:
@@ -77,22 +93,6 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
 
     if momentum_result:
         raw_signal = momentum_result["signal"]
-
-        # Vahvistus logista
-        log_result = get_log_signal(symbol)
-        if log_result and log_result["signal"] == raw_signal:
-            if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
-                print(f"❌ Log-confirmed signal '{raw_signal}' blocked by mode.")
-            else:
-                print(f"✅ Log confirmed momentum signal: {raw_signal}")
-                return {
-                    "signal": raw_signal,
-                    "mode": "log",
-                    "interval": log_result["interval"],
-                    "log_bias_interval": log_result["interval"]
-                }
-
-        # Palataan suodatettuun momentum-signaaliin
         if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
             print(f"❌ Momentum signal '{raw_signal}' blocked by mode.")
         else:

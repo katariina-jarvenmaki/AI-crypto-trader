@@ -43,11 +43,6 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     mode = signal_info.get("mode")
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
-    if(final_signal != None and mode != "momentum" and mode != "rsi"):
-        print(f"Signal: {final_signal }")
-        print(f"Mode: {mode}")
-        print(f"Interval: {interval}")
-        print(f"RSI: {rsi}")
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
@@ -97,13 +92,13 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             signal_type=final_signal,
             mode=mode,
             now=now,
-            market_state=market_state,
-            started_on=started_on,
-            momentum_strength=risk_strength,
             status=status,
-            price_change=selected_change_text,
+            momentum_strength=risk_strength,
+            reverse_signal_info=reverse_result,
             volume_multiplier=volume_multiplier,
-            reverse_signal_info=reverse_result
+            price_change=selected_change_text,
+            market_state=market_state,
+            started_on=started_on
         )
 
     # Continue only, if a risk_strength is strong AND reverse signal is not strong

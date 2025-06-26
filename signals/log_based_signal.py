@@ -47,7 +47,7 @@ def get_log_based_signal(symbol: str) -> dict:
                 if not isinstance(mode_data, dict):
                     continue
 
-                if mode_data.get("status") == "complete":
+                if mode_data.get("status") not in [None, "unused"]:
                     continue
 
                 time_str = mode_data.get("time") or mode_data.get("rsi") or mode_data.get("timestamp") or mode_data.get("datetime")

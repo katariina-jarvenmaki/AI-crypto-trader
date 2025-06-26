@@ -3,6 +3,12 @@
 from signals.determine_momentum import determine_signal_with_momentum_and_volume
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from signals.log_signal import get_log_signal
+from configs.config import (
+    RSI_FILTER_ENABLED,
+    RSI_FILTER_PERIOD,
+    RSI_FILTER_BUY_MAX,
+    RSI_FILTER_SELL_MIN
+)
 import pandas as pd
 
 def get_momentum_signal(symbol: str):
@@ -35,21 +41,27 @@ def get_momentum_signal(symbol: str):
         print(f"⚠️ Skipping momentum signal '{suggested_signal}' because an incomplete log signal exists.")
         return None, momentum_info
 
-    # RSI-suodatus (1h)
-    close_1h = df_1h["close"]
-    delta = close_1h.diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.rolling(window=14).mean()
-    avg_loss = loss.rolling(window=14).mean()
-    rs = avg_gain / avg_loss
-    rsi_1h = 100 - (100 / (1 + rs))
-    rsi_latest = rsi_1h.dropna().iloc[-1]
+    # RSI-suodatus (1h) konfiguraation mukaan
+    if RSI_FILTER_ENABLED:
+        try:
+            close_1h = df_1h["close"]
+            delta = close_1h.diff()
+            gain = delta.where(delta > 0, 0)
+            loss = -delta.where(delta < 0, 0)
+            avg_gain = gain.rolling(window=RSI_FILTER_PERIOD).mean()
+            avg_loss = loss.rolling(window=RSI_FILTER_PERIOD).mean()
+            rs = avg_gain / avg_loss
+            rsi_1h = 100 - (100 / (1 + rs))
+            rsi_latest = rsi_1h.dropna().iloc[-1]
 
-    if suggested_signal == "buy" and rsi_latest > 50:
-        return None, momentum_info
-    elif suggested_signal == "sell" and rsi_latest < 50:
-        return None, momentum_info
+            if suggested_signal == "buy" and rsi_latest > RSI_FILTER_BUY_MAX:
+                print(f"❌ RSI-suodatus esti buy-signaalin (RSI={rsi_latest:.2f} > {RSI_FILTER_BUY_MAX})")
+                return None, momentum_info
+            elif suggested_signal == "sell" and rsi_latest < RSI_FILTER_SELL_MIN:
+                print(f"❌ RSI-suodatus esti sell-signaalin (RSI={rsi_latest:.2f} < {RSI_FILTER_SELL_MIN})")
+                return None, momentum_info
+        except Exception as e:
+            print(f"⚠️ RSI-suodatus epäonnistui: {e}")
 
     # SMA-suodatus (5m)
     sma_5m = df_5m["close"].rolling(window=50).mean().iloc[-1]

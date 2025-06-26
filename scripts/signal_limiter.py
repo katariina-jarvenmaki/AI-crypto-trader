@@ -118,20 +118,20 @@ def update_signal_log(
     # Tallenna aikaleima erilliseen avainkenttään
     mode_entry["time"] = now.isoformat()
 
+    if status:
+        mode_entry["status"] = status
+    if momentum_strength:
+        mode_entry["momentum_strength"] = momentum_strength
+    if reverse_signal_info:
+        mode_entry["reverse_strength"] = reverse_signal_info.get("momentum_strength")
+    if volume_multiplier is not None:
+        mode_entry["volume_multiplier"] = volume_multiplier
+    if price_change:
+        mode_entry["price_change"] = price_change
     if market_state:
         mode_entry["market_state"] = market_state
     if started_on:
         mode_entry["started_on"] = started_on
-    if momentum_strength:
-        mode_entry["momentum_strength"] = momentum_strength
-    if status:
-        mode_entry["status"] = status
-    if price_change:
-        mode_entry["price_change"] = price_change
-    if volume_multiplier is not None:
-        mode_entry["volume_multiplier"] = volume_multiplier
-    if reverse_signal_info:
-        mode_entry["reverse_strength"] = reverse_signal_info.get("momentum_strength")
 
     # Tarkista previous_market_state muiden analyysien alta
     previous_state = None
