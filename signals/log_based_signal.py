@@ -39,32 +39,37 @@ def get_log_based_signal(symbol: str) -> dict:
 
     for interval, signals in symbol_log.items():
         for signal_type in ['buy', 'sell']:
-            entry = signals.get(signal_type)
-            if not entry or not isinstance(entry, dict):
+            signal_modes = signals.get(signal_type)
+            if not isinstance(signal_modes, dict):
                 continue
 
-            if entry.get("status") == "complete":
-                continue
+            for mode_name, mode_data in signal_modes.items():
+                if not isinstance(mode_data, dict):
+                    continue
 
-            time_str = entry.get("time") or entry.get("rsi") or entry.get("timestamp") or entry.get("datetime")
-            if not time_str:
-                continue
+                if mode_data.get("status") == "complete":
+                    continue
 
-            try:
-                ts = datetime.fromisoformat(time_str)
-                if ts.tzinfo is None:
-                    ts = ts.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone(TIMEZONE.zone))
-            except ValueError:
-                continue
+                time_str = mode_data.get("time") or mode_data.get("rsi") or mode_data.get("timestamp") or mode_data.get("datetime")
+                if not time_str:
+                    continue
 
-            if now - ts > LOG_BASED_SIGNAL_TIMEOUT:
-                continue
+                try:
+                    ts = datetime.fromisoformat(time_str)
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone(TIMEZONE.zone))
+                except ValueError:
+                    continue
 
-            valid_entries.append({
-                "signal": signal_type,
-                "interval": interval,
-                "time": ts
-            })
+                if now - ts > LOG_BASED_SIGNAL_TIMEOUT:
+                    continue
+
+                valid_entries.append({
+                    "signal": signal_type,
+                    "interval": interval,
+                    "mode": mode_name,
+                    "time": ts
+                })
 
     if not valid_entries:
         return {}
@@ -80,6 +85,7 @@ def get_log_based_signal(symbol: str) -> dict:
 
     best_entry = sorted(valid_entries, key=interval_sort_key, reverse=True)[0]
 
+    # RSI suodatin (ei muuta)
     if RSI_FILTER_ENABLED:
         try:
             ohlcv, _ = fetch_ohlcv_fallback(symbol, intervals=[RSI_FILTER_INTERVAL], limit=100)
@@ -93,10 +99,8 @@ def get_log_based_signal(symbol: str) -> dict:
             latest_rsi = rsi_series.dropna().iloc[-1]
 
             if best_entry["signal"] == "buy" and latest_rsi > RSI_FILTER_BUY_MAX:
-                # print(f"ℹ️ RSI {latest_rsi:.2f} > BUY_MAX {RSI_FILTER_BUY_MAX} -> ei buy-signaalia")
                 return {}
             elif best_entry["signal"] == "sell" and latest_rsi < RSI_FILTER_SELL_MIN:
-                # print(f"ℹ️ RSI {latest_rsi:.2f} < SELL_MIN {RSI_FILTER_SELL_MIN} -> ei sell-signaalia")
                 return {}
 
         except Exception as e:
@@ -106,5 +110,5 @@ def get_log_based_signal(symbol: str) -> dict:
     return {
         "signal": best_entry["signal"],
         "interval": best_entry["interval"],
-        "mode": "log"
+        "mode": best_entry["mode"]
     }

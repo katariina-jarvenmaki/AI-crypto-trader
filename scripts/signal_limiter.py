@@ -103,36 +103,45 @@ def update_signal_log(
 
     log = load_signal_log()
 
-    signal_entry = log.setdefault(symbol, {}) \
-                      .setdefault(interval, {}) \
-                      .setdefault(signal_type, {})
+    # Luo rakenne: symbol > interval > signal_type (buy/sell) > mode (rsi/momentum/...)
+    mode_entry = log.setdefault(symbol, {}) \
+                    .setdefault(interval, {}) \
+                    .setdefault(signal_type, {}) \
+                    .setdefault(mode, {})
 
-    # 🔑 Pääsignaali kirjataan avaimella, esim. "rsi" : "aikaleima"
-    signal_entry[mode] = now.isoformat()
+    # Korjaa vanha formaatti, jos mode_entry on str, muutetaan dictiksi
+    if isinstance(mode_entry, str):
+        mode_entry = {"time": mode_entry}
+        log[symbol][interval][signal_type][mode] = mode_entry
+
+    # Tallenna aikaleima erilliseen avainkenttään
+    mode_entry["time"] = now.isoformat()
 
     if market_state:
-        signal_entry["market_state"] = market_state
+        mode_entry["market_state"] = market_state
     if started_on:
-        signal_entry["started_on"] = started_on
+        mode_entry["started_on"] = started_on
     if momentum_strength:
-        signal_entry["momentum_strength"] = momentum_strength
+        mode_entry["momentum_strength"] = momentum_strength
     if status:
-        signal_entry["status"] = status
+        mode_entry["status"] = status
     if price_change:
-        signal_entry["price_change"] = price_change
+        mode_entry["price_change"] = price_change
     if volume_multiplier is not None:
-        signal_entry["volume_multiplier"] = volume_multiplier
+        mode_entry["volume_multiplier"] = volume_multiplier
 
-    # ⏪ previous_market_state tarkistus
+    # Tarkista previous_market_state muiden analyysien alta
     previous_state = None
     for _interval_data in log.get(symbol, {}).values():
         for _signal_data in _interval_data.values():
             if isinstance(_signal_data, dict):
-                logged_state = _signal_data.get("market_state")
-                if logged_state and market_state and logged_state != market_state:
-                    previous_state = logged_state
+                for _mode_data in _signal_data.values():
+                    if isinstance(_mode_data, dict):
+                        logged_state = _mode_data.get("market_state")
+                        if logged_state and market_state and logged_state != market_state:
+                            previous_state = logged_state
 
     if previous_state:
-        signal_entry["previous_market_state"] = previous_state
+        mode_entry["previous_market_state"] = previous_state
 
     save_signal_log(log)
