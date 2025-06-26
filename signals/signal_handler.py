@@ -1,18 +1,8 @@
 # signals/signal_handler.py
-#
-# 1. Checks override signal (highest priority)
-# Defines disallowed signals
-# 2. Checks Divergence signals
-# 3. Checks RSI signals (lowest priority)
-# Uses momentum to guide analysis
-# 4. Checks log signal
-# 5. Checks momentum signal
-# Returns results
-#
 
 from signals.divergence_detector import DivergenceDetector
 from signals.rsi_analyzer import rsi_analyzer
-from signals.momentum_signal import get_momentum_signal
+from signals.momentum_signal import get_momentum_signal, determine_signal_with_momentum_and_volume
 from signals.log_signal import get_log_signal
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
@@ -71,7 +61,19 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         }
 
     # 4. Logipohjainen signaali (ennen momentumia)
-    log_result = get_log_signal(symbol)
+    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=100)
+    df_5m = ohlcv_data.get("5m")
+
+    if df_5m is None or df_5m.empty:
+        print(f"❌ Missing 5m OHLCV data for {symbol}")
+        return None
+
+    momentum_result = determine_signal_with_momentum_and_volume(df_5m, symbol, intervals=[5])
+    suggested_signal = momentum_result.get("suggested_signal")
+    if suggested_signal:
+        print(f"📊 Momentum guide suggests: {suggested_signal}")
+
+    log_result = get_log_signal(symbol, signal_type=suggested_signal)
     if log_result:
         raw_signal = log_result["signal"]
         if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
@@ -86,23 +88,23 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
             }
 
     # 5. Momentum-signaali (jos log ei palauttanut mitään)
-    momentum_result, momentum_guide = get_momentum_signal(symbol)
-
-    if momentum_guide:
-        print(f"📊 Momentum guide: {momentum_guide['suggested_signal']} ({momentum_guide['strength']})")
-
+    momentum_result = get_momentum_signal(symbol)
     if momentum_result:
-        raw_signal = momentum_result["signal"]
-        if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
-            print(f"❌ Momentum signal '{raw_signal}' blocked by mode.")
-        else:
-            print(f"✅ Using filtered momentum signal: {raw_signal}")
-            return {
-                "signal": raw_signal,
-                "mode": "momentum",
-                "interval": momentum_result["interval"],
-                "log_bias_interval": None
-            }
+        signal_data, momentum_info = momentum_result
+
+        # momentum_info on metadata, signal_data on esim: {"signal": "buy", "interval": "5m"}
+        if signal_data and "signal" in signal_data:
+            signal_value = signal_data["signal"]
+            if (long_only and signal_value == "sell") or (short_only and signal_value == "buy"):
+                print(f"❌ Momentum signal '{signal_value}' blocked by mode.")
+            else:
+                print(f"✅ Using filtered momentum signal: {signal_value}")
+                return {
+                    "signal": signal_value,
+                    "mode": "momentum",
+                    "interval": signal_data.get("interval"),
+                    "log_bias_interval": None
+                }
 
     print(f"⚪ No signal for {symbol}")
     return {}

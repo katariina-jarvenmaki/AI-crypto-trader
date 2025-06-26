@@ -2,8 +2,8 @@
 
 from signals.log_based_signal import get_log_based_signal
 
-def get_log_signal(symbol: str):
-    log_signal = get_log_based_signal(symbol)
+def get_log_signal(symbol: str, signal_type: str = None):
+    log_signal = get_log_based_signal(symbol, signal_type)
     if not log_signal:
         return None
     return {

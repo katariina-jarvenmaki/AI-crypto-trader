@@ -27,7 +27,7 @@ def calculate_rsi(df, period=14):
     rsi = 100 - (100 / (1 + rs))
     return rsi
 
-def get_log_based_signal(symbol: str) -> dict:
+def get_log_based_signal(symbol: str, signal_type: str = None) -> dict:
     log = load_signal_log()
     now = datetime.now(pytz.timezone(TIMEZONE.zone))
     symbol_log = log.get(symbol, {})
@@ -38,8 +38,11 @@ def get_log_based_signal(symbol: str) -> dict:
     valid_entries = []
 
     for interval, signals in symbol_log.items():
-        for signal_type in ['buy', 'sell']:
-            signal_modes = signals.get(signal_type)
+        for signal_direction in ['buy', 'sell']:
+            if signal_type and signal_type != signal_direction:
+                continue  # suodatetaan väärä suunta
+
+            signal_modes = signals.get(signal_direction)
             if not isinstance(signal_modes, dict):
                 continue
 
@@ -65,7 +68,7 @@ def get_log_based_signal(symbol: str) -> dict:
                     continue
 
                 valid_entries.append({
-                    "signal": signal_type,
+                    "signal": signal_direction,
                     "interval": interval,
                     "mode": mode_name,
                     "time": ts
@@ -85,7 +88,7 @@ def get_log_based_signal(symbol: str) -> dict:
 
     best_entry = sorted(valid_entries, key=interval_sort_key, reverse=True)[0]
 
-    # RSI suodatin (ei muuta)
+    # RSI suodatin
     if RSI_FILTER_ENABLED:
         try:
             ohlcv, _ = fetch_ohlcv_fallback(symbol, intervals=[RSI_FILTER_INTERVAL], limit=100)
