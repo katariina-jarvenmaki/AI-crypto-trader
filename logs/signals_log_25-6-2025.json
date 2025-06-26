@@ -1,12 +1,13 @@
 {
-    "ADAUSDC": {
-        "null": {
+    "SOLUSDC": {
+        "5m": {
             "buy": {
-                "momentum": "2025-06-26T00:12:52.444218+03:00",
+                "momentum": "2025-06-26T03:06:57.962463+03:00",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-25T04:00:00",
+                "started_on": "2025-06-25T21:00:00",
                 "momentum_strength": "strong",
-                "status": "complete"
+                "status": "complete",
+                "previous_market_state": "unknown"
             }
         }
     }

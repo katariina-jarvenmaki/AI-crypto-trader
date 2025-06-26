@@ -96,7 +96,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
             print(f"❌ Momentum signal '{raw_signal}' blocked by mode.")
         else:
-            print(f"✔️ Using filtered momentum signal: {raw_signal}")
+            print(f"✅ Using filtered momentum signal: {raw_signal}")
             return {
                 "signal": raw_signal,
                 "mode": "momentum",

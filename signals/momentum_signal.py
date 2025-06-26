@@ -2,6 +2,7 @@
 
 from signals.determine_momentum import determine_signal_with_momentum_and_volume
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
+from signals.log_signal import get_log_signal
 import pandas as pd
 
 def get_momentum_signal(symbol: str):
@@ -26,6 +27,12 @@ def get_momentum_signal(symbol: str):
     }
 
     if suggested_signal not in ["buy", "sell"]:
+        return None, momentum_info
+
+    # ⚠️ Estetään momentum-signaali jos kesken oleva sama signaali löytyy logista
+    log_result = get_log_signal(symbol)
+    if log_result and log_result.get("signal") == suggested_signal and log_result.get("status") != "complete":
+        print(f"⚠️ Skipping momentum signal '{suggested_signal}' because an incomplete log signal exists.")
         return None, momentum_info
 
     # RSI-suodatus (1h)

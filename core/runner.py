@@ -43,10 +43,11 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     mode = signal_info.get("mode")
     interval = signal_info.get("interval")
     rsi = signal_info.get("rsi")
-    print(f"Signal: {final_signal }")
-    print(f"Mode: {mode}")
-    print(f"Interval: {interval}")
-    print(f"RSI: {rsi}")
+    if(final_signal != None and mode != "momentum" and mode != "rsi"):
+        print(f"Signal: {final_signal }")
+        print(f"Mode: {mode}")
+        print(f"Interval: {interval}")
+        print(f"RSI: {rsi}")
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
@@ -59,12 +60,13 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     print(f"📊 Market state: {market_state}, started on: {started_on}")
 
     # Check riskmanagement
-    status = None
+    status = "unused"
     risk_strength, price_changes, volume_multiplier = check_riskmanagement(
         symbol=symbol,
         signal=final_signal,
         market_state=market_state,
-        override_signal=(mode in ["override", "divergence"])
+        override_signal=(mode in ["override", "divergence"]),
+        mode=mode
     )
     if risk_strength == "strong":
         status = "complete"
@@ -83,19 +85,12 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         if strategy_plan:
             print(f"📌 Strategy: {strategy_plan['selected_strategies']}")
 
-    # Do the logging
+    # Do the signal logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
-    if risk_strength in ("strong", "weak", "none") and mode not in ("log", "override"):
+    if risk_strength in ("strong", "weak", "none") and (
+        mode not in ("log", "override") or (mode == "log" and status == "complete")
+    ):
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
-        print(f"Interval: {interval}")
-        print(f"Now: {now}")
-        print(f"Mode: {mode}")
-        print(f"Market state: {market_state}")
-        print(f"Started on: {started_on}")
-        print(f"Momemntum Strength: {risk_strength}")
-        print(f"Status: {status}")
-        print(f"Price Change: {selected_change_text}")
-        print(f"Volume Multiplier: {volume_multiplier}")
         update_signal_log(
             symbol=symbol,
             interval=interval,
@@ -109,31 +104,6 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             price_change=selected_change_text,
             volume_multiplier=volume_multiplier 
         )
-    if risk_strength in ("strong", "weak"):
-        if (mode == "log" and status == "complete") or (mode not in ("log", "override")):
-            now = datetime.now(pytz.timezone(TIMEZONE.zone))
-            print(f"Interval: {interval}")
-            print(f"Now: {now}")
-            print(f"Mode: {mode}")
-            print(f"Market state: {market_state}")
-            print(f"Started on: {started_on}")
-            print(f"Momemntum Strength: {risk_strength}")
-            print(f"Status: {status}")
-            print(f"Price Change: {selected_change_text}")
-            print(f"Volume Multiplier: {volume_multiplier}")
-            update_signal_log(
-                symbol=symbol,
-                interval=interval,
-                signal_type=final_signal,
-                now=now,
-                mode=mode,
-                market_state=market_state,
-                started_on=started_on,
-                momentum_strength=risk_strength,
-                status=status,
-                price_change=selected_change_text,
-                volume_multiplier=volume_multiplier 
-            )
 
     # Continue only, if a risk_strength is strong
     if risk_strength != "strong":

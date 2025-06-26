@@ -88,7 +88,7 @@ def update_signal_log(
     interval: str,
     signal_type: str,
     now: datetime,
-    mode: str = "default",
+    mode: str = "default",  # esim. "rsi", "momentum"
     market_state: str = None,
     started_on: str = None,
     momentum_strength: str = None,
@@ -96,7 +96,6 @@ def update_signal_log(
     price_change: str = None,
     volume_multiplier: float = None
 ):
-    # Varmista että now on oikeassa aikavyöhykkeessä
     if now.tzinfo is None:
         now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
     else:
@@ -108,6 +107,7 @@ def update_signal_log(
                       .setdefault(interval, {}) \
                       .setdefault(signal_type, {})
 
+    # 🔑 Pääsignaali kirjataan avaimella, esim. "rsi" : "aikaleima"
     signal_entry[mode] = now.isoformat()
 
     if market_state:
@@ -115,11 +115,15 @@ def update_signal_log(
     if started_on:
         signal_entry["started_on"] = started_on
     if momentum_strength:
-        signal_entry["momentum_strength"] = momentum_strength 
+        signal_entry["momentum_strength"] = momentum_strength
     if status:
         signal_entry["status"] = status
+    if price_change:
+        signal_entry["price_change"] = price_change
+    if volume_multiplier is not None:
+        signal_entry["volume_multiplier"] = volume_multiplier
 
-    # 🔍 Search for any different previous state
+    # ⏪ previous_market_state tarkistus
     previous_state = None
     for _interval_data in log.get(symbol, {}).values():
         for _signal_data in _interval_data.values():
