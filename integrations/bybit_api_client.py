@@ -95,26 +95,37 @@ def get_available_balance(asset="USDT"):
 
 def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
     try:
+        # Hedge mode ja vipuvaikutus
         set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
         set_leverage(symbol, leverage)
 
         rounded_qty = round_bybit_quantity(symbol, qty)
 
-        buy_order = client.place_order(
+        # Asetetaan positionIdx riippuen suunnasta
+        position_idx = 1 if side == "Buy" else 2
+
+        order = client.place_order(
             category=CATEGORY,
             symbol=symbol,
             side=side,
             orderType="Market",
             qty=str(rounded_qty),
             isLeverage=1,
-            positionIdx=1
+            positionIdx=position_idx
         )
 
-        # Lasketaan SL ja TP hinnat
-        sl_price = round(price * (1 - DEFAULT_BYBIT_STOP_LOSS_PERCENT), 2)
-        tp_price = round(price * (1 + DEFAULT_BYBIT_TAKE_PROFIT_PERCENT), 2)
+        # Skaalatut SL ja TP prosentit vivun mukaan
+        adjusted_sl_percent = DEFAULT_BYBIT_STOP_LOSS_PERCENT / leverage
+        adjusted_tp_percent = DEFAULT_BYBIT_TAKE_PROFIT_PERCENT / leverage
 
-        # Asetetaan SL ja TP
+        # Lasketaan SL ja TP hinnat suunnan mukaan
+        if side == "Buy":
+            sl_price = round(price * (1 - adjusted_sl_percent), 2)
+            tp_price = round(price * (1 + adjusted_tp_percent), 2)
+        else:  # Sell
+            sl_price = round(price * (1 + adjusted_sl_percent), 2)
+            tp_price = round(price * (1 - adjusted_tp_percent), 2)
+
         client.set_trading_stop(
             category="linear",
             symbol=symbol,
@@ -125,13 +136,13 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, l
             tpslMode="Full",
             tpOrderType="Market",
             slOrderType="Market",
-            positionIdx=1
+            positionIdx=position_idx
         )
 
         return {
             "tp_price": tp_price,
             "sl_price": sl_price,
-            "buy_order": buy_order
+            "order": order
         }
 
     except Exception as e:

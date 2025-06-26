@@ -8,7 +8,7 @@
 # 6. Make a long order with 1%tp and 10%sl
 # 7. Selling in loop?
 # 8. Updating stop losses
-#
+
 from datetime import datetime
 import pytz 
 from pytz import timezone
@@ -61,7 +61,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Check riskmanagement
     status = "unused"
-    risk_strength, price_changes, volume_multiplier = check_riskmanagement(
+    risk_strength, price_changes, volume_multiplier, reverse_result = check_riskmanagement(
         symbol=symbol,
         signal=final_signal,
         market_state=market_state,
@@ -102,11 +102,13 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             momentum_strength=risk_strength,
             status=status,
             price_change=selected_change_text,
-            volume_multiplier=volume_multiplier 
+            volume_multiplier=volume_multiplier,
+            reverse_signal_info=reverse_result
         )
 
-    # Continue only, if a risk_strength is strong
-    if risk_strength != "strong":
+    # Continue only, if a risk_strength is strong AND reverse signal is not strong
+    if risk_strength != "strong" or reverse_result.get("momentum_strength") == "strong":
+        if risk_strength == "strong": print(f"❌ Signal {final_signal.upper()} blocked due to strong reverse signal.")
         return
 
     # Print results
@@ -133,17 +135,17 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
             log_trade(**binance_result)
 
         # Bybit
-        # bybit_result = execute_bybit_long(symbol, risk_strength)
-        # if bybit_result:
-        #     log_trade(**bybit_result)
+        bybit_result = execute_bybit_long(symbol, risk_strength)
+        if bybit_result:
+            log_trade(**bybit_result)
 
     #***** SHORTS *****#
 
-    # if final_signal == "sell":
+    if final_signal == "sell":
 
         # Bybit
-        # bybit_result = execute_bybit_short(symbol, risk_strength)
-        # if bybit_result:
-        #     log_trade(**bybit_result)
+        bybit_result = execute_bybit_short(symbol, risk_strength)
+        if bybit_result:
+            log_trade(**bybit_result)
 
     #***** STOP LOSSES *****#

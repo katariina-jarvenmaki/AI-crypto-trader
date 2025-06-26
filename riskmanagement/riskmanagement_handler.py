@@ -19,10 +19,11 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
 
         if signal == "buy" and market_state not in allowed_states_for_buy:
             print(f"❌ Momentum BUY blocked by market state '{market_state}'.")
-            return "none", {}, 1.0
+            return "none", {}, 1.0, {}
+
         if signal == "sell" and market_state not in allowed_states_for_sell:
             print(f"❌ Momentum SELL blocked by market state '{market_state}'.")
-            return "none", {}, 1.0
+            return "none", {}, 1.0, {}
 
     if intervals is None:
         intervals = [5]
@@ -31,14 +32,14 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
     if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️  Riskmanagement: No OHLCV data available.")
-        return "none", {}, 1.0
+        return "none", {}, 1.0, {}
 
     df = ohlcv_data["5m"]
 
     # Price change risk check
     price_risk_result, price_changes = check_price_change_risk(symbol, signal, df)
     if price_risk_result == "none":
-        return "none", price_changes, 1.0  # Ensure the return has consistent structure
+        return "none", price_changes, 1.0
 
     # Momentum and market check
     result = verify_signal_with_momentum_and_volume(df, signal, symbol, intervals=intervals, market_state=market_state)
@@ -46,12 +47,18 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     volume_multiplier = result.get("volume_multiplier", 1.0)
     interpretation = result.get("interpretation", "")
 
-    # Print momentum analysis result
-    if strength == "strong":
-        print(f"✅ Momentum to {signal} is STRONG")
-    elif strength == "weak":
-        print(f"🟡 Momentum to {signal} is WEAK")
+    # Reverse signal analysis 15min
+    opposite_signal = "sell" if signal == "buy" else "buy"
+    ohlcv_15m_data, _ = fetch_ohlcv_fallback(symbol, intervals=["15m"], limit=30)
+    reverse_result = {}
+    if ohlcv_15m_data and "15m" in ohlcv_15m_data and not ohlcv_15m_data["15m"].empty:
+        df_15m = ohlcv_15m_data["15m"]
+        reverse_result = verify_signal_with_momentum_and_volume(df_15m, opposite_signal, symbol, intervals=[15], market_state=market_state)
     else:
-        print(f"❌ Momentum to {signal} is NONE")
+        reverse_result = {"momentum_strength": "n/a", "interpretation": "No 15m OHLCV"}
 
-    return strength, price_changes, volume_multiplier
+    # Print momentum analysis result
+    print(f"✅ Momentum to {signal.upper()} is {strength.upper()}")
+    print(f"↩️  Opposite momentum {opposite_signal.upper()} 15min: {reverse_result.get('momentum_strength', 'n/a').upper()} - {reverse_result.get('interpretation', '')}")
+
+    return strength, price_changes, volume_multiplier, reverse_result

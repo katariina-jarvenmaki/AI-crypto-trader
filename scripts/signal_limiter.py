@@ -88,13 +88,14 @@ def update_signal_log(
     interval: str,
     signal_type: str,
     now: datetime,
-    mode: str = "default",  # esim. "rsi", "momentum"
+    mode: str = "default",
     market_state: str = None,
     started_on: str = None,
     momentum_strength: str = None,
     status: str = None,
     price_change: str = None,
-    volume_multiplier: float = None
+    volume_multiplier: float = None,
+    reverse_signal_info: dict = None
 ):
     if now.tzinfo is None:
         now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
@@ -129,6 +130,8 @@ def update_signal_log(
         mode_entry["price_change"] = price_change
     if volume_multiplier is not None:
         mode_entry["volume_multiplier"] = volume_multiplier
+    if reverse_signal_info:
+        mode_entry["reverse_signal_info"] = reverse_signal_info
 
     # Tarkista previous_market_state muiden analyysien alta
     previous_state = None

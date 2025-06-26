@@ -65,7 +65,6 @@ def calculate_minimum_valid_purchase(symbol):
         print(f"❌ Virhe minimioston laskennassa: {e}")
         return None
 
-
 def calculate_minimum_valid_bybit_purchase(symbol):
     info = get_bybit_symbol_info(symbol)
     if info is None:
@@ -78,9 +77,16 @@ def calculate_minimum_valid_bybit_purchase(symbol):
         if not exchange_info or not price:
             return None
 
+        # {'symbol': 'SOLUSDT', 'contractType': 'LinearPerpetual', 'status': 'Trading', 'baseCoin': 'SOL', 'quoteCoin': 'USDT', 'launchTime': '1634256000000', 'deliveryTime': '0', 'deliveryFeeRate': '', 'priceScale': '3', 'leverageFilter': {'minLeverage': '1', 'maxLeverage': '100.00', 'leverageStep': '0.01'}, 'priceFilter': {'minPrice': '0.010', 'maxPrice': '199999.980', 'tickSize': '0.010'}, 'lotSizeFilter': {'maxOrderQty': '79770.0', 'minOrderQty': '0.1', 'qtyStep': '0.1', 'postOnlyMaxOrderQty': '79770.0', 'maxMktOrderQty': '11740.0', 'minNotionalValue': '5'}, 'unifiedMarginTrade': True, 'fundingInterval': 480, 'settleCoin': 'USDT', 'copyTrading': 'both', 'upperFundingRate': '0.005', 'lowerFundingRate': '-0.005', 'isPreListing': False, 'preListingInfo': None, 'riskParameters': {'priceLimitRatioX': '0.05', 'priceLimitRatioY': '0.1'}, 'displayName': ''}
+        # 🖨️ Tulostetaan tiedot tarkastelua varten
+        print(f"📊 Bybit exchange_info for {symbol}: {exchange_info}")
+
         lot_size_filter = exchange_info.get("lot_size_filter", {})
         min_qty = float(lot_size_filter.get("min_order_qty", 0.001))
         step_size = float(lot_size_filter.get("qty_step", 0.001))
+        print(f"Lot size filter {lot_size_filter}")
+        print(f"Min dty {min_qty}")
+        print(f"Step size {step_size}")
 
         min_notional = 5.0  # oletetaan 5 USD, voidaan hakea tarkemmin
 
