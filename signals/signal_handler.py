@@ -86,7 +86,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     momentum_result = determine_signal_with_momentum_and_volume(df_5m, symbol, intervals=[5])
     suggested_signal = momentum_result.get("suggested_signal")
     momentum_strength = momentum_result.get("momentum_strength")
-    if suggested_signal:
+    if suggested_signal and suggested_signal != None:
         print(f"📊 Momentum guide suggests: {suggested_signal.upper()} ({momentum_strength.upper()})")
 
     log_result = get_log_signal(symbol, signal_type=suggested_signal)

@@ -14,19 +14,19 @@ def get_current_price(symbol):
         ticker = client.get_symbol_ticker(symbol=symbol)
         return float(ticker["price"])
     except Exception as e:
-        print(f"❌ Hintahaku epäonnistui symbolille {symbol}: {e}")
+        print(f"❌ Failed to fetch price for symbol {symbol}: {e}")
         return None
 
 def calculate_minimum_valid_purchase(symbol):
     try:
         price = get_current_price(symbol)
         if not price:
-            print(f"❌ Hinta ei saatavilla symbolille {symbol}")
+            print(f"❌ Price not available for symbol {symbol}")
             return None
 
         exchange_info = client.get_symbol_info(symbol)
         if not exchange_info:
-            print(f"❌ Symbolitietoja ei saatavilla symbolille {symbol}")
+            print(f"❌ Symbol info not available for symbol {symbol}")
             return None
 
         filters = {f["filterType"]: f for f in exchange_info["filters"]}
@@ -34,12 +34,12 @@ def calculate_minimum_valid_purchase(symbol):
         min_qty = float(filters["LOT_SIZE"]["minQty"])
         tick_size = float(filters["PRICE_FILTER"]["tickSize"])
 
-        # ✅ Käytetään MIN_NOTIONAL-filtteriä jos saatavilla, muuten fallback configista
+        # ✅ Use MIN_NOTIONAL filter if available, otherwise fallback from config
         if "MIN_NOTIONAL" in filters and "minNotional" in filters["MIN_NOTIONAL"]:
             min_notional = float(filters["MIN_NOTIONAL"]["minNotional"])
         else:
             min_notional = config.DEFAULT_MIN_NOTIONAL
-            # print(f"⚠️  MIN_NOTIONAL-filter puuttuu symbolilta {symbol}, käytetään oletusarvoa {min_notional}")
+            # print(f"⚠️  MIN_NOTIONAL filter missing for symbol {symbol}, using default {min_notional}")
 
         qty = min_qty
         cost = qty * price
@@ -50,7 +50,7 @@ def calculate_minimum_valid_purchase(symbol):
             cost = qty * price
 
             if qty > 10_000:
-                print("⚠️ Turvaraja saavutettu, jokin meni pieleen")
+                print("⚠️ Safety limit reached, something went wrong")
                 return None
 
         return {
@@ -62,13 +62,14 @@ def calculate_minimum_valid_purchase(symbol):
         }
 
     except Exception as e:
-        print(f"❌ Virhe minimioston laskennassa: {e}")
+        print(f"❌ Error calculating minimum purchase: {e}")
         return None
 
 def calculate_minimum_valid_bybit_purchase(symbol):
+
     info = get_bybit_symbol_info(symbol)
     if info is None:
-        print(f"❌ Bybit-symbolitietoa ei löytynyt symbolille {symbol}")
+        print(f"❌ No Bybit symbol info found for symbol {symbol}")
         return None
     try:
         exchange_info = get_bybit_symbol_info(symbol)
@@ -77,47 +78,40 @@ def calculate_minimum_valid_bybit_purchase(symbol):
         if not exchange_info or not price:
             return None
 
-        # {'symbol': 'SOLUSDT', 'contractType': 'LinearPerpetual', 'status': 'Trading', 'baseCoin': 'SOL', 'quoteCoin': 'USDT', 'launchTime': '1634256000000', 'deliveryTime': '0', 'deliveryFeeRate': '', 'priceScale': '3', 'leverageFilter': {'minLeverage': '1', 'maxLeverage': '100.00', 'leverageStep': '0.01'}, 'priceFilter': {'minPrice': '0.010', 'maxPrice': '199999.980', 'tickSize': '0.010'}, 'lotSizeFilter': {'maxOrderQty': '79770.0', 'minOrderQty': '0.1', 'qtyStep': '0.1', 'postOnlyMaxOrderQty': '79770.0', 'maxMktOrderQty': '11740.0', 'minNotionalValue': '5'}, 'unifiedMarginTrade': True, 'fundingInterval': 480, 'settleCoin': 'USDT', 'copyTrading': 'both', 'upperFundingRate': '0.005', 'lowerFundingRate': '-0.005', 'isPreListing': False, 'preListingInfo': None, 'riskParameters': {'priceLimitRatioX': '0.05', 'priceLimitRatioY': '0.1'}, 'displayName': ''}
-        # 🖨️ Tulostetaan tiedot tarkastelua varten
-        print(f"Min buy calculation:")
-        print(f"📊 Bybit exchange_info for {symbol}: {exchange_info}")
+        lot_size_filter = exchange_info.get("lotSizeFilter", {})
 
-        lot_size_filter = exchange_info.get("lot_size_filter", {})
-        min_qty = float(lot_size_filter.get("min_order_qty", 0.001))
-        step_size = float(lot_size_filter.get("qty_step", 0.001))
-        print(f"Lot size filter {lot_size_filter}")
-        print(f"Min dty {min_qty}")
-        print(f"Step size {step_size}")
+        min_order_qty_raw = lot_size_filter.get("minOrderQty")
+        qty_step_raw = lot_size_filter.get("qtyStep")
 
-        min_notional = 5.0  # oletetaan 5 USD, voidaan hakea tarkemmin
+        if min_order_qty_raw is None or qty_step_raw is None:
+            raise ValueError(f"❌ Missing or incomplete lotSizeFilter data for symbol {symbol}: {lot_size_filter}")
+
+        # ✅ Convert before using
+        min_qty = float(min_order_qty_raw)
+        step_size = float(qty_step_raw)
+
+        min_notional = 5.0  # assumed 5 USD, can be fetched more precisely
 
         qty = min_qty
         cost = qty * price
-        print(f"Qty {qty}")
-        print(f"Cost {cost}")
 
+        # 🖨️ Print data for inspection
         while cost < min_notional:
             qty += step_size
             qty = round_step_size(qty, step_size)
             cost = qty * price
-            print(f"Total cost {cost}")
 
             if qty > 10000:
-                print("⚠️ Turvaraja Bybitin ostossa saavutettu")
+                print("⚠️ Safety limit reached in Bybit purchase")
                 return None
-
-        print(f"Return:")
-        print(f"Qty {qty}")
-        print(f"Rounded price {round(price, 2)}")
-        print(f"Rounded cost {round(cost, 2)}")
-        print(f"Step size {step_size}")
+                
         return {
             "qty": qty,
-            "price": round(price, 2),
-            "cost": round(cost, 2),
+            "price": round(price),
+            "cost": round(cost),
             "step_size": step_size
         }
 
     except Exception as e:
-        print(f"❌ Bybitin minimioston laskentavirhe: {e}")
+        print(f"❌ Error calculating minimum Bybit purchase: {e}")
         return None

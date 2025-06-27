@@ -39,13 +39,13 @@ def execute_bybit_long(symbol, risk_strength):
     print(f"Leverage: {balance} USD")
 
     # Place leveraged order
-    order_result = place_leveraged_bybit_order(
-        client=bybit_client,
-        symbol=bybit_symbol,
-        qty=result["qty"],
-        price=result["price"],
-        leverage=leverage
-    )
+    # order_result = place_leveraged_bybit_order(
+    #     client=bybit_client,
+    #     symbol=bybit_symbol,
+    #     qty=result["qty"],
+    #     price=result["price"],
+    #     leverage=leverage
+    # )
 
     if order_result:
         print(f"✅ Bybit trade executed: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")

@@ -40,7 +40,7 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     # Price change risk check
     price_risk_result, price_changes = check_price_change_risk(symbol, signal, df)
     if price_risk_result == "none":
-        print(f"⛔ Blocked {signal.upper()} signal: [2h] Change {price_changes.get('2h')}% exceeds threshold 0.2%")
+        print(f"⛔ Blocked {signal.upper()} signal: [2h] Change {price_changes.get('2h')}% exceeds threshold.")
         return "none", price_changes, 1.0, {"momentum_strength": "n/a", "interpretation": "price change block"}
 
     # Momentum and market check
