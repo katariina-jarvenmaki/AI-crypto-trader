@@ -15,10 +15,11 @@ def execute_bybit_long(symbol, risk_strength):
     if risk_strength != "strong":
         return None
 
-    print(f"ByBit buy:")
-
     # Convert USDC to USDT in symbol name if needed
     bybit_symbol = symbol.replace("USDC", "USDT")
+
+    # Determine leverage from config or use default
+    leverage = leverage_map.get(bybit_symbol, default_leverage)
 
     # Calculate minimum valid purchase size
     result = calculate_minimum_valid_bybit_purchase(bybit_symbol)
@@ -28,27 +29,27 @@ def execute_bybit_long(symbol, risk_strength):
 
     # Check if there is enough available balance
     balance = get_available_balance("USDT")
-    print(f"Balance: {balance} USD")
-    if balance < result["cost"]:
-        print(f"❌ Insufficient balance: {balance} < {result['cost']}")
+    cost_with_leverage = result["cost"] / leverage
+    print(f"Cost: {result['cost']}")
+    print(f"Leverage: {leverage}")
+    print(f"Cost with leverage: {cost_with_leverage}")
+    if balance < cost_with_leverage:
+        print(f"❌ Insufficient balance: {balance} < {cost_with_leverage} (cost with leverage)")
         return None
 
-    print(f"📦 Bybit minimum order: {bybit_symbol} {result['qty']} units @ {result['price']} USD → total {result['cost']} USD")
-    # Determine leverage from config or use default
-    leverage = leverage_map.get(bybit_symbol, default_leverage)
-    print(f"Leverage: {balance} USD")
+    print(f"📦 Bybit minimum order: {bybit_symbol} {result['qty']} units @ {result['price']} USD")
 
     # Place leveraged order
-    # order_result = place_leveraged_bybit_order(
-    #     client=bybit_client,
-    #     symbol=bybit_symbol,
-    #     qty=result["qty"],
-    #     price=result["price"],
-    #     leverage=leverage
-    # )
+    order_result = place_leveraged_bybit_order(
+        client=bybit_client,
+        symbol=bybit_symbol,
+        qty=result["qty"],
+        price=result["price"],
+        leverage=leverage
+    )
 
     if order_result:
-        print(f"✅ Bybit trade executed: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
+        print(f"✅ Bybit LONG trade executed: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
         return {
             "symbol": bybit_symbol,
             "direction": "long",

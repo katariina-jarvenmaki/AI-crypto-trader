@@ -143,7 +143,9 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 direction="long",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
-                leverage=bybit_result["leverage"]
+                leverage=bybit_result["leverage"],
+                order_take_profit=bybit_result["tp_price"],
+                order_stop_loss=bybit_result["sl_price"]
             )
 
     #***** SHORTS *****#
@@ -158,7 +160,9 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 direction="short",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
-                leverage=bybit_result["leverage"]
+                leverage=bybit_result["leverage"],
+                order_take_profit=bybit_result["tp_price"],
+                order_stop_loss=bybit_result["sl_price"]
             )
 
     #***** STOP LOSSES *****#
