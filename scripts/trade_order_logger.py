@@ -35,7 +35,8 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, leverage: i
         "price": price,
         "leverage": leverage,
         "order_take_profit_price": order_take_profit,
-        "order_stop_loss_price": order_stop_loss
+        "order_stop_loss_price": order_stop_loss,
+        "status" : "initated"
     }
 
     log[symbol][direction_lower].append(new_order)

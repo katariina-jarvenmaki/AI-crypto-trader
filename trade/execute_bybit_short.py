@@ -30,9 +30,6 @@ def execute_bybit_short(symbol, risk_strength):
     # Check if there is enough available balance
     balance = get_available_balance("USDT")
     cost_with_leverage = result["cost"] / leverage
-    print(f"Cost: {result['cost']}")
-    print(f"Leverage: {leverage}")
-    print(f"Cost with leverage: {cost_with_leverage}")
     if balance < cost_with_leverage:
         print(f"❌ Insufficient balance: {balance} < {cost_with_leverage} (cost with leverage)")
         return None

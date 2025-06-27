@@ -110,11 +110,11 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     if mode == "override":
         print(f"🔔 Starting strategies for Overide signal for {symbol}: {override_signal.upper()}")
     elif mode == "divergence":
-        print(f"🔔 Starting strategies for {mode.upper()} signal for {symbol}: {final_signal.upper()}")
+        print(f"🔔 Starting strategies for {mode} signal for {symbol}: {final_signal.upper()}")
     elif mode == "rsi":
-        print(f"🔔 Starting strategies for {mode.upper()} signal for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
+        print(f"🔔 Starting strategies for {mode} signal for {symbol}: {final_signal.upper()} | Interval: {interval} | RSI: {rsi}")
     elif mode == "log":
-        print(f"🔔 Starting strategies for {mode.upper()} signal for {symbol}: {final_signal.upper()} | Interval: {interval}")
+        print(f"🔔 Starting strategies for {mode} signal for {symbol}: {final_signal.upper()} | Interval: {interval}")
 
     #***** STRATEGIES *****#
 
