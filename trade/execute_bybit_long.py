@@ -42,7 +42,8 @@ def execute_bybit_long(symbol, risk_strength):
         symbol=bybit_symbol,
         qty=result["qty"],
         price=result["price"],
-        leverage=leverage
+        leverage=leverage,
+        side="Buy"
     )
 
     if order_result:

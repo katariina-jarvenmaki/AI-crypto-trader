@@ -1,0 +1,16 @@
+{
+    "ETHUSDT": {
+        "long": [],
+        "short": [
+            {
+                "timestamp": "2025-06-28T00:34:01.422738+03:00",
+                "qty": 0.01,
+                "price": 2422,
+                "leverage": 4,
+                "order_take_profit_price": 5449.5,
+                "order_stop_loss_price": 1877.05,
+                "status": "initated"
+            }
+        ]
+    }
+}
