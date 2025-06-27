@@ -20,12 +20,12 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     # 1. Override signal (highest priority)
     if override_signal and is_first_run:
         if long_only and override_signal == "sell":
-            print(f"❌ Override signal '{override_signal}' blocked by long-only mode.")
+            print(f"❌ Override signal {override_signal.upper()} blocked by long-only mode.")
             return {}
         if short_only and override_signal == "buy":
-            print(f"❌ Override signal '{override_signal}' blocked by short-only mode.")
+            print(f"❌ Override signal {override_signal.upper()} blocked by short-only mode.")
             return {}
-        print(f"📢 Override '{override_signal}' signal detected.")
+        print(f"📢 Override {override_signal.upper()} signal detected.")
         return {"signal": override_signal, "mode": "override"}
 
     # Määritä mikä signaali on estetty
@@ -40,7 +40,7 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=["1h"], limit=100)
     df = data_by_interval.get("1h")
     if df is None or df.empty:
-        print(f"Skipping signal analysis for {symbol} on {interval}: No data available.")
+        print(f"Skipping signal analysis for {symbol.upper()} on {interval}: No data available.")
         return {}
 
     if df.index.name == 'timestamp':
@@ -51,9 +51,9 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     if divergence:
         signal_type = "buy" if divergence["type"] == "bull" else "sell"
         if disallowed == signal_type:
-            print(f"❌ Divergence signal '{signal_type}' blocked by {'long-only' if long_only else 'short-only'} mode.")
+            print(f"❌ Divergence signal {signal_type.upper()} blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
-        print(f"📢 Divergence '{signal_type}' signal detected.")
+        print(f"📢 Divergence {signal_type.upper()} signal detected.")
         return {
             "signal": signal_type, 
             "mode": divergence.get("mode", "divergence"), 
@@ -65,9 +65,9 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     rsi_signal = rsi_result.get("signal")
     if rsi_signal in ["buy", "sell"]:
         if disallowed == rsi_signal:
-            print(f"❌ RSI signal '{rsi_signal}' blocked by {'long-only' if long_only else 'short-only'} mode.")
+            print(f"❌ RSI signal {rsi_signal.upper()} blocked by {'long-only' if long_only else 'short-only'} mode.")
             return {}
-        print(f"📢 RSI '{rsi_signal}' signal detected, interval '{rsi_result.get('interval', interval)}' and rsi '{rsi_result.get('rsi')}'")
+        print(f"📢 RSI {rsi_signal.upper()} signal detected, interval {rsi_result.get('interval', interval)} and rsi {rsi_result.get('rsi')}")
         return {
             "signal": rsi_signal,
             "mode": rsi_result.get("mode", "rsi"),
@@ -80,22 +80,22 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
     df_5m = ohlcv_data.get("5m")
 
     if df_5m is None or df_5m.empty:
-        print(f"❌ Missing 5m OHLCV data for {symbol}")
+        print(f"❌ Missing 5m OHLCV data for {symbol.upper()}")
         return None
 
     momentum_result = determine_signal_with_momentum_and_volume(df_5m, symbol, intervals=[5])
     suggested_signal = momentum_result.get("suggested_signal")
     momentum_strength = momentum_result.get("momentum_strength")
     if suggested_signal:
-        print(f"📊 Momentum guide suggests: {suggested_signal} ({momentum_strength})")
+        print(f"📊 Momentum guide suggests: {suggested_signal.upper()} ({momentum_strength.upper()})")
 
     log_result = get_log_signal(symbol, signal_type=suggested_signal)
     if log_result:
         raw_signal = log_result["signal"]
         if (long_only and raw_signal == "sell") or (short_only and raw_signal == "buy"):
-            print(f"❌ Log signal '{raw_signal}' blocked by mode.")
+            print(f"❌ Log signal {raw_signal.upper()} blocked by mode.")
         else:
-            print(f"📢 Log-based '{raw_signal}' signal detected.")
+            print(f"📢 Log-based {raw_signal.upper()} signal detected.")
             return {
                 "signal": raw_signal,
                 "mode": "log",
@@ -112,9 +112,9 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
         if signal_data and "signal" in signal_data:
             signal_value = signal_data["signal"]
             if (long_only and signal_value == "sell") or (short_only and signal_value == "buy"):
-                print(f"❌ Momentum signal '{signal_value}' blocked by mode.")
+                print(f"❌ Momentum signal {signal_value.upper()} blocked by mode.")
             else:
-                print(f"📢 Momentum signal '{signal_value}' signal detected.")
+                print(f"📢 Momentum signal {signal_value.upper()} signal detected.")
                 return {
                     "signal": signal_value,
                     "mode": "momentum",
@@ -122,5 +122,5 @@ def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_
                     "log_bias_interval": None
                 }
 
-    print(f"⚪ No signal for {symbol}")
+    print(f"⚪ No signal for {symbol.upper()}")
     return {}

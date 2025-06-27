@@ -15,6 +15,8 @@ def execute_bybit_long(symbol, risk_strength):
     if risk_strength != "strong":
         return None
 
+    print(f"ByBit buy:")
+
     # Convert USDC to USDT in symbol name if needed
     bybit_symbol = symbol.replace("USDC", "USDT")
 
@@ -26,14 +28,15 @@ def execute_bybit_long(symbol, risk_strength):
 
     # Check if there is enough available balance
     balance = get_available_balance("USDT")
+    print(f"Balance: {balance} USD")
     if balance < result["cost"]:
         print(f"❌ Insufficient balance: {balance} < {result['cost']}")
         return None
 
     print(f"📦 Bybit minimum order: {bybit_symbol} {result['qty']} units @ {result['price']} USD → total {result['cost']} USD")
-
     # Determine leverage from config or use default
     leverage = leverage_map.get(bybit_symbol, default_leverage)
+    print(f"Leverage: {balance} USD")
 
     # Place leveraged order
     order_result = place_leveraged_bybit_order(

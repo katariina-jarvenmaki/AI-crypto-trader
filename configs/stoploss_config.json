@@ -1,0 +1,501 @@
+{
+    "ETHUSDT": {
+        "unknown": {
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 ETH scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 0.26,
+                "trailing_stop_loss_percent": 0.11,
+                "suppert_level_stop_loss_percent": 0.4
+            }
+        }
+    },
+    "XRPUSDT": {
+        "neutral_sideways": {
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 XRP scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 0.31,
+                "trailing_stop_loss_percent": 0.16,
+                "suppert_level_stop_loss_percent": 0.47
+            }
+        },
+        "unknown": {
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 XRP scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 0.42,
+                "trailing_stop_loss_percent": 0.27,
+                "suppert_level_stop_loss_percent": 0.1
+            }
+        }
+    },
+    "HBARUSDT": {
+        "unknown": {
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        }
+    },
+    "DEFAULT": {
+        "bull": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "bear": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "bull_consolidation": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "bear_consolidation": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "neutral_sideways": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "volatile": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        },
+        "unknown": {
+            "hold": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "hold_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "swing_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "scalp_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "grid_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            },
+            "dca_short": {
+                "_comment": "Defined according to 25.6.2025 HBAR scalp-observation",
+                "first_stop_loss_price": 0.15, 
+                "set_stop_loss_price": 1.06,
+                "trailing_stop_loss_percent": 0.9,
+                "suppert_level_stop_loss_percent": 0.75
+            }
+        }
+    }
+}

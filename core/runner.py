@@ -127,12 +127,24 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         # Binance
         binance_result = execute_binance_long(symbol, risk_strength)
         if binance_result:
-            log_trade(**binance_result)
+            log_trade(
+                symbol=binance_result["symbol"],
+                direction="long",
+                qty=binance_result["qty"],
+                price=binance_result["price"],
+                leverage=binance_result["leverage"]
+            )
 
         # Bybit
         bybit_result = execute_bybit_long(symbol, risk_strength)
         if bybit_result:
-            log_trade(**bybit_result)
+            log_trade(
+                symbol=bybit_result["symbol"],
+                direction="long",
+                qty=bybit_result["qty"],
+                price=bybit_result["price"],
+                leverage=bybit_result["leverage"]
+            )
 
     #***** SHORTS *****#
 
@@ -141,6 +153,12 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         # Bybit
         bybit_result = execute_bybit_short(symbol, risk_strength)
         if bybit_result:
-            log_trade(**bybit_result)
+            log_trade(
+                symbol=bybit_result["symbol"],
+                direction="short",
+                qty=bybit_result["qty"],
+                price=bybit_result["price"],
+                leverage=bybit_result["leverage"]
+            )
 
     #***** STOP LOSSES *****#

@@ -26,6 +26,13 @@ def execute_binance_long(symbol, risk_strength):
     )
     if order_result:
         print(f"✅ TP/SL set: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")
+        return {
+            "symbol": symbol,
+            "direction": "long",
+            "qty": result["qty"],
+            "price": result["price"],
+            "leverage": 1 
+        }
     else:
         if order_result and "error" not in order_result:
             print(f"✅ TP/SL set: TP @ {order_result['tp_price']}, SL @ {order_result['sl_price']}")

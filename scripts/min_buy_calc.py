@@ -79,6 +79,7 @@ def calculate_minimum_valid_bybit_purchase(symbol):
 
         # {'symbol': 'SOLUSDT', 'contractType': 'LinearPerpetual', 'status': 'Trading', 'baseCoin': 'SOL', 'quoteCoin': 'USDT', 'launchTime': '1634256000000', 'deliveryTime': '0', 'deliveryFeeRate': '', 'priceScale': '3', 'leverageFilter': {'minLeverage': '1', 'maxLeverage': '100.00', 'leverageStep': '0.01'}, 'priceFilter': {'minPrice': '0.010', 'maxPrice': '199999.980', 'tickSize': '0.010'}, 'lotSizeFilter': {'maxOrderQty': '79770.0', 'minOrderQty': '0.1', 'qtyStep': '0.1', 'postOnlyMaxOrderQty': '79770.0', 'maxMktOrderQty': '11740.0', 'minNotionalValue': '5'}, 'unifiedMarginTrade': True, 'fundingInterval': 480, 'settleCoin': 'USDT', 'copyTrading': 'both', 'upperFundingRate': '0.005', 'lowerFundingRate': '-0.005', 'isPreListing': False, 'preListingInfo': None, 'riskParameters': {'priceLimitRatioX': '0.05', 'priceLimitRatioY': '0.1'}, 'displayName': ''}
         # 🖨️ Tulostetaan tiedot tarkastelua varten
+        print(f"Min buy calculation:")
         print(f"📊 Bybit exchange_info for {symbol}: {exchange_info}")
 
         lot_size_filter = exchange_info.get("lot_size_filter", {})
@@ -92,16 +93,24 @@ def calculate_minimum_valid_bybit_purchase(symbol):
 
         qty = min_qty
         cost = qty * price
+        print(f"Qty {qty}")
+        print(f"Cost {cost}")
 
         while cost < min_notional:
             qty += step_size
             qty = round_step_size(qty, step_size)
             cost = qty * price
+            print(f"Total cost {cost}")
 
             if qty > 10000:
                 print("⚠️ Turvaraja Bybitin ostossa saavutettu")
                 return None
 
+        print(f"Return:")
+        print(f"Qty {qty}")
+        print(f"Rounded price {round(price, 2)}")
+        print(f"Rounded cost {round(cost, 2)}")
+        print(f"Step size {step_size}")
         return {
             "qty": qty,
             "price": round(price, 2),
