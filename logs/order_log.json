@@ -1,6 +1,52 @@
 {
     "ETHUSDT": {
-        "long": [],
+        "long": [
+            {
+                "timestamp": "2025-06-28T02:07:00.531914+03:00",
+                "qty": 0.01,
+                "price": 2422,
+                "leverage": 4,
+                "order_take_profit_price": 2434.11,
+                "order_stop_loss_price": 1877.05,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T10:02:56.642636+03:00",
+                "qty": 0.01,
+                "price": 2426,
+                "leverage": 4,
+                "order_take_profit_price": 2438.13,
+                "order_stop_loss_price": 1880.15,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T11:04:00.142409+03:00",
+                "qty": 0.01,
+                "price": 2428,
+                "leverage": 4,
+                "order_take_profit_price": 2440.14,
+                "order_stop_loss_price": 1881.7,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T12:00:46.106551+03:00",
+                "qty": 0.01,
+                "price": 2423,
+                "leverage": 4,
+                "order_take_profit_price": 2435.11,
+                "order_stop_loss_price": 1877.83,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T14:25:04.606613+03:00",
+                "qty": 0.01,
+                "price": 2427,
+                "leverage": 4,
+                "order_take_profit_price": 2439.13,
+                "order_stop_loss_price": 1880.92,
+                "status": "initated"
+            }
+        ],
         "short": [
             {
                 "timestamp": "2025-06-28T00:34:01.422738+03:00",
@@ -12,5 +58,92 @@
                 "status": "initated"
             }
         ]
+    },
+    "BTCUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-28T02:06:35.444384+03:00",
+                "qty": 0.001,
+                "price": 107072,
+                "leverage": 7,
+                "order_take_profit_price": 107377.92,
+                "order_stop_loss_price": 93305.6,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T03:28:42.362221+03:00",
+                "qty": 0.001,
+                "price": 106900,
+                "leverage": 7,
+                "order_take_profit_price": 107205.43,
+                "order_stop_loss_price": 93155.71,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T05:19:10.369544+03:00",
+                "qty": 0.001,
+                "price": 107078,
+                "leverage": 7,
+                "order_take_profit_price": 107383.94,
+                "order_stop_loss_price": 93310.83,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T10:54:16.878145+03:00",
+                "qty": 0.001,
+                "price": 107401,
+                "leverage": 7,
+                "order_take_profit_price": 107707.86,
+                "order_stop_loss_price": 93592.3,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T13:03:22.680669+03:00",
+                "qty": 0.001,
+                "price": 107260,
+                "leverage": 7,
+                "order_take_profit_price": 107566.46,
+                "order_stop_loss_price": 93469.43,
+                "status": "initated"
+            },
+            {
+                "timestamp": "2025-06-28T13:27:30.769596+03:00",
+                "qty": 0.001,
+                "price": 107315,
+                "leverage": 7,
+                "order_take_profit_price": 107621.61,
+                "order_stop_loss_price": 93517.36,
+                "status": "initated"
+            }
+        ],
+        "short": []
+    },
+    "SOLUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-28T03:29:23.031367+03:00",
+                "qty": 0.1,
+                "price": 142,
+                "leverage": 4,
+                "order_take_profit_price": 142.71,
+                "order_stop_loss_price": 110.05,
+                "status": "initated"
+            }
+        ],
+        "short": []
+    },
+    "ADAUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-28T06:55:26.179570+03:00",
+                "qty": 9.0,
+                "price": 1,
+                "leverage": 2,
+                "order_take_profit_price": 1.01,
+                "order_stop_loss_price": 0.55,
+                "status": "initated"
+            }
+        ],
+        "short": []
     }
 }

@@ -102,9 +102,20 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         )
 
     # Continue only, if a risk_strength is strong AND reverse signal is not strong
-    if risk_strength != "strong" or reverse_result.get("momentum_strength") == "strong":
-        if risk_strength == "strong": print(f"❌ Signal {final_signal.upper()} blocked due to strong reverse signal.")
-        return
+    reverse_strength = reverse_result.get("momentum_strength", "n/a")
+
+    # Special case: allow BUY in neutral_sideways if reverse is not strong
+    if (
+        signal == "buy"
+        and market_state == "neutral_sideways"
+        and reverse_strength != "strong"
+    ):
+        print("✅ BUY allowed in neutral_sideways due to weak reverse signal.")
+    else:
+        if risk_strength != "strong" or reverse_strength == "strong":
+            if risk_strength == "strong":
+                print(f"❌ Signal {signal.upper()} blocked due to strong reverse signal.")
+            return
 
     # Print results
     if mode == "override":
@@ -128,11 +139,21 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         binance_result = execute_binance_long(symbol, risk_strength)
         if binance_result:
             log_trade(
-                symbol=binance_result["symbol"],
+                symbol=bybit_result["symbol"],
                 direction="long",
-                qty=binance_result["qty"],
-                price=binance_result["price"],
-                leverage=binance_result["leverage"]
+                qty=bybit_result["qty"],
+                price=bybit_result["price"],
+                leverage=bybit_result["leverage"],
+                order_take_profit=bybit_result["tp_price"],
+                order_stop_loss=bybit_result["sl_price"],
+                interval=interval,
+                mode=mode,
+                market_state=market_state,
+                started_on=started_on,
+                momentum_strength=risk_strength,
+                price_change=selected_change_text,
+                volume_multiplier=volume_multiplier,
+                reverse_signal_info=reverse_result
             )
 
         # Bybit
@@ -145,7 +166,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 price=bybit_result["price"],
                 leverage=bybit_result["leverage"],
                 order_take_profit=bybit_result["tp_price"],
-                order_stop_loss=bybit_result["sl_price"]
+                order_stop_loss=bybit_result["sl_price"],
+                interval=interval,
+                mode=mode,
+                market_state=market_state,
+                started_on=started_on,
+                momentum_strength=risk_strength,
+                price_change=selected_change_text,
+                volume_multiplier=volume_multiplier,
+                reverse_signal_info=reverse_result
             )
 
     #***** SHORTS *****#
@@ -162,7 +191,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
                 price=bybit_result["price"],
                 leverage=bybit_result["leverage"],
                 order_take_profit=bybit_result["tp_price"],
-                order_stop_loss=bybit_result["sl_price"]
+                order_stop_loss=bybit_result["sl_price"],
+                interval=interval,
+                mode=mode,
+                market_state=market_state,
+                started_on=started_on,
+                momentum_strength=risk_strength,
+                price_change=selected_change_text,
+                volume_multiplier=volume_multiplier,
+                reverse_signal_info=reverse_result
             )
 
     #***** STOP LOSSES *****#

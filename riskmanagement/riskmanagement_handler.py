@@ -49,18 +49,38 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     volume_multiplier = result.get("volume_multiplier", 1.0)
     interpretation = result.get("interpretation", "")
 
-    # Reverse signal analysis 15min
+    # Reverse signal analysis 5min & 15min
     reverse_signal = "sell" if signal == "buy" else "buy"
+    reverse_results = {}
+
+    # 5min reverse
+    ohlcv_5m_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
+    if ohlcv_5m_data and "5m" in ohlcv_5m_data and not ohlcv_5m_data["5m"].empty:
+        df_5m = ohlcv_5m_data["5m"]
+        reverse_5m = verify_signal_with_momentum_and_volume(df_5m, reverse_signal, symbol, intervals=[5], market_state=market_state)
+        reverse_results["5min"] = reverse_5m
+    else:
+        reverse_results["5min"] = {"momentum_strength": "n/a", "interpretation": "No 5m OHLCV"}
+
+    # 15min reverse
     ohlcv_15m_data, _ = fetch_ohlcv_fallback(symbol, intervals=["15m"], limit=30)
-    reverse_result = {}
     if ohlcv_15m_data and "15m" in ohlcv_15m_data and not ohlcv_15m_data["15m"].empty:
         df_15m = ohlcv_15m_data["15m"]
-        reverse_result = verify_signal_with_momentum_and_volume(df_15m, reverse_signal, symbol, intervals=[15], market_state=market_state)
+        reverse_15m = verify_signal_with_momentum_and_volume(df_15m, reverse_signal, symbol, intervals=[15], market_state=market_state)
+        reverse_results["15min"] = reverse_15m
     else:
-        reverse_result = {"momentum_strength": "n/a", "interpretation": "No 15m OHLCV"}
+        reverse_results["15min"] = {"momentum_strength": "n/a", "interpretation": "No 15m OHLCV"}
+
+    # Vertaile kumpi on vahvempi
+    def strength_rank(s: str) -> int:
+        return {"none": 0, "weak": 1, "strong": 2}.get(s.lower(), -1)
+
+    best_interval = max(reverse_results, key=lambda k: strength_rank(reverse_results[k].get("momentum_strength", "none")))
+    reverse_result = reverse_results[best_interval]
+    reverse_result["used_interval"] = best_interval
 
     # Print momentum analysis result
     print(f"✅ Momentum to {signal.upper()} is {strength.upper()}")
-    print(f"↩️  Reverse momentum {reverse_signal.upper()} is {reverse_result.get('momentum_strength', 'n/a').upper()}")
+    print(f"↩️ Reverse momentum ({reverse_signal.upper()}) is {reverse_result.get('momentum_strength', 'n/a').upper()} from {best_interval}")
 
     return strength, price_changes, volume_multiplier, reverse_result

@@ -84,6 +84,7 @@ def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
         "4h": timedelta(hours=4),
         "3h": timedelta(hours=3),
         "2h": timedelta(hours=2),
+        "1h": timedelta(hours=1),
     }
 
     result = {}
