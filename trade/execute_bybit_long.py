@@ -34,7 +34,7 @@ def execute_bybit_long(symbol, risk_strength):
         print(f"❌ Insufficient balance: {balance} < {cost_with_leverage} (cost with leverage)")
         return None
 
-    print(f"📦 Bybit minimum order: {bybit_symbol} {result['qty']} units @ {result['price']} USD")
+    print(f"📦 Bybit minimum order: {bybit_symbol} {result['qty']} units @ {result['price']} USDT")
 
     # Place leveraged order
     order_result = place_leveraged_bybit_order(
@@ -53,6 +53,7 @@ def execute_bybit_long(symbol, risk_strength):
             "direction": "long",
             "qty": result["qty"],
             "price": result["price"],
+            "cost": result["cost"],
             "leverage": leverage,
             "tp_price": order_result["tp_price"],
             "sl_price": order_result["sl_price"]

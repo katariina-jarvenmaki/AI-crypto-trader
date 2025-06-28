@@ -19,7 +19,7 @@ def save_trade_log(log):
     with open(TRADE_LOG_FILE, "w") as f:
         json.dump(log, f, indent=4)
 
-def log_trade(symbol: str, direction: str, qty: float, price: float, leverage: int,
+def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float, leverage: int,
               order_take_profit: float = None, order_stop_loss: float = None,
               interval: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
@@ -42,6 +42,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, leverage: i
         "status" : "initated",
         "qty": qty,
         "price": price,
+        "cost": cost,
         "leverage": leverage,
         "order_take_profit_price": order_take_profit,
         "order_stop_loss_price": order_stop_loss,

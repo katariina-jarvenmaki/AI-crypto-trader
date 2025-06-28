@@ -93,18 +93,21 @@ def get_available_balance(asset="USDT"):
         print(f"⚠️ Saldohaun virhe: {str(e)}")
         return 0.0
 
-def place_leveraged_bybit_order(client, symbol: str, qty: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
+def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
     print(f"Direction: {side}")
 
     try:
-        # Asetetaan hedge mode ja vipu
+        # Enable hedge mode and set correct leverage
         set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
         set_leverage(symbol, leverage)
 
+        # Round quantity to valid tick size
         rounded_qty = round_bybit_quantity(symbol, qty)
+
+        # Position index: 1 for Buy (long), 2 for Sell (short)
         position_idx = 1 if side == "Buy" else 2
 
-        # Suorita markkinatoimeksianto
+        # Place the market order
         order = client.place_order(
             category=CATEGORY,
             symbol=symbol,
@@ -115,22 +118,19 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, leverage: int =
             positionIdx=position_idx
         )
 
-        # ✅ Hae toteutunut hinta markkinatoimeksiannosta (olennaista)
-        executed_price = float(order["result"]["avgPrice"])  # tai ["orderPrice"] jos avgPrice ei ole käytettävissä
+        # Adjust SL and TP percentages **relative to leverage**
+        adjusted_tp_percent = DEFAULT_BYBIT_TAKE_PROFIT_PERCENT / leverage  # e.g. 2% / 3x = 0.66%
+        adjusted_sl_percent = DEFAULT_BYBIT_STOP_LOSS_PERCENT / leverage    # e.g. 10% / 3x = 3.33%
 
-        # ✅ Käytä suoraan konfiguroituja prosentteja — älä skaalaa vivulla
-        adjusted_tp_percent = DEFAULT_BYBIT_TAKE_PROFIT_PERCENT  # esim. 0.02 = +2%
-        adjusted_sl_percent = DEFAULT_BYBIT_STOP_LOSS_PERCENT    # esim. 0.90 = -90%
-
-        # ✅ Laske TP ja SL toteutuneen hinnan perusteella
+        # Calculate TP and SL prices based on order direction
         if side == "Buy":
-            tp_price = round(executed_price * (1 + adjusted_tp_percent), 4)
-            sl_price = round(executed_price * (1 - adjusted_sl_percent), 4)
-        else:
-            tp_price = round(executed_price * (1 - adjusted_tp_percent), 4)
-            sl_price = round(executed_price * (1 + adjusted_sl_percent), 4)
+            tp_price = price * (1 + adjusted_tp_percent)
+            sl_price = price * (1 - adjusted_sl_percent)
+        else:  # Sell
+            tp_price = price * (1 - adjusted_tp_percent)
+            sl_price = price * (1 + adjusted_sl_percent)
 
-        # ✅ Aseta SL ja TP toteutuneen hinnan pohjalta
+        # Set the trading stop with calculated SL/TP
         client.set_trading_stop(
             category="linear",
             symbol=symbol,
@@ -144,9 +144,8 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, leverage: int =
             positionIdx=position_idx
         )
 
-        print(f"✅ Order executed: Entry @ {executed_price}, TP @ {tp_price}, SL @ {sl_price}")
+        print(f"✅ Bybit LONG trade executed: TP @ {tp_price}, SL @ {sl_price}")
         return {
-            "entry_price": executed_price,
             "tp_price": tp_price,
             "sl_price": sl_price,
             "order": order

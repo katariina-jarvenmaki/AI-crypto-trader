@@ -56,8 +56,8 @@ def calculate_minimum_valid_purchase(symbol):
         return {
             "symbol": symbol,
             "qty": qty,
-            "price": round(price, int(-math.log10(tick_size))),
-            "cost": round(cost, 2),
+            "price": price,
+            "cost": cost,
             "step_size": step_size
         }
 
@@ -107,8 +107,8 @@ def calculate_minimum_valid_bybit_purchase(symbol):
                 
         return {
             "qty": qty,
-            "price": round(price),
-            "cost": round(cost),
+            "price": price,
+            "cost": cost,
             "step_size": step_size
         }
 
