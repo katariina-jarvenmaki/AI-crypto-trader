@@ -101,7 +101,11 @@ def archive_old_orders():
 
             for order in orders:
                 log_date = extract_date_from_order_entry(order)
-                if log_date and log_date.date() == yesterday.date():
+                if (
+                    log_date
+                    and log_date.date() <= yesterday.date()
+                    and order.get("status") == "complete"
+                ):
                     archived_orders.append(order)
                 else:
                     kept_orders.append(order)
@@ -111,8 +115,8 @@ def archive_old_orders():
                 current_data[symbol][direction] = kept_orders
 
         # Clean up empty directions
-        if not current_data[symbol]["long"] and not current_data[symbol]["short"]:
-            del current_data[symbol]
+        if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
+            current_data.pop(symbol, None)
 
     if archive_data:
         save_json(archive_path, archive_data)
