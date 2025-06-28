@@ -106,7 +106,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Special case: allow BUY in neutral_sideways if reverse is not strong
     if (
-        signal == "buy"
+        final_signal == "buy"
         and market_state == "neutral_sideways"
         and reverse_strength != "strong"
     ):
@@ -114,7 +114,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     else:
         if risk_strength != "strong" or reverse_strength == "strong":
             if risk_strength == "strong":
-                print(f"❌ Signal {signal.upper()} blocked due to strong reverse signal.")
+                print(f"❌ Signal {final_signal.upper()} blocked due to strong reverse signal.")
             return
 
     # Print results
