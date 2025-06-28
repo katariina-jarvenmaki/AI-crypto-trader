@@ -24,7 +24,9 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, leverage: i
               interval: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
               price_change: str = None, volume_multiplier: float = None,
-              reverse_signal_info: dict = None):
+              reverse_signal_info: dict = None, platform: dict = None):
+
+    print(f"[log_trade] Logging {symbol} {direction} {qty} @ {price} on {platform}")  # 👈 TÄMÄ TÄHÄN
 
     log = load_trade_log()
     now = datetime.now(TIMEZONE).isoformat()
@@ -36,12 +38,21 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, leverage: i
 
     new_order = {
         "timestamp": now,
+        "platform": now,
+        "status" : "initated",
         "qty": qty,
         "price": price,
         "leverage": leverage,
         "order_take_profit_price": order_take_profit,
         "order_stop_loss_price": order_stop_loss,
-        "status" : "initated"
+        "mode": mode,
+        "interval": interval,
+        "momentum_strength": momentum_strength,
+        "reverse_strength": reverse_signal_info.get("momentum_strength"),
+        "volume_multiplier": volume_multiplier,
+        "price_change": price_change,
+        "market_state": market_state,
+        "started_on": started_on   
     }
 
     log[symbol][direction_lower].append(new_order)

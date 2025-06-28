@@ -139,13 +139,14 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         binance_result = execute_binance_long(symbol, risk_strength)
         if binance_result:
             log_trade(
-                symbol=bybit_result["symbol"],
+                symbol=binance_result["symbol"],
+                platform="Binance",
                 direction="long",
-                qty=bybit_result["qty"],
-                price=bybit_result["price"],
-                leverage=bybit_result["leverage"],
-                order_take_profit=bybit_result["tp_price"],
-                order_stop_loss=bybit_result["sl_price"],
+                qty=binance_result["qty"],
+                price=binance_result["price"],
+                leverage=binance_result["leverage"],
+                order_take_profit=binance_result["tp_price"],
+                order_stop_loss=binance_result["sl_price"],
                 interval=interval,
                 mode=mode,
                 market_state=market_state,
@@ -161,6 +162,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         if bybit_result:
             log_trade(
                 symbol=bybit_result["symbol"],
+                platform="ByBit",
                 direction="long",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
@@ -186,6 +188,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
         if bybit_result:
             log_trade(
                 symbol=bybit_result["symbol"],
+                platform="ByBit",
                 direction="short",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
