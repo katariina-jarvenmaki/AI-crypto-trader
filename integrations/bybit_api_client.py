@@ -144,7 +144,7 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, l
             positionIdx=position_idx
         )
 
-        print(f"✅ Bybit LONG trade executed: TP @ {tp_price}, SL @ {sl_price}")
+        print(f"✅ Bybit trade executed: TP @ {tp_price}, SL @ {sl_price}")
         return {
             "tp_price": tp_price,
             "sl_price": sl_price,
