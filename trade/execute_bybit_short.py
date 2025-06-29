@@ -53,6 +53,7 @@ def execute_bybit_short(symbol, risk_strength):
             "direction": "short",
             "qty": result["qty"],
             "price": result["price"],
+            "cost": result["cost"],
             "leverage": leverage,
             "tp_price": order_result["tp_price"],
             "sl_price": order_result["sl_price"]
