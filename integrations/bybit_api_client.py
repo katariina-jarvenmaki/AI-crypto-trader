@@ -94,7 +94,6 @@ def get_available_balance(asset="USDT"):
         return 0.0
 
 def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
-    print(f"Direction: {side}")
 
     try:
         # Enable hedge mode and set correct leverage

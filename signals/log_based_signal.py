@@ -71,7 +71,8 @@ def get_log_based_signal(symbol: str, signal_type: str = None) -> dict:
                     "signal": signal_direction,
                     "interval": interval,
                     "mode": mode_name,
-                    "time": ts
+                    "time": ts,
+                    "status": mode_data.get("status") or "unused"
                 })
 
     if not valid_entries:
@@ -106,8 +107,9 @@ def get_log_based_signal(symbol: str, signal_type: str = None) -> dict:
             print(f"⚠️ RSI-suodatus epäonnistui symbolille {symbol}: {e}")
             return {}
 
-    return {
-        "signal": best_entry["signal"],
-        "interval": best_entry["interval"],
-        "mode": best_entry["mode"]
-    }
+        return {
+            "signal": best_entry["signal"],
+            "interval": best_entry["interval"],
+            "mode": best_entry["mode"],
+            "status": best_entry["status"]
+        }
