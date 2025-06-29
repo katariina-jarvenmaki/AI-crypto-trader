@@ -16,17 +16,17 @@ from market.market_handler import get_market_state
 from configs.config import TIMEZONE
 from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
+from scripts.order_limiter import can_initiate
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from trade.execute_binance_long import execute_binance_long
 from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.trade_order_logger import log_trade
-
 import pandas as pd
 
 # Symbol processing loop
-def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_mode=None, long_only=False, short_only=False):
+def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
 
     print(f"\n🔍 Processing symbol: {symbol}")
 
@@ -46,6 +46,15 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
 
     # Continue only, if a signal 'buy' or 'sell'
     if final_signal not in ("buy", "sell"):
+        return
+
+    # Check the order counts
+    direction = None
+    if final_signal == "buy": direction = "long"
+    elif final_signal == "sell": direction = "short"
+    # Check if we're allowed to initiate based on fairness logic
+    if direction and not can_initiate(symbol, direction, initiated_counts, all_symbols=selected_symbols):
+        print(f"⛔ Skipping {symbol} {direction}: too many initiations compared to others.")
         return
 
     # Get market state info
@@ -83,7 +92,7 @@ def run_analysis_for_symbol(symbol, is_first_run, override_signal=None, volume_m
     # Do the signal logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
     if risk_strength in ("strong", "weak", "none") and (
-        mode not in ("log", "override") or (mode == "log" and status == "complete")
+        mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "complete")
     ):
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
         update_signal_log(

@@ -7,6 +7,7 @@ from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
 from core.runner import run_analysis_for_symbol 
 from scripts.log_cleaner import run_log_cleanup
+from scripts.order_limiter import load_initiated_orders
 
 def main():
 
@@ -38,12 +39,16 @@ def main():
             if global_is_first_run and i == 0:
                 current_override_signal = override_signal 
 
+            initiated_counts = load_initiated_orders()
+
             run_analysis_for_symbol(
+                selected_symbols=selected_symbols,
                 symbol=symbol,
                 is_first_run=global_is_first_run,
                 override_signal=current_override_signal,
                 long_only=long_only,
-                short_only=short_only
+                short_only=short_only,
+                initiated_counts=initiated_counts
             )
 
         global_is_first_run = False 
@@ -52,4 +57,5 @@ def main():
         time.sleep(180)
 
 if __name__ == "__main__":
+
     main()
