@@ -36,7 +36,28 @@ def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> tuple
 
 def should_block_signal(signal: str, price_changes: dict) -> bool:
     limits = PRICE_CHANGE_LIMITS.get(signal, {})
+    values = [v for v in price_changes.values() if v is not None]
 
+    # Poikkeusten käsittely
+    if not values:
+        return False
+
+    # Lasketaan kokonaissumma
+    total_change = sum(values)
+
+    # Tarkistetaan, onko yksittäinen arvo ylittänyt "piikki"rajat
+    has_spike = any(v > 6.0 for v in values)
+    has_drop = any(v < -6.0 for v in values)
+
+    # Estetään signaali, jos vastoin suuntaa:
+    if signal == "buy":
+        if total_change > 2.0 or has_spike:
+            return True  # liian paljon nousua → ei hyvä ostopaikka
+    elif signal == "sell":
+        if total_change < -2.0 or has_drop:
+            return True  # liikaa laskua → ei hyvä myyntipaikka
+
+    # Lisäksi käytetään alkuperäisiä raja-arvoja (esim. `PRICE_CHANGE_LIMITS`)
     for timeframe, change in price_changes.items():
         if change is None:
             continue
