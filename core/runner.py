@@ -299,3 +299,46 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
         print(f"[ERROR] Failed to fetch positions: {e}")
         return []
 
+
+def stop_loss_updater():
+
+    try:
+        with open("logs/order_log.json", "r") as f:
+            order_data = json.load(f)
+
+        print("\n📈 Checking live prices for open orders...\n")
+
+        for symbol_key, sides in order_data.items():
+            bybit_symbol = symbol_key.replace("USDC", "USDT")
+
+            for side_key, orders in sides.items():
+                for order in orders:
+                    if order.get("status") == "complete":
+                        continue  # ohita valmiit
+
+                    try:
+                        price_data = bybit_client.get_ticker(symbol=bybit_symbol)
+                        if "result" in price_data:
+                            last_price = float(price_data["result"]["lastPrice"])
+
+
+
+
+                            print(f"🔸 {symbol_key} | Side: {side_key} | Entry: {order.get('price')} | Live: {last_price}")
+
+                            # Voit halutessasi tarkistaa esim. TP/SL läheisyyttä:
+                            tp = order.get("order_take_profit")
+                            sl = order.get("order_stop_loss")
+                            if tp and abs(last_price - float(tp)) / float(tp) < 0.01:
+                                print("  🚀 Close to TAKE PROFIT!")
+                            if sl and abs(last_price - float(sl)) / float(sl) < 0.01:
+                                print("  ⚠️  Close to STOP LOSS!")
+
+
+
+
+                    except Exception as price_err:
+                        print(f"[ERROR] Failed to get price for {bybit_symbol}: {price_err}")
+
+    except Exception as e:
+        print(f"[ERROR] Could not check open order prices: {e}")
