@@ -298,3 +298,15 @@ if __name__ == "__main__":
         print(f"❌ ERROR during price fetch: {e}")
 
 from scripts.trade_order_logger import load_trade_logs, update_order_status
+
+def set_stop_loss_and_trailing_stop(symbol, side, partial_stop_loss_price, trailing_stop_callback):
+    return bybit_client.place_conditional_order(
+        symbol=symbol,
+        side=side,
+        stop_loss=partial_stop_loss_price,
+        trailing_stop=trailing_stop_callback  # prosenttina, esim. 0.15
+    )
+
+def parse_percent(value_str):
+    """Muuntaa '0.15%' → 0.0015 desimaalimuotoon"""
+    return float(value_str.strip('%')) / 100
