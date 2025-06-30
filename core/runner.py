@@ -300,11 +300,18 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
         return []
 
 def stop_loss_updater():
+    import os
+    import json
+    from integrations.bybit_api_client import parse_percent
+    from core.runner import bybit_client
+
+    config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
+    config_path = os.path.abspath(config_path)
+
     try:
-        with open("stoploss_config.json", "r") as cf:
+        with open(config_path, "r") as cf:
             config = json.load(cf)
 
-        # Parsitaan prosentit
         set_sl_percent = parse_percent(config.get("set_stoploss_percent", "0.16%"))
         partial_sl_percent = parse_percent(config.get("partial_stoploss_percent", "0.15%"))
         trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))
@@ -312,7 +319,7 @@ def stop_loss_updater():
         with open("logs/order_log.json", "r") as f:
             order_data = json.load(f)
 
-        print("\n📈 Checking live prices for open orders...\n")
+        print("\n📈 Checking live prices for open orders...")
 
         for symbol_key, sides in order_data.items():
             bybit_symbol = symbol_key.replace("USDC", "USDT")
@@ -320,58 +327,67 @@ def stop_loss_updater():
             for side_key, orders in sides.items():
                 for order in orders:
                     if order.get("status") == "complete":
-                        continue  # ohita valmiit
+                        continue
 
                     try:
                         direction = side_key.lower()
                         entry_price = float(order.get("price"))
 
-                        # Live price
-                        price_data = bybit_client.get_ticker(symbol=bybit_symbol)
-                        if "result" in price_data:
-                            last_price = float(price_data["result"]["lastPrice"])
+                        price_data = bybit_client.get_tickers(category="linear", symbol=bybit_symbol)
+                        if "result" in price_data and "list" in price_data["result"]:
+                            last_price = float(price_data["result"]["list"][0]["lastPrice"])
+                        else:
+                            print(f"[WARN] No price data found for {bybit_symbol}")
+                            continue
 
-                            # Kohdehinta konfiguraatiosta
+                        if direction == "long":
+                            target_price = entry_price * (1 + set_sl_percent)
+                            condition_met = last_price > target_price
+                            position_idx = 1
+                        elif direction == "short":
+                            target_price = entry_price * (1 - set_sl_percent)
+                            condition_met = last_price < target_price
+                            position_idx = 2
+                        else:
+                            print(f"[WARN] Unknown direction for {bybit_symbol}: {direction}")
+                            continue
+
+                        print(f"🔸 {symbol_key} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
+
+                        if condition_met:
+                            print(f"✅ Trigger condition met for {symbol_key} ({direction})")
+
+                            sl_offset = entry_price * partial_sl_percent
                             if direction == "long":
-                                target_price = entry_price * (1 + set_sl_percent)
-                                condition_met = last_price > target_price
-                            elif direction == "short":
-                                target_price = entry_price * (1 - set_sl_percent)
-                                condition_met = last_price < target_price
+                                partial_sl_price = entry_price + sl_offset
                             else:
-                                print(f"[WARN] Unknown direction for {bybit_symbol}: {direction}")
-                                continue
+                                partial_sl_price = entry_price - sl_offset
 
-                            print(f"🔸 {symbol_key} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
+                            print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
+                            print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% (ignored in partial mode)")
 
-                            if condition_met:
-                                print(f"✅ Trigger condition met for {symbol_key} ({direction})")
+                            try:
+                                body = {
+                                    "category": "linear",
+                                    "symbol": bybit_symbol,
+                                    "stopLoss": str(round(partial_sl_price, 4)),
+                                    "slSize": "1",
+                                    "slTriggerBy": "LastPrice",
+                                    "tpslMode": "Partial",
+                                    "positionIdx": position_idx
+                                }
 
-                                # 1. Partial SL
-                                sl_offset = entry_price * partial_sl_percent
-                                if direction == "long":
-                                    partial_sl_price = entry_price + sl_offset
-                                else:
-                                    partial_sl_price = entry_price - sl_offset
+                                print(f"📤 Sending SL update: {body}")
 
-                                print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
+                                response = bybit_client.set_trading_stop(**body)
 
-                                # 2. Trailing SL
-                                print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}%")
+                                print(f"🟢 SL updated: {response}")
 
-                                try:
-                                    response = bybit_client.set_stop_loss_and_trailing_stop(
-                                        symbol=bybit_symbol,
-                                        side="Buy" if direction == "long" else "Sell",
-                                        partial_stop_loss_price=round(partial_sl_price, 4),
-                                        trailing_stop_callback=round(trailing_percent * 100, 2)  # callback % arvo
-                                    )
-                                    print(f"🟢 SL & trailing updated: {response}")
-                                except Exception as sl_err:
-                                    print(f"[ERROR] Failed to update stop loss: {sl_err}")
+                            except Exception as sl_err:
+                                print(f"[ERROR] Failed to update stop loss: {sl_err}")
 
-                            else:
-                                print("⏳ Condition not yet met.")
+                        else:
+                            print("⏳ Condition not yet met.")
 
                     except Exception as price_err:
                         print(f"[ERROR] Failed to get price for {bybit_symbol}: {price_err}")

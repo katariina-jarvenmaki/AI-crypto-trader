@@ -1,5 +1,5 @@
 {
   "set_stoploss_percent": "0.16%",
   "partial_stoploss_percent": "0.15%",
-  "trailing_stoploss_percent": "0.15%"
+  "trailing_stoploss_percent": "0.01%"
 }

@@ -38,7 +38,7 @@ def get_momentum_signal(symbol: str):
     # ⚠️ Estetään momentum-signaali jos kesken oleva sama signaali löytyy logista
     log_result = get_log_signal(symbol)
     if log_result and log_result.get("signal") == suggested_signal and log_result.get("status") != "complete":
-        print(f"⚠️ Skipping momentum signal '{suggested_signal}' because matching unused log signal exists.")
+        print(f"⚠️  Skipping momentum signal '{suggested_signal}' because matching unused log signal exists.")
         return None, momentum_info
 
     # RSI-suodatus (1h) konfiguraation mukaan
@@ -61,7 +61,7 @@ def get_momentum_signal(symbol: str):
                 print(f"❌ RSI-filter denied a sell-signal (RSI={rsi_latest:.2f} < {RSI_FILTER_SELL_MIN})")
                 return None, momentum_info
         except Exception as e:
-            print(f"⚠️ RSI-suodatus epäonnistui: {e}")
+            print(f"⚠️  RSI-suodatus epäonnistui: {e}")
 
     # SMA-suodatus (5m)
     sma_5m = df_5m["close"].rolling(window=50).mean().iloc[-1]
