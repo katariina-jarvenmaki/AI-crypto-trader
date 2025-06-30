@@ -136,9 +136,13 @@ def archive_old_orders():
 
             if archived_orders:
                 archive_data.setdefault(symbol, {}).setdefault(direction, []).extend(archived_orders)
-                current_data[symbol][direction] = kept_orders
+                if kept_orders:
+                    current_data[symbol][direction] = kept_orders
+                else:
+                    # Poistetaan tyhjä lista avaimena
+                    current_data[symbol].pop(direction, None)
 
-        # Clean up empty directions
+        # Poistetaan symboli, jos molemmat directionit puuttuvat tai ovat tyhjiä
         if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
             print(f"Removing empty symbol: {symbol}")
             current_data.pop(symbol, None)
@@ -147,7 +151,6 @@ def archive_old_orders():
         save_json(archive_path, archive_data)
         save_json(ORDERS_LATEST, current_data)
         print(f"Archived complete orders to {archive_filename}")
-
 
 def remove_old_archives(months=2):
     cutoff_date = datetime.now() - timedelta(days=30 * months)

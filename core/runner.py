@@ -221,7 +221,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
 import json
 import pandas as pd
-from scripts.trade_order_logger import load_trade_logs, update_order_status
+from scripts.trade_order_logger import load_trade_logs, update_order_status, safe_load_json
 from scripts.sorting import sort_orders_by_stoploss_priority
 
 def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
@@ -257,15 +257,14 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                 continue
 
         try:
-            with open("logs/order_log.json", "r") as f:
-                order_data = json.load(f)
+            order_data = safe_load_json("logs/order_log.json")  # <-- turvattu lataus
 
             side_mapping = {
                 "long": "Buy",
                 "short": "Sell"
             }
 
-            updated_any = False  # 🆕 uusi lippu
+            updated_any = False
 
             for sym_key, sides in order_data.items():
                 for side_key, orders in sides.items():
@@ -281,7 +280,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                             if not match_found:
                                 updated = update_order_status(order.get("timestamp"), "complete")
                                 if updated:
-                                    updated_any = True  # 🆕 merkitse että jotain on päivitetty
+                                    updated_any = True
                                 else:
                                     print(f"[WARN] Could not update status for {order.get('timestamp')}")
 
@@ -302,7 +301,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 def stop_loss_updater():
     import os
     import json
-    from integrations.bybit_api_client import parse_percent
+    from integrations.bybit_api_client import parse_percent, get_bybit_symbol_info
     from core.runner import bybit_client
 
     config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
@@ -314,7 +313,7 @@ def stop_loss_updater():
 
         set_sl_percent = parse_percent(config.get("set_stoploss_percent", "0.16%"))
         partial_sl_percent = parse_percent(config.get("partial_stoploss_percent", "0.15%"))
-        trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))
+        trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))  # esim. 0.0015 desimaalina
 
         with open("logs/order_log.json", "r") as f:
             order_data = json.load(f)
@@ -340,6 +339,13 @@ def stop_loss_updater():
                             print(f"[WARN] No price data found for {bybit_symbol}")
                             continue
 
+                        symbol_info = get_bybit_symbol_info(bybit_symbol)
+                        if symbol_info and "tickSize" in symbol_info:
+                            tick_size = float(symbol_info["tickSize"])
+                        else:
+                            print(f"[WARN] No symbol info or tickSize found for {bybit_symbol}, defaulting to 0.01")
+                            tick_size = 0.01
+
                         if direction == "long":
                             target_price = entry_price * (1 + set_sl_percent)
                             condition_met = last_price > target_price
@@ -364,10 +370,14 @@ def stop_loss_updater():
                                 partial_sl_price = entry_price - sl_offset
 
                             print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
-                            print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% (ignored in partial mode)")
+
+                            # Trailing stop laskenta: prosentti * hinta jaettuna tikin koolla → kokonaisluku tikkeinä
+                            trail_amount = last_price * trailing_percent
+                            trail_ticks = max(1, int(trail_amount / tick_size))
+                            print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% → {trail_ticks} ticks")
 
                             try:
-                                body = {
+                                partial_body = {
                                     "category": "linear",
                                     "symbol": bybit_symbol,
                                     "stopLoss": str(round(partial_sl_price, 4)),
@@ -377,11 +387,21 @@ def stop_loss_updater():
                                     "positionIdx": position_idx
                                 }
 
-                                print(f"📤 Sending SL update: {body}")
+                                print(f"📤 Sending partial SL update: {partial_body}")
+                                response_partial = bybit_client.set_trading_stop(**partial_body)
+                                print(f"🟢 Partial SL updated: {response_partial}")
 
-                                response = bybit_client.set_trading_stop(**body)
+                                trailing_body = {
+                                    "category": "linear",
+                                    "symbol": bybit_symbol,
+                                    "trailingStop": str(trail_ticks),
+                                    "tpslMode": "Full",
+                                    "positionIdx": position_idx
+                                }
 
-                                print(f"🟢 SL updated: {response}")
+                                print(f"📤 Sending trailing SL update: {trailing_body}")
+                                response_trailing = bybit_client.set_trading_stop(**trailing_body)
+                                print(f"🟢 Trailing SL updated: {response_trailing}")
 
                             except Exception as sl_err:
                                 print(f"[ERROR] Failed to update stop loss: {sl_err}")
