@@ -4,7 +4,7 @@
             {
                 "timestamp": "2025-06-29T20:01:20.318940+03:00",
                 "platform": "2025-06-29T20:01:20.318940+03:00",
-                "status": "initated",
+                "status": "complete",
                 "qty": 0.001,
                 "price": 107500.6,
                 "cost": 107.5006,
@@ -25,7 +25,7 @@
             {
                 "timestamp": "2025-06-30T07:07:16.007457+03:00",
                 "platform": "2025-06-30T07:07:16.007457+03:00",
-                "status": "initated",
+                "status": "complete",
                 "qty": 0.001,
                 "price": 108488.5,
                 "cost": 108.4885,
@@ -48,7 +48,7 @@
             {
                 "timestamp": "2025-06-30T00:13:01.379082+03:00",
                 "platform": "2025-06-30T00:13:01.379082+03:00",
-                "status": "initated",
+                "status": "complete",
                 "qty": 3.0,
                 "price": 2.1827,
                 "cost": 6.5481,
@@ -69,7 +69,7 @@
             {
                 "timestamp": "2025-06-30T01:09:41.808942+03:00",
                 "platform": "2025-06-30T01:09:41.808942+03:00",
-                "status": "initated",
+                "status": "complete",
                 "qty": 3.0,
                 "price": 2.1901,
                 "cost": 6.5703000000000005,

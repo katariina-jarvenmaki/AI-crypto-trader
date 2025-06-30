@@ -5,7 +5,7 @@ import pytz
 import pandas as pd
 from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
-from core.runner import run_analysis_for_symbol 
+from core.runner import run_analysis_for_symbol, check_positions_and_update_logs
 from scripts.log_cleaner import run_log_cleanup
 from scripts.order_limiter import load_initiated_orders
 
@@ -52,6 +52,8 @@ def main():
             )
 
         global_is_first_run = False 
+
+        check_positions_and_update_logs(platform="ByBit")
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)

@@ -82,7 +82,6 @@ def place_market_order(symbol: str, side: str, quantity: float):
         print(f"❌ API error: {e.message}")
         return None
 
-
 def place_limit_order(symbol: str, side: str, quantity: float, price: float):
     try:
         return client.create_order(

@@ -23,6 +23,10 @@ from trade.execute_binance_long import execute_binance_long
 from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.trade_order_logger import log_trade
+from integrations.bybit_api_client import (
+    get_open_positions,
+    client as bybit_client
+)
 import pandas as pd
 
 # Symbol processing loop
@@ -70,7 +74,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         signal=final_signal,
         market_state=market_state,
         override_signal=(mode in ["override", "divergence"]),
-        mode=mode
+        mode=mode,
+        interval=interval
     )
     if risk_strength == "strong":
         status = "complete"
@@ -216,4 +221,60 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result
             )
 
-    #***** STOP LOSSES *****#
+import pandas as pd
+from scripts.trade_order_logger import load_trade_logs, update_order_status
+from scripts.sorting import sort_orders_by_stoploss_priority
+
+def check_positions_and_update_logs(platform="ByBit"):
+
+    print("\n🔍 Checking open positions from Bybit and comparing with logs...")
+
+    # 1. Hae avoimet positioit Bybitista
+    positions = get_open_positions(platform=platform)
+    if not positions: 
+        print("✅ No open positions.")
+
+    # 2. Lataa kaikki logissa olevat `initiated` orderit
+    logs = load_trade_logs(status_filter="initiated", platform=platform)
+
+    if not logs:
+        print("✅ No initiated orders in logs.")
+        return
+
+    # 3. Käydään symbolit läpi
+    symbols = logs['symbol'].unique()
+
+    for symbol in symbols:
+        for direction in ['long', 'short']:
+
+            # Lokissa olevat orderit
+            log_orders = logs[(logs['symbol'] == symbol) & (logs['direction'] == direction)]
+            if not log_orders:
+                continue
+
+            # Bybitin positioiden yhteismäärä
+            total_position_qty = sum([
+                pos['size'] for pos in positions
+                if pos['symbol'] == symbol and pos['side'].lower() == direction
+            ])
+
+            # Logien yhteismäärä
+            total_logged_qty = log_orders['qty'].sum()
+
+            # Jos Bybitin positioita on vähemmän kuin logissa
+            if total_position_qty < total_logged_qty:
+                diff_qty = total_logged_qty - total_position_qty
+
+                # Järjestetään orderit prioriteetilla: long = stop loss korkeampi ensin, short = matalampi ensin
+                sorted_orders = sort_orders_by_stoploss_priority(log_orders, direction)
+
+                marked = 0
+                for _, row in sorted_orders.iterrows():
+                    if marked >= diff_qty:
+                        break
+                    update_order_status(row['order_id'], "completed")
+                    marked += row['qty']
+
+                print(f"📝 Marked {marked} orders as completed for {symbol} ({direction})")
+
+    print("✅ Position check completed.")

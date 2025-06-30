@@ -1,7 +1,9 @@
+# scripts/trade_order_logger.py
 import json
 import os
 from datetime import datetime
 from configs.config import TRADE_LOG_FILE, TIMEZONE
+import pandas as pd
 
 def load_trade_log():
     if os.path.exists(TRADE_LOG_FILE):
@@ -59,3 +61,46 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
     log[symbol][direction_lower].append(new_order)
 
     save_trade_log(log)
+
+def load_trade_logs(status_filter=None, platform=None, filepath="AI-crypto-trader/logs/order_log.json"):
+
+    import os
+
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    ORDER_LOG_FILE = os.path.join(PROJECT_ROOT, "logs", "order_log.json")
+
+    with open(ORDER_LOG_FILE, 'r') as f:
+        data = json.load(f)
+    
+    results = []
+    for symbol, positions in data.items():
+        for direction in ['long', 'short']:
+            for order in positions.get(direction, []):
+                if status_filter and order.get("status") != status_filter:
+                    continue
+                if platform and order.get("platform") != platform:
+                    continue
+                order_entry = {
+                    "symbol": symbol,
+                    "direction": direction,
+                    **order
+                }
+                results.append(order_entry)
+    return results
+
+def update_order_status(order_id, new_status, filepath="AI-crypto-trader/logs/order_log.json"):
+    with open(filepath, 'r') as f:
+        data = json.load(f)
+    
+    updated = False
+    for symbol_orders in data.values():
+        for direction_orders in symbol_orders.values():
+            for order in direction_orders:
+                if str(order.get("timestamp")) == str(order_id):  # Use timestamp or other unique key
+                    order["status"] = new_status
+                    updated = True
+    
+    if updated:
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=4)
+    return updated

@@ -296,3 +296,38 @@ if __name__ == "__main__":
             print(f"❌ ERROR: Failed to fetch price for {test_symbol}")
     except Exception as e:
         print(f"❌ ERROR during price fetch: {e}")
+
+from scripts.trade_order_logger import load_trade_logs, update_order_status
+
+def get_open_positions(platform="ByBit"):
+    global client
+
+    try:
+        # Haetaan symbolit suoraan lokeista
+        logs = load_trade_logs(status_filter="initiated", platform=platform)
+        if not logs:
+            return []
+
+        symbols = logs['symbol'].unique()
+        all_positions = []
+
+        for symbol in symbols:
+            response = client.get_positions(
+                category="linear",
+                symbol=symbol
+            )
+
+            for pos in response["result"]["list"]:
+                size = float(pos["size"])
+                if size > 0:
+                    all_positions.append({
+                        "symbol": pos["symbol"],
+                        "side": pos["side"],  # "Buy" or "Sell"
+                        "size": size
+                    })
+
+        return all_positions
+
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch positions: {e}")
+        return None

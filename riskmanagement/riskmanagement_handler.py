@@ -7,7 +7,7 @@ from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fa
 from riskmanagement.momentum_validator import verify_signal_with_momentum_and_volume
 from riskmanagement.price_change_analyzer import check_price_change_risk
 
-def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, intervals=None, mode: str = None):
+def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, interval=None, intervals=None, mode: str = None):
     
     if override_signal:
         # return dummy defaults in override mode
@@ -24,6 +24,15 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
 
         if signal == "sell" and market_state not in allowed_states_for_sell:
             print(f"❌ Momentum SELL blocked by market state '{market_state}'")
+            return "none", {}, 1.0, {}
+
+    # Market state and interval check for RSI and LOG modes
+    if mode in ("rsi", "log") and any(i in [1, 3, 5] for i in ([interval] if isinstance(interval, int) else interval)):
+        if signal == "buy" and market_state in ["bear", "unknown"]:
+            print(f"❌ {mode.upper()} BUY blocked by market state '{market_state}' and short interval {intervals}")
+            return "none", {}, 1.0, {}
+        if signal == "sell" and market_state in ["bull", "neutral_sideways"]:
+            print(f"❌ {mode.upper()} SELL blocked by market state '{market_state}' and short interval {intervals}")
             return "none", {}, 1.0, {}
 
     if intervals is None:

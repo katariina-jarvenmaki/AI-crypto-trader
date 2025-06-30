@@ -43,8 +43,6 @@ def can_initiate(symbol, direction, initiated_counts, all_symbols=None):
     min_long = min(counts_by_direction["long"]) if counts_by_direction["long"] else 0
     min_short = min(counts_by_direction["short"]) if counts_by_direction["short"] else 0
 
-    print(f"[Order limiter] {norm_symbol} {direction}: current={current_count}, min_long={min_long}, min_short={min_short}")
-
     # Tarkista onko symbolin count sama kuin minimi kyseisessä suunnassa
     # Long- ja short-aloituksia verrataan omiin minimeihinsä
     if direction == "long":
