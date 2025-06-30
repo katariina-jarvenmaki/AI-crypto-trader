@@ -4,18 +4,32 @@ import os
 import json
 from datetime import datetime, timedelta
 import re
+import tempfile
+import shutil
 
 LOG_DIR = "logs"
 SIGNALS_LATEST = os.path.join(LOG_DIR, "signals_log.json")
 ORDERS_LATEST = os.path.join(LOG_DIR, "order_log.json")
 
 def load_json(path):
+    if not os.path.exists(path):
+        return {}
     with open(path, 'r') as f:
         return json.load(f)
 
 def save_json(path, data):
-    with open(path, 'w') as f:
-        json.dump(data, f, indent=4)
+    # Safety check to avoid overwriting with empty dict unless intentional
+    if os.path.exists(path):
+        existing = load_json(path)
+        if existing and not data:
+            print(f"Warning: Attempt to overwrite non-empty file {path} with empty data.")
+            return
+
+    # Save to a temp file first to avoid corruption during write
+    tmp_fd, tmp_path = tempfile.mkstemp()
+    with os.fdopen(tmp_fd, 'w') as tmp_file:
+        json.dump(data, tmp_file, indent=4)
+    shutil.move(tmp_path, path)
 
 def extract_date_from_signal_entry(entry):
     if not isinstance(entry, dict):
@@ -50,6 +64,10 @@ def archive_complete_signals():
     archive_filename = f"signals_log_{yesterday.day}-{yesterday.month}-{yesterday.year}.json"
     archive_path = os.path.join(LOG_DIR, archive_filename)
 
+    if os.path.exists(archive_path):
+        print(f"Archive already exists for signals: {archive_filename}, skipping.")
+        return
+
     current_data = load_json(SIGNALS_LATEST)
     archive_data = {}
 
@@ -65,6 +83,7 @@ def archive_complete_signals():
                         and log_date.date() == yesterday.date()
                         and log_data.get("status") == "complete"
                     ):
+                        print(f"Archiving signal: {pair} {tf} {direction} {indicator} @ {log_date}")
                         archive_data.setdefault(pair, {}).setdefault(tf, {}).setdefault(direction, {})[indicator] = log_data
                         del current_data[pair][tf][direction][indicator]
 
@@ -90,6 +109,10 @@ def archive_old_orders():
     archive_filename = f"order_log_{yesterday.day}-{yesterday.month}-{yesterday.year}.json"
     archive_path = os.path.join(LOG_DIR, archive_filename)
 
+    if os.path.exists(archive_path):
+        print(f"Archive already exists for orders: {archive_filename}, skipping.")
+        return
+
     current_data = load_json(ORDERS_LATEST)
     archive_data = {}
 
@@ -106,6 +129,7 @@ def archive_old_orders():
                     and log_date.date() <= yesterday.date()
                     and order.get("status") == "complete"
                 ):
+                    print(f"Archiving order: {symbol} {direction} @ {log_date}")
                     archived_orders.append(order)
                 else:
                     kept_orders.append(order)
@@ -116,12 +140,14 @@ def archive_old_orders():
 
         # Clean up empty directions
         if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
+            print(f"Removing empty symbol: {symbol}")
             current_data.pop(symbol, None)
 
     if archive_data:
         save_json(archive_path, archive_data)
         save_json(ORDERS_LATEST, current_data)
         print(f"Archived complete orders to {archive_filename}")
+
 
 def remove_old_archives(months=2):
     cutoff_date = datetime.now() - timedelta(days=30 * months)

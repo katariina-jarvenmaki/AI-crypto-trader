@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 from configs.config import TRADE_LOG_FILE, TIMEZONE
 import pandas as pd
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+LOG_PATH = os.path.join(BASE_DIR, "logs", "order_log.json")
 
 def load_trade_log():
     if os.path.exists(TRADE_LOG_FILE):
@@ -40,7 +42,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
 
     new_order = {
         "timestamp": now,
-        "platform": now,
+        "platform": platform,
         "status" : "initated",
         "qty": qty,
         "price": price,
@@ -62,16 +64,10 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
 
     save_trade_log(log)
 
-def load_trade_logs(status_filter=None, platform=None, filepath="AI-crypto-trader/logs/order_log.json"):
-
-    import os
-
-    PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    ORDER_LOG_FILE = os.path.join(PROJECT_ROOT, "logs", "order_log.json")
-
-    with open(ORDER_LOG_FILE, 'r') as f:
+def load_trade_logs(status_filter=None, platform=None, filepath=LOG_PATH):
+    with open(filepath, 'r') as f:
         data = json.load(f)
-    
+
     results = []
     for symbol, positions in data.items():
         for direction in ['long', 'short']:
@@ -88,18 +84,19 @@ def load_trade_logs(status_filter=None, platform=None, filepath="AI-crypto-trade
                 results.append(order_entry)
     return results
 
-def update_order_status(order_id, new_status, filepath="AI-crypto-trader/logs/order_log.json"):
+def update_order_status(order_id, new_status, filepath="logs/order_log.json"):
+
     with open(filepath, 'r') as f:
         data = json.load(f)
-    
+
     updated = False
     for symbol_orders in data.values():
         for direction_orders in symbol_orders.values():
             for order in direction_orders:
-                if str(order.get("timestamp")) == str(order_id):  # Use timestamp or other unique key
+                if str(order.get("timestamp")) == str(order_id):
                     order["status"] = new_status
                     updated = True
-    
+
     if updated:
         with open(filepath, 'w') as f:
             json.dump(data, f, indent=4)

@@ -53,7 +53,16 @@ def main():
 
         global_is_first_run = False 
 
-        check_positions_and_update_logs(platform="ByBit")
+        positions = check_positions_and_update_logs(
+            symbols_to_check=selected_symbols,
+            platform="ByBit"
+        )
+        if positions:
+            print("🟢 Open positions found from ByBit:")
+            for p in positions:
+                print(f"🔸 {p['symbol']}: {p['side']} | Size: {p['size']}")
+        else:
+            print("⚪ No open positions found.")
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)

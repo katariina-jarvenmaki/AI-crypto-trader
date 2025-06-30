@@ -1,4 +1,12 @@
 {
+    "BTCUSDT": {
+        "neutral_sideways": {
+            "scalp": {
+                "_comment": "Defined according to 29.6.2025 BTC scalp-observation",
+                "first_stop_loss_price": 0.15
+            }
+        }
+    },
     "ETHUSDT": {
         "unknown": {
             "scalp": {

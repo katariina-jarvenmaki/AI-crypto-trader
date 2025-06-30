@@ -2,23 +2,23 @@
     "BTCUSDT": {
         "long": [
             {
-                "timestamp": "2025-06-29T20:01:20.318940+03:00",
-                "platform": "2025-06-29T20:01:20.318940+03:00",
-                "status": "complete",
+                "timestamp": "2025-06-30T17:17:48.590004+03:00",
+                "platform": "ByBit",
+                "status": "initated",
                 "qty": 0.001,
-                "price": 107500.6,
-                "cost": 107.5006,
+                "price": 107576.0,
+                "cost": 107.57600000000001,
                 "leverage": 7,
-                "order_take_profit_price": 107807.74457142859,
-                "order_stop_loss_price": 93679.0942857143,
+                "order_take_profit_price": 107729.68,
+                "order_stop_loss_price": 93744.8,
                 "mode": "log",
                 "interval": "5m",
                 "momentum_strength": "strong",
                 "reverse_strength": "weak",
                 "volume_multiplier": 1.3,
-                "price_change": "{'24h': 0.23, '18h': 0.18, '12h': 0.3, '6h': -0.56, '4h': -0.62, '3h': -0.46, '2h': -0.3, '1h': -0.18}",
+                "price_change": "{'24h': -0.45, '18h': 0.13, '12h': -0.91, '6h': 0.1, '4h': 0.11, '3h': -0.23, '2h': -0.12, '1h': -0.19}",
                 "market_state": "neutral_sideways",
-                "started_on": "2025-06-29T16:00:00"
+                "started_on": "2025-06-30T06:00:00"
             }
         ],
         "short": [
@@ -107,13 +107,32 @@
                 "price_change": "{'24h': 0.87, '18h': 0.67, '12h': 2.1, '6h': 1.44, '4h': -1.39, '3h': -1.56, '2h': -0.94, '1h': -0.09}",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-30T03:00:00"
+            },
+            {
+                "timestamp": "2025-06-30T17:28:14.363567+03:00",
+                "platform": "ByBit",
+                "status": "initated",
+                "qty": 9.0,
+                "price": 0.5605,
+                "cost": 5.0445,
+                "leverage": 2,
+                "order_take_profit_price": 0.5633024999999999,
+                "order_stop_loss_price": 0.308275,
+                "mode": "log",
+                "interval": "30m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.21, '18h': 0.39, '12h': -1.72, '6h': -0.95, '4h': -0.32, '3h': -0.76, '2h': -0.3, '1h': -0.23}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T03:00:00"
             }
         ],
         "short": [
             {
                 "timestamp": "2025-06-30T00:55:32.083372+03:00",
                 "platform": "2025-06-30T00:55:32.083372+03:00",
-                "status": "initated",
+                "status": "complete",
                 "qty": 9.0,
                 "price": 0.5604,
                 "cost": 5.0436,
@@ -128,6 +147,50 @@
                 "price_change": "{'24h': -0.99, '18h': -0.5, '12h': -0.59, '6h': 0.79, '4h': 0.59, '3h': 0.02, '2h': 0.29, '1h': 0.45}",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-06-27T19:00:00"
+            }
+        ]
+    },
+    "ETHUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-06-30T17:32:24.529314+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 0.01,
+                "price": 2455.49,
+                "cost": 24.5549,
+                "leverage": 4,
+                "order_take_profit_price": 2461.6287249999996,
+                "order_stop_loss_price": 1903.0047499999998,
+                "mode": "log",
+                "interval": "15m",
+                "momentum_strength": "strong",
+                "reverse_strength": "none",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': 0.6, '18h': 0.91, '12h': -1.96, '6h': -0.58, '4h': 0.15, '3h': -0.31, '2h': -0.19, '1h': -0.29}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T06:00:00"
+            }
+        ],
+        "short": [
+            {
+                "timestamp": "2025-06-30T16:43:49.489104+03:00",
+                "platform": "2025-06-30T16:43:49.489104+03:00",
+                "status": "complete",
+                "qty": 0.01,
+                "price": 2462.83,
+                "cost": 24.6283,
+                "leverage": 4,
+                "order_take_profit_price": 2456.672925,
+                "order_stop_loss_price": 3016.96675,
+                "mode": "log",
+                "interval": "2h",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': 0.66, '18h': 1.13, '12h': -1.99, '6h': -0.72, '4h': 0.1, '3h': 0.39, '2h': 0.03, '1h': 0.25}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T06:00:00"
             }
         ]
     }

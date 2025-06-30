@@ -2,6 +2,10 @@
 
 from datetime import timedelta
 import pytz
+import os
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+TRADE_LOG_FILE = os.path.join(BASE_DIR, 'logs', 'order_log.json')
 
 # TIMEZONE
 TIMEZONE = pytz.timezone("Europe/Helsinki")
@@ -87,8 +91,6 @@ DEFAULT_MIN_NOTIONAL = 5.0
 
 # BUY MULTIPLIER (can be adjusted by strategy)
 BUY_PRICE_MULTIPLIER = 1  
-
-TRADE_LOG_FILE = "logs/order_log.json"
 
 PRICE_CHANGE_LIMITS = {
     "buy": {

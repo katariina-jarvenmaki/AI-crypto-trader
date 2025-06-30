@@ -23,11 +23,9 @@ from trade.execute_binance_long import execute_binance_long
 from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.trade_order_logger import log_trade
-from integrations.bybit_api_client import (
-    get_open_positions,
-    client as bybit_client
-)
+from integrations.bybit_api_client import client as bybit_client
 import pandas as pd
+import json
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
@@ -221,60 +219,83 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result
             )
 
+import json
 import pandas as pd
 from scripts.trade_order_logger import load_trade_logs, update_order_status
 from scripts.sorting import sort_orders_by_stoploss_priority
 
-def check_positions_and_update_logs(platform="ByBit"):
+def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
+    try:
+        if platform != "ByBit":
+            print(f"[ERROR] Unsupported platform for this method: {platform}")
+            return []
 
-    print("\n🔍 Checking open positions from Bybit and comparing with logs...")
+        if not symbols_to_check:
+            print("[WARN] No symbols provided for open position check.")
+            return []
 
-    # 1. Hae avoimet positioit Bybitista
-    positions = get_open_positions(platform=platform)
-    if not positions: 
-        print("✅ No open positions.")
+        all_positions = []
 
-    # 2. Lataa kaikki logissa olevat `initiated` orderit
-    logs = load_trade_logs(status_filter="initiated", platform=platform)
-
-    if not logs:
-        print("✅ No initiated orders in logs.")
-        return
-
-    # 3. Käydään symbolit läpi
-    symbols = logs['symbol'].unique()
-
-    for symbol in symbols:
-        for direction in ['long', 'short']:
-
-            # Lokissa olevat orderit
-            log_orders = logs[(logs['symbol'] == symbol) & (logs['direction'] == direction)]
-            if not log_orders:
+        for symbol in symbols_to_check:
+            bybit_symbol = symbol.replace("USDC", "USDT")
+            try:
+                response = bybit_client.get_positions(
+                    category="linear",
+                    symbol=bybit_symbol
+                )
+                if "result" in response and "list" in response["result"]:
+                    for pos in response["result"]["list"]:
+                        size = float(pos["size"])
+                        if size > 0:
+                            all_positions.append({
+                                "symbol": pos.get("symbol", "unknown"),
+                                "side": pos["side"],
+                                "size": size
+                            })
+            except Exception as inner_e:
+                print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
                 continue
 
-            # Bybitin positioiden yhteismäärä
-            total_position_qty = sum([
-                pos['size'] for pos in positions
-                if pos['symbol'] == symbol and pos['side'].lower() == direction
-            ])
+        try:
+            with open("logs/order_log.json", "r") as f:
+                order_data = json.load(f)
 
-            # Logien yhteismäärä
-            total_logged_qty = log_orders['qty'].sum()
+            side_mapping = {
+                "long": "Buy",
+                "short": "Sell"
+            }
 
-            # Jos Bybitin positioita on vähemmän kuin logissa
-            if total_position_qty < total_logged_qty:
-                diff_qty = total_logged_qty - total_position_qty
+            updated_any = False  # 🆕 uusi lippu
 
-                # Järjestetään orderit prioriteetilla: long = stop loss korkeampi ensin, short = matalampi ensin
-                sorted_orders = sort_orders_by_stoploss_priority(log_orders, direction)
+            for sym_key, sides in order_data.items():
+                for side_key, orders in sides.items():
+                    for order in orders:
+                        if order.get("status") != "complete":
+                            order_symbol = sym_key.replace("USDC", "USDT")
+                            expected_pos_side = side_mapping.get(side_key.lower())
+                            match_found = any(
+                                pos["symbol"] == order_symbol and pos["side"] == expected_pos_side
+                                for pos in all_positions
+                            )
 
-                marked = 0
-                for _, row in sorted_orders.iterrows():
-                    if marked >= diff_qty:
-                        break
-                    update_order_status(row['order_id'], "completed")
-                    marked += row['qty']
+                            if not match_found:
+                                updated = update_order_status(order.get("timestamp"), "complete")
+                                if updated:
+                                    updated_any = True  # 🆕 merkitse että jotain on päivitetty
+                                else:
+                                    print(f"[WARN] Could not update status for {order.get('timestamp')}")
 
-                print(f"📝 Marked {marked} orders as completed for {symbol} ({direction})")
+            if updated_any:
+                print("\n✅ Marked some orders as complete.")
+            else:
+                print("\nℹ️  No order statuses needed updating.")
 
-    print("✅ Position check completed.")
+        except Exception as e:
+            print(f"[ERROR] Failed to update order status logs: {e}")
+
+        return all_positions
+
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch positions: {e}")
+        return []
+
