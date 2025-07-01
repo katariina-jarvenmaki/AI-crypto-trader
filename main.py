@@ -56,11 +56,11 @@ def main():
 
         positions = check_and_reactivate_orders(
             bybit_client=bybit_client,
-            symbols_to_check=selected_symbols,
-            platform="ByBit"
+            symbols_to_check=selected_symbols
         )
+
         if positions:
-            print("🟢 Open positions found from ByBit:")
+            print("\n🟢 Open positions found from ByBit:")
             for p in positions:
                 print(f"🔸 {p['symbol']}: {p['side']} | Size: {p['size']}")
         else:
