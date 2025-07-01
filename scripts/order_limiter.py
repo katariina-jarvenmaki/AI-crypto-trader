@@ -24,8 +24,12 @@ def load_initiated_orders(log_path="logs/order_log.json"):
     return initiated_counts
 
 def can_initiate(symbol, direction, initiated_counts, all_symbols=None):
-
     norm_symbol = normalize_symbol(symbol)
+
+    # Väliaikainen säätö: Estä lisätilaus, jos tälle symbolille ja suunnalle on jo yksi "initiated" tilaus
+    if initiated_counts.get((norm_symbol, direction), 0) >= 1:
+        return False
+
     current_count = initiated_counts.get((norm_symbol, direction), 0)
 
     # Laske määrät kaikille symboleille molemmissa suunnissa
@@ -34,7 +38,6 @@ def can_initiate(symbol, direction, initiated_counts, all_symbols=None):
         "short": []
     }
     for dir_ in counts_by_direction.keys():
-        # Täytä symbolikohtaiset määrät, nollilla jos ei löydy
         for s in all_symbols:
             ns = normalize_symbol(s)
             counts_by_direction[dir_].append(initiated_counts.get((ns, dir_), 0))
@@ -43,9 +46,7 @@ def can_initiate(symbol, direction, initiated_counts, all_symbols=None):
     min_long = min(counts_by_direction["long"]) if counts_by_direction["long"] else 0
     min_short = min(counts_by_direction["short"]) if counts_by_direction["short"] else 0
 
-    # Tarkista onko symbolin count sama kuin minimi kyseisessä suunnassa
-    # Long- ja short-aloituksia verrataan omiin minimeihinsä
     if direction == "long":
         return current_count == min_long
-    else:  # direction == "short"
+    else:
         return current_count == min_short
