@@ -78,11 +78,15 @@ def archive_complete_signals():
                     continue
                 for indicator, log_data in list(indicators.items()):
                     log_date = extract_date_from_signal_entry({indicator: log_data})
-                    if (
-                        log_date
-                        and log_date.date() == yesterday.date()
-                        and log_data.get("status") == "completed"
-                    ):
+                    archive_this = False
+
+                    if log_date:
+                        if log_date.date() < yesterday.date():
+                            archive_this = True
+                        elif log_date.date() == yesterday.date() and log_data.get("status") == "completed":
+                            archive_this = True
+
+                    if archive_this:
                         print(f"Archiving signal: {pair} {tf} {direction} {indicator} @ {log_date}")
                         archive_data.setdefault(pair, {}).setdefault(tf, {}).setdefault(direction, {})[indicator] = log_data
                         del current_data[pair][tf][direction][indicator]
@@ -124,11 +128,15 @@ def archive_old_orders():
 
             for order in orders:
                 log_date = extract_date_from_order_entry(order)
-                if (
-                    log_date
-                    and log_date.date() <= yesterday.date()
-                    and order.get("status") == "completed"
-                ):
+                archive_this = False
+
+                if log_date:
+                    if log_date.date() < yesterday.date():
+                        archive_this = True
+                    elif log_date.date() == yesterday.date() and order.get("status") == "completed":
+                        archive_this = True
+
+                if archive_this:
                     print(f"Archiving order: {symbol} {direction} @ {log_date}")
                     archived_orders.append(order)
                 else:
@@ -139,10 +147,8 @@ def archive_old_orders():
                 if kept_orders:
                     current_data[symbol][direction] = kept_orders
                 else:
-                    # Poistetaan tyhjä lista avaimena
                     current_data[symbol].pop(direction, None)
 
-        # Poistetaan symboli, jos molemmat directionit puuttuvat tai ovat tyhjiä
         if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
             print(f"Removing empty symbol: {symbol}")
             current_data.pop(symbol, None)

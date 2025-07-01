@@ -381,7 +381,20 @@ def stop_loss_updater(positions):
             for side_key, orders in sides.items():
                 for order in orders:
 
-                    print("Set stop losses here..?")
+                    # Skip if completed
+                    if order.get("status") == "completed":
+                        continue
+
+                    try:
+                        direction = side_key.lower()
+                        entry_price = float(order.get("price"))
+                        print("Set stop losses here..?")
+                        print(f"Symbol: {symbol_key}")
+                        print(f"Direction: {direction}")
+                        print(f"Entry price: {entry_price}")
+
+                    except Exception as price_err:
+                        print(f"[ERROR] Failed to get price for {bybit_symbol}: {price_err}")
 
     except Exception as e:
         print(f"[ERROR] Could not check open order prices: {e}")
