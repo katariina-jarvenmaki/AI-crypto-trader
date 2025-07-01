@@ -77,7 +77,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         interval=interval
     )
     if risk_strength == "strong":
-        status = "complete"
+        status = "completed"
 
     # Strategy handler
     # 4. Determine strategy
@@ -96,7 +96,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     # Do the signal logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
     if risk_strength in ("strong", "weak", "none") and (
-        mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "complete")
+        mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):
         now = datetime.now(pytz.timezone(TIMEZONE.zone))
         update_signal_log(
@@ -296,7 +296,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 
                 if not has_initiated:
                     print(f"No initiated orders for this symbol on the log")
-                    complete_orders = [o for o in existing_orders if o.get("status") == "complete"]
+                    complete_orders = [o for o in existing_orders if o.get("status") == "completed"]
                     if complete_orders:
                         latest_order = sorted(complete_orders, key=lambda x: x["timestamp"], reverse=True)[0]
                         latest_order["status"] = "initiated"
@@ -322,14 +322,14 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
             for sym_key, sides in order_data.items():
                 for side_key, orders in sides.items():
                     for order in orders:
-                        if order.get("status") != "complete":
+                        if order.get("status") != "completed":
                             expected_pos_side = side_mapping.get(side_key.lower())
                             match_found = any(
                                 pos["symbol"] == sym_key and pos["side"] == expected_pos_side
                                 for pos in all_positions
                             )
                             if not match_found:
-                                updated = update_order_status(order.get("timestamp"), "complete")
+                                updated = update_order_status(order.get("timestamp"), "completed")
                                 if updated:
                                     updated_any = True
                                 else:

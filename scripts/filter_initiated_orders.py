@@ -27,10 +27,10 @@ def filter_initiated_orders(orders, position_side):
     for order in initiated_orders:
         if order != chosen:
             # Merkitse completeksi
-            updated = update_order_status(order.get("timestamp"), "complete")
+            updated = update_order_status(order.get("timestamp"), "completed")
             if updated:
                 updated_any = True
-                order["status"] = "complete"  # päivitetään myös tässä listassa
+                order["status"] = "completed"  # päivitetään myös tässä listassa
                 print(f"Marked order {order.get('timestamp')} as complete due to multiple initiated orders.")
 
     return orders, updated_any

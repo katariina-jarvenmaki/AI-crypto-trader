@@ -120,7 +120,7 @@ def reactivate_completed_orders(filepath=LOG_PATH):
         for direction in ['long', 'short']:
             orders = positions.get(direction, [])
             for order in orders:
-                if order.get("status") == "complete":
+                if order.get("status") == "completed":
                     order["status"] = "initiated"
                     updated_any = True
                     print(f"🔄 Re-activated completed order as initiated for {symbol} {direction}")

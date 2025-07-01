@@ -63,7 +63,7 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
             return True
 
     # If status is complete, accept signal
-    if entry_for_mode.get("status") == "complete":
+    if entry_for_mode.get("status") == "completed":
         return True
 
     # Check the timestamp

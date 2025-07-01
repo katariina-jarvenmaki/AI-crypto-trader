@@ -4,7 +4,7 @@
             {
                 "timestamp": "2025-07-01T01:15:41.063086+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 0.001,
                 "price": 107210.0,
                 "cost": 107.21000000000001,
@@ -32,7 +32,7 @@
             {
                 "timestamp": "2025-07-01T08:51:04.894998+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 0.001,
                 "price": 106815.7,
                 "cost": 106.81569999999999,
@@ -60,7 +60,7 @@
             {
                 "timestamp": "2025-07-01T12:08:02.062682+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 0.001,
                 "price": 106693.9,
                 "cost": 106.6939,
@@ -93,7 +93,7 @@
             {
                 "timestamp": "2025-07-01T03:03:45.040735+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 0.01,
                 "price": 2487.45,
                 "cost": 24.874499999999998,
@@ -159,7 +159,7 @@
             {
                 "timestamp": "2025-07-01T09:56:13.944022+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 34.0,
                 "price": 0.14942,
                 "cost": 5.08028,
@@ -187,7 +187,7 @@
             {
                 "timestamp": "2025-07-01T10:44:46.017425+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 34.0,
                 "price": 0.14905,
                 "cost": 5.067699999999999,
@@ -309,7 +309,7 @@
             {
                 "timestamp": "2025-07-01T16:33:09.640013+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 0.1,
                 "price": 148.32,
                 "cost": 14.832,

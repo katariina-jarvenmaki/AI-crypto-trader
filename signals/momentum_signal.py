@@ -37,7 +37,7 @@ def get_momentum_signal(symbol: str):
 
     # ⚠️ Estetään momentum-signaali jos kesken oleva sama signaali löytyy logista
     log_result = get_log_signal(symbol)
-    if log_result and log_result.get("signal") == suggested_signal and log_result.get("status") != "complete":
+    if log_result and log_result.get("signal") == suggested_signal and log_result.get("status") != "completed":
         print(f"⚠️  Skipping momentum signal '{suggested_signal}' because matching unused log signal exists.")
         return None, momentum_info
 

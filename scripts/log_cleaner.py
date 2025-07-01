@@ -36,7 +36,7 @@ def extract_date_from_signal_entry(entry):
         return None
 
     for key, signal_data in entry.items():
-        if isinstance(signal_data, dict) and signal_data.get("status") == "complete":
+        if isinstance(signal_data, dict) and signal_data.get("status") == "completed":
             timestamp = signal_data.get("time") or signal_data.get("started_on")
             if timestamp and isinstance(timestamp, str):
                 return datetime.fromisoformat(timestamp.split("+")[0])
@@ -81,7 +81,7 @@ def archive_complete_signals():
                     if (
                         log_date
                         and log_date.date() == yesterday.date()
-                        and log_data.get("status") == "complete"
+                        and log_data.get("status") == "completed"
                     ):
                         print(f"Archiving signal: {pair} {tf} {direction} {indicator} @ {log_date}")
                         archive_data.setdefault(pair, {}).setdefault(tf, {}).setdefault(direction, {})[indicator] = log_data
@@ -127,7 +127,7 @@ def archive_old_orders():
                 if (
                     log_date
                     and log_date.date() <= yesterday.date()
-                    and order.get("status") == "complete"
+                    and order.get("status") == "completed"
                 ):
                     print(f"Archiving order: {symbol} {direction} @ {log_date}")
                     archived_orders.append(order)
