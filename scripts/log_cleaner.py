@@ -137,7 +137,7 @@ def archive_old_orders():
                         archive_this = True
 
                 if archive_this:
-                    print(f"Archiving order: {symbol} {direction} @ {log_date}")
+                    # print(f"Archiving order: {symbol} {direction} @ {log_date}")
                     archived_orders.append(order)
                 else:
                     kept_orders.append(order)
@@ -150,7 +150,7 @@ def archive_old_orders():
                     current_data[symbol].pop(direction, None)
 
         if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
-            print(f"Removing empty symbol: {symbol}")
+            # print(f"Removing empty symbol: {symbol}")
             current_data.pop(symbol, None)
 
     if archive_data:
