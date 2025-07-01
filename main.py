@@ -66,7 +66,7 @@ def main():
             time.sleep(180)
             continue
 
-        # stop_loss_updater()
+        stop_loss_updater(positions)
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)

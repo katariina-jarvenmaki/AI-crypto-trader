@@ -248,7 +248,7 @@
             {
                 "timestamp": "2025-07-01T12:09:11.694044+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "completed",
                 "qty": 3.0,
                 "price": 2.2098,
                 "cost": 6.6294,
