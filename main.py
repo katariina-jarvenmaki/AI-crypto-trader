@@ -5,9 +5,10 @@ import pytz
 import pandas as pd
 from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
-from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_updater
+from core.runner import run_analysis_for_symbol, check_and_reactivate_orders, stop_loss_updater
 from scripts.log_cleaner import run_log_cleanup
 from scripts.order_limiter import load_initiated_orders
+from integrations.bybit_api_client import client as bybit_client
 
 def main():
 
@@ -53,7 +54,8 @@ def main():
 
         global_is_first_run = False 
 
-        positions = check_positions_and_update_logs(
+        positions = check_and_reactivate_orders(
+            bybit_client=bybit_client,
             symbols_to_check=selected_symbols,
             platform="ByBit"
         )

@@ -300,12 +300,12 @@
         "15m": {
             "buy": {
                 "rsi": {
-                    "time": "2025-07-01T12:28:34.774764+03:00",
+                    "time": "2025-07-01T14:14:25.166171+03:00",
                     "status": "unused",
-                    "momentum_strength": "none",
+                    "momentum_strength": "weak",
                     "reverse_strength": "strong",
                     "volume_multiplier": 1.4,
-                    "price_change": "{'24h': -0.94, '18h': -3.6, '12h': -4.71, '6h': -3.05, '4h': -1.58, '3h': -1.49, '2h': -0.59, '1h': -0.43}",
+                    "price_change": "{'24h': -1.66, '18h': -5.67, '12h': -4.72, '6h': -2.45, '4h': -1.2, '3h': -1.03, '2h': -0.56, '1h': -0.51}",
                     "market_state": "unknown",
                     "started_on": "2025-07-01T08:00:00",
                     "previous_market_state": "neutral_sideways"

@@ -23,7 +23,7 @@
             {
                 "timestamp": "2025-07-01T08:51:04.894998+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "initated",
                 "qty": 0.001,
                 "price": 106815.7,
                 "cost": 106.81569999999999,
@@ -157,7 +157,7 @@
             {
                 "timestamp": "2025-07-01T10:44:05.774956+03:00",
                 "platform": "ByBit",
-                "status": "complete",
+                "status": "initated",
                 "qty": 3.0,
                 "price": 2.2153,
                 "cost": 6.6459,

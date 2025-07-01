@@ -224,79 +224,63 @@ import pandas as pd
 from scripts.trade_order_logger import load_trade_logs, update_order_status, safe_load_json
 from scripts.sorting import sort_orders_by_stoploss_priority
 
-def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
-    try:
-        if platform != "ByBit":
-            print(f"[ERROR] Unsupported platform for this method: {platform}")
-            return []
+def normalize_symbol(symbol):
+    # Voit säätää tätä logiikkaa lisää tarpeen mukaan
+    return symbol.replace("USDC", "USDT")
 
-        if not symbols_to_check:
-            print("[WARN] No symbols provided for open position check.")
-            return []
+def check_and_reactivate_orders(bybit_client, symbols_to_check=None, platform=None, order_data_path="logs/order_log.json"):
+    import json
 
-        all_positions = []
+    with open(order_data_path, "r") as f:
+        order_data = json.load(f)
 
-        for symbol in symbols_to_check:
-            bybit_symbol = symbol.replace("USDC", "USDT")
-            try:
-                response = bybit_client.get_positions(
-                    category="linear",
-                    symbol=bybit_symbol
-                )
-                if "result" in response and "list" in response["result"]:
-                    for pos in response["result"]["list"]:
-                        size = float(pos["size"])
-                        if size > 0:
-                            all_positions.append({
-                                "symbol": pos.get("symbol", "unknown"),
-                                "side": pos["side"],
-                                "size": size
-                            })
-            except Exception as inner_e:
-                print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
-                continue
+    positions_response = bybit_client.get_positions(
+        category="linear",
+        settleCoin="USDT"
+    )
 
-        try:
-            order_data = safe_load_json("logs/order_log.json")  # <-- turvattu lataus
+    positions = positions_response.get("result", {}).get("list", [])
+    bybit_open_symbols = {
+        normalize_symbol(pos.get("symbol")) for pos in positions
+        if float(pos.get("size", 0)) > 0
+    }
 
-            side_mapping = {
-                "long": "Buy",
-                "short": "Sell"
-            }
+    print(f"[DEBUG] Aktiiviset Bybit-positiot: {bybit_open_symbols}")
 
-            updated_any = False
+    if symbols_to_check is not None:
+        symbols_to_check = {normalize_symbol(s) for s in symbols_to_check}
+        bybit_open_symbols = bybit_open_symbols.intersection(symbols_to_check)
 
-            for sym_key, sides in order_data.items():
-                for side_key, orders in sides.items():
-                    for order in orders:
-                        if order.get("status") != "complete":
-                            order_symbol = sym_key.replace("USDC", "USDT")
-                            expected_pos_side = side_mapping.get(side_key.lower())
-                            match_found = any(
-                                pos["symbol"] == order_symbol and pos["side"] == expected_pos_side
-                                for pos in all_positions
-                            )
+    updated = False
+    for symbol in bybit_open_symbols:
+        if symbol in order_data:
+            for direction in ["long", "short"]:
+                orders = order_data[symbol][direction]
+                has_active = any(o.get("status") != "complete" for o in orders)
+                if has_active:
+                    continue
+                complete_orders = [o for o in orders if o.get("status") == "complete"]
+                if complete_orders:
+                    latest_order = max(complete_orders, key=lambda x: x.get("timestamp", ""))
+                    latest_order["status"] = "initiated"
+                    updated = True
+                    print(f"[INFO] Uudelleenaktivoitu {symbol} {direction.upper()} → INITIATED")
+        else:
+            print(f"[DEBUG] Symbolia {symbol} ei löytynyt order_log.jsonista")
 
-                            if not match_found:
-                                updated = update_order_status(order.get("timestamp"), "complete")
-                                if updated:
-                                    updated_any = True
-                                else:
-                                    print(f"[WARN] Could not update status for {order.get('timestamp')}")
+    if updated:
+        with open(order_data_path, "w") as f:
+            json.dump(order_data, f, indent=4)
 
-            if updated_any:
-                print("\n✅ Marked some orders as complete.")
-            else:
-                print("\nℹ️  No order statuses needed updating.")
-
-        except Exception as e:
-            print(f"[ERROR] Failed to update order status logs: {e}")
-
-        return all_positions
-
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch positions: {e}")
-        return []
+    return [
+        {
+            "symbol": pos.get("symbol"),
+            "side": pos.get("side"),
+            "size": pos.get("size")
+        }
+        for pos in positions
+        if normalize_symbol(pos.get("symbol")) in bybit_open_symbols and float(pos.get("size", 0)) > 0
+    ]
 
 def stop_loss_updater():
     import os
@@ -315,11 +299,16 @@ def stop_loss_updater():
             order_data = json.load(f)
 
         # Palauta viimeisin "complete" status takaisin "initated" jos positio taas näkyy Bybitissä
-        positions = bybit_client.get_positions(
+        positions_response = bybit_client.get_positions(
             category="linear",
             settleCoin="USDT"
         )
-        bybit_open_symbols = {pos.get("symbol") for pos in positions if float(pos.get("size", 0)) > 0}
+
+        positions = positions_response.get("result", {}).get("list", [])
+        bybit_open_symbols = {
+            pos.get("symbol") for pos in positions
+            if float(pos.get("size", 0)) > 0
+        }
 
         updated = False
         for symbol in bybit_open_symbols:
