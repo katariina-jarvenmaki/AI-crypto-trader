@@ -225,7 +225,11 @@ from scripts.trade_order_logger import load_trade_logs, update_order_status, saf
 from scripts.sorting import sort_orders_by_stoploss_priority
 
 def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
+
+    print(f"\n🔍 Doing position checks and log updates...")
+
     try:
+
         if platform != "ByBit":
             print(f"[ERROR] Unsupported platform for this method: {platform}")
             return []
@@ -236,13 +240,19 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 
         all_positions = []
 
+        # Go thought the given symbols and get position data for those
         for symbol in symbols_to_check:
+
             bybit_symbol = symbol.replace("USDC", "USDT")
+
             try:
+
                 response = bybit_client.get_positions(
                     category="linear",
                     symbol=bybit_symbol
                 )
+
+                # Get positions from the Buy bit
                 if "result" in response and "list" in response["result"]:
                     for pos in response["result"]["list"]:
                         size = float(pos["size"])
@@ -252,31 +262,82 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                                 "side": pos["side"],
                                 "size": size
                             })
+
             except Exception as inner_e:
                 print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
                 continue
 
+        # Updating the logs according the position data
         try:
+
             order_data = safe_load_json("logs/order_log.json")  # <-- turvattu lataus
 
             side_mapping = {
                 "long": "Buy",
                 "short": "Sell"
             }
-
+            reverse_side_mapping = {v: k for k, v in side_mapping.items()}
             updated_any = False
 
+            # ✅ 1. Ensin varmistetaan että kaikille avoimille positioille löytyy "initiated" order
+            for position in all_positions:
+
+                pos_symbol = position["symbol"]
+                pos_side = position["side"]  # "Buy" tai "Sell"
+                print(f"Position symbol: {pos_symbol}")
+                print(f"Position side: {pos_side}")
+
+                log_side_key = reverse_side_mapping.get(pos_side.lower(), "").lower()
+                print(f"Log side key: {log_side_key}")
+
+                if pos_symbol not in order_data or log_side_key not in order_data[pos_symbol]:
+                    order_data.setdefault(pos_symbol, {}).setdefault(log_side_key, [])
+
+                existing_orders = order_data[pos_symbol][log_side_key]
+                print(f"Existing orders: {existing_orders}")
+
+                # Etsi "initiated"-status order
+                has_initiated = any(o.get("status") == "initiated" for o in existing_orders)
+
+                if not has_initiated:
+
+                    print(f"No initiated orders for this symbol on the log")
+
+                    # Etsi viimeisin "complete"-status order
+                    complete_orders = [o for o in existing_orders if o.get("status") == "complete"]
+                    if complete_orders:
+                        latest_order = sorted(complete_orders, key=lambda x: x["timestamp"], reverse=True)[0]
+                        latest_order["status"] = "initiated"
+                        updated_any = True
+                        print(f"🔄 Re-activated completed order as initiated for {pos_symbol} {log_side_key}")
+                    else:
+                        # Luo uusi order
+                        log_trade(
+                            symbol=pos_symbol,
+                            direction=log_side_key,
+                            qty=position["size"],
+                            price=0.0,  # Ei hintaa tiedossa
+                            cost=0.0,
+                            leverage=0,
+                            platform=platform,
+                            status="initiated"
+                        )
+                        updated_any = True
+                        print(f"🆕 Created new initiated order for {pos_symbol} {log_side_key}")
+       
+            # ✅ 2. Sitten päivitetään status "complete", jos vastaavaa positiota ei enää ole
             for sym_key, sides in order_data.items():
                 for side_key, orders in sides.items():
                     for order in orders:
+
                         if order.get("status") != "complete":
-                            order_symbol = sym_key.replace("USDC", "USDT")
+                            
+                            print(f"Open position was not found, marking as complete")
                             expected_pos_side = side_mapping.get(side_key.lower())
                             match_found = any(
-                                pos["symbol"] == order_symbol and pos["side"] == expected_pos_side
+                                pos["symbol"] == sym_key and pos["side"] == expected_pos_side
                                 for pos in all_positions
                             )
-
                             if not match_found:
                                 updated = update_order_status(order.get("timestamp"), "complete")
                                 if updated:
@@ -285,7 +346,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                                     print(f"[WARN] Could not update status for {order.get('timestamp')}")
 
             if updated_any:
-                print("\n✅ Marked some orders as complete.")
+                print("\n✅ Updated order statuses.")
             else:
                 print("\nℹ️  No order statuses needed updating.")
 

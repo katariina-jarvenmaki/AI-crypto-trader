@@ -54,7 +54,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
     new_order = {
         "timestamp": now,
         "platform": platform,
-        "status" : "initated",
+        "status" : "initiated",
         "qty": qty,
         "price": price,
         "cost": cost,

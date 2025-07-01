@@ -142,6 +142,21 @@
                     "started_on": "2025-06-30T06:00:00"
                 }
             }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T18:42:03.392682+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': -1.74, '18h': -2.99, '12h': -2.55, '6h': -1.35, '4h': -1.11, '3h': -0.77, '2h': -0.53, '1h': 0.13}",
+                    "market_state": "bear",
+                    "started_on": "2025-07-01T13:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
         }
     },
     "HBARUSDC": {
@@ -437,12 +452,12 @@
         "30m": {
             "buy": {
                 "rsi": {
-                    "time": "2025-07-01T16:42:23.739170+03:00",
+                    "time": "2025-07-01T18:27:37.782963+03:00",
                     "status": "unused",
                     "momentum_strength": "weak",
                     "reverse_strength": "strong",
                     "volume_multiplier": 1.4,
-                    "price_change": "{'24h': -2.31, '18h': -5.68, '12h': -4.19, '6h': -2.81, '4h': -2.35, '3h': -2.24, '2h': -1.93, '1h': -0.45}",
+                    "price_change": "{'24h': -2.72, '18h': -5.65, '12h': -3.66, '6h': -2.55, '4h': -2.42, '3h': -1.08, '2h': -1.01, '1h': -0.09}",
                     "market_state": "unknown",
                     "started_on": "2025-07-01T13:00:00",
                     "previous_market_state": "neutral_sideways"
