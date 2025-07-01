@@ -17,6 +17,7 @@ from configs.config import TIMEZONE
 from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from scripts.order_limiter import can_initiate
+from scripts.process_stop_loss_logic import process_stop_loss_logic
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from trade.execute_binance_long import execute_binance_long
@@ -359,7 +360,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 
 import os
 
-def stop_loss_updater(positions):
+def stop_loss_checker(positions):
     
     print(f"\n🔍 Doing stop loss checks and updates...")
 
@@ -378,7 +379,7 @@ def stop_loss_updater(positions):
         trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))
 
         if not positions:
-            print("⚠️  No open positions passed to stop_loss_updater.")
+            print("⚠️  No open positions passed to process_stop_loss_logic.")
             return
 
         with open("logs/order_log.json", "r") as f:
@@ -418,16 +419,19 @@ def stop_loss_updater(positions):
                     continue
 
                 try:
-                    
-                    # Prints
-                    print(f"\n📊 Analyzing position: {symbol}")
-                    print(f"Side: {side}")
-                    print(f"Size: {size}")
-                    print(f"Entry Price: {avg_price}")
-                    print(f"Leverage: {leverage}")
-                    print(f"Trailing Stop: {trailing_stop}")
 
-                    # 🔽 Tässä voit lisätä myöhemmin varsinaisen stop loss -logiikan, jos haluat
+                    # Run stop loss updater
+                    process_stop_loss_logic(
+                        symbol=symbol,
+                        side=side,
+                        size=size,
+                        entry_price=avg_price,
+                        leverage=leverage,
+                        trailing_stop=trailing_stop,
+                        set_sl_percent=set_sl_percent,
+                        partial_sl_percent=partial_sl_percent,
+                        trailing_percent=trailing_percent
+                    )
 
                 except Exception as e:
                     print(f"[ERROR] Failed to process order for {symbol}: {e}")

@@ -5,7 +5,7 @@ import pytz
 import pandas as pd
 from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
-from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_updater
+from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
 from scripts.log_cleaner import run_log_cleanup
 from scripts.order_limiter import load_initiated_orders
 
@@ -66,7 +66,7 @@ def main():
             time.sleep(180)
             continue
 
-        stop_loss_updater(positions)
+        stop_loss_checker(positions)
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)

@@ -188,6 +188,17 @@
                     "market_state": "unknown",
                     "started_on": "2025-07-01T19:00:00",
                     "previous_market_state": "neutral_sideways"
+                },
+                "log": {
+                    "time": "2025-07-02T01:21:39.139262+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -3.23, '18h': -2.93, '12h': -2.09, '6h': -0.84, '4h': -0.63, '3h': -0.56, '2h': 0.06, '1h': -0.35}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T22:00:00",
+                    "previous_market_state": "neutral_sideways"
                 }
             }
         }
