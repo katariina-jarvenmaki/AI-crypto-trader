@@ -1,25 +1,5 @@
 {
-  "default": {
-    "set_stoploss_percent": "0.16%",
-    "partial_stoploss_percent": "0.15%",
-    "trailing_stoploss_percent": "0.005%"
-  },
-  "BTCUSDT": {
-    "trailing_stoploss_percent": "0.005%"
-  },
-  "ETHUSDT": {
-    "trailing_stoploss_percent": "0.005%"
-  },
-  "SOLUSDT": {
-    "trailing_stoploss_percent": "0.005%"
-  },
-  "XRPUSDT": {
-    "trailing_stoploss_percent": "0.0005%"
-  },
-  "ADAUSDT": {
-    "trailing_stoploss_percent": "0.005%"
-  },
-  "HBARUSDT": {
-    "trailing_stoploss_percent": "0.005%"
-  }
+  "set_stoploss_percent": "0.16%",
+  "partial_stoploss_percent": "0.15%",
+  "trailing_stoploss_percent": "0.01%"
 }

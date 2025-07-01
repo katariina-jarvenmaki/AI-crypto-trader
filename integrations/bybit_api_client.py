@@ -299,17 +299,17 @@ if __name__ == "__main__":
 
 from scripts.trade_order_logger import load_trade_logs, update_order_status
 
-def set_stop_loss_and_trailing_stop(symbol, side, partial_stop_loss_price, trailing_stop_callback, entry_price=None, order_id=None):
-    position_idx = 1 if side.lower() == "long" or side.lower() == "buy" else 2
-    return bybit_client.set_trading_stop(
+
+def set_stop_loss_and_trailing_stop(symbol, side, partial_stop_loss_price, trailing_stop_callback):
+    position_idx = 1 if side == "Buy" else 2
+    return client.set_trading_stop(
         category="linear",
         symbol=symbol,
         stopLoss=str(partial_stop_loss_price),
         trailingStop=str(trailing_stop_callback),
         slTriggerBy="LastPrice",
         tpslMode="Partial",
-        positionIdx=position_idx,
-        orderId=order_id 
+        positionIdx=position_idx
     )
 
 def parse_percent(value_str):

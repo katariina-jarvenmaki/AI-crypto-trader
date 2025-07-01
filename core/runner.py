@@ -50,7 +50,6 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     if final_signal not in ("buy", "sell"):
         return
 
-
     # Check the order counts
     direction = None
     if final_signal == "buy": direction = "long"
@@ -220,236 +219,198 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result
             )
 
-# Symbol normalization helper
-def normalize_symbol(symbol: str) -> str:
-    if symbol.endswith("USDC"):
-        return symbol.replace("USDC", "USDT")
-    return symbol.upper()
+import json
+import pandas as pd
+from scripts.trade_order_logger import load_trade_logs, update_order_status, safe_load_json
+from scripts.sorting import sort_orders_by_stoploss_priority
 
-def check_and_reactivate_orders(bybit_client, symbols_to_check=None, order_data_path="logs/order_log.json"):
-    with open(order_data_path, "r") as f:
-        order_data = json.load(f)
+def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
+    try:
+        if platform != "ByBit":
+            print(f"[ERROR] Unsupported platform for this method: {platform}")
+            return []
 
-    positions_response = bybit_client.get_positions(category="linear", settleCoin="USDT")
-    positions = positions_response.get("result", {}).get("list", [])
-    bybit_open_symbols = {
-        normalize_symbol(pos.get("symbol")) for pos in positions if float(pos.get("size", 0)) > 0
-    }
+        if not symbols_to_check:
+            print("[WARN] No symbols provided for open position check.")
+            return []
 
-    if symbols_to_check is not None:
-        symbols_to_check = {normalize_symbol(s) for s in symbols_to_check}
-        bybit_open_symbols = bybit_open_symbols.intersection(symbols_to_check)
+        all_positions = []
 
-    updated = False
-    for symbol in bybit_open_symbols:
-        if symbol in order_data:
-            for direction in ["long", "short"]:
-                orders = order_data[symbol].get(direction, [])
-                has_active = any(o.get("status") != "complete" for o in orders)
-                if has_active:
-                    continue
-                complete_orders = [o for o in orders if o.get("status") == "complete"]
-                if complete_orders:
-                    latest_order = max(complete_orders, key=lambda x: x.get("timestamp", ""))
-                    latest_order["status"] = "initiated"
-                    updated = True
-                    print(f"[INFO] Uudelleenaktivoitu {symbol} {direction.upper()} → INITIATED")
-        else:
-            print(f"[DEBUG] Symbolia {symbol} ei löytynyt order_log.jsonista")
+        for symbol in symbols_to_check:
+            bybit_symbol = symbol.replace("USDC", "USDT")
+            try:
+                response = bybit_client.get_positions(
+                    category="linear",
+                    symbol=bybit_symbol
+                )
+                if "result" in response and "list" in response["result"]:
+                    for pos in response["result"]["list"]:
+                        size = float(pos["size"])
+                        if size > 0:
+                            all_positions.append({
+                                "symbol": pos.get("symbol", "unknown"),
+                                "side": pos["side"],
+                                "size": size
+                            })
+            except Exception as inner_e:
+                print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
+                continue
 
-    if updated:
-        with open(order_data_path, "w") as f:
-            json.dump(order_data, f, indent=4)
+        try:
+            order_data = safe_load_json("logs/order_log.json")  # <-- turvattu lataus
 
-    return [
-        {
-            "symbol": pos.get("symbol"),
-            "side": pos.get("side"),
-            "size": pos.get("size")
-        }
-        for pos in positions if normalize_symbol(pos.get("symbol")) in bybit_open_symbols and float(pos.get("size", 0)) > 0
-    ]
+            side_mapping = {
+                "long": "Buy",
+                "short": "Sell"
+            }
+
+            updated_any = False
+
+            for sym_key, sides in order_data.items():
+                for side_key, orders in sides.items():
+                    for order in orders:
+                        if order.get("status") != "complete":
+                            order_symbol = sym_key.replace("USDC", "USDT")
+                            expected_pos_side = side_mapping.get(side_key.lower())
+                            match_found = any(
+                                pos["symbol"] == order_symbol and pos["side"] == expected_pos_side
+                                for pos in all_positions
+                            )
+
+                            if not match_found:
+                                updated = update_order_status(order.get("timestamp"), "complete")
+                                if updated:
+                                    updated_any = True
+                                else:
+                                    print(f"[WARN] Could not update status for {order.get('timestamp')}")
+
+            if updated_any:
+                print("\n✅ Marked some orders as complete.")
+            else:
+                print("\nℹ️  No order statuses needed updating.")
+
+        except Exception as e:
+            print(f"[ERROR] Failed to update order status logs: {e}")
+
+        return all_positions
+
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch positions: {e}")
+        return []
 
 def stop_loss_updater():
     import os
     import json
-    import ast
     from integrations.bybit_api_client import parse_percent, get_bybit_symbol_info
     from core.runner import bybit_client
 
-    def get_symbol_config(config, symbol, key, default_key="default"):
-        return config.get(symbol, {}).get(key, config.get(default_key, {}).get(key))
-
-    def normalize_symbol(symbol):
-        # Lisää tähän tarvittaessa symbolin normalisointi
-        return symbol.upper() if symbol else ""
-
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    config_path = os.path.join(base_dir, "configs", "stoploss_config.json")
-    order_log_path = os.path.join(base_dir, "logs", "order_log.json")
+    config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
+    config_path = os.path.abspath(config_path)
 
     try:
-        with open(order_log_path, "r") as f:
-            order_data = json.load(f)
-
-        # Korjataan price_change-kentät merkkijonosta dictiksi
-        for symbol, sides in order_data.items():
-            if not isinstance(sides, dict):
-                continue
-            for direction, orders in sides.items():
-                if not isinstance(orders, list):
-                    continue
-                for order in orders:
-                    price_change_str = order.get("price_change")
-                    if price_change_str and isinstance(price_change_str, str):
-                        try:
-                            order["price_change"] = ast.literal_eval(price_change_str)
-                        except Exception as ex:
-                            print(f"[WARN] price_change parsing error for {symbol}: {ex}")
-                            order["price_change"] = {}
-
-        updated = False
-
-        positions_response = bybit_client.get_positions(category="linear", settleCoin="USDT")
-        positions = positions_response.get("result", {}).get("list", [])
-        bybit_open_symbols = {
-            normalize_symbol(pos.get("symbol")) for pos in positions if float(pos.get("size", 0)) > 0
-        }
-
-        for symbol in bybit_open_symbols:
-            if symbol not in order_data:
-                continue
-
-            sides = order_data[symbol]
-            if not isinstance(sides, dict):
-                print(f"[WARN] {symbol} sides data is not a dict, skipping")
-                continue
-
-            for direction in ["long", "short"]:
-                orders = sides.get(direction, [])
-                if not isinstance(orders, list):
-                    print(f"[WARN] {symbol} {direction} orders is not a list, skipping")
-                    continue
-
-                has_initiated = any(o.get("status") == "initiated" for o in orders)
-                if not has_initiated:
-                    complete_orders = [o for o in orders if o.get("status") == "complete"]
-                    if complete_orders:
-                        latest_order = max(complete_orders, key=lambda x: x.get("timestamp", ""))
-                        latest_order["status"] = "initiated"
-                        updated = True
-                        print(f"[INFO] Re-activated {symbol} {direction.upper()} order from complete → INITIATED")
-
-        if updated:
-            with open(order_log_path, "w") as f:
-                json.dump(order_data, f, indent=4)
-
         with open(config_path, "r") as cf:
             config = json.load(cf)
+
+        set_sl_percent = parse_percent(config.get("set_stoploss_percent", "0.16%"))
+        partial_sl_percent = parse_percent(config.get("partial_stoploss_percent", "0.15%"))
+        trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))  # esim. 0.0015 desimaalina
+
+        with open("logs/order_log.json", "r") as f:
+            order_data = json.load(f)
 
         print("\n📈 Checking live prices for open orders...")
 
         for symbol_key, sides in order_data.items():
-            
-            bybit_symbol = normalize_symbol(symbol_key)
-
-            if normalize_symbol(symbol_key) not in bybit_open_symbols:
-                for side_key, orders in sides.items():
-                    for order in orders:
-                        if order.get("status") == "initiated":
-                            order["status"] = "complete"
-                            updated = True
-                            print(f"[INFO] Marked {symbol_key} {side_key.upper()} order as COMPLETE (no longer open in ByBit)")
-                continue  
-
-            if not isinstance(sides, dict):
-                print(f"[WARN] {symbol_key} sides data is not a dict, skipping")
-                continue
+            bybit_symbol = symbol_key.replace("USDC", "USDT")
 
             for side_key, orders in sides.items():
-                if not isinstance(orders, list):
-                    print(f"[WARN] {symbol_key} {side_key} orders is not a list, skipping")
-                    continue
-
                 for order in orders:
-                    # Käydään läpi VAIN tilaukset, joiden status on 'initiated'
-                    if order.get("status") != "initiated":
+                    if order.get("status") == "complete":
                         continue
 
                     try:
                         direction = side_key.lower()
-                        price_raw = order.get("price")
-                        if price_raw is None:
-                            print(f"[WARN] Missing price for {symbol_key} {side_key} order, skipping")
-                            continue
-                        entry_price = float(price_raw)
+                        entry_price = float(order.get("price"))
 
                         price_data = bybit_client.get_tickers(category="linear", symbol=bybit_symbol)
-                        if ("result" in price_data and
-                            "list" in price_data["result"] and
-                            len(price_data["result"]["list"]) > 0):
-                            last_price_raw = price_data["result"]["list"][0].get("lastPrice")
-                            if last_price_raw is None:
-                                print(f"[WARN] Missing lastPrice for {bybit_symbol}, skipping")
-                                continue
-                            last_price = float(last_price_raw)
+                        if "result" in price_data and "list" in price_data["result"]:
+                            last_price = float(price_data["result"]["list"][0]["lastPrice"])
                         else:
                             print(f"[WARN] No price data found for {bybit_symbol}")
                             continue
 
                         symbol_info = get_bybit_symbol_info(bybit_symbol)
-                        tick_size = float(symbol_info.get("tickSize", 0.01)) if symbol_info else 0.01
-                        if not symbol_info:
+                        if symbol_info and "tickSize" in symbol_info:
+                            tick_size = float(symbol_info["tickSize"])
+                        else:
                             print(f"[WARN] No symbol info or tickSize found for {bybit_symbol}, defaulting to 0.01")
+                            tick_size = 0.01
 
-                        set_sl_percent = parse_percent(get_symbol_config(config, bybit_symbol, "set_stoploss_percent", 3))
-                        trailing_sl_percent = parse_percent(get_symbol_config(config, bybit_symbol, "set_trailing_stoploss_percent", 1))
-
-                        # Calculate new stop loss price based on trailing SL %
                         if direction == "long":
-                            new_sl = last_price * (1 - trailing_sl_percent / 100)
+                            target_price = entry_price * (1 + set_sl_percent)
+                            condition_met = last_price > target_price
+                            position_idx = 1
+                        elif direction == "short":
+                            target_price = entry_price * (1 - set_sl_percent)
+                            condition_met = last_price < target_price
+                            position_idx = 2
                         else:
-                            new_sl = last_price * (1 + trailing_sl_percent / 100)
+                            print(f"[WARN] Unknown direction for {bybit_symbol}: {direction}")
+                            continue
 
-                        # Round new SL to nearest tick size
-                        new_sl_rounded = round(new_sl / tick_size) * tick_size
+                        print(f"🔸 {symbol_key} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
 
-                        current_sl_raw = order.get("order_stop_loss")
-                        if current_sl_raw is None:
-                            current_sl = 0
+                        if condition_met:
+                            print(f"✅ Trigger condition met for {symbol_key} ({direction})")
+
+                            sl_offset = entry_price * partial_sl_percent
+                            if direction == "long":
+                                partial_sl_price = entry_price + sl_offset
+                            else:
+                                partial_sl_price = entry_price - sl_offset
+
+                            print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
+
+                            # Trailing stop laskenta: prosentti * hinta jaettuna tikin koolla → kokonaisluku tikkeinä
+                            trail_amount = last_price * trailing_percent
+                            trail_ticks = max(1, int(trail_amount / tick_size))
+                            print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% → {trail_ticks} ticks")
+
+                            try:
+                                partial_body = {
+                                    "category": "linear",
+                                    "symbol": bybit_symbol,
+                                    "stopLoss": str(round(partial_sl_price, 4)),
+                                    "slSize": "1",
+                                    "slTriggerBy": "LastPrice",
+                                    "tpslMode": "Partial",
+                                    "positionIdx": position_idx
+                                }
+
+                                print(f"📤 Sending partial SL update: {partial_body}")
+                                response_partial = bybit_client.set_trading_stop(**partial_body)
+                                print(f"🟢 Partial SL updated: {response_partial}")
+
+                                trailing_body = {
+                                    "category": "linear",
+                                    "symbol": bybit_symbol,
+                                    "trailingStop": str(trail_ticks),
+                                    "tpslMode": "Full",
+                                    "positionIdx": position_idx
+                                }
+
+                                print(f"📤 Sending trailing SL update: {trailing_body}")
+                                response_trailing = bybit_client.set_trading_stop(**trailing_body)
+                                print(f"🟢 Trailing SL updated: {response_trailing}")
+
+                            except Exception as sl_err:
+                                print(f"[ERROR] Failed to update stop loss: {sl_err}")
+
                         else:
-                            current_sl = float(current_sl_raw)
+                            print("⏳ Condition not yet met.")
 
-                        update_needed = False
-                        if direction == "long" and new_sl_rounded > current_sl and new_sl_rounded < entry_price:
-                            update_needed = True
-                        elif direction == "short" and new_sl_rounded < current_sl and new_sl_rounded > entry_price:
-                            update_needed = True
-
-                        if update_needed:
-                            order_id = order.get("order_id")
-                            if order_id is None:
-                                print(f"[WARN] Missing order_id for {bybit_symbol} {direction.upper()}, skipping SL update.")
-                                continue
-
-                            print(f"[INFO] Updating SL for {bybit_symbol} {direction.upper()}: {current_sl} → {new_sl_rounded}")
-                            set_stop_loss_and_trailing_stop(
-                                symbol=bybit_symbol,
-                                side=direction,
-                                partial_stop_loss_price=new_sl_rounded,
-                                trailing_stop_callback=trailing_sl_percent,
-                                entry_price=entry_price,
-                                order_id=order_id
-                            )
-                            order["order_stop_loss"] = new_sl_rounded
-                            updated = True
-
-                    except Exception as e:
-                        print(f"[ERROR] Exception updating SL for {symbol_key} {side_key}: {e}")
-
-        if updated:
-            with open(order_log_path, "w") as f:
-                json.dump(order_data, f, indent=4)
+                    except Exception as price_err:
+                        print(f"[ERROR] Failed to get price for {bybit_symbol}: {price_err}")
 
     except Exception as e:
-        print(f"[ERROR] Exception in stop_loss_updater: {e}")
+        print(f"[ERROR] Could not check open order prices: {e}")
