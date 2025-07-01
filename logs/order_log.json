@@ -1,1 +1,198 @@
-{}
+{
+    "BTCUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-01T01:15:41.063086+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 0.001,
+                "price": 107210.0,
+                "cost": 107.21000000000001,
+                "leverage": 7,
+                "order_take_profit_price": 107363.15714285713,
+                "order_stop_loss_price": 93425.85714285714,
+                "mode": "log",
+                "interval": "1m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.63, '18h': -1.15, '12h': -0.2, '6h': -0.31, '4h': -0.14, '3h': -0.16, '2h': -0.32, '1h': -0.2}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T15:00:00"
+            },
+            {
+                "timestamp": "2025-07-01T08:51:04.894998+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 0.001,
+                "price": 106815.7,
+                "cost": 106.81569999999999,
+                "leverage": 7,
+                "order_take_profit_price": 106968.29385714284,
+                "order_stop_loss_price": 93082.25285714286,
+                "mode": "log",
+                "interval": "5m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -1.27, '18h': -0.78, '12h': -0.62, '6h': -0.21, '4h': -0.3, '3h': -0.22, '2h': -0.3, '1h': -0.04}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-07-01T05:00:00"
+            },
+            {
+                "timestamp": "2025-07-01T12:08:02.062682+03:00",
+                "platform": "ByBit",
+                "status": "initated",
+                "qty": 0.001,
+                "price": 106693.9,
+                "cost": 106.6939,
+                "leverage": 7,
+                "order_take_profit_price": 106846.31985714284,
+                "order_stop_loss_price": 92976.11285714286,
+                "mode": "log",
+                "interval": "5m",
+                "momentum_strength": "strong",
+                "reverse_strength": "none",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.84, '18h': -0.07, '12h': -0.66, '6h': -0.33, '4h': -0.04, '3h': -0.03, '2h': -0.17, '1h': -0.14}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-07-01T09:00:00"
+            }
+        ],
+        "short": []
+    },
+    "ETHUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-01T03:03:45.040735+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 0.01,
+                "price": 2487.45,
+                "cost": 24.874499999999998,
+                "leverage": 4,
+                "order_take_profit_price": 2493.668625,
+                "order_stop_loss_price": 1927.7737499999998,
+                "mode": "log",
+                "interval": "1m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.67, '18h': -0.51, '12h': 1.04, '6h': 0.07, '4h': -0.89, '3h': -0.37, '2h': -0.08, '1h': -0.07}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T06:00:00"
+            }
+        ],
+        "short": []
+    },
+    "ADAUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-01T07:34:13.474164+03:00",
+                "platform": "ByBit",
+                "status": "initated",
+                "qty": 9.0,
+                "price": 0.5666,
+                "cost": 5.0994,
+                "leverage": 2,
+                "order_take_profit_price": 0.569433,
+                "order_stop_loss_price": 0.31163,
+                "mode": "log",
+                "interval": "3m",
+                "momentum_strength": "strong",
+                "reverse_strength": "none",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.11, '18h': 0.48, '12h': -0.02, '6h': -1.65, '4h': -0.98, '3h': -1.44, '2h': -0.61, '1h': -0.3}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T22:00:00"
+            }
+        ],
+        "short": []
+    },
+    "HBARUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-01T09:56:13.944022+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 34.0,
+                "price": 0.14942,
+                "cost": 5.08028,
+                "leverage": 2,
+                "order_take_profit_price": 0.15016709999999997,
+                "order_stop_loss_price": 0.082181,
+                "mode": "log",
+                "interval": "3m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.23, '18h': 0.05, '12h': 0.09, '6h': -0.35, '4h': -0.73, '3h': -1.2, '2h': -0.49, '1h': -0.12}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T08:00:00"
+            },
+            {
+                "timestamp": "2025-07-01T10:44:46.017425+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 34.0,
+                "price": 0.14905,
+                "cost": 5.067699999999999,
+                "leverage": 2,
+                "order_take_profit_price": 0.14979524999999996,
+                "order_stop_loss_price": 0.0819775,
+                "mode": "log",
+                "interval": "3m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': -0.95, '18h': -0.24, '12h': -2.18, '6h': -1.32, '4h': -1.01, '3h': -1.01, '2h': -0.35, '1h': -0.54}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-06-30T08:00:00"
+            }
+        ],
+        "short": []
+    },
+    "XRPUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-01T10:44:05.774956+03:00",
+                "platform": "ByBit",
+                "status": "complete",
+                "qty": 3.0,
+                "price": 2.2153,
+                "cost": 6.6459,
+                "leverage": 3,
+                "order_take_profit_price": 2.2226843333333335,
+                "order_stop_loss_price": 1.55071,
+                "mode": "log",
+                "interval": "5m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': 1.3, '18h': 1.64, '12h': -3.25, '6h': -1.09, '4h': -0.82, '3h': -0.42, '2h': -0.29, '1h': -0.22}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-07-01T03:00:00"
+            },
+            {
+                "timestamp": "2025-07-01T12:09:11.694044+03:00",
+                "platform": "ByBit",
+                "status": "initated",
+                "qty": 3.0,
+                "price": 2.2098,
+                "cost": 6.6294,
+                "leverage": 3,
+                "order_take_profit_price": 2.217166,
+                "order_stop_loss_price": 1.54686,
+                "mode": "log",
+                "interval": "5m",
+                "momentum_strength": "strong",
+                "reverse_strength": "none",
+                "volume_multiplier": 1.3,
+                "price_change": "{'24h': 1.31, '18h': 1.52, '12h': -2.8, '6h': -0.69, '4h': -0.32, '3h': 0.02, '2h': -0.42, '1h': -0.36}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-07-01T03:00:00"
+            }
+        ],
+        "short": []
+    }
+}

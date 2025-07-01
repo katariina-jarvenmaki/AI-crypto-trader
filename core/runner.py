@@ -304,19 +304,42 @@ def stop_loss_updater():
     from integrations.bybit_api_client import parse_percent, get_bybit_symbol_info
     from core.runner import bybit_client
 
+    def get_symbol_config(config, symbol, key, default_key="default"):
+        return config.get(symbol, {}).get(key, config.get(default_key, {}).get(key))
+
     config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
     config_path = os.path.abspath(config_path)
 
     try:
-        with open(config_path, "r") as cf:
-            config = json.load(cf)
-
-        set_sl_percent = parse_percent(config.get("set_stoploss_percent", "0.16%"))
-        partial_sl_percent = parse_percent(config.get("partial_stoploss_percent", "0.15%"))
-        trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))  # esim. 0.0015 desimaalina
-
         with open("logs/order_log.json", "r") as f:
             order_data = json.load(f)
+
+        # Palauta viimeisin "complete" status takaisin "initated" jos positio taas näkyy Bybitissä
+        positions = bybit_client.get_positions(
+            category="linear",
+            settleCoin="USDT"
+        )
+        bybit_open_symbols = {pos.get("symbol") for pos in positions if float(pos.get("size", 0)) > 0}
+
+        updated = False
+        for symbol in bybit_open_symbols:
+            if symbol in order_data:
+                for direction in ["long", "short"]:
+                    orders = order_data[symbol][direction]
+                    complete_orders = [o for o in orders if o.get("status") == "complete"]
+                    if complete_orders:
+                        latest_order = max(complete_orders, key=lambda x: x.get("timestamp", ""))
+                        latest_order["status"] = "initated"
+                        updated = True
+                        print(f"[INFO] Re-activated {symbol} {direction.upper()} order from complete → INITIATED")
+
+        if updated:
+            with open("logs/order_log.json", "w") as f:
+                json.dump(order_data, f, indent=4)
+
+        # Lataa konfiguraatio stoploss-logiikkaa varten
+        with open(config_path, "r") as cf:
+            config = json.load(cf)
 
         print("\n📈 Checking live prices for open orders...")
 
@@ -332,6 +355,7 @@ def stop_loss_updater():
                         direction = side_key.lower()
                         entry_price = float(order.get("price"))
 
+                        # Hae reaaliaikainen hinta
                         price_data = bybit_client.get_tickers(category="linear", symbol=bybit_symbol)
                         if "result" in price_data and "list" in price_data["result"]:
                             last_price = float(price_data["result"]["list"][0]["lastPrice"])
@@ -339,21 +363,22 @@ def stop_loss_updater():
                             print(f"[WARN] No price data found for {bybit_symbol}")
                             continue
 
+                        # Ticksize symbolitiedoista
                         symbol_info = get_bybit_symbol_info(bybit_symbol)
-                        if symbol_info and "tickSize" in symbol_info:
-                            tick_size = float(symbol_info["tickSize"])
-                        else:
+                        tick_size = float(symbol_info.get("tickSize", 0.01)) if symbol_info else 0.01
+                        if not symbol_info:
                             print(f"[WARN] No symbol info or tickSize found for {bybit_symbol}, defaulting to 0.01")
-                            tick_size = 0.01
+
+                        set_sl_percent = parse_percent(get_symbol_config(config, bybit_symbol, "set_stoploss_percent"))
 
                         if direction == "long":
+                            position_idx = 1
                             target_price = entry_price * (1 + set_sl_percent)
                             condition_met = last_price > target_price
-                            position_idx = 1
                         elif direction == "short":
+                            position_idx = 2
                             target_price = entry_price * (1 - set_sl_percent)
                             condition_met = last_price < target_price
-                            position_idx = 2
                         else:
                             print(f"[WARN] Unknown direction for {bybit_symbol}: {direction}")
                             continue
@@ -363,34 +388,43 @@ def stop_loss_updater():
                         if condition_met:
                             print(f"✅ Trigger condition met for {symbol_key} ({direction})")
 
-                            sl_offset = entry_price * partial_sl_percent
-                            if direction == "long":
-                                partial_sl_price = entry_price + sl_offset
-                            else:
-                                partial_sl_price = entry_price - sl_offset
-
+                            # SL-hinta
+                            partial_sl_percent = parse_percent(get_symbol_config(config, bybit_symbol, "partial_stoploss_percent"))
+                            partial_sl_price = entry_price * (1 + partial_sl_percent) if direction == "long" else entry_price * (1 - partial_sl_percent)
                             print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
 
-                            # Trailing stop laskenta: prosentti * hinta jaettuna tikin koolla → kokonaisluku tikkeinä
+                            # Hae koko position koko
+                            position_info = bybit_client.get_position_info(symbol=bybit_symbol)
+                            position_size = int(float(position_info["size"]))
+
+                            # Trailing laskenta
+                            trailing_percent = parse_percent(get_symbol_config(config, bybit_symbol, "trailing_stoploss_percent"))
                             trail_amount = last_price * trailing_percent
                             trail_ticks = max(1, int(trail_amount / tick_size))
-                            print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% → {trail_ticks} ticks")
 
-                            try:
-                                partial_body = {
-                                    "category": "linear",
-                                    "symbol": bybit_symbol,
-                                    "stopLoss": str(round(partial_sl_price, 4)),
-                                    "slSize": "1",
-                                    "slTriggerBy": "LastPrice",
-                                    "tpslMode": "Partial",
-                                    "positionIdx": position_idx
-                                }
+                            # Bybit min trailing: ≥ 10 % hinnasta
+                            min_trailing = last_price * 0.10
+                            if trail_amount < min_trailing:
+                                print(f"[WARN] Trailing stop {trail_amount:.4f} too small (<10% of {last_price:.4f}), skipping trailing SL")
+                                trail_ticks = None
 
-                                print(f"📤 Sending partial SL update: {partial_body}")
-                                response_partial = bybit_client.set_trading_stop(**partial_body)
-                                print(f"🟢 Partial SL updated: {response_partial}")
+                            # Partial SL
+                            partial_body = {
+                                "category": "linear",
+                                "symbol": bybit_symbol,
+                                "stopLoss": str(round(partial_sl_price, 4)),
+                                "slSize": str(position_size),
+                                "slTriggerBy": "LastPrice",
+                                "tpslMode": "Partial",
+                                "positionIdx": position_idx
+                            }
 
+                            print(f"📤 Sending partial SL update: {partial_body}")
+                            response_partial = bybit_client.set_trading_stop(**partial_body)
+                            print(f"🟢 Partial SL updated: {response_partial}")
+
+                            # Trailing SL (jos validi)
+                            if trail_ticks:
                                 trailing_body = {
                                     "category": "linear",
                                     "symbol": bybit_symbol,
@@ -402,9 +436,6 @@ def stop_loss_updater():
                                 print(f"📤 Sending trailing SL update: {trailing_body}")
                                 response_trailing = bybit_client.set_trading_stop(**trailing_body)
                                 print(f"🟢 Trailing SL updated: {response_trailing}")
-
-                            except Exception as sl_err:
-                                print(f"[ERROR] Failed to update stop loss: {sl_err}")
 
                         else:
                             print("⏳ Condition not yet met.")
