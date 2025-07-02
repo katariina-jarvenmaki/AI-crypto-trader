@@ -15,7 +15,7 @@ from signals.momentum_signal import get_momentum_signal, determine_signal_with_m
 from signals.log_signal import get_log_signal
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
-def get_signal(symbol: str, interval: str, is_first_run: bool = False, override_signal: str = None, long_only: bool = False, short_only: bool = False) -> dict:
+def get_signal(symbol: str, interval: str, rsi: str, is_first_run: bool = False, override_signal: str = None, long_only: bool = False, short_only: bool = False) -> dict:
 
     # 1. Override signal (highest priority)
     if override_signal and is_first_run:

@@ -86,6 +86,7 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 def update_signal_log(
     symbol: str,
     interval: str,
+    rsi: str,
     signal_type: str,
     now: datetime,
     mode: str = "default",

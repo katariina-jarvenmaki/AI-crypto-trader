@@ -70,9 +70,10 @@ def get_log_based_signal(symbol: str, signal_type: str = None) -> dict:
                 valid_entries.append({
                     "signal": signal_direction,
                     "interval": interval,
-                    "mode": mode_name,
+                    "mode": mode_data.get("mode"),
                     "time": ts,
-                    "status": mode_data.get("status") or "unused"
+                    "status": mode_data.get("status") or "unused",
+                    "rsi": mode_data.get("rsi") or None
                 })
 
     if not valid_entries:

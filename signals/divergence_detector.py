@@ -56,7 +56,7 @@ class DivergenceDetector:
             if self.df['rsi'].iloc[curr] < self.df['rsi'].iloc[prev] - BEARISH_RSI_DIFF and \
                self.df['close'].iloc[curr] > self.df['close'].iloc[prev] * BEARISH_PRICE_FACTOR:
                 if is_signal_allowed(symbol, interval, "sell", time, mode="divergence"):
-                    update_signal_log(symbol, interval, "sell", time, mode="divergence")
+                    update_signal_log(symbol, interval, self.df['rsi'].iloc[curr], "sell", time, mode="divergence")
                     log_signal("sell", f"divergence/{symbol}")
                     signals.append({
                         'type': 'bear',

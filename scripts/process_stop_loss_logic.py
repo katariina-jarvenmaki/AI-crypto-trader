@@ -1,7 +1,7 @@
 # scripts/process_stop_loss_logic.py
 import os
 import json
-from integrations.bybit_api_client import client
+from integrations.bybit_api_client import client, get_bybit_symbol_info
 
 # Lue JSON-konfiguraatio tiedostosta
 config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
@@ -10,15 +10,18 @@ config_path = os.path.abspath(config_path)
 with open(config_path, "r") as f:
     stop_loss_config = json.load(f)
 
+def parsed(s):
+    return float(s.strip('%')) / 100
+
+def to_percent_str(f):
+    return f"{f * 100:.4f}%"  # esim. 0.00005 -> "0.0050%"
+
+def to_str(f):
+    return f"{f * 100:.4f}" 
+
 def get_stop_loss_values(symbol):
     config = stop_loss_config.get(symbol, {})
     default = stop_loss_config["default"]
-
-    def parsed(s):
-        return float(s.strip('%')) / 100
-
-    def to_percent_str(f):
-        return f"{f * 100:.4f}%"  # esim. 0.00005 -> "0.0050%"
 
     set_sl = parsed(config.get("set_stoploss_percent", default["set_stoploss_percent"]))
     full_sl = parsed(config.get("full_stoploss_percent", default["full_stoploss_percent"]))
@@ -110,33 +113,12 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print(f"🔒 Setting full SL to {full_sl_price:.4f}")
 
         # Defining the trailing stop loss
-        symbol_info = get_bybit_symbol_info(symbol)
-        if symbol_info and "tickSize" in symbol_info:
-            tick_size = float(symbol_info["tickSize"])
-        else:
-            print(f"[WARN] No symbol info or tickSize found for {symbol}, defaulting to 0.01")
-            tick_size = 0.01
-        trail_amount = last_price * trailing_percent
-        trail_ticks = max(1, int(trail_amount / tick_size))
-        print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% → {trail_ticks} ticks")
+        trail_amount = entry_price * trailing_percent
+        print(f"Trailing SL amount at {str(trail_amount)}")
 
         try:
 
-            # Setting partial stop losses
-            partial_body = {
-                "category": "linear",
-                "symbol": symbol,
-                "stopLoss": str(round(full_sl_price, 4)),
-                "slSize": str(size),
-                "slTriggerBy": "LastPrice",
-                "tpslMode": "Partial",
-                "positionIdx": position_idx
-            }
-            print(f"📤 Sending partial SL update: {partial_body}")
-            response_partial = client.set_trading_stop(**partial_body)
-            print(f"🟢 Partial SL updated: {response_partial}")
-
-            # Full stop loss
+            # Setting full stop loss
             full_body = {
                 "category": "linear",
                 "symbol": symbol,
@@ -153,7 +135,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             trailing_body = {
                 "category": "linear",
                 "symbol": symbol,
-                "trailingStop": str(trail_ticks),
+                "trailingStop": str(trail_amount),
                 "tpslMode": "Full",
                 "positionIdx": position_idx
             }
