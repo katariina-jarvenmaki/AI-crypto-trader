@@ -259,6 +259,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                             side = pos.get("side") or None  # handle empty string here
                             avgPrice = pos.get("avgPrice", None)
                             leverage = float(pos.get("leverage", 1))
+                            stopLoss = pos.get("stopLoss", None)
                             trailingStop = pos.get("trailingStop", None)
                             all_positions.append({
                                 "symbol": symbol,
@@ -266,8 +267,10 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                                 "size": size,
                                 "avgPrice": avgPrice,
                                 "leverage": leverage,
+                                "stopLoss": stopLoss,
                                 "trailingStop": trailingStop
                             })
+
             except Exception as inner_e:
                 print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
                 continue
@@ -380,6 +383,7 @@ def stop_loss_checker(positions):
             avg_price = float(position['avgPrice'])
             leverage = position['leverage']
             trailing_stop = position['trailingStop']
+            stop_loss = position['stop_loss']
 
             symbol_usdt = symbol.replace("USDC", "USDT")
             side_mapping = {"Buy": "long", "Sell": "short"}
@@ -408,6 +412,7 @@ def stop_loss_checker(positions):
                         size=size,
                         entry_price=avg_price,
                         leverage=leverage,
+                        stop_loss=stop_loss,
                         trailing_stop=trailing_stop,
                         set_sl_percent=sl_values['set_stoploss_percent'],
                         partial_sl_percent=sl_values['partial_stoploss_percent'],

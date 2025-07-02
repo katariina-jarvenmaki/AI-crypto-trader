@@ -39,11 +39,11 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
 
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
-        print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Trailing: {trailing_stop}, "
+        print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
               f"Set stop loss percent: {formatted['set']}, Partial stop loss percent: {formatted['partial']}, "
               f"Trailing stop loss percent: {formatted['trailing']}")
     else:
-        print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Trailing: {trailing_stop}, "
+        print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
               f"Set stop loss percent: {set_sl_percent}, Partial stop loss percent: {partial_sl_percent}, "
               f"Trailing stop loss percent: {trailing_percent}")
 
@@ -109,6 +109,20 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
             print(f"📤 Sending partial SL update: {partial_body}")
             response_partial = client.set_trading_stop(**partial_body)
             print(f"🟢 Partial SL updated: {response_partial}")
+
+            # Full stop loss
+            full_body = {
+                "category": "linear",
+                "symbol": symbol,
+                "stopLoss": str(round(partial_sl_price, 4)),
+                "slSize": str(size),
+                "slTriggerBy": "LastPrice",
+                "tpslMode": "Full",
+                "positionIdx": position_idx
+            }
+            print(f"📤 Sending full SL update: {full_body}")
+            response_full = client.set_trading_stop(**full_body)
+            print(f"🟢 Full SL updated: {response_full}")
 
             trailing_body = {
                 "category": "linear",

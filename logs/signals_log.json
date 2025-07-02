@@ -689,12 +689,12 @@
             },
             "sell": {
                 "rsi": {
-                    "time": "2025-07-02T09:59:43.774296+03:00",
+                    "time": "2025-07-02T11:42:45.628706+03:00",
                     "status": "unused",
-                    "momentum_strength": "none",
-                    "reverse_strength": "strong",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "none",
                     "volume_multiplier": 1.6,
-                    "price_change": "{'24h': -0.94, '18h': 0.96, '12h': 2.95, '6h': 2.94, '4h': 2.24, '3h': 1.51, '2h': 0.76, '1h': 0.36, '30min': 0.47}",
+                    "price_change": "{'24h': -0.53, '18h': 2.75, '12h': 3.32, '6h': 2.6, '4h': 1.43, '3h': 1.03, '2h': 0.72, '1h': 0.63, '30min': 0.21}",
                     "market_state": "neutral_sideways",
                     "started_on": "2025-07-02T01:00:00",
                     "previous_market_state": "unknown"
