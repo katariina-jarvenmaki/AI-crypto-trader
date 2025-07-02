@@ -15,6 +15,7 @@
     "trailing_stoploss_percent": "0.005%"
   },
   "XRPUSDT": {
+    "_comment": "Value specified 2.6.2025",
     "trailing_stoploss_percent": "0.0019%"
   },
   "ADAUSDT": {
