@@ -17,7 +17,7 @@ from configs.config import TIMEZONE
 from signals.signal_handler import get_signal
 from scripts.signal_limiter import is_signal_allowed, update_signal_log
 from scripts.order_limiter import can_initiate
-from scripts.process_stop_loss_logic import process_stop_loss_logic
+from scripts.process_stop_loss_logic import process_stop_loss_logic, get_stop_loss_values
 from riskmanagement.riskmanagement_handler import check_riskmanagement
 from strategy.strategy_handler import StrategyHandler
 from trade.execute_binance_long import execute_binance_long
@@ -361,34 +361,19 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 import os
 
 def stop_loss_checker(positions):
-    
+
     print(f"\n🔍 Doing stop loss checks and updates...")
 
-    # Polku konfiguraatiotiedostoon
-    config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
-    config_path = os.path.abspath(config_path)
+    if not positions:
+        print("⚠️  No open positions passed to process_stop_loss_logic.")
+        return
 
     try:
-
-        with open(config_path, "r") as cf:
-            config = json.load(cf)
-
-        # Get stop loss values from log
-        set_sl_percent = parse_percent(config.get("set_stoploss_percent", "0.15%"))
-        partial_sl_percent = parse_percent(config.get("partial_stoploss_percent", "0.15%"))
-        trailing_percent = parse_percent(config.get("trailing_stoploss_percent", "0.15%"))
-
-        if not positions:
-            print("⚠️  No open positions passed to process_stop_loss_logic.")
-            return
-
         with open("logs/order_log.json", "r") as f:
             order_data = json.load(f)
 
         # Loop through the positions
         for position in positions:
-
-            # Get position info
             symbol = position['symbol']
             side = position['side']
             size = position['size']
@@ -396,7 +381,6 @@ def stop_loss_checker(positions):
             leverage = position['leverage']
             trailing_stop = position['trailingStop']
 
-            # Get matching orders from log
             symbol_usdt = symbol.replace("USDC", "USDT")
             side_mapping = {"Buy": "long", "Sell": "short"}
             mapped_side = side_mapping.get(side)
@@ -411,16 +395,13 @@ def stop_loss_checker(positions):
                 print(f"[INFO] No matching orders for {symbol_usdt} ({mapped_side})")
                 continue
 
-            # Go throught the orders
             for order in orders:
-
-                # Skip completed
                 if order.get("status") == "completed":
                     continue
 
                 try:
+                    sl_values = get_stop_loss_values(symbol)
 
-                    # Run stop loss updater
                     process_stop_loss_logic(
                         symbol=symbol,
                         side=side,
@@ -428,9 +409,10 @@ def stop_loss_checker(positions):
                         entry_price=avg_price,
                         leverage=leverage,
                         trailing_stop=trailing_stop,
-                        set_sl_percent=set_sl_percent,
-                        partial_sl_percent=partial_sl_percent,
-                        trailing_percent=trailing_percent
+                        set_sl_percent=sl_values['set_stoploss_percent'],
+                        partial_sl_percent=sl_values['partial_stoploss_percent'],
+                        trailing_percent=sl_values['trailing_stoploss_percent'],
+                        formatted=sl_values.get("formatted")
                     )
 
                 except Exception as e:

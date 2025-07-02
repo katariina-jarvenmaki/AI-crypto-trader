@@ -35,6 +35,7 @@ def check_price_change_risk(symbol: str, signal: str, df: pd.DataFrame) -> tuple
     return None, price_changes
 
 def should_block_signal(signal: str, price_changes: dict) -> bool:
+
     limits = PRICE_CHANGE_LIMITS.get(signal, {})
     values = [v for v in price_changes.values() if v is not None]
 
@@ -44,6 +45,7 @@ def should_block_signal(signal: str, price_changes: dict) -> bool:
 
     # Lasketaan kokonaissumma
     total_change = sum(values)
+    # print(f"🏷️  Price total change % (from past): {total_change}")
 
     # Tarkistetaan, onko yksittäinen arvo ylittänyt "piikki"rajat
     has_spike = any(v > 6.0 for v in values)
@@ -59,6 +61,7 @@ def should_block_signal(signal: str, price_changes: dict) -> bool:
 
     # Lisäksi käytetään alkuperäisiä raja-arvoja (esim. `PRICE_CHANGE_LIMITS`)
     for timeframe, change in price_changes.items():
+
         if change is None:
             continue
 
@@ -106,6 +109,7 @@ def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
         "3h": timedelta(hours=3),
         "2h": timedelta(hours=2),
         "1h": timedelta(hours=1),
+        "30min": timedelta(hours=0.5)
     }
 
     result = {}
