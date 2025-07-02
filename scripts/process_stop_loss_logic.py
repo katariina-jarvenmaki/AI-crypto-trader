@@ -48,12 +48,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
             f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
             f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
-    else:
-        print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
-            f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
-            f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
 
-    # Define direction and full stop loss
     sl_offset = entry_price * full_sl_percent
     if side == "Buy":
         direction = "long"
@@ -66,27 +61,32 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         full_sl_price = entry_price - sl_offset
         position_idx = 2
     else:
-        print(f"[WARN] Unknown direction for {symbol}: {side}")  # Käytetään side, ei direction
+        print(f"[WARN] Unknown direction for {symbol}: {side}")
         return []
 
-    # Skip stop loss update if current one is better or change is too small
     threshold_amount = entry_price * threshold_percent
-    if direction == "long":
-        if stop_loss >= full_sl_price and trailing_stop > 0:
-            print(f"⏩ Skipping update: current stop loss ({stop_loss}) is better than or equal to new ({full_sl_price})")
-            return []
-        if (full_sl_price - stop_loss) < threshold_amount:
-            print(f"⏩ Skipping update: change ({full_sl_price - stop_loss:.8f}) is smaller than threshold ({threshold_amount:.8f})")
-            return []
-    elif direction == "short":
-        if stop_loss <= full_sl_price and trailing_stop > 0:
-            print(f"⏩ Skipping update: current stop loss ({stop_loss}) is better than or equal to new ({full_sl_price})")
-            return []
-        if (stop_loss - full_sl_price) < threshold_amount:
-            print(f"⏩ Skipping update: change ({stop_loss - full_sl_price:.8f}) is smaller than threshold ({threshold_amount:.8f})")
-            return []
 
-    # Get live price
+    # Skip logic: decide whether full SL or trailing SL need updates
+    skip_full_sl = False
+    skip_trailing = False
+
+    if direction == "long":
+        if stop_loss >= full_sl_price or (full_sl_price - stop_loss) < threshold_amount:
+            skip_full_sl = True
+        if trailing_stop > 0:
+            skip_trailing = True
+    else:
+        if stop_loss <= full_sl_price or (stop_loss - full_sl_price) < threshold_amount:
+            skip_full_sl = True
+        if trailing_stop > 0:
+            skip_trailing = True
+
+    # If both updates can be skipped, exit early
+    if skip_full_sl and skip_trailing:
+        print("⏩ Skipping both full SL and trailing SL updates – no significant change needed.")
+        return []
+
+    # Get current price
     price_data = client.get_tickers(category="linear", symbol=symbol)
     if "result" in price_data and "list" in price_data["result"]:
         last_price = float(price_data["result"]["list"][0]["lastPrice"])
@@ -94,10 +94,9 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print(f"[WARN] No price data found for {symbol}")
         return []
 
-    # Define direction
     if direction == "long":
         condition_met = last_price > target_price
-    elif direction == "short":
+    else:
         condition_met = last_price < target_price
 
     print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
@@ -105,47 +104,42 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     if condition_met:
         print(f"✅ Trigger condition met for {symbol} ({direction})")
 
-        # Defining the full stop loss
-        if direction == "long":
-            full_sl_price = entry_price + sl_offset
-        else:
-            full_sl_price = entry_price - sl_offset
-        print(f"🔒 Setting full SL to {full_sl_price:.4f}")
-
-        # Defining the trailing stop loss
-        trail_amount = entry_price * trailing_percent
-        print(f"Trailing SL amount at {str(trail_amount)}")
-
         try:
+            if not skip_full_sl:
+                full_body = {
+                    "category": "linear",
+                    "symbol": symbol,
+                    "stopLoss": str(round(full_sl_price, 4)),
+                    "slSize": str(size),
+                    "slTriggerBy": "LastPrice",
+                    "tpslMode": "Full",
+                    "positionIdx": position_idx
+                }
+                print(f"📤 Sending full SL update: {full_body}")
+                response_full = client.set_trading_stop(**full_body)
+                print(f"🟢 Full SL updated: {response_full}")
+            else:
+                print("⏩ Skipping full SL update.")
 
-            # Setting full stop loss
-            full_body = {
-                "category": "linear",
-                "symbol": symbol,
-                "stopLoss": str(round(full_sl_price, 4)),
-                "slSize": str(size),
-                "slTriggerBy": "LastPrice",
-                "tpslMode": "Full",
-                "positionIdx": position_idx
-            }
-            print(f"📤 Sending full SL update: {full_body}")
-            response_full = client.set_trading_stop(**full_body)
-            print(f"🟢 Full SL updated: {response_full}")
-
-            trailing_body = {
-                "category": "linear",
-                "symbol": symbol,
-                "trailingStop": str(trail_amount),
-                "tpslMode": "Full",
-                "positionIdx": position_idx
-            }
-
-            print(f"📤 Sending trailing SL update: {trailing_body}")
-            response_trailing = client.set_trading_stop(**trailing_body)
-            print(f"🟢 Trailing SL updated: {response_trailing}")
+            if not skip_trailing:
+                trail_amount = entry_price * trailing_percent
+                trailingStop = to_str(trail_amount)
+                trailing_body = {
+                    "category": "linear",
+                    "symbol": symbol,
+                    "trailingStop": trailingStop,
+                    "tpslMode": "Full",
+                    "positionIdx": position_idx
+                }
+                print(f"📤 Sending trailing SL update: {trailing_body}")
+                response_trailing = client.set_trading_stop(**trailing_body)
+                print(f"🟢 Trailing SL updated: {response_trailing}")
+            else:
+                print("⏩ Skipping trailing SL update.")
 
         except Exception as sl_err:
             print(f"[ERROR] Failed to update stop loss: {sl_err}")
 
     else:
         print("⏳ Condition not yet met.")
+
