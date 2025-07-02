@@ -1,8 +1,9 @@
 {
   "default": {
     "set_stoploss_percent": "0.16%",
-    "partial_stoploss_percent": "0.15%",
-    "trailing_stoploss_percent": "0.005%"
+    "full_stoploss_percent": "0.15%",
+    "trailing_stoploss_percent": "0.005%",
+    "min_stop_loss_diff_percent": "0.001%"
   },
   "BTCUSDT": {
     "trailing_stoploss_percent": "0.005%"

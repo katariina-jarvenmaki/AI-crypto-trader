@@ -21,31 +21,67 @@ def get_stop_loss_values(symbol):
         return f"{f * 100:.4f}%"  # esim. 0.00005 -> "0.0050%"
 
     set_sl = parsed(config.get("set_stoploss_percent", default["set_stoploss_percent"]))
-    partial_sl = parsed(config.get("partial_stoploss_percent", default["partial_stoploss_percent"]))
+    full_sl = parsed(config.get("full_stoploss_percent", default["full_stoploss_percent"]))
     trailing_sl = parsed(config.get("trailing_stoploss_percent", default["trailing_stoploss_percent"]))
+    threshold = parsed(config.get("min_stop_loss_diff_percent", default.get("min_stop_loss_diff_percent", "0.001%")))
 
     return {
         "set_stoploss_percent": set_sl,
-        "partial_stoploss_percent": partial_sl,
+        "full_stoploss_percent": full_sl,
         "trailing_stoploss_percent": trailing_sl,
+        "min_stop_loss_diff_percent": threshold,  # ← tämä lisättiin
         "formatted": {
             "set": to_percent_str(set_sl),
-            "partial": to_percent_str(partial_sl),
-            "trailing": to_percent_str(trailing_sl)
+            "full": to_percent_str(full_sl),
+            "trailing": to_percent_str(trailing_sl),
+            "min_diff": to_percent_str(threshold)
         }
     }
 
-def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_stop, set_sl_percent, partial_sl_percent, trailing_percent, formatted=None):
+def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss, trailing_stop, set_sl_percent, full_sl_percent, trailing_percent, threshold_percent, formatted=None):
 
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
-              f"Set stop loss percent: {formatted['set']}, Partial stop loss percent: {formatted['partial']}, "
-              f"Trailing stop loss percent: {formatted['trailing']}")
+            f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
+            f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
     else:
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
-              f"Set stop loss percent: {set_sl_percent}, Partial stop loss percent: {partial_sl_percent}, "
-              f"Trailing stop loss percent: {trailing_percent}")
+            f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
+            f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
+
+    # Define direction and full stop loss
+    sl_offset = entry_price * full_sl_percent
+    if side == "Buy":
+        direction = "long"
+        target_price = entry_price * (1 + set_sl_percent)
+        full_sl_price = entry_price + sl_offset
+        position_idx = 1
+    elif side == "Sell":
+        direction = "short"
+        target_price = entry_price * (1 - set_sl_percent)
+        full_sl_price = entry_price - sl_offset
+        position_idx = 2
+    else:
+        print(f"[WARN] Unknown direction for {symbol}: {side}")  # Käytetään side, ei direction
+        return []
+
+    # Skip stop loss update if current one is better or change is too small
+    threshold_amount = entry_price * threshold_percent
+    if direction == "long":
+        if stop_loss >= full_sl_price and trailing_stop > 0:
+            print(f"⏩ Skipping update: current stop loss ({stop_loss}) is better than or equal to new ({full_sl_price})")
+            return []
+        if (full_sl_price - stop_loss) < threshold_amount:
+            print(f"⏩ Skipping update: change ({full_sl_price - stop_loss:.8f}) is smaller than threshold ({threshold_amount:.8f})")
+            return []
+    elif direction == "short":
+        if stop_loss <= full_sl_price and trailing_stop > 0:
+            print(f"⏩ Skipping update: current stop loss ({stop_loss}) is better than or equal to new ({full_sl_price})")
+            return []
+        if (stop_loss - full_sl_price) < threshold_amount:
+            print(f"⏩ Skipping update: change ({stop_loss - full_sl_price:.8f}) is smaller than threshold ({threshold_amount:.8f})")
+            return []
 
     # Get live price
     price_data = client.get_tickers(category="linear", symbol=symbol)
@@ -56,39 +92,29 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
         return []
 
     # Define direction
-    if side == "Buy":
-        target_price = entry_price * (1 + set_sl_percent)
+    if direction == "long":
         condition_met = last_price > target_price
-        position_idx = 1
-        direction = "long"
-    elif side == "Sell":
-        target_price = entry_price * (1 - set_sl_percent)
+    elif direction == "short":
         condition_met = last_price < target_price
-        position_idx = 2
-        direction = "short"
-    else:
-        print(f"[WARN] Unknown direction for {symbol}: {side}")  # Käytetään side, ei direction
-        return []
 
     print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
 
     if condition_met:
         print(f"✅ Trigger condition met for {symbol} ({direction})")
 
-        # Defining the partial stop loss
-        sl_offset = entry_price * partial_sl_percent
+        # Defining the full stop loss
         if direction == "long":
-            partial_sl_price = entry_price + sl_offset
+            full_sl_price = entry_price + sl_offset
         else:
-            partial_sl_price = entry_price - sl_offset
-        print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
+            full_sl_price = entry_price - sl_offset
+        print(f"🔒 Setting full SL to {full_sl_price:.4f}")
 
         # Defining the trailing stop loss
-        symbol_info = get_bybit_symbol_info(bybit_symbol)
+        symbol_info = get_bybit_symbol_info(symbol)
         if symbol_info and "tickSize" in symbol_info:
             tick_size = float(symbol_info["tickSize"])
         else:
-            print(f"[WARN] No symbol info or tickSize found for {bybit_symbol}, defaulting to 0.01")
+            print(f"[WARN] No symbol info or tickSize found for {symbol}, defaulting to 0.01")
             tick_size = 0.01
         trail_amount = last_price * trailing_percent
         trail_ticks = max(1, int(trail_amount / tick_size))
@@ -100,7 +126,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
             partial_body = {
                 "category": "linear",
                 "symbol": symbol,
-                "stopLoss": str(round(partial_sl_price, 4)),
+                "stopLoss": str(round(full_sl_price, 4)),
                 "slSize": str(size),
                 "slTriggerBy": "LastPrice",
                 "tpslMode": "Partial",
@@ -114,7 +140,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
             full_body = {
                 "category": "linear",
                 "symbol": symbol,
-                "stopLoss": str(round(partial_sl_price, 4)),
+                "stopLoss": str(round(full_sl_price, 4)),
                 "slSize": str(size),
                 "slTriggerBy": "LastPrice",
                 "tpslMode": "Full",
@@ -141,21 +167,3 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
 
     else:
         print("⏳ Condition not yet met.")
-
-
-
-
-    # 🔽 Lisää tähän varsinainen SL-logiikka — esimerkki:
-    # - aseta uusi SL prosenttipohjaisesti
-    # - päivitä trailing stop tarvittaessa
-    # - vertaile markkinahintaan, jne.
-
-    # new_stop_loss = None  # Esimerkkinä placeholder
-
-    # TODO: Tähän varsinainen laskenta/päätöksenteko
-    # Example logiikka:
-    # stop_loss_price = entry_price * (1 - 0.02)  # 2% SL
-
-    # return {
-    #     "symbol": symbol,
-    #    "side": side,

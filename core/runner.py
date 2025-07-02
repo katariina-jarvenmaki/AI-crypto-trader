@@ -382,8 +382,8 @@ def stop_loss_checker(positions):
             size = position['size']
             avg_price = float(position['avgPrice'])
             leverage = position['leverage']
+            stop_loss = position['stopLoss']
             trailing_stop = position['trailingStop']
-            stop_loss = position['stop_loss']
 
             symbol_usdt = symbol.replace("USDC", "USDT")
             side_mapping = {"Buy": "long", "Sell": "short"}
@@ -412,11 +412,12 @@ def stop_loss_checker(positions):
                         size=size,
                         entry_price=avg_price,
                         leverage=leverage,
-                        stop_loss=stop_loss,
-                        trailing_stop=trailing_stop,
+                        stop_loss=float(stop_loss),
+                        trailing_stop=float(trailing_stop),
                         set_sl_percent=sl_values['set_stoploss_percent'],
-                        partial_sl_percent=sl_values['partial_stoploss_percent'],
+                        full_sl_percent=sl_values['full_stoploss_percent'],
                         trailing_percent=sl_values['trailing_stoploss_percent'],
+                        threshold_percent=sl_values['min_stop_loss_diff_percent'],
                         formatted=sl_values.get("formatted")
                     )
 
