@@ -1,6 +1,7 @@
 # scripts/process_stop_loss_logic.py
 import os
 import json
+from integrations.bybit_api_client import client
 
 # Lue JSON-konfiguraatio tiedostosta
 config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
@@ -45,6 +46,88 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, trailing_
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Trailing: {trailing_stop}, "
               f"Set stop loss percent: {set_sl_percent}, Partial stop loss percent: {partial_sl_percent}, "
               f"Trailing stop loss percent: {trailing_percent}")
+
+    # Get live price
+    price_data = client.get_tickers(category="linear", symbol=symbol)
+    if "result" in price_data and "list" in price_data["result"]:
+        last_price = float(price_data["result"]["list"][0]["lastPrice"])
+    else:
+        print(f"[WARN] No price data found for {symbol}")
+        return []
+
+    # Define direction
+    if side == "Buy":
+        target_price = entry_price * (1 + set_sl_percent)
+        condition_met = last_price > target_price
+        position_idx = 1
+        direction = "long"
+    elif side == "Sell":
+        target_price = entry_price * (1 - set_sl_percent)
+        condition_met = last_price < target_price
+        position_idx = 2
+        direction = "short"
+    else:
+        print(f"[WARN] Unknown direction for {symbol}: {side}")  # Käytetään side, ei direction
+        return []
+
+    print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
+
+    if condition_met:
+        print(f"✅ Trigger condition met for {symbol} ({direction})")
+
+        # Defining the partial stop loss
+        sl_offset = entry_price * partial_sl_percent
+        if direction == "long":
+            partial_sl_price = entry_price + sl_offset
+        else:
+            partial_sl_price = entry_price - sl_offset
+        print(f"🔒 Setting partial SL to {partial_sl_price:.4f}")
+
+        # Defining the trailing stop loss
+        symbol_info = get_bybit_symbol_info(bybit_symbol)
+        if symbol_info and "tickSize" in symbol_info:
+            tick_size = float(symbol_info["tickSize"])
+        else:
+            print(f"[WARN] No symbol info or tickSize found for {bybit_symbol}, defaulting to 0.01")
+            tick_size = 0.01
+        trail_amount = last_price * trailing_percent
+        trail_ticks = max(1, int(trail_amount / tick_size))
+        print(f"📉 Setting trailing SL at {trailing_percent * 100:.2f}% → {trail_ticks} ticks")
+
+        try:
+
+            # Setting partial stop losses
+            partial_body = {
+                "category": "linear",
+                "symbol": symbol,
+                "stopLoss": str(round(partial_sl_price, 4)),
+                "slSize": str(size),
+                "slTriggerBy": "LastPrice",
+                "tpslMode": "Partial",
+                "positionIdx": position_idx
+            }
+            print(f"📤 Sending partial SL update: {partial_body}")
+            response_partial = client.set_trading_stop(**partial_body)
+            print(f"🟢 Partial SL updated: {response_partial}")
+
+            trailing_body = {
+                "category": "linear",
+                "symbol": symbol,
+                "trailingStop": str(trail_ticks),
+                "tpslMode": "Full",
+                "positionIdx": position_idx
+            }
+
+            print(f"📤 Sending trailing SL update: {trailing_body}")
+            response_trailing = client.set_trading_stop(**trailing_body)
+            print(f"🟢 Trailing SL updated: {response_trailing}")
+
+        except Exception as sl_err:
+            print(f"[ERROR] Failed to update stop loss: {sl_err}")
+
+    else:
+        print("⏳ Condition not yet met.")
+
 
 
 
