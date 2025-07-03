@@ -36,7 +36,7 @@ def save_trade_log(log):
 
 def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float, leverage: int,
               order_take_profit: float = None, order_stop_loss: float = None,
-              interval: str = None, mode: str = "default", market_state: str = None,
+              interval: str = None, rsi: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
               price_change: str = None, volume_multiplier: float = None,
               reverse_signal_info: dict = None, platform: dict = None, status=None):
