@@ -1,1 +1,26 @@
-{}
+{
+    "GASUSDT": {
+        "long": [],
+        "short": [
+            {
+                "timestamp": "2025-07-03T12:00:56.649860+03:00",
+                "platform": "ByBit",
+                "status": "completed",
+                "qty": 2.1,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ]
+    }
+}

@@ -62,6 +62,11 @@ python3 main.py ETHUSDC long-only
 python3 main.py ETHUSDC short-only
 ```
 
+Run the market scanner:
+```bash
+python3 market_scanner.py
+```
+
 **4. Testing**
 
 Test Binance-integration status
