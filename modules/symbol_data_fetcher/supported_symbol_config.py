@@ -1,4 +1,4 @@
-# configs/market_scanner_config.py
+# modules/symbol_data_fetcher/supported_symbol_config.py
 
 from pathlib import Path
 
@@ -7,7 +7,7 @@ INTERVALS = ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "1d", "1w"]
 
 # LOGS
 OHLCV_LOG_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
-SYMBOL_LOG_PATH = Path("logs/market_scanner_analysis_summary.jsonl")
+SYMBOL_LOG_PATH = Path("modules/symbols_data_fetcher/symbol_data_log.jsonl")
 
 # SYMBOLS
 MAIN_SYMBOLS = [

@@ -4,7 +4,11 @@ import argparse
 import logging
 import sys
 
+import sys
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from modules.symbol_data_fetcher.tasks.potential_trades_checker import run_potential_trades_checker
 from tasks.potential_trades_checker import run_potential_trades_checker
 from tasks.supported_symbols_data_fetcher import run_supported_symbols_data_fetcher
 from tasks.main_symbols_data_fetcher import run_main_symbols_data_fetcher
@@ -16,20 +20,20 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def main():
 
     parser = argparse.ArgumentParser(
-        description="Symbol Data Fetcher - suorittaa eri taustatehtäviä markkinadata-analyysille."
+        description="Symbol Data Fetcher - executes various background tasks for market data analysis."
     )
-    subparsers = parser.add_subparsers(dest="command", help="Komennot")
+    subparsers = parser.add_subparsers(dest="command", help="Commands")
 
-    # Potentiaaliset treidaajat (2 päivän välein)
-    parser_potential = subparsers.add_parser("potential_trades_checker", help="Suorita potentiaalisten treidaajien tarkistus")
+    # Potential traders (every 2 days)
+    parser_potential = subparsers.add_parser("potential_trades_checker", help="Run potential traders check")
     parser_potential.set_defaults(func=run_potential_trades_checker)
 
-    # Tuetut symbolit (30 min välein)
-    parser_supported = subparsers.add_parser("supported_symbols_data_fetcher", help="Hae tuettujen symbolien data")
+    # Supported symbols (every 30 minutes)
+    parser_supported = subparsers.add_parser("supported_symbols_data_fetcher", help="Fetch supported symbols data")
     parser_supported.set_defaults(func=run_supported_symbols_data_fetcher)
 
-    # Pääsymbolien data (5 min välein)
-    parser_main = subparsers.add_parser("main_symbols_data_fetcher", help="Hae pääsymbolien data")
+    # Main symbols data (every 5 minutes)
+    parser_main = subparsers.add_parser("main_symbols_data_fetcher", help="Fetch main symbols data")
     parser_main.set_defaults(func=run_main_symbols_data_fetcher)
 
     args = parser.parse_args()
