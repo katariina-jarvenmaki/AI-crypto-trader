@@ -431,4 +431,4 @@ INTERVALS = ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "1d", "1w"]
 
 # FETCHING
 LOG_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
-
+MARKET_SCANNER_LOG_PATH = Path("logs/market_scanner_analysis_summary.jsonl")

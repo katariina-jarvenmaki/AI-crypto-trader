@@ -10,18 +10,22 @@ def save_analysis_log(symbol_scores):
     logs_dir = Path("logs")
     logs_dir.mkdir(exist_ok=True)
 
-    log_path = logs_dir / "market_scanner_analysis_summary.json"
+    log_path = logs_dir / "market_scanner_analysis_summary.jsonl"
 
-    # 🧪 Tarkistetaan, onko tiedostossa jo tämän päivän logi
+    # 🧪 Tarkistetaan, onko tämän päivän logimerkintä jo olemassa
     if log_path.exists():
         try:
             with open(log_path, "r") as f:
-                existing = json.load(f)
-                if existing.get("date") == today_str:
-                    print(f"\n⚠️  Analyysiloki löytyy jo päivältä {today_str}, ohitetaan tallennus.")
-                    return
-        except (json.JSONDecodeError, OSError):
-            print("\n⚠️  Olemassa oleva logi on virheellinen tai ei luettavissa. Kirjoitetaan uusi.")
+                for line in f:
+                    try:
+                        existing = json.loads(line)
+                        if existing.get("date") == today_str:
+                            print(f"\n⚠️  Analyysiloki löytyy jo päivältä {today_str}, ohitetaan tallennus.")
+                            return
+                    except json.JSONDecodeError:
+                        continue
+        except OSError:
+            print("\n⚠️  Lokitiedoston lukeminen epäonnistui. Kirjoitetaan uusi rivi.")
 
     # 🧮 Scorojen järjestäminen ja TOP-20 valinta
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
@@ -45,9 +49,10 @@ def save_analysis_log(symbol_scores):
         "potential_to_short": [s for s, _ in top20_short],
     }
 
-    # 💾 Kirjoitus tiedostoon
-    with open(log_path, "w") as f:
-        json.dump(result, f, indent=2)
+    # 💾 Kirjoitus JSONL-tiedostoon (rivi per päivä)
+    with open(log_path, "a") as f:
+        json.dump(result, f)
+        f.write("\n")
 
     print(f"\n📝 Analyysiloki tallennettu: {log_path}")
 
@@ -85,7 +90,6 @@ def score_asset(data_preview):
                 score -= 0.5 * weight_map[interval]
 
     return score
-
 
 def analyze_all_symbols():
     """
