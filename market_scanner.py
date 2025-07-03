@@ -5,7 +5,7 @@ from pathlib import Path
 
 from configs.market_scanner_config import SUPPORTED_SYMBOLS, INTERVALS, LOG_PATH
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
-from scripts.market_scanner_analysis_summary import analyze_all_symbols
+from scripts.market_scanner_analysis_summary import analyze_all_symbols, save_analysis_log
 
 def has_fetched_today(symbol: str) -> bool:
 
@@ -62,6 +62,8 @@ def print_recommendations():
 
     print("\n📉❤️ SHORT-SUOSITUKSET (eniten potentiaalia ensin):")
     print(" ".join(short_syms))
+
+    save_analysis_log(scores)
 
 def main():
     

@@ -1,9 +1,55 @@
-# AI-crypto-trader/scripts/market_scanner_analysis_summary.py
+# scripts/market_scanner_analysis_summary.py
 
 import json
 from datetime import datetime
 from pathlib import Path
 from configs.market_scanner_config import LOG_PATH, INTERVALS
+
+def save_analysis_log(symbol_scores):
+    today_str = datetime.utcnow().date().isoformat()
+    logs_dir = Path("logs")
+    logs_dir.mkdir(exist_ok=True)
+
+    log_path = logs_dir / "market_scanner_analysis_summary.json"
+
+    # 🧪 Tarkistetaan, onko tiedostossa jo tämän päivän logi
+    if log_path.exists():
+        try:
+            with open(log_path, "r") as f:
+                existing = json.load(f)
+                if existing.get("date") == today_str:
+                    print(f"\n⚠️  Analyysiloki löytyy jo päivältä {today_str}, ohitetaan tallennus.")
+                    return
+        except (json.JSONDecodeError, OSError):
+            print("\n⚠️  Olemassa oleva logi on virheellinen tai ei luettavissa. Kirjoitetaan uusi.")
+
+    # 🧮 Scorojen järjestäminen ja TOP-20 valinta
+    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
+
+    long_syms = [(s, sc) for s, sc in sorted_symbols if sc > 0]
+    top20_long = long_syms[:20]
+    if len(long_syms) > 20:
+        last_score = top20_long[-1][1]
+        top20_long += [x for x in long_syms[20:] if x[1] == last_score]
+
+    short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
+    top20_short = short_syms[:20]
+    if len(short_syms) > 20:
+        last_score = top20_short[-1][1]
+        top20_short += [x for x in short_syms[20:] if x[1] == last_score]
+
+    # 📦 Tallennettava data
+    result = {
+        "date": today_str,
+        "potential_to_long": [s for s, _ in top20_long],
+        "potential_to_short": [s for s, _ in top20_short],
+    }
+
+    # 💾 Kirjoitus tiedostoon
+    with open(log_path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    print(f"\n📝 Analyysiloki tallennettu: {log_path}")
 
 def score_asset(data_preview):
     """

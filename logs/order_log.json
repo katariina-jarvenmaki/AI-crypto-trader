@@ -22,5 +22,29 @@
                 "started_on": null
             }
         ]
+    },
+    "ETHUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-03T13:23:51.496195+03:00",
+                "platform": "ByBit",
+                "status": "initiated",
+                "qty": 0.01,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ],
+        "short": []
     }
 }
