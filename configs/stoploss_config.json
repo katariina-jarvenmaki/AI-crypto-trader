@@ -19,7 +19,7 @@
     "trailing_stoploss_percent": "0.0019%"
   },
   "ADAUSDT": {
-    "trailing_stoploss_percent": "0.0019%"
+    "trailing_stoploss_percent": "0.005%"
   },
   "HBARUSDT": {
     "trailing_stoploss_percent": "0.005%"

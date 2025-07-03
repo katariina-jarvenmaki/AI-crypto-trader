@@ -174,38 +174,10 @@ def remove_old_archives(months=2):
             except ValueError:
                 print(f"Invalid date in filename: {filename}")
 
-def clean_old_scanner_logs(months=2):
-    summary_path = os.path.join(LOG_DIR, "market_scanner_analysis_summary.json")
-    if not os.path.exists(summary_path):
-        return
-
-    try:
-        with open(summary_path, "r") as f:
-            data = json.load(f)
-    except (json.JSONDecodeError, OSError):
-        print("⚠️  Scanner logi on virheellinen tai ei luettavissa.")
-        return
-
-    if not isinstance(data, dict) or "date" not in data:
-        print("⚠️  Scanner login muoto on tuntematon, ohitetaan.")
-        return
-
-    try:
-        log_date = datetime.fromisoformat(data["date"])
-    except ValueError:
-        print("⚠️  Scanner logissa virheellinen päiväys.")
-        return
-
-    cutoff = datetime.now() - timedelta(days=30 * months)
-    if log_date < cutoff:
-        print(f"🗑️  Poistetaan vanhentunut scanner logi ({log_date.date()})")
-        os.remove(summary_path)
-
 def run_log_cleanup():
     archive_complete_signals()
     archive_old_orders()
     remove_old_archives()
-    clean_old_scanner_logs()
 
 if __name__ == "__main__":
     run_log_cleanup()

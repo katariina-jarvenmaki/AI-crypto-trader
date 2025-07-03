@@ -6,8 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib schedule
-
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib
 ```
 
 **2. Make a credentials.py to configs-folder**
@@ -61,16 +60,6 @@ Restrict to long-only or short-only (Doesn't accect force the buy / sell):
 ```bash
 python3 main.py ETHUSDC long-only
 python3 main.py ETHUSDC short-only
-```
-
-Once a day run the market scanner (overview of the market):
-```bash
-python3 market_scanner_all_symbols.py
-```
-
-Run and leave running the market scanner (only automaticly selected coins):
-```bash
-python3 market_scanner_top_symbols.py
 ```
 
 **4. Testing**
