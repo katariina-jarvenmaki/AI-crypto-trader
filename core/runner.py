@@ -367,32 +367,42 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
         return []
 
 import os
+import json
 
 def stop_loss_checker(positions):
-
     print(f"\n🔍 Doing stop loss checks and updates...")
 
     if not positions:
         print("⚠️  No open positions passed to process_stop_loss_logic.")
         return
 
+    def safe_float(value, default=0.0):
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return default
+
     try:
         with open("logs/order_log.json", "r") as f:
             order_data = json.load(f)
 
-        # Loop through the positions
         for position in positions:
-            symbol = position['symbol']
-            side = position['side']
-            size = position['size']
-            avg_price = float(position['avgPrice'])
-            leverage = position['leverage']
-            stop_loss = position['stopLoss']
-            trailing_stop = position['trailingStop']
+            symbol = position.get('symbol')
+            side = position.get('side')
+            size = position.get('size')
+            avg_price = safe_float(position.get('avgPrice'))
+            leverage = position.get('leverage')
+            stop_loss = safe_float(position.get('stopLoss', ''))
+            trailing_stop = safe_float(position.get('trailingStop', ''))
+
+            if not all([symbol, side, size, avg_price, leverage is not None]):
+                print(f"[WARNING] Missing essential position data for {position}, skipping.")
+                continue
 
             symbol_usdt = symbol.replace("USDC", "USDT")
             side_mapping = {"Buy": "long", "Sell": "short"}
             mapped_side = side_mapping.get(side)
+
             if not mapped_side:
                 print(f"[WARNING] Unknown side '{side}' for {symbol}, skipping.")
                 continue
@@ -417,8 +427,8 @@ def stop_loss_checker(positions):
                         size=size,
                         entry_price=avg_price,
                         leverage=leverage,
-                        stop_loss=float(stop_loss),
-                        trailing_stop=float(trailing_stop),
+                        stop_loss=stop_loss,
+                        trailing_stop=trailing_stop,
                         set_sl_percent=sl_values['set_stoploss_percent'],
                         full_sl_percent=sl_values['full_stoploss_percent'],
                         trailing_percent=sl_values['trailing_stoploss_percent'],
