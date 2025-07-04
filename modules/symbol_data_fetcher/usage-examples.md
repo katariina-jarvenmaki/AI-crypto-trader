@@ -48,3 +48,13 @@ Four times a day at 3:00, 9:00, 15:00, 21:00:
 ```bash
 0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
 ```
+
+**Check and update crons**
+```bash
+crontab -e
+```
+
+**Check cron log**
+```bash
+tail -n 100 /opt/kjc/int/AI-crypto-trader/logs/cron.log
+```
