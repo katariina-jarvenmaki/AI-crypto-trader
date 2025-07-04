@@ -96,6 +96,13 @@ def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, sou
     }
 
     for interval, df in data_by_interval.items():
+        if df.empty:
+            print(f"⚠️ Interval {interval} has empty DataFrame for {symbol}")
+            continue
+        if 'close' not in df.columns or df['close'].isnull().all():
+            print(f"⚠️ Interval {interval} missing valid close prices for {symbol}")
+            continue
+
         analysis = analyze_ohlcv(df)
         log_entry["data_preview"][interval] = analysis
 

@@ -3,7 +3,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from modules.symbol_data_fetcher.supported_symbol_config import SYMBOL_LOG_PATH, INTERVALS
+from modules.symbol_data_fetcher.supported_symbol_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS
 
 def save_analysis_log(symbol_scores):
 
@@ -56,10 +56,6 @@ def save_analysis_log(symbol_scores):
     print(f"\n📝 Analysis log saved: {SYMBOL_LOG_PATH}")
 
 def score_asset(data_preview):
-    """
-    Returns a score where positive = long bias, negative = short bias.
-    Based on RSI and MACD values over multiple time intervals.
-    """
     score = 0
     weight_map = {
         "1h": 1.0,
@@ -76,13 +72,13 @@ def score_asset(data_preview):
         macd = d.get("macd")
         macd_signal = d.get("macd_signal")
 
-        if rsi is not None:
+        if rsi is not None and not math.isnan(rsi):
             if rsi > 70:
-                score -= 1 * weight_map[interval]  # overbought
+                score -= 1 * weight_map[interval]
             elif rsi < 30:
-                score += 1 * weight_map[interval]  # oversold
+                score += 1 * weight_map[interval]
 
-        if macd is not None and macd_signal is not None:
+        if (macd is not None and not math.isnan(macd)) and (macd_signal is not None and not math.isnan(macd_signal)):
             if macd > macd_signal:
                 score += 0.5 * weight_map[interval]
             elif macd < macd_signal:
@@ -95,14 +91,16 @@ def analyze_all_symbols():
     Reads logs and analyzes them.
     Returns sorted long and short lists along with explanations.
     """
-    if not LOG_PATH.exists():
-        print("❌ LOG_PATH not found.")
+    print(f"Analyzing the symbols")
+    if not OHLCV_LOG_PATH.exists():
+        print("❌ OHLCV_LOG_PATH not found.")
         return
 
     today_str = datetime.utcnow().date().isoformat()
     symbol_scores = {}
 
-    with open(LOG_PATH, "r") as f:
+    with open(OHLCV_LOG_PATH, "r") as f:
+        print(f"Opened OHLCV log path")
         for line in f:
             try:
                 entry = json.loads(line)
@@ -115,6 +113,7 @@ def analyze_all_symbols():
                 if symbol and data_preview:
                     score = score_asset(data_preview)
                     symbol_scores[symbol] = score
+                    print(f"Got the data from score_asset")
 
             except json.JSONDecodeError:
                 continue
@@ -123,5 +122,7 @@ def analyze_all_symbols():
 
     long_symbols = [s for s, score in sorted_symbols if score > 0]
     short_symbols = [s for s, score in sorted_symbols if score < 0]
+    print(f"Long symbols: {long_symbols}")
+    print(f"Short symbols: {short_symbols}")
 
     return long_symbols, short_symbols, symbol_scores
