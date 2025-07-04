@@ -42,7 +42,7 @@ def last_fetch_time(symbol: str):
     return None
 
 def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
-    
+
     last_fetch = last_fetch_time(symbol)
     if last_fetch is None:
         return True
@@ -52,20 +52,38 @@ def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
     return age > timedelta(minutes=max_age_minutes)
 
 def find_recent_log_entry(symbol: str):
-
     if not OHLCV_LOG_PATH.exists():
         return None
 
     today_str = datetime.now(LOCAL_TIMEZONE).date().isoformat()
+    latest_entry = None
+    latest_time = None
+
     with open(OHLCV_LOG_PATH, "r") as f:
-        for line in reversed(list(f)):
+        for line in f:
             try:
                 entry = json.loads(line)
-                if entry.get("symbol") == symbol and entry.get("timestamp", "").startswith(today_str):
-                    return entry
-            except json.JSONDecodeError:
+
+                if entry.get("symbol") != symbol:
+                    continue
+
+                timestamp_str = entry.get("timestamp", "")
+                if not timestamp_str.startswith(today_str):
+                    continue
+
+                timestamp = datetime.fromisoformat(timestamp_str)
+                if timestamp.tzinfo is None:
+                    timestamp = timestamp.replace(tzinfo=LOCAL_TIMEZONE)
+                timestamp = timestamp.astimezone(LOCAL_TIMEZONE)
+
+                if latest_time is None or timestamp > latest_time:
+                    latest_time = timestamp
+                    latest_entry = entry
+
+            except (json.JSONDecodeError, ValueError):
                 continue
-    return None
+
+    return latest_entry
 
 def print_and_save_recommendations():
 

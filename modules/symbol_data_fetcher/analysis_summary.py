@@ -88,10 +88,26 @@ def analyze_all_symbols():
 
                 symbol = entry.get("symbol")
                 data_preview = entry.get("data_preview")
+                timestamp_str = entry.get("timestamp")
 
-                if symbol and data_preview:
+                if not (symbol and data_preview and timestamp_str):
+                    continue
+
+                try:
+                    timestamp = datetime.fromisoformat(timestamp_str)
+                    if timestamp.tzinfo is None:
+                        timestamp = timestamp.replace(tzinfo=LOCAL_TIMEZONE)
+                    timestamp = timestamp.astimezone(LOCAL_TIMEZONE)
+                except ValueError:
+                    continue
+
+                existing = symbol_scores.get(symbol)
+                if existing is None or timestamp > existing["timestamp"]:
                     score = score_asset(data_preview)
-                    symbol_scores[symbol] = score
+                    symbol_scores[symbol] = {
+                        "score": score,
+                        "timestamp": timestamp,
+                    }
 
             except json.JSONDecodeError:
                 continue
