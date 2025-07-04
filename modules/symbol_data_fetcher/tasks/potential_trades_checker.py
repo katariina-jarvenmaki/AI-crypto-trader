@@ -60,9 +60,7 @@ def find_recent_log_entry(symbol: str):
                 continue
     return None
 
-def print_recommendations():
-
-    print("Print...")
+def print_and_save_recommendations():
 
     long_syms, short_syms, scores = analyze_all_symbols()
 
@@ -122,4 +120,4 @@ def run_potential_trades_checker():
         else:
             print(f"⚠️  No log entry found for analysis: {symbol}")
         
-    print_recommendations()
+    print_and_save_recommendations()

@@ -1,54 +1,62 @@
 # modules/symbol_data_fetcher/analysis_summary.py
 
 import json
-from datetime import datetime
+import math
+from datetime import datetime, timedelta
 from pathlib import Path
 from modules.symbol_data_fetcher.supported_symbol_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS
 
 def save_analysis_log(symbol_scores):
-
-    today_str = datetime.utcnow().date().isoformat()
+    now = datetime.utcnow()
     logs_dir = Path("logs")
     logs_dir.mkdir(exist_ok=True)
 
-    # 🧪 Check if today's log entry already exists
+    # ⚠️ Skip if log already exists within the last 3 hours
     if SYMBOL_LOG_PATH.exists():
         try:
             with open(SYMBOL_LOG_PATH, "r") as f:
-                for line in f:
+                for line in reversed(list(f)):  # Käydään logia läpi lopusta alkuun
                     try:
                         existing = json.loads(line)
-                        if existing.get("date") == today_str:
-                            print(f"\n⚠️  Analysis log already exists for {today_str}, skipping save.")
-                            return
-                    except json.JSONDecodeError:
+                        timestamp_str = existing.get("timestamp")
+                        if timestamp_str:
+                            existing_time = datetime.fromisoformat(timestamp_str)
+                            if now - existing_time < timedelta(hours=3):
+                                print(f"\n⚠️  Analysis log already exists within 3 hours, skipping save.")
+                                return
+                            else:
+                                break  # Ei tarvitse tarkistaa enää vanhempia
+                    except (json.JSONDecodeError, ValueError):
                         continue
         except OSError:
             print("\n⚠️  Failed to read log file. Writing a new line.")
 
-    # 🧮 Sort scores and select TOP-20
+    # 🧮 Sort and score
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
 
+    # ⚖️ Suodatetaan vain positiiviset ja negatiiviset — score == 0 poistetaan
     long_syms = [(s, sc) for s, sc in sorted_symbols if sc > 0]
+    short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
+
+    # 🥇 Top-20 long
     top20_long = long_syms[:20]
     if len(long_syms) > 20:
         last_score = top20_long[-1][1]
         top20_long += [x for x in long_syms[20:] if x[1] == last_score]
 
-    short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
+    # 🥇 Top-20 short
     top20_short = short_syms[:20]
     if len(short_syms) > 20:
         last_score = top20_short[-1][1]
         top20_short += [x for x in short_syms[20:] if x[1] == last_score]
 
-    # 📦 Data to be saved
+    # 📦 Save result with timestamp
     result = {
-        "date": today_str,
+        "timestamp": now.isoformat(),
         "potential_to_long": [s for s, _ in top20_long],
         "potential_to_short": [s for s, _ in top20_short],
     }
 
-    # 💾 Write to JSONL file (one line per day)
     with open(SYMBOL_LOG_PATH, "a") as f:
         json.dump(result, f)
         f.write("\n")
@@ -91,7 +99,7 @@ def analyze_all_symbols():
     Reads logs and analyzes them.
     Returns sorted long and short lists along with explanations.
     """
-    print(f"Analyzing the symbols")
+
     if not OHLCV_LOG_PATH.exists():
         print("❌ OHLCV_LOG_PATH not found.")
         return
