@@ -1,15 +1,17 @@
 # modules/symbol_data_fetcher/tasks/potential_trades_checker.py
 
+# modules/symbol_data_fetcher/tasks/potential_trades_checker.py
+
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     SUPPORTED_SYMBOLS as ALL_SYMBOLS,
     MAIN_SYMBOLS,
     INTERVALS,
     OHLCV_LOG_PATH,
-    SYMBOL_LOG_PATH,
     OHLCV_MAX_AGE_MINUTES,
     LOCAL_TIMEZONE
 )
@@ -17,29 +19,49 @@ from modules.symbol_data_fetcher.analysis_summary import (
     analyze_all_symbols,
     save_analysis_log,
 )
-from modules.symbol_data_fetcher.utils import prepare_temporary_log, append_temp_to_ohlcv_log_until_success
+from modules.symbol_data_fetcher.utils import (
+    prepare_temporary_log,
+    append_temp_to_ohlcv_log_until_success,
+    last_fetch_time,
+)
 
 def get_symbols_to_scan():
     return [s for s in ALL_SYMBOLS if s not in MAIN_SYMBOLS]
 
-def last_fetch_time(symbol: str):
+def find_recent_log_entry(symbol: str):
     if not OHLCV_LOG_PATH.exists():
         return None
 
+    today = datetime.now(LOCAL_TIMEZONE).date()
+    yesterday = today - timedelta(days=1)
+    latest_entry = None
+    latest_time = None
+
     with open(OHLCV_LOG_PATH, "r") as f:
-        for line in reversed(list(f)):
+        for line in f:
             try:
                 entry = json.loads(line)
-                if entry.get("symbol") == symbol:
-                    ts_str = entry.get("timestamp")
-                    if ts_str:
-                        dt = datetime.fromisoformat(ts_str)
-                        if dt.tzinfo is None:
-                            dt = dt.replace(tzinfo=LOCAL_TIMEZONE)
-                        return dt.astimezone(LOCAL_TIMEZONE)
-            except json.JSONDecodeError:
+
+                if entry.get("symbol") != symbol:
+                    continue
+
+                timestamp_str = entry.get("timestamp", "")
+                if not (timestamp_str.startswith(today.isoformat()) or timestamp_str.startswith(yesterday.isoformat())):
+                    continue
+
+                timestamp = datetime.fromisoformat(timestamp_str)
+                if timestamp.tzinfo is None:
+                    timestamp = timestamp.replace(tzinfo=LOCAL_TIMEZONE)
+                timestamp = timestamp.astimezone(LOCAL_TIMEZONE)
+
+                if latest_time is None or timestamp > latest_time:
+                    latest_time = timestamp
+                    latest_entry = entry
+
+            except (json.JSONDecodeError, ValueError):
                 continue
-    return None
+
+    return latest_entry
 
 def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
 
@@ -94,7 +116,8 @@ def print_and_save_recommendations():
         return
 
     print("\n🧠 Verbal interpretation:")
-    for sym, score in sorted(scores.items(), key=lambda x: -abs(x[1])):
+    for sym, data in sorted(scores.items(), key=lambda x: -abs(x[1]["score"])):
+        score = data["score"]
         bias = "LONG" if score > 0 else "SHORT"
         print(f" - {sym}: {bias} bias (score: {score:.2f})")
 
@@ -127,7 +150,15 @@ def run_potential_trades_checker():
             print(f"🚀 Fetching new OHLCV data: {symbol}")
             fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200, log_path=temporary_path)
         else:
-            print(f"✅ Fresh data already exists (less than 4h old): {symbol}")
+            hours = OHLCV_MAX_AGE_MINUTES // 60
+            minutes = OHLCV_MAX_AGE_MINUTES % 60
+            if hours > 0:
+                age_str = f"{hours}h"
+                if minutes > 0:
+                    age_str += f" {minutes}min"
+            else:
+                age_str = f"{minutes}min"
+            print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
 
         log_entry = find_recent_log_entry(symbol)
 

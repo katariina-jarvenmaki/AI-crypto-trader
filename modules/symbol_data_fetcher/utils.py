@@ -1,7 +1,36 @@
 # modules/symbol_data_fetcher/utils.py
 
-from pathlib import Path
+import math
 import time
+import json
+from pathlib import Path
+from datetime import datetime
+
+from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
+    INTERVAL_WEIGHTS,
+    OHLCV_MAX_AGE_MINUTES,
+    OHLCV_LOG_PATH,
+    LOCAL_TIMEZONE,
+)
+
+def last_fetch_time(symbol: str):
+    if not OHLCV_LOG_PATH.exists():
+        return None
+
+    with open(OHLCV_LOG_PATH, "r") as f:
+        for line in reversed(list(f)):
+            try:
+                entry = json.loads(line)
+                if entry.get("symbol") == symbol:
+                    ts_str = entry.get("timestamp")
+                    if ts_str:
+                        dt = datetime.fromisoformat(ts_str)
+                        if dt.tzinfo is None:
+                            dt = dt.replace(tzinfo=LOCAL_TIMEZONE)
+                        return dt.astimezone(LOCAL_TIMEZONE)
+            except json.JSONDecodeError:
+                continue
+    return None
 
 def score_asset(data_preview):
     score = 0
@@ -34,10 +63,10 @@ def prepare_temporary_log(log_name: str = "temp_log.jsonl") -> Path:
 
     """Luo tai tyhjentää lokaalin log-tiedoston samassa kansiossa kuin tämä tiedosto."""
 
-    current_dir = Path(__file__).parent  # Sama kansio missä tämä tiedosto sijaitsee
+    current_dir = Path(__file__).parent
     log_file = current_dir / log_name
 
-    log_file.write_text("")  # Tyhjennä tiedosto (luo sen jos ei ole)
+    log_file.write_text("")
 
     return log_file
 
@@ -47,21 +76,21 @@ def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, m
         print(f"Temp file {temp_path} does not exist, nothing to append.")
         return
 
+    if temp_path.stat().st_size == 0:
+        print(f"Temp file {temp_path} is empty, skipping append.")
+        return
+
     for attempt in range(1, max_retries + 1):
         try:
-            # Lue temp-tiedoston sisältö
             with open(temp_path, "r") as temp_file:
                 temp_lines = temp_file.readlines()
 
-            # Lisää temp_lines target_pathin loppuun
             with open(target_path, "a") as target_file:
                 target_file.writelines(temp_lines)
 
-            # Tarkistus: luetaan target_path ja varmistetaan, että kaikki temp_lines löytyvät
             with open(target_path, "r") as target_file:
                 target_lines = target_file.readlines()
 
-            # Varmistetaan, että temp_lines ovat peräkkäin target_linesin lopussa
             if target_lines[-len(temp_lines):] == temp_lines:
                 print(f"Successfully appended temp file contents to {target_path} on attempt {attempt}.")
                 break

@@ -1,10 +1,17 @@
 # modules/symbol_data_fetcher/analysis_summary.py
 
 import json
-import math
 from datetime import datetime, timedelta
 from pathlib import Path
-from modules.symbol_data_fetcher.symbol_data_fetcher_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS, MAIN_SYMBOLS, TOP_N_LONG, TOP_N_SHORT, INTERVAL_WEIGHTS, LOCAL_TIMEZONE
+
+from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
+    SYMBOL_LOG_PATH,
+    OHLCV_LOG_PATH,
+    MAIN_SYMBOLS,
+    TOP_N_LONG,
+    TOP_N_SHORT,
+    LOCAL_TIMEZONE,
+)
 from modules.symbol_data_fetcher.utils import score_asset
 
 def save_analysis_log(symbol_scores):
@@ -33,23 +40,23 @@ def save_analysis_log(symbol_scores):
             print("\n⚠️  Failed to read log file. Writing a new line.")
 
     # 🧮 Sort and score
-    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
+    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
     # ⚖️ Filter only positive and negative — score == 0 is removed
-    long_syms = [(s, sc) for s, sc in sorted_symbols if sc > 0]
-    short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
+    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0]
+    short_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] < 0]
 
     # 🥇 Top-20 long
     top20_long = long_syms[:TOP_N_LONG]
-    if len(long_syms) > 20:
+    if len(long_syms) > TOP_N_LONG:
         last_score = top20_long[-1][1]
-        top20_long += [x for x in long_syms[20:] if x[1] == last_score]
+        top20_long += [x for x in long_syms[TOP_N_LONG:] if x[1] == last_score]
 
     # 🥇 Top-20 short
     top20_short = short_syms[:TOP_N_SHORT]
-    if len(short_syms) > 20:
+    if len(short_syms) > TOP_N_SHORT:
         last_score = top20_short[-1][1]
-        top20_short += [x for x in short_syms[20:] if x[1] == last_score]
+        top20_short += [x for x in short_syms[TOP_N_SHORT:] if x[1] == last_score]
 
     # 📦 Save result with timestamp
     result = {
@@ -75,15 +82,16 @@ def analyze_all_symbols():
         print("❌ OHLCV_LOG_PATH not found.")
         return
 
-    today_str = datetime.now(LOCAL_TIMEZONE).date().isoformat()
+    today = datetime.now(LOCAL_TIMEZONE).date()
+    yesterday = today - timedelta(days=1)
     symbol_scores = {}
 
     with open(OHLCV_LOG_PATH, "r") as f:
-        print(f"Opened OHLCV log path")
         for line in f:
             try:
                 entry = json.loads(line)
-                if not entry.get("timestamp", "").startswith(today_str):
+                ts_str = entry.get("timestamp", "")
+                if not (ts_str.startswith(today.isoformat()) or ts_str.startswith(yesterday.isoformat())):
                     continue
 
                 symbol = entry.get("symbol")
@@ -112,10 +120,10 @@ def analyze_all_symbols():
             except json.JSONDecodeError:
                 continue
 
-    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
+    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_symbols = [s for s, score in sorted_symbols if score > 0]
-    short_symbols = [s for s, score in sorted_symbols if score < 0]
+    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0]
+    short_symbols = [s for s, data in sorted_symbols if data["score"] < 0]
     print(f"Long symbols: {long_symbols}")
     print(f"Short symbols: {short_symbols}")
 
