@@ -118,7 +118,6 @@ def analyze_all_symbols():
                 if symbol and data_preview:
                     score = score_asset(data_preview)
                     symbol_scores[symbol] = score
-                    print(f"Got the data from score_asset")
 
             except json.JSONDecodeError:
                 continue

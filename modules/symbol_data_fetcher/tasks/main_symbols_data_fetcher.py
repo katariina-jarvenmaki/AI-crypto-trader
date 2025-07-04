@@ -8,3 +8,10 @@ def run_main_symbols_data_fetcher():
     for symbol in symbols:
         print(f"🔁 Fetching data for {symbol}")
         # fetch_ohlcv_fallback(symbol, intervals=["5m", "15m", "1h"], limit=100)
+
+def main():
+
+    run_main_symbols_data_fetcher()
+
+if __name__ == "__main__":
+    main()

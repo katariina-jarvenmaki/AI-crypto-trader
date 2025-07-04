@@ -4,8 +4,8 @@ Each task can be run like this:
 ```bash
 cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
-python symbol_data_fetcher.py main_symbols_data_fetcher  
-python symbol_data_fetcher.py supported_symbols_data_fetcher  
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.supported_symbols_data_fetcher
 ```
 
 ## Possible Improvement (combined execution)
@@ -23,17 +23,28 @@ def run_all_tasks():
 
 ## Cron Scheduling (e.g., on Linux)
 
+**Main symbol data fetching (Potential trades checker is supposted to run first at least once before this)**
+
 Every 5 minutes:
 ```bash
 */5 * * * * /usr/bin/python3 /path/to/symbol_data_fetcher.py main_symbols_data_fetcher
 ```
 
+**Supported symbol data fetching (Potential trades checker is supposted to run first at least once before this)**
+
 Every 30 minutes:
 ```bash
-*/30 * * * * /usr/bin/python3 /path/to/symbol_data_fetcher.py supported_symbols_data_fetcher
+*/30 * * * * /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.supported_symbols_data_fetcher
 ```
+
+**Potential trades checker**
 
 Twice a day at 9:00 (AM and PM):
 ```bash
 0 9,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
+```
+
+Four times a day at 3:00, 9:00, 15:00, 21:00:
+```bash
+0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
 ```

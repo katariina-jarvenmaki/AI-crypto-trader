@@ -11,7 +11,7 @@ TOP_N_LONG = 20
 TOP_N_SHORT = 20
 
 # Kuinka vanhaa dataa pidetään vielä tuoreena (minuuteissa)
-OHLCV_MAX_AGE_MINUTES = 240
+OHLCV_MAX_AGE_MINUTES = 180
 
 # Painot eri aikajaksoille analyysissä
 INTERVAL_WEIGHTS = {

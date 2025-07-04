@@ -37,7 +37,7 @@ def last_fetch_time(symbol: str):
                 continue
     return None
 
-def needs_update(symbol: str, max_age_minutes: int = 240) -> bool:
+def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
     last_fetch = last_fetch_time(symbol)
     if last_fetch is None:
         return True
