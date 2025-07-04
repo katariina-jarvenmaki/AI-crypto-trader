@@ -5,6 +5,7 @@ import math
 from datetime import datetime, timedelta
 from pathlib import Path
 from modules.symbol_data_fetcher.symbol_data_fetcher_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS, MAIN_SYMBOLS, TOP_N_LONG, TOP_N_SHORT, INTERVAL_WEIGHTS, LOCAL_TIMEZONE
+from modules.symbol_data_fetcher.utils import score_asset
 
 def save_analysis_log(symbol_scores):
     now = datetime.now(LOCAL_TIMEZONE)
@@ -63,33 +64,6 @@ def save_analysis_log(symbol_scores):
         f.write("\n")
 
     print(f"\n📝 Analysis log saved: {SYMBOL_LOG_PATH}")
-
-def score_asset(data_preview):
-    score = 0
-    weight_map = INTERVAL_WEIGHTS
-
-    for interval in weight_map:
-        d = data_preview.get(interval)
-        if not d:
-            continue
-
-        rsi = d.get("rsi")
-        macd = d.get("macd")
-        macd_signal = d.get("macd_signal")
-
-        if rsi is not None and not math.isnan(rsi):
-            if rsi > 70:
-                score -= 1 * weight_map[interval]
-            elif rsi < 30:
-                score += 1 * weight_map[interval]
-
-        if (macd is not None and not math.isnan(macd)) and (macd_signal is not None and not math.isnan(macd_signal)):
-            if macd > macd_signal:
-                score += 0.5 * weight_map[interval]
-            elif macd < macd_signal:
-                score -= 0.5 * weight_map[interval]
-
-    return score
 
 def analyze_all_symbols():
     """

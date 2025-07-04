@@ -17,6 +17,7 @@ from modules.symbol_data_fetcher.analysis_summary import (
     analyze_all_symbols,
     save_analysis_log,
 )
+from modules.symbol_data_fetcher.utils import prepare_temporary_log
 
 def get_symbols_to_scan():
     return [s for s in ALL_SYMBOLS if s not in MAIN_SYMBOLS]
@@ -32,17 +33,21 @@ def last_fetch_time(symbol: str):
                 if entry.get("symbol") == symbol:
                     ts_str = entry.get("timestamp")
                     if ts_str:
-                        return datetime.fromisoformat(ts_str)
+                        dt = datetime.fromisoformat(ts_str)
+                        if dt.tzinfo is None:
+                            dt = dt.replace(tzinfo=LOCAL_TIMEZONE)
+                        return dt.astimezone(LOCAL_TIMEZONE)
             except json.JSONDecodeError:
                 continue
     return None
 
 def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
+
     last_fetch = last_fetch_time(symbol)
     if last_fetch is None:
         return True
 
-    now = datetime.utcnow()
+    now = datetime.now(LOCAL_TIMEZONE)
     age = now - last_fetch
     return age > timedelta(minutes=max_age_minutes)
 
@@ -92,14 +97,17 @@ def run_potential_trades_checker():
 
     symbols_to_process = get_symbols_to_scan()
 
+    temporary_path = prepare_temporary_log("temporary_log_potential_trades.jsonl")
+
     print(f"🔍 Scanning {len(symbols_to_process)} symbols...")
 
     for symbol in symbols_to_process:
+
         print(f"\n🔁 Checking symbol: {symbol}")
 
         if needs_update(symbol, max_age_minutes=OHLCV_MAX_AGE_MINUTES):
             print(f"🚀 Fetching new OHLCV data: {symbol}")
-            fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200)
+            fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200, log_path=temporary_path)
         else:
             print(f"✅ Fresh data already exists (less than 4h old): {symbol}")
 
@@ -122,7 +130,7 @@ def run_potential_trades_checker():
         else:
             print(f"⚠️  No log entry found for analysis: {symbol}")
         
-    print_and_save_recommendations()
+    # print_and_save_recommendations()
 
 def main():
 

@@ -31,7 +31,7 @@ LOG_FILE_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
 MAX_LOG_SIZE_MB = 10
 ENTRIES_TO_KEEP = 2000  
 
-def truncate_log_if_too_large(log_path: Path):
+def truncate_log_if_too_large(log_path: Path = LOG_FILE_PATH):
     if not log_path.exists():
         return
 
@@ -80,9 +80,8 @@ def analyze_ohlcv(df):
 
     return result
 
-def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, source_exchange, data_by_interval):
-
-    truncate_log_if_too_large(LOG_FILE_PATH)
+def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, source_exchange, data_by_interval, log_path: Path = LOG_FILE_PATH):
+    truncate_log_if_too_large(log_path)
 
     log_entry = {
         "timestamp": datetime.now(LOCAL_TIMEZONE).isoformat(),
@@ -106,10 +105,10 @@ def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, sou
         analysis = analyze_ohlcv(df)
         log_entry["data_preview"][interval] = analysis
 
-    with open(LOG_FILE_PATH, "a") as f:
+    with open(log_path, "a") as f:
         f.write(json.dumps(log_entry) + "\n")
 
-def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None):
+def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path: Path = LOG_FILE_PATH):
     intervals = intervals or DEFAULT_INTERVALS
     limit = limit or DEFAULT_OHLCV_LIMIT
     errors = {}
@@ -129,7 +128,10 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
             if any(not df.empty for df in data_by_interval.values()):
                 logging.info(f"✅ Fetch successful: {symbol} ({source_exchange})")
-                save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, source_exchange, data_by_interval)
+                save_fetch_log_with_data(
+                    symbol, intervals, limit, start_time, end_time,
+                    source_exchange, data_by_interval, log_path=log_path
+                )
                 return data_by_interval, source_exchange
             else:
                 errors[exchange] = "Empty DataFrames"

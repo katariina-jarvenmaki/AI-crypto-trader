@@ -84,3 +84,7 @@ out/
 credentials.py
 configs/credentials.py
 old_logs/
+
+# Ignore all temp-related .jsonl logs
+**/temp*.jsonl
+**/temporary*.jsonl
