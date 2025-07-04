@@ -17,7 +17,7 @@ from modules.symbol_data_fetcher.analysis_summary import (
     analyze_all_symbols,
     save_analysis_log,
 )
-from modules.symbol_data_fetcher.utils import prepare_temporary_log
+from modules.symbol_data_fetcher.utils import prepare_temporary_log, append_temp_to_ohlcv_log_until_success
 
 def get_symbols_to_scan():
     return [s for s in ALL_SYMBOLS if s not in MAIN_SYMBOLS]
@@ -42,7 +42,7 @@ def last_fetch_time(symbol: str):
     return None
 
 def needs_update(symbol: str, max_age_minutes: int = 180) -> bool:
-
+    
     last_fetch = last_fetch_time(symbol)
     if last_fetch is None:
         return True
@@ -129,11 +129,14 @@ def run_potential_trades_checker():
                     print()
         else:
             print(f"⚠️  No log entry found for analysis: {symbol}")
-        
-    # print_and_save_recommendations()
+    
+    # Copy values from temp log to OHLCV log
+    append_temp_to_ohlcv_log_until_success(temp_path=temporary_path, target_path=OHLCV_LOG_PATH, max_retries=10, retry_delay=57)
+
+    # Define, print, and save recommendations
+    print_and_save_recommendations()
 
 def main():
-
     run_potential_trades_checker()
 
 if __name__ == "__main__":

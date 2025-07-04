@@ -16,7 +16,7 @@ def save_analysis_log(symbol_scores):
     if SYMBOL_LOG_PATH.exists():
         try:
             with open(SYMBOL_LOG_PATH, "r") as f:
-                for line in reversed(list(f)):  # Käydään logia läpi lopusta alkuun
+                for line in reversed(list(f)):  # Iterate the log from end to start
                     try:
                         existing = json.loads(line)
                         timestamp_str = existing.get("timestamp")
@@ -26,7 +26,7 @@ def save_analysis_log(symbol_scores):
                                 print(f"\n⚠️  Analysis log already exists within 3 hours, skipping save.")
                                 return
                             else:
-                                break  # Ei tarvitse tarkistaa enää vanhempia
+                                break  # No need to check older entries
                     except (json.JSONDecodeError, ValueError):
                         continue
         except OSError:
@@ -35,7 +35,7 @@ def save_analysis_log(symbol_scores):
     # 🧮 Sort and score
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1], reverse=True)
 
-    # ⚖️ Suodatetaan vain positiiviset ja negatiiviset — score == 0 poistetaan
+    # ⚖️ Filter only positive and negative — score == 0 is removed
     long_syms = [(s, sc) for s, sc in sorted_symbols if sc > 0]
     short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
 

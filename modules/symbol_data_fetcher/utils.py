@@ -1,6 +1,7 @@
 # modules/symbol_data_fetcher/utils.py
 
 from pathlib import Path
+import time
 
 def score_asset(data_preview):
     score = 0
@@ -39,3 +40,39 @@ def prepare_temporary_log(log_name: str = "temp_log.jsonl") -> Path:
     log_file.write_text("")  # Tyhjennä tiedosto (luo sen jos ei ole)
 
     return log_file
+
+def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, max_retries: int = 5, retry_delay: float = 1.0):
+
+    if not temp_path.exists():
+        print(f"Temp file {temp_path} does not exist, nothing to append.")
+        return
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            # Lue temp-tiedoston sisältö
+            with open(temp_path, "r") as temp_file:
+                temp_lines = temp_file.readlines()
+
+            # Lisää temp_lines target_pathin loppuun
+            with open(target_path, "a") as target_file:
+                target_file.writelines(temp_lines)
+
+            # Tarkistus: luetaan target_path ja varmistetaan, että kaikki temp_lines löytyvät
+            with open(target_path, "r") as target_file:
+                target_lines = target_file.readlines()
+
+            # Varmistetaan, että temp_lines ovat peräkkäin target_linesin lopussa
+            if target_lines[-len(temp_lines):] == temp_lines:
+                print(f"Successfully appended temp file contents to {target_path} on attempt {attempt}.")
+                break
+            else:
+                raise IOError("Verification failed: appended lines not found in target file.")
+
+        except Exception as e:
+            print(f"Attempt {attempt} failed with error: {e}")
+            if attempt < max_retries:
+                print(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print("Max retries reached, failed to append temp file.")
+                raise

@@ -3,17 +3,17 @@
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-# Muokattava aikavyöhyke — voidaan vaihtaa esim. ZoneInfo("UTC")
+# Editable timezone — can be changed, e.g., ZoneInfo("UTC")
 LOCAL_TIMEZONE = ZoneInfo("Europe/Helsinki")
 
-# Top-N assettia long/short-suosituksiin
+# Top-N assets for long/short recommendations
 TOP_N_LONG = 20
 TOP_N_SHORT = 20
 
-# Kuinka vanhaa dataa pidetään vielä tuoreena (minuuteissa)
+# How old data is still considered fresh (in minutes)
 OHLCV_MAX_AGE_MINUTES = 180
 
-# Painot eri aikajaksoille analyysissä
+# Weights for different time intervals in analysis
 INTERVAL_WEIGHTS = {
     "1h": 1.0,
     "4h": 1.5,
@@ -463,4 +463,3 @@ SUPPORTED_SYMBOLS = [
     "SPKUSDT", 
     "SAHARAUSDT"
 ]
-
