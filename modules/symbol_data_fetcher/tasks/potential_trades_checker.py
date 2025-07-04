@@ -121,3 +121,10 @@ def run_potential_trades_checker():
             print(f"⚠️  No log entry found for analysis: {symbol}")
         
     print_and_save_recommendations()
+
+def main():
+
+    run_potential_trades_checker()
+
+if __name__ == "__main__":
+    main()

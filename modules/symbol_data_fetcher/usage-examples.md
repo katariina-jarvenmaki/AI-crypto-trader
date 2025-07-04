@@ -32,7 +32,7 @@ Every 30 minutes:
 */30 * * * * /usr/bin/python3 /path/to/symbol_data_fetcher.py supported_symbols_data_fetcher
 ```
 
-Twice a day at 10:00 (AM and PM):
+Twice a day at 9:00 (AM and PM):
 ```bash
-0 10,22 * * * /usr/bin/python3 /path/to/symbol_data_fetcher.py potential_traders_checker
+0 9,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
 ```
