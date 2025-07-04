@@ -1,6 +1,24 @@
-# modules/symbol_data_fetcher/supported_symbol_config.py
+# modules/symbol_data_fetcher/symbol_data_fetcher_config.py
 
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+# Muokattava aikavyöhyke — voidaan vaihtaa esim. ZoneInfo("UTC")
+LOCAL_TIMEZONE = ZoneInfo("Europe/Helsinki")
+
+# Top-N assettia long/short-suosituksiin
+TOP_N_LONG = 20
+TOP_N_SHORT = 20
+
+# Kuinka vanhaa dataa pidetään vielä tuoreena (minuuteissa)
+OHLCV_MAX_AGE_MINUTES = 240
+
+# Painot eri aikajaksoille analyysissä
+INTERVAL_WEIGHTS = {
+    "1h": 1.0,
+    "4h": 1.5,
+    "1d": 2.0,
+}
 
 # INTERVALS
 INTERVALS = ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "1d", "1w"]

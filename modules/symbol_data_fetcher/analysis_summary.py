@@ -4,10 +4,10 @@ import json
 import math
 from datetime import datetime, timedelta
 from pathlib import Path
-from modules.symbol_data_fetcher.supported_symbol_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS
+from modules.symbol_data_fetcher.symbol_data_fetcher_config import SYMBOL_LOG_PATH, OHLCV_LOG_PATH, INTERVALS, MAIN_SYMBOLS, TOP_N_LONG, TOP_N_SHORT, INTERVAL_WEIGHTS, LOCAL_TIMEZONE
 
 def save_analysis_log(symbol_scores):
-    now = datetime.utcnow()
+    now = datetime.now(LOCAL_TIMEZONE)
     logs_dir = Path("logs")
     logs_dir.mkdir(exist_ok=True)
 
@@ -20,7 +20,7 @@ def save_analysis_log(symbol_scores):
                         existing = json.loads(line)
                         timestamp_str = existing.get("timestamp")
                         if timestamp_str:
-                            existing_time = datetime.fromisoformat(timestamp_str)
+                            existing_time = datetime.fromisoformat(timestamp_str).astimezone(LOCAL_TIMEZONE)
                             if now - existing_time < timedelta(hours=3):
                                 print(f"\n⚠️  Analysis log already exists within 3 hours, skipping save.")
                                 return
@@ -39,13 +39,13 @@ def save_analysis_log(symbol_scores):
     short_syms = [(s, sc) for s, sc in sorted_symbols if sc < 0]
 
     # 🥇 Top-20 long
-    top20_long = long_syms[:20]
+    top20_long = long_syms[:TOP_N_LONG]
     if len(long_syms) > 20:
         last_score = top20_long[-1][1]
         top20_long += [x for x in long_syms[20:] if x[1] == last_score]
 
     # 🥇 Top-20 short
-    top20_short = short_syms[:20]
+    top20_short = short_syms[:TOP_N_SHORT]
     if len(short_syms) > 20:
         last_score = top20_short[-1][1]
         top20_short += [x for x in short_syms[20:] if x[1] == last_score]
@@ -53,6 +53,7 @@ def save_analysis_log(symbol_scores):
     # 📦 Save result with timestamp
     result = {
         "timestamp": now.isoformat(),
+        "potential_both_ways": MAIN_SYMBOLS,
         "potential_to_long": [s for s, _ in top20_long],
         "potential_to_short": [s for s, _ in top20_short],
     }
@@ -65,11 +66,7 @@ def save_analysis_log(symbol_scores):
 
 def score_asset(data_preview):
     score = 0
-    weight_map = {
-        "1h": 1.0,
-        "4h": 1.5,
-        "1d": 2.0,
-    }
+    weight_map = INTERVAL_WEIGHTS
 
     for interval in weight_map:
         d = data_preview.get(interval)
@@ -104,7 +101,7 @@ def analyze_all_symbols():
         print("❌ OHLCV_LOG_PATH not found.")
         return
 
-    today_str = datetime.utcnow().date().isoformat()
+    today_str = datetime.now(LOCAL_TIMEZONE).date().isoformat()
     symbol_scores = {}
 
     with open(OHLCV_LOG_PATH, "r") as f:

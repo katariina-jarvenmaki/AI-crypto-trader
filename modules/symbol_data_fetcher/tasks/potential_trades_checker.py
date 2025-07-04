@@ -4,12 +4,14 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from modules.symbol_data_fetcher.supported_symbol_config import (
+from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     SUPPORTED_SYMBOLS as ALL_SYMBOLS,
     MAIN_SYMBOLS,
     INTERVALS,
     OHLCV_LOG_PATH,
     SYMBOL_LOG_PATH,
+    OHLCV_MAX_AGE_MINUTES,
+    LOCAL_TIMEZONE
 )
 from modules.symbol_data_fetcher.analysis_summary import (
     analyze_all_symbols,
@@ -49,7 +51,7 @@ def find_recent_log_entry(symbol: str):
     if not OHLCV_LOG_PATH.exists():
         return None
 
-    today_str = datetime.utcnow().date().isoformat()
+    today_str = datetime.now(LOCAL_TIMEZONE).date().isoformat()
     with open(OHLCV_LOG_PATH, "r") as f:
         for line in reversed(list(f)):
             try:
@@ -95,7 +97,7 @@ def run_potential_trades_checker():
     for symbol in symbols_to_process:
         print(f"\n🔁 Checking symbol: {symbol}")
 
-        if needs_update(symbol):
+        if needs_update(symbol, max_age_minutes=OHLCV_MAX_AGE_MINUTES):
             print(f"🚀 Fetching new OHLCV data: {symbol}")
             fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200)
         else:

@@ -3,12 +3,14 @@
 from datetime import timedelta
 import pytz
 import os
+from zoneinfo import ZoneInfo
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 TRADE_LOG_FILE = os.path.join(BASE_DIR, 'logs', 'order_log.json')
 
 # TIMEZONE
 TIMEZONE = pytz.timezone("Europe/Helsinki")
+LOCAL_TIMEZONE = ZoneInfo("Europe/Helsinki")
 
 # PLATFORMS
 SUPPORTED_PLATFORMS = [

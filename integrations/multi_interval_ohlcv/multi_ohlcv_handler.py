@@ -12,7 +12,7 @@ import logging
 
 from pathlib import Path
 from datetime import datetime
-from configs.config import MULTI_INTERVAL_EXCHANGE_PRIORITY, DEFAULT_OHLCV_LIMIT, DEFAULT_INTERVALS
+from configs.config import MULTI_INTERVAL_EXCHANGE_PRIORITY, DEFAULT_OHLCV_LIMIT, DEFAULT_INTERVALS, LOCAL_TIMEZONE
 from integrations.multi_interval_ohlcv.fetch_ohlcv_okx_for_intervals import fetch_ohlcv_okx
 from integrations.multi_interval_ohlcv.fetch_ohlcv_kucoin_for_intervals import fetch_ohlcv_kucoin
 from integrations.multi_interval_ohlcv.fetch_ohlcv_bybit_for_intervals import fetch_ohlcv_bybit
@@ -85,7 +85,7 @@ def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, sou
     truncate_log_if_too_large(LOG_FILE_PATH)
 
     log_entry = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(LOCAL_TIMEZONE).isoformat(),
         "source_exchange": source_exchange,
         "symbol": symbol,
         "intervals": intervals,

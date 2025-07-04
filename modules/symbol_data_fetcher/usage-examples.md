@@ -2,9 +2,10 @@
 
 Each task can be run like this:
 ```bash
+cd /opt/kjc/int/AI-crypto-trader
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
 python symbol_data_fetcher.py main_symbols_data_fetcher  
 python symbol_data_fetcher.py supported_symbols_data_fetcher  
-python symbol_data_fetcher.py potential_traders_checker  
 ```
 
 ## Possible Improvement (combined execution)
