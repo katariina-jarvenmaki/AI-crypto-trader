@@ -1,7 +1,5 @@
 # modules/symbol_data_fetcher/tasks/potential_trades_checker.py
 
-# modules/symbol_data_fetcher/tasks/potential_trades_checker.py
-
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -13,7 +11,11 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     INTERVALS,
     OHLCV_LOG_PATH,
     OHLCV_MAX_AGE_MINUTES,
-    LOCAL_TIMEZONE
+    LOCAL_TIMEZONE,
+    OHLCV_FETCH_LIMIT,
+    MAX_APPEND_RETRIES,
+    POTENTIAL_APPEND_RETRY_DELAY_SECONDS,
+    TEMP_LOG_POTENTIAL_TRADES
 )
 from modules.symbol_data_fetcher.analysis_summary import (
     analyze_all_symbols,
@@ -130,34 +132,26 @@ def print_and_save_recommendations():
     save_analysis_log(scores)
 
 def run_potential_trades_checker():
-
-    import json
-    from datetime import datetime, timedelta
-    from pathlib import Path
-    from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
-
     symbols_to_process = get_symbols_to_scan()
-
-    temporary_path = prepare_temporary_log("temporary_log_potential_trades.jsonl")
+    temporary_path = prepare_temporary_log(TEMP_LOG_POTENTIAL_TRADES)
 
     print(f"🔍 Scanning {len(symbols_to_process)} symbols...")
 
     for symbol in symbols_to_process:
-
         print(f"\n🔁 Checking symbol: {symbol}")
 
         if needs_update(symbol, max_age_minutes=OHLCV_MAX_AGE_MINUTES):
             print(f"🚀 Fetching new OHLCV data: {symbol}")
-            fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200, log_path=temporary_path)
+            fetch_ohlcv_fallback(
+                symbol=symbol,
+                intervals=INTERVALS,
+                limit=OHLCV_FETCH_LIMIT,
+                log_path=temporary_path
+            )
         else:
             hours = OHLCV_MAX_AGE_MINUTES // 60
             minutes = OHLCV_MAX_AGE_MINUTES % 60
-            if hours > 0:
-                age_str = f"{hours}h"
-                if minutes > 0:
-                    age_str += f" {minutes}min"
-            else:
-                age_str = f"{minutes}min"
+            age_str = f"{hours}h {minutes}min" if hours else f"{minutes}min"
             print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
 
         log_entry = find_recent_log_entry(symbol)
@@ -178,11 +172,14 @@ def run_potential_trades_checker():
                     print()
         else:
             print(f"⚠️  No log entry found for analysis: {symbol}")
-    
-    # Copy values from temp log to OHLCV log
-    append_temp_to_ohlcv_log_until_success(temp_path=temporary_path, target_path=OHLCV_LOG_PATH, max_retries=10, retry_delay=57)
 
-    # Define, print, and save recommendations
+    append_temp_to_ohlcv_log_until_success(
+        temp_path=temporary_path,
+        target_path=OHLCV_LOG_PATH,
+        max_retries=MAX_APPEND_RETRIES,
+        retry_delay=POTENTIAL_APPEND_RETRY_DELAY_SECONDS
+    )
+
     print_and_save_recommendations()
 
 def main():
