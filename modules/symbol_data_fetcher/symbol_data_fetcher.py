@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from modules.symbol_data_fetcher.tasks.potential_trades_checker import run_potential_trades_checker
 from tasks.potential_trades_checker import run_potential_trades_checker
-from tasks.supported_symbols_data_fetcher import run_supported_symbols_data_fetcher
+from tasks.top_symbols_data_fetcher import run_top_symbols_data_fetcher
 from tasks.main_symbols_data_fetcher import run_main_symbols_data_fetcher
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
@@ -29,8 +29,8 @@ def main():
     parser_potential.set_defaults(func=run_potential_trades_checker)
 
     # Supported symbols (every 30 minutes)
-    parser_supported = subparsers.add_parser("supported_symbols_data_fetcher", help="Fetch supported symbols data")
-    parser_supported.set_defaults(func=run_supported_symbols_data_fetcher)
+    parser_supported = subparsers.add_parser("top_symbols_data_fetcher", help="Fetch supported symbols data")
+    parser_supported.set_defaults(func=run_top_symbols_data_fetcher)
 
     # Main symbols data (every 5 minutes)
     parser_main = subparsers.add_parser("main_symbols_data_fetcher", help="Fetch main symbols data")

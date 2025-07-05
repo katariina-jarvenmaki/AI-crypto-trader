@@ -5,7 +5,7 @@ Each task can be run like this:
 cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.supported_symbols_data_fetcher
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
 ## Possible Improvement (combined execution)
@@ -17,7 +17,7 @@ parser_all.set_defaults(func=run_all_tasks)
 
 def run_all_tasks():  
     run_main_symbols_data_fetcher()  
-    run_supported_symbols_data_fetcher()  
+    run_top_symbols_data_fetcher()  
     run_potential_traders_checker()  
 ```
 
@@ -34,7 +34,7 @@ Every 5 minutes:
 
 Every 30 minutes:
 ```bash
-*/30 * * * * /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.supported_symbols_data_fetcher
+*/30 * * * * /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
 **Potential trades checker**

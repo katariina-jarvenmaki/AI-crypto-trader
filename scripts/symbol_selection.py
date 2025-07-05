@@ -21,6 +21,6 @@ def get_selected_symbols(platform: str, symbol_args: list):
     filtered_args = [s for s in symbol_args if s.upper() in supported_symbols]
 
     if not filtered_args and symbol_args:
-        raise ValueError(f"No valid symbols found in arguments. Supported: {', '.join(supported_symbols)}")
+        raise ValueError(f"No valid symbols found in arguments. Supported: {', '.join(top_symbols)}")
 
     return filtered_args if filtered_args else [default_symbol]
