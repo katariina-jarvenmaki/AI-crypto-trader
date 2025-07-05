@@ -32,7 +32,24 @@ BTCC_COMPANYID = "1"
 ```
 Input your own data...
 
-**3. Usage guide**
+**3. Setup the crons**
+
+**Check and update crons**
+```bash
+crontab -e
+```
+
+**Add these Symbol data fetching lines to cron**
+0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
+*/30 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron.log 2>&1
+*/5 * * * * /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
+
+**Check cron log**
+```bash
+tail -n 100 /opt/kjc/int/AI-crypto-trader/logs/cron.log
+```
+
+**4. Usage guide**
 
 Run the app on default platform (Binance) with default coinpair (BTCUSDC) and automatic market state detection
 ```bash
@@ -60,6 +77,14 @@ Restrict to long-only or short-only (Doesn't accect force the buy / sell):
 ```bash
 python3 main.py ETHUSDC long-only
 python3 main.py ETHUSDC short-only
+```
+
+To run Symbol data fetchers manually:
+```bash
+cd /opt/kjc/int/AI-crypto-trader
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
 **4. Testing**
