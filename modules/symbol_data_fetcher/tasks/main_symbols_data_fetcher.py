@@ -12,11 +12,11 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     OHLCV_LOG_PATH,
     OHLCV_MAX_AGE_MINUTES,
     LOCAL_TIMEZONE,
-    TOP_SYMBOL_FETCH_COOLDOWN_MINUTES,
+    MAIN_SYMBOL_FETCH_COOLDOWN_MINUTES,
     OHLCV_FETCH_LIMIT,
     MAX_APPEND_RETRIES,
-    APPEND_RETRY_DELAY_SECONDS,
-    TEMP_LOG_TOP_SYMBOLS
+    MAIN_APPEND_RETRY_DELAY_SECONDS,
+    TEMP_LOG_MAIN_SYMBOLS
 )
 
 from modules.symbol_data_fetcher.utils import (
@@ -54,7 +54,7 @@ def load_symbols_to_fetch():
         print(f"⚠️ Unexpected error reading symbol data: {e}")
         return []
 
-    symbols = set(data.get("potential_to_long", []) + data.get("potential_to_short", []))
+    symbols = set(data.get("potential_both_ways", []))
     return list(symbols)
 
 def fetch_for_main_symbols():
@@ -66,7 +66,7 @@ def fetch_for_main_symbols():
 
     print(f"🔄 Fetching OHLCV data for {len(symbols)} symbols...")
 
-    temporary_path = prepare_temporary_log(TEMP_LOG_TOP_SYMBOLS)
+    temporary_path = prepare_temporary_log(TEMP_LOG_MAIN_SYMBOLS)
 
     for symbol in symbols:
         try:
@@ -77,7 +77,7 @@ def fetch_for_main_symbols():
 
         if last_fetched:
             age = datetime.now(LOCAL_TIMEZONE) - last_fetched
-            if age < timedelta(minutes=TOP_SYMBOL_FETCH_COOLDOWN_MINUTES):
+            if age < timedelta(minutes=MAIN_SYMBOL_FETCH_COOLDOWN_MINUTES):
                 print(f"⏩ Skipping {symbol}, data fetched {age.total_seconds() // 60:.1f} min ago.")
                 continue
 
@@ -99,7 +99,7 @@ def fetch_for_main_symbols():
             temp_path=temporary_path,
             target_path=OHLCV_LOG_PATH,
             max_retries=MAX_APPEND_RETRIES,
-            retry_delay=APPEND_RETRY_DELAY_SECONDS
+            retry_delay=MAIN_APPEND_RETRY_DELAY_SECONDS
         )
     except Exception as e:
         print(f"❌ Failed to append temp log to OHLCV log: {e}")

@@ -15,7 +15,7 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     TOP_SYMBOL_FETCH_COOLDOWN_MINUTES,
     OHLCV_FETCH_LIMIT,
     MAX_APPEND_RETRIES,
-    APPEND_RETRY_DELAY_SECONDS,
+    TOP_APPEND_RETRY_DELAY_SECONDS,
     TEMP_LOG_TOP_SYMBOLS
 )
 
@@ -98,7 +98,7 @@ def fetch_for_top_symbols():
             temp_path=temporary_path,
             target_path=OHLCV_LOG_PATH,
             max_retries=MAX_APPEND_RETRIES,
-            retry_delay=APPEND_RETRY_DELAY_SECONDS
+            retry_delay=TOP_APPEND_RETRY_DELAY_SECONDS
         )
     except Exception as e:
         print(f"❌ Failed to append temp log to OHLCV log: {e}")

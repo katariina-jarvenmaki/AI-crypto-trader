@@ -28,19 +28,22 @@ OHLCV_LOG_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
 SYMBOL_LOG_PATH = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
 
 # Top symbols fetch cooldown (in minutes)
+MAIN_SYMBOL_FETCH_COOLDOWN_MINUTES = 1
 TOP_SYMBOL_FETCH_COOLDOWN_MINUTES = 5
 
 # Retry behavior for log appending
 MAX_APPEND_RETRIES = 10
-APPEND_RETRY_DELAY_SECONDS = 8
 
 # Retry behavior for potential trades fetcher
 POTENTIAL_APPEND_RETRY_DELAY_SECONDS = 57
+TOP_APPEND_RETRY_DELAY_SECONDS = 8
+MAIN_APPEND_RETRY_DELAY_SECONDS = 3
 
 # OHLCV fetch limit per symbol
 OHLCV_FETCH_LIMIT = 200
 
 # Temporary file names
+TEMP_LOG_MAIN_SYMBOLS = "temporary_log_main_symbols.jsonl"
 TEMP_LOG_TOP_SYMBOLS = "temporary_log_top_symbols.jsonl"
 TEMP_LOG_POTENTIAL_TRADES = "temporary_log_potential_trades.jsonl"
 
