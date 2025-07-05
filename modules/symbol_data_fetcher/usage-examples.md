@@ -27,7 +27,7 @@ def run_all_tasks():
 
 Every 5 minutes:
 ```bash
-*/5 * * * * /usr/bin/python3 /path/to/symbol_data_fetcher.py main_symbols_data_fetcher
+*/5 * * * * /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
 ```
 
 **Supported symbol data fetching (Potential trades checker is supposted to run first at least once before this)**

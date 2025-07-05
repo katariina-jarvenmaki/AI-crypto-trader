@@ -2,11 +2,9 @@
 
 import json
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
-    SUPPORTED_SYMBOLS as ALL_SYMBOLS,
     MAIN_SYMBOLS,
     INTERVALS,
     OHLCV_LOG_PATH,
@@ -15,12 +13,10 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     OHLCV_FETCH_LIMIT,
     MAX_APPEND_RETRIES,
     POTENTIAL_APPEND_RETRY_DELAY_SECONDS,
-    TEMP_LOG_POTENTIAL_TRADES
+    TEMP_LOG_POTENTIAL_TRADES,
+    SUPPORTED_SYMBOLS as ALL_SYMBOLS
 )
-from modules.symbol_data_fetcher.analysis_summary import (
-    analyze_all_symbols,
-    save_analysis_log,
-)
+from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
 from modules.symbol_data_fetcher.utils import (
     prepare_temporary_log,
     append_temp_to_ohlcv_log_until_success,
