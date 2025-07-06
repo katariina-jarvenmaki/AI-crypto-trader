@@ -1,0 +1,168 @@
+🕒 Running fetch at: 2025-07-06 21:55:02.041236+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: HBARUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: LTCUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:00:02.977294+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: SUIUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: LINKUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:05:02.180674+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: SUIUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: LINKUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:10:03.087256+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: LTCUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: XRPUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:15:01.984415+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: HYPEUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ETHUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:20:02.413696+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: HYPEUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: XRPUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:25:02.152433+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: SUIUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ADAUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:30:02.573609+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: SOLUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: SUIUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:35:02.267645+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: LINKUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: SOLUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:40:02.235058+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: XLMUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: ETHUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:45:02.804548+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: ETHUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: XLMUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: ADAUSDT
+📥 Fetching: HYPEUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.
+🕒 Running fetch at: 2025-07-06 22:50:02.532582+03:00
+🔄 Fetching OHLCV data for 11 symbols...
+📥 Fetching: ADAUSDT
+📥 Fetching: HBARUSDT
+📥 Fetching: BTCUSDT
+📥 Fetching: ETHUSDT
+📥 Fetching: LTCUSDT
+📥 Fetching: XRPUSDT
+📥 Fetching: LINKUSDT
+📥 Fetching: SOLUSDT
+📥 Fetching: HYPEUSDT
+📥 Fetching: SUIUSDT
+📥 Fetching: XLMUSDT
+Successfully appended temp file contents to integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl on attempt 1.

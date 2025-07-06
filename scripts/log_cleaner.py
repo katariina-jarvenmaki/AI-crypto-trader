@@ -17,11 +17,11 @@ def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-def save_json(path, data):
-    # Safety check to avoid overwriting with empty dict unless intentional
+def save_json(path, data, allow_empty_overwrite=False):
+
     if os.path.exists(path):
         existing = load_json(path)
-        if existing and not data:
+        if existing and not data and not allow_empty_overwrite:
             print(f"Warning: Attempt to overwrite non-empty file {path} with empty data.")
             return
 
@@ -100,8 +100,8 @@ def archive_complete_signals():
 
     if archive_data:
         save_json(archive_path, archive_data)
-        save_json(SIGNALS_LATEST, current_data)
-        print(f"Archived complete signals to {archive_filename}")
+        save_json(ORDERS_LATEST, current_data, allow_empty_overwrite=True)
+        print(f"Archived complete orders to {archive_filename}")
 
 def archive_old_orders():
     if not os.path.exists(ORDERS_LATEST):

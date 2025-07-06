@@ -1,6 +1,5 @@
 {
     "GASUSDT": {
-        "long": [],
         "short": [
             {
                 "timestamp": "2025-07-03T12:00:56.649860+03:00",
@@ -44,11 +43,9 @@
                 "market_state": null,
                 "started_on": null
             }
-        ],
-        "short": []
+        ]
     },
     "ADAUSDT": {
-        "long": [],
         "short": [
             {
                 "timestamp": "2025-07-03T15:59:02.280040+03:00",
@@ -70,29 +67,5 @@
                 "started_on": null
             }
         ]
-    },
-    "BTCUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-06T22:10:26.681966+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.001,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ],
-        "short": []
     }
 }
