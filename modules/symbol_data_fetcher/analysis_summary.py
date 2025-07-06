@@ -44,8 +44,11 @@ def save_analysis_log(symbol_scores):
 
     # ⚖️ Filter only positive and negative — score == 0 is removed
     long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0]
-    short_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] < 0]
-
+    short_syms = sorted(
+        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0],
+        key=lambda x: x[1]
+    )
+    
     # 🥇 Top-20 long
     top20_long = long_syms[:TOP_N_LONG]
     if len(long_syms) > TOP_N_LONG:

@@ -16,7 +16,7 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     TEMP_LOG_POTENTIAL_TRADES,
     SUPPORTED_SYMBOLS as ALL_SYMBOLS
 )
-from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
+from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols, save_analysis_log
 from modules.symbol_data_fetcher.utils import (
     prepare_temporary_log,
     append_temp_to_ohlcv_log_until_success,
