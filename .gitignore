@@ -87,6 +87,7 @@ old_logs/
 
 # Ignore all temp-related .jsonl logs
 **/temporary_log*.jsonl
+**/temporary_log*.log
 **/temp*.jsonl
 **/temporary*.jsonl
 **/ohlcv_fetch_log_*.backup*.jsonl

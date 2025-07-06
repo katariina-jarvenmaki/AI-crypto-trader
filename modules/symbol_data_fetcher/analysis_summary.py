@@ -43,9 +43,9 @@ def save_analysis_log(symbol_scores):
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
     # ⚖️ Filter only positive and negative — score == 0 is removed
-    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0]
+    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0 and s not in MAIN_SYMBOLS]
     short_syms = sorted(
-        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0],
+        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0 and s not in MAIN_SYMBOLS],
         key=lambda x: x[1]
     )
     

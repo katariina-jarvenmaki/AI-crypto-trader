@@ -41,9 +41,9 @@ crontab -e
 
 **Add these Symbol data fetching lines to the cron**
 ```bash
-0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron.log 2>&1
-*/30 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron.log 2>&1
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron.log 2>&1
+0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
+*/30 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron/temporary_log_top_symbols_data_fetcher_cron.log 2>&1
+*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
 ```
 
 **Check cron log**

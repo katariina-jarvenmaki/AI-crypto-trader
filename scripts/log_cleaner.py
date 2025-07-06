@@ -174,10 +174,69 @@ def remove_old_archives(months=2):
             except ValueError:
                 print(f"Invalid date in filename: {filename}")
 
+def clean_symbol_data_log(file_path="modules/symbol_data_fetcher/symbol_data_log.jsonl", days=30):
+    if not os.path.exists(file_path):
+        print(f"{file_path} not found.")
+        return
+
+    cutoff = datetime.now() - timedelta(days=days)
+    temp_path = file_path + ".tmp"
+
+    kept = 0
+    removed = 0
+    with open(file_path, "r") as infile, open(temp_path, "w") as outfile:
+        for line in infile:
+            try:
+                data = json.loads(line)
+                ts_str = data.get("timestamp") or data.get("time") or data.get("date")
+                if ts_str:
+                    ts = datetime.fromisoformat(ts_str.split("+")[0])
+                    if ts >= cutoff:
+                        outfile.write(line)
+                        kept += 1
+                    else:
+                        removed += 1
+                else:
+                    outfile.write(line)
+                    kept += 1
+            except Exception as e:
+                # Malformed line? Keep it just in case
+                print(f"Error parsing line: {e}")
+                outfile.write(line)
+                kept += 1
+
+    shutil.move(temp_path, file_path)
+    print(f"Cleaned symbol_data_log.jsonl: kept {kept}, removed {removed} old entries.")
+
+def delete_temporary_logs(directories, prefix="temporary_", suffix=".jsonl"):
+    deleted_files = []
+    for directory in directories:
+        if not os.path.exists(directory):
+            continue
+        for fname in os.listdir(directory):
+            if fname.startswith(prefix) and fname.endswith(suffix):
+                fpath = os.path.join(directory, fname)
+                try:
+                    os.remove(fpath)
+                    deleted_files.append(fpath)
+                except Exception as e:
+                    print(f"Failed to delete {fpath}: {e}")
+    if deleted_files:
+        print("Deleted temporary log files:")
+        for f in deleted_files:
+            print(f" - {f}")
+    else:
+        print("No temporary log files found to delete.")
+
 def run_log_cleanup():
     archive_complete_signals()
     archive_old_orders()
     remove_old_archives()
+    clean_symbol_data_log()
+    delete_temporary_logs([
+        "modules/symbol_data_fetcher",
+        "logs/cron"
+    ])
 
 if __name__ == "__main__":
     run_log_cleanup()
