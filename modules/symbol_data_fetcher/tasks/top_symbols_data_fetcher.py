@@ -10,17 +10,17 @@ from modules.symbol_data_fetcher.utils import fetch_symbols_data
 
 
 def run_top_symbols_data_fetcher():
+
     print(f"🕒 Running fetch at: {datetime.now(LOCAL_TIMEZONE)}")
 
-    task_settings = TASK_CONFIG["top"]
+    config = TASK_CONFIG["top"]
 
-    fetch_symbols_data(
-        SYMBOL_KEYS=task_settings["symbol_keys"],
-        TEMP_SYMBOLS_LOG=task_settings["temp_log"],
-        SYMBOL_FETCH_COOLDOWN_MINUTES=task_settings["cooldown_minutes"],
-        APPEND_RETRY_DELAY_SECONDS=task_settings["retry_delay"]
-    )
-
+    fetch_symbols_data({
+        "symbol_keys": config["symbol_keys"], 
+        "temp_log": config["temp_log"],
+        "cooldown_minutes": config["cooldown_minutes"],
+        "retry_delay": config["retry_delay"],
+    })
 
 def main():
     run_top_symbols_data_fetcher()
