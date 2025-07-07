@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
-from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
+from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
     INTERVAL_WEIGHTS,
     OHLCV_MAX_AGE_MINUTES,
     OHLCV_FETCH_LIMIT,
@@ -16,6 +16,7 @@ from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
     LOCAL_TIMEZONE,
     MAX_APPEND_RETRIES,
     INTERVALS,
+    MAIN_SYMBOLS,
 )
 
 def last_fetch_time(symbol: str):
@@ -65,18 +66,12 @@ def score_asset(data_preview):
     return score
 
 def prepare_temporary_log(log_name: str = "temp_log.jsonl") -> Path:
-
-    """Luo tai tyhjentää lokaalin log-tiedoston samassa kansiossa kuin tämä tiedosto."""
-
     current_dir = Path(__file__).parent
     log_file = current_dir / log_name
-
     log_file.write_text("")
-
     return log_file
 
 def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, max_retries: int = 5, retry_delay: float = 1.0):
-
     if not temp_path.exists():
         print(f"Temp file {temp_path} does not exist, nothing to append.")
         return
@@ -97,7 +92,7 @@ def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, m
                 target_lines = target_file.readlines()
 
             if target_lines[-len(temp_lines):] == temp_lines:
-                print(f"Successfully appended temp file contents to {target_path} on attempt {attempt}.")
+                print(f"✅ Successfully appended temp file contents to {target_path} on attempt {attempt}.")
                 break
             else:
                 raise IOError("Verification failed: appended lines not found in target file.")
@@ -108,11 +103,10 @@ def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, m
                 print(f"Retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
             else:
-                print("Max retries reached, failed to append temp file.")
+                print("❌ Max retries reached, failed to append temp file.")
                 raise
 
 def generic_load_symbols(SYMBOL_KEYS, SYMBOL_LOG_PATH):
-
     if not SYMBOL_LOG_PATH.exists():
         print(f"❌ File not found: {SYMBOL_LOG_PATH}")
         return []
@@ -134,37 +128,41 @@ def generic_load_symbols(SYMBOL_KEYS, SYMBOL_LOG_PATH):
         print(f"⚠️ Failed loading symbols: {e}")
         return []
 
-def fetch_symbols_data(
-    SYMBOL_KEYS,
-    TEMP_SYMBOLS_LOG,
-    SYMBOL_FETCH_COOLDOWN_MINUTES,
-    APPEND_RETRY_DELAY_SECONDS
-):
+def fetch_symbols_data(task_config: dict):
     """
-    Yleinen symbolien OHLCV-datan hakufunktio.
+    General function to fetch OHLCV data for symbols based on configuration.
     """
-    symbols = generic_load_symbols(SYMBOL_KEYS, SYMBOL_LOG_PATH)
+    symbol_keys = task_config.get("symbol_keys")
+    cooldown_minutes = task_config.get("cooldown_minutes", 3)
+    retry_delay = task_config.get("retry_delay", 2.0)
+    temp_log_name = task_config.get("temp_log", "temporary_log.jsonl")
+
+    if symbol_keys:
+        symbols = generic_load_symbols(symbol_keys, SYMBOL_LOG_PATH)
+    else:
+        print("ℹ️ No symbol_keys provided. Using MAIN_SYMBOLS fallback.")
+        symbols = MAIN_SYMBOLS
+
     if not symbols:
         print("⚠️ No symbols to fetch.")
         return
 
     print(f"🔄 Fetching OHLCV data for {len(symbols)} symbols...")
 
-    temporary_path = prepare_temporary_log(TEMP_SYMBOLS_LOG)
- 
+    temporary_path = prepare_temporary_log(temp_log_name)
+
     for symbol in symbols:
         try:
             last_fetched = last_fetch_time(symbol)
             if last_fetched:
                 age = datetime.now(LOCAL_TIMEZONE) - last_fetched
-                if age < timedelta(minutes=SYMBOL_FETCH_COOLDOWN_MINUTES):
+                if age < timedelta(minutes=cooldown_minutes):
                     print(f"⏩ Skipping {symbol}, fetched {age.total_seconds() // 60:.1f} min ago.")
                     continue
         except Exception as e:
             print(f"⚠️ Failed to check last fetch for {symbol}: {e}")
 
         print(f"📥 Fetching: {symbol}")
-
         try:
             result_data, status = fetch_ohlcv_fallback(
                 symbol=symbol,
@@ -182,7 +180,7 @@ def fetch_symbols_data(
             temp_path=temporary_path,
             target_path=OHLCV_LOG_PATH,
             max_retries=MAX_APPEND_RETRIES,
-            retry_delay=APPEND_RETRY_DELAY_SECONDS
+            retry_delay=retry_delay
         )
     except Exception as e:
         print(f"❌ Failed to append temp log to OHLCV log: {e}")

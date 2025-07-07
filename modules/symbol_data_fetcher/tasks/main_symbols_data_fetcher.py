@@ -1,24 +1,19 @@
 # modules/symbol_data_fetcher/tasks/main_symbols_data_fetcher.py
 
-from datetime import datetime
-
-from modules.symbol_data_fetcher.symbol_data_fetcher_config import (
-    LOCAL_TIMEZONE,
-    MAIN_SYMBOL_FETCH_COOLDOWN_MINUTES,
-    MAIN_APPEND_RETRY_DELAY_SECONDS,
-    TEMP_LOG_MAIN_SYMBOLS,
-)
+from modules.core.utils.logger import log
+from modules.symbol_data_fetcher.config_symbol_data_fetcher import TASK_CONFIG
 from modules.symbol_data_fetcher.utils import fetch_symbols_data
 
 def run_main_symbols_data_fetcher():
+    log("Running main_symbols_data_fetcher...")
 
-    print(f"🕒 Running fetch at: {datetime.now(LOCAL_TIMEZONE)}")
-    
+    config = TASK_CONFIG["main"]
+
     fetch_symbols_data(
-        SYMBOL_KEYS=["potential_both_ways"],
-        TEMP_SYMBOLS_LOG=TEMP_LOG_MAIN_SYMBOLS,
-        SYMBOL_FETCH_COOLDOWN_MINUTES=MAIN_SYMBOL_FETCH_COOLDOWN_MINUTES,
-        APPEND_RETRY_DELAY_SECONDS=MAIN_APPEND_RETRY_DELAY_SECONDS
+        SYMBOL_KEYS=config["symbol_keys"],
+        TEMP_SYMBOLS_LOG=config["temp_log"],
+        SYMBOL_FETCH_COOLDOWN_MINUTES=config["cooldown_minutes"],
+        APPEND_RETRY_DELAY_SECONDS=config["retry_delay"],
     )
 
 def main():
