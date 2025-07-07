@@ -18,7 +18,7 @@ def load_initiated_orders(log_path="logs/order_log.json"):
         norm_symbol = normalize_symbol(symbol)
         for direction, orders in directions.items():
             for order in orders:
-                if order.get("status") == "initiated":
+                if isinstance(order, dict) and order.get("status") == "initiated":
                     initiated_counts[(norm_symbol, direction)] += 1
 
     return initiated_counts

@@ -34,8 +34,8 @@ INTERVAL_WEIGHTS = {
 # === PARAMETERS RELATED TO SYMBOL FETCHING ===
 
 # Number of symbols selected for long/short recommendations
-TOP_N_LONG = 1
-TOP_N_SHORT = 5
+TOP_N_LONG = 20
+TOP_N_SHORT = 20
 
 # If multiple symbols share the same value, allow additional ties
 TOP_N_EXTRA_TIES = True
