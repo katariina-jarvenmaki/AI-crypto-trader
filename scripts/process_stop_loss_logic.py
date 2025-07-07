@@ -71,12 +71,12 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     skip_trailing = False
 
     if direction == "long":
-        if stop_loss >= full_sl_price or (full_sl_price - stop_loss) < threshold_amount:
+        if stop_loss > 0 and (stop_loss >= full_sl_price or (full_sl_price - stop_loss) < threshold_amount):
             skip_full_sl = True
         if trailing_stop > 0:
             skip_trailing = True
     else:
-        if stop_loss <= full_sl_price or (stop_loss - full_sl_price) < threshold_amount:
+        if stop_loss > 0 and (stop_loss <= full_sl_price or (stop_loss - full_sl_price) < threshold_amount):
             skip_full_sl = True
         if trailing_stop > 0:
             skip_trailing = True

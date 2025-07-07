@@ -43,6 +43,25 @@
                 "price_change": "{'24h': 1.47, '18h': 0.2, '12h': -0.56, '6h': 0.12, '4h': 0.32, '3h': 0.15, '2h': -0.41, '1h': -0.15, '30min': 0.31}",
                 "market_state": "neutral_sideways",
                 "started_on": "2025-07-07T10:00:00"
+            },
+            {
+                "timestamp": "2025-07-07T16:41:19.852364+03:00",
+                "platform": "ByBit",
+                "status": "completed",
+                "qty": 9.0,
+                "price": 0.5812,
+                "cost": 5.2308,
+                "leverage": 2,
+                "order_take_profit_price": 2.0342000000000002,
+                "order_stop_loss_price": 0.31966000000000006,
+                "mode": "log",
+                "interval": "3m",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.4000000000000001,
+                "price_change": "{'24h': -0.73, '18h': -0.07, '12h': -0.6, '6h': -0.73, '4h': -1.09, '3h': -1.19, '2h': -1.21, '1h': -0.07, '30min': -0.07}",
+                "market_state": "neutral_sideways",
+                "started_on": "2025-07-07T11:00:00"
             }
         ],
         "short": []
@@ -331,8 +350,104 @@
             {
                 "timestamp": "2025-07-07T16:10:10.965960+03:00",
                 "platform": "ByBit",
-                "status": "initiated",
+                "status": "completed",
                 "qty": 13.0,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ],
+        "short": []
+    },
+    "BERAUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-07T16:23:36.543720+03:00",
+                "platform": "ByBit",
+                "status": "completed",
+                "qty": 3.0,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ],
+        "short": []
+    },
+    "MAGICUSDT": {
+        "long": [],
+        "short": [
+            {
+                "timestamp": "2025-07-07T16:30:52.054716+03:00",
+                "platform": "ByBit",
+                "status": "initiated",
+                "qty": 42.0,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ]
+    },
+    "JTOUSDT": {
+        "long": [],
+        "short": [
+            {
+                "timestamp": "2025-07-07T16:43:48.564988+03:00",
+                "platform": "ByBit",
+                "status": "initiated",
+                "qty": 2.7,
+                "price": 0.0,
+                "cost": 0.0,
+                "leverage": 0,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null
+            }
+        ]
+    },
+    "SIRENUSDT": {
+        "long": [
+            {
+                "timestamp": "2025-07-07T16:52:20.771245+03:00",
+                "platform": "ByBit",
+                "status": "initiated",
+                "qty": 108.0,
                 "price": 0.0,
                 "cost": 0.0,
                 "leverage": 0,

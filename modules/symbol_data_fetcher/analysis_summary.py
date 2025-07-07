@@ -49,24 +49,26 @@ def save_analysis_log(symbol_scores):
         key=lambda x: x[1]
     )
     
-    # 🥇 Top-20 long
-    top20_long = long_syms[:TOP_N_LONG]
+    # 🥇 Top-N long
+    top_long = long_syms[:TOP_N_LONG]
     if len(long_syms) > TOP_N_LONG:
-        last_score = top20_long[-1][1]
-        top20_long += [x for x in long_syms[TOP_N_LONG:] if x[1] == last_score]
+        cutoff_score = long_syms[TOP_N_LONG - 1][1]
+        extra = [x for x in long_syms[TOP_N_LONG:] if x[1] == cutoff_score]
+        top_long += extra
 
-    # 🥇 Top-20 short
-    top20_short = short_syms[:TOP_N_SHORT]
+    # 🥇 Top-N short
+    top_short = short_syms[:TOP_N_SHORT]
     if len(short_syms) > TOP_N_SHORT:
-        last_score = top20_short[-1][1]
-        top20_short += [x for x in short_syms[TOP_N_SHORT:] if x[1] == last_score]
+        cutoff_score = short_syms[TOP_N_SHORT - 1][1]
+        extra = [x for x in short_syms[TOP_N_SHORT:] if x[1] == cutoff_score]
+        top_short += extra
 
     # 📦 Save result with timestamp
     result = {
         "timestamp": now.isoformat(),
         "potential_both_ways": MAIN_SYMBOLS,
-        "potential_to_long": [s for s, _ in top20_long],
-        "potential_to_short": [s for s, _ in top20_short],
+        "potential_to_long": [s for s, _ in top_long],
+        "potential_to_short": [s for s, _ in top_short],
     }
 
     with open(SYMBOL_LOG_PATH, "a") as f:
