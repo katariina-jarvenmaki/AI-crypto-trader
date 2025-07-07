@@ -7,8 +7,8 @@ from zoneinfo import ZoneInfo
 LOCAL_TIMEZONE = ZoneInfo("Europe/Helsinki")
 
 # Top-N assets for long/short recommendations
-TOP_N_LONG = 20
-TOP_N_SHORT = 20
+TOP_N_LONG = 2
+TOP_N_SHORT = 5
 
 # How old data is still considered fresh (in minutes)
 OHLCV_MAX_AGE_MINUTES = 180

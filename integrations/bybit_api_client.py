@@ -52,6 +52,14 @@ def fetch_multi_ohlcv(selected_symbols: list, limit=100):
     return result
 
 # --- Reaaliaikaiset hinnat ---
+def get_bybit_symbol_price(symbol):
+    try:
+        response = client.get_tickers(category="linear", symbol=symbol)
+        return float(response["result"]["list"][0]["lastPrice"])
+    except Exception as e:
+        print(f"❌ Failed to fetch price for {symbol}: {e}")
+        return None
+
 def get_all_current_prices(selected_symbols: list):
     try:
         response = client.get_tickers(category=CATEGORY)
@@ -152,6 +160,61 @@ def place_leveraged_bybit_order(client, symbol: str, qty: float, price: float, l
 
     except Exception as e:
         print(f"❌ Bybit leveraged order failed: {e}")
+        return None
+
+def place_leveraged_bybit_limit_order(client, symbol: str, qty: float, price: float, leverage: int = DEFAULT_LEVERAGE, side: str = "Buy"):
+    try:
+        set_hedge_mode(client, symbol=symbol, coin="USDT", category="linear")
+        set_leverage(symbol, leverage)
+
+        rounded_qty = round_bybit_quantity(symbol, qty)
+        position_idx = 1 if side == "Buy" else 2
+
+        order = client.place_order(
+            category="linear",
+            symbol=symbol,
+            side=side,
+            orderType="Limit",
+            qty=str(rounded_qty),
+            price=str(price),
+            isLeverage=1,
+            positionIdx=position_idx,
+            timeInForce="PostOnly",  # Takaa ettei market fillaa
+            reduceOnly=False
+        )
+
+        adjusted_tp_percent = DEFAULT_BYBIT_TAKE_PROFIT_PERCENT / leverage
+        adjusted_sl_percent = DEFAULT_BYBIT_STOP_LOSS_PERCENT / leverage
+
+        if side == "Buy":
+            tp_price = price * (1 + adjusted_tp_percent)
+            sl_price = price * (1 - adjusted_sl_percent)
+        else:
+            tp_price = price * (1 - adjusted_tp_percent)
+            sl_price = price * (1 + adjusted_sl_percent)
+
+        client.set_trading_stop(
+            category="linear",
+            symbol=symbol,
+            takeProfit=str(tp_price),
+            stopLoss=str(sl_price),
+            tpTriggerBy="MarkPrice",
+            slTriggerBy="MarkPrice",
+            tpslMode="Full",
+            tpOrderType="Market",
+            slOrderType="Market",
+            positionIdx=position_idx
+        )
+
+        print(f"✅ Bybit LIMIT order placed: TP @ {tp_price}, SL @ {sl_price}")
+        return {
+            "tp_price": tp_price,
+            "sl_price": sl_price,
+            "order": order
+        }
+
+    except Exception as e:
+        print(f"❌ Bybit LIMIT order failed: {e}")
         return None
 
 def get_bybit_symbol_info(symbol: str):
@@ -315,3 +378,16 @@ def set_stop_loss_and_trailing_stop(symbol, side, partial_stop_loss_price, trail
 def parse_percent(value_str):
     """Muuntaa '0.15%' → 0.0015 desimaalimuotoon"""
     return float(value_str.strip('%')) / 100
+
+def has_open_limit_order(symbol, side, category="linear"):
+    try:
+        response = client.get_open_orders(category=category, symbol=symbol)
+        open_orders = response["result"]["list"]
+
+        for order in open_orders:
+            if order["orderType"].lower() == "limit" and order["side"].lower() == side.lower():
+                return True
+        return False
+    except Exception as e:
+        print(f"❌ Failed to check open orders for {symbol} ({side}): {e}")
+        return False

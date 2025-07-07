@@ -3,25 +3,72 @@
 import time
 import pytz
 import pandas as pd
+import json
+
+from pathlib import Path
 from configs.config import TIMEZONE
 from core.args_parser import parse_arguments
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
 from scripts.log_cleaner import run_log_cleanup
 from scripts.order_limiter import load_initiated_orders
 
+def load_symbol_modes(symbols, long_only_flag, short_only_flag):
+    
+    log_path = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
+
+    with open(log_path, "r") as f:
+        lines = f.readlines()
+        if not lines:
+            raise ValueError(f"No data in {log_path}")
+
+        for line in reversed(lines):
+            try:
+                latest_entry = json.loads(line.strip())
+                break
+            except json.JSONDecodeError:
+                continue
+        else:
+            raise ValueError("No valid JSON in symbol log")
+
+    potential_both_ways = latest_entry.get("potential_both_ways", [])
+    potential_to_short = latest_entry.get("potential_to_short", [])
+    potential_to_long = latest_entry.get("potential_to_long", [])
+
+    symbol_modes = {}
+
+    for symbol in symbols:
+        if symbol in potential_to_short:
+            symbol_modes[symbol] = {"long_only": False, "short_only": True}
+        elif symbol in potential_to_long:
+            symbol_modes[symbol] = {"long_only": True, "short_only": False}
+        elif symbol in potential_both_ways:
+            symbol_modes[symbol] = {
+                "long_only": long_only_flag,
+                "short_only": short_only_flag
+            }
+        else:
+            # Jos symboli ei ole missään listassa, ei rajoituksia
+            symbol_modes[symbol] = {"long_only": False, "short_only": False}
+
+    return symbol_modes
+
 def main():
 
-    # Suoritetaan logien siivous ennen sovelluksen ajoa
     run_log_cleanup()
 
     try:
-        selected_platform, selected_symbols, override_signal, long_only, short_only = parse_arguments()
-
+        selected_platform, selected_symbols, override_signal, long_only_flag, short_only_flag = parse_arguments()
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
-    
-    global_is_first_run = True 
+
+    try:
+        symbol_modes = load_symbol_modes(selected_symbols, long_only_flag, short_only_flag)
+    except Exception as e:
+        print(f"[ERROR] Failed to load symbol modes: {e}")
+        return
+
+    global_is_first_run = True
     
     # Start a turn
     while True:
@@ -35,19 +82,18 @@ def main():
 
         for i, symbol in enumerate(selected_symbols):
 
-            current_override_signal = None
-            if global_is_first_run and i == 0:
-                current_override_signal = override_signal 
-
+            current_override_signal = override_signal if global_is_first_run and i == 0 else None
             initiated_counts = load_initiated_orders()
+
+            mode = symbol_modes.get(symbol, {"long_only": False, "short_only": False})
 
             run_analysis_for_symbol(
                 selected_symbols=selected_symbols,
                 symbol=symbol,
                 is_first_run=global_is_first_run,
                 override_signal=current_override_signal,
-                long_only=long_only,
-                short_only=short_only,
+                long_only=mode["long_only"],
+                short_only=mode["short_only"],
                 initiated_counts=initiated_counts
             )
 

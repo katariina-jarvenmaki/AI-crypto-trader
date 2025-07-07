@@ -28,11 +28,23 @@ from scripts.filter_initiated_orders import filter_initiated_orders
 from integrations.bybit_api_client import client as bybit_client, set_stop_loss_and_trailing_stop, parse_percent, get_bybit_symbol_info
 import pandas as pd
 import json
+from configs.binance_config import SUPPORTED_SYMBOLS
+from scripts.unsupported_symbol_handler import handle_unsupported_symbol
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
 
+    # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
+    if symbol.endswith("USDC"):
+        return
+
     print(f"\n🔍 Processing symbol: {symbol}")
+    symbol = symbol.replace("USDT", "USDC")
+
+    # ✅ Check if symbol is unsupported and handle it
+    if symbol not in SUPPORTED_SYMBOLS:
+        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols)
+        return
 
     # Get the signals for the symbols
     signal_info = get_signal(
