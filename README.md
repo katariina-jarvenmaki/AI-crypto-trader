@@ -58,27 +58,21 @@ Run the app on default platform (Binance) with default coinpair (BTCUSDC) and au
 python3 main.py
 ```
 
-Run the app on specified platform with default coinpair (BTCUSDC) and automatic market state detection
+Run the app on specified platform with automatic coinpair selection and automatic market state detection
 ```bash
 python3 main.py binance
 ```
 
-Run the app on specified coinpair and automatic market state detection
+Force the buy / sell -signal to start buying / selling right away (it does it only for first coinpair "BTCUSDT" and only on first round):
 ```bash
-python3 main.py binance ETHUSDC
-python3 main.py binance BTCUSDC ETHUSDC SOLUSDC XRPUSDC ADAUSDC HBARUSDC
+python3 main.py buy
+python3 main.py sell
 ```
 
-Force the buy / sell -signal to start buying / selling right away (it does it only for first coinpair and only on first round):
+Restrict to long-only or short-only (Doesn't affect force the buy / sell or meme trades):
 ```bash
-python3 main.py ETHUSDC buy
-python3 main.py ETHUSDC sell
-```
-
-Restrict to long-only or short-only (Doesn't accect force the buy / sell):
-```bash
-python3 main.py ETHUSDC long-only
-python3 main.py ETHUSDC short-only
+python3 main.py long-only
+python3 main.py short-only
 ```
 
 To run Symbol data fetchers manually:
