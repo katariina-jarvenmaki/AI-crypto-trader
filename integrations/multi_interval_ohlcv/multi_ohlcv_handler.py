@@ -103,6 +103,13 @@ def save_fetch_log_with_data(symbol, intervals, limit, start_time, end_time, sou
             continue
 
         analysis = analyze_ohlcv(df)
+
+        try:
+            last_close = float(df["close"].iloc[-1])
+            analysis["close"] = round(last_close, 4)
+        except Exception:
+            analysis["close"] = None
+
         log_entry["data_preview"][interval] = analysis
 
     with open(log_path, "a") as f:
