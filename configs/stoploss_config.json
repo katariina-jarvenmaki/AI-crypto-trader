@@ -1,53 +1,111 @@
 {
   "default": {
-    "set_stoploss_percent": "0.16%",
-    "full_stoploss_percent": "0.15%",
-    "trailing_stoploss_percent": "0.005%",
-    "min_stop_loss_diff_percent": "0.001%"
+    "long": {
+      "set_stoploss_percent": "0.35%",
+      "full_stoploss_percent": "0.15%",
+      "trailing_stoploss_percent": "0.005%",
+      "min_stop_loss_diff_percent": "0.001%"
+    },
+    "short": {
+      "set_stoploss_percent": "0.35%",
+      "full_stoploss_percent": "0.15%",
+      "trailing_stoploss_percent": "0.005%",
+      "min_stop_loss_diff_percent": "0.001%"
+    }
   },
   "BTCUSDT": {
-    "trailing_stoploss_percent": "0.005%"
+    "short": {
+      "set_stoploss_percent": "0.16%"
+    }
   },
   "ETHUSDT": {
-    "trailing_stoploss_percent": "0.005%"
+    "short": {
+      "set_stoploss_percent": "0.16%"
+    }
   },
   "SOLUSDT": {
-    "trailing_stoploss_percent": "0.005%"
+    "short": {
+      "set_stoploss_percent": "0.16%"
+    }
   },
   "XRPUSDT": {
-    "_comment": "Value specified 2.6.2025",
-    "trailing_stoploss_percent": "0.0019%"
+    "long": {
+      "_comment": "Value specified 2.6.2025",
+      "trailing_stoploss_percent": "0.0019%"
+    },
+    "short": {
+      "_comment": "Value specified 2.6.2025",
+      "trailing_stoploss_percent": "0.0019%"
+    }
   },
-  "ADAUSDT": {
-    "_comment": "Value specified 3.6.2025",
-    "trailing_stoploss_percent": "0.0019%"
-  },
-  "HBARUSDT": {
-    "trailing_stoploss_percent": "0.005%"
+  "ADAUSDT":  {
+    "long": {
+      "_comment": "Value specified 2.6.2025",
+      "trailing_stoploss_percent": "0.0019%"
+    },
+    "short": {
+      "_comment": "Value specified 2.6.2025",
+      "trailing_stoploss_percent": "0.0019%"
+    }
   },
   "ALUUSDT": {
-    "_comment": "Value specified 9.7.2025",
-    "set_stoploss_percent": "0.17%",
-    "full_stoploss_percent": "0.16%"
+    "long": {
+      "_comment": "Value specified 9.7.2025",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 9.7.2025",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
   },
   "BANABAS31USDT": {
-    "_comment": "Value specified 9.7.2025, will need more specification",
-    "set_stoploss_percent": "0.17%",
-    "full_stoploss_percent": "0.16%"
+    "long": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
   },
   "MELANIAUSDT": {
-    "_comment": "Value specified 9.7.2025, will need more specification",
-    "set_stoploss_percent": "0.17%",
-    "full_stoploss_percent": "0.16%"
+    "long": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
   },
   "SOLOUSDT": {
-    "_comment": "Value specified 9.7.2025, will need more specification",
-    "set_stoploss_percent": "0.17%",
-    "full_stoploss_percent": "0.16%"
+    "long": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 9.7.2025, will need more specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
   },
   "TUTUSDT": {
-    "_comment": "Value specified 9.7.2025, may need more specification?",
-    "set_stoploss_percent": "0.18%",
-    "full_stoploss_percent": "0.17%"
+    "long": {
+      "_comment": "Value specified 9.7.2025, may need more specification?",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 9.7.2025, may need more specification?",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
   }
 }

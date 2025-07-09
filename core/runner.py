@@ -434,7 +434,7 @@ def stop_loss_checker(positions):
                     continue
 
                 try:
-                    sl_values = get_stop_loss_values(symbol)
+                    sl_values = get_stop_loss_values(symbol, side)
 
                     process_stop_loss_logic(
                         symbol=symbol,

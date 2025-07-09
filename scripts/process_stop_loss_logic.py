@@ -19,20 +19,29 @@ def to_percent_str(f):
 def to_str(f):
     return f"{f * 100:.4f}" 
 
-def get_stop_loss_values(symbol):
+def get_stop_loss_values(symbol, side):
     config = stop_loss_config.get(symbol, {})
     default = stop_loss_config["default"]
 
-    set_sl = parsed(config.get("set_stoploss_percent", default["set_stoploss_percent"]))
-    full_sl = parsed(config.get("full_stoploss_percent", default["full_stoploss_percent"]))
-    trailing_sl = parsed(config.get("trailing_stoploss_percent", default["trailing_stoploss_percent"]))
-    threshold = parsed(config.get("min_stop_loss_diff_percent", default.get("min_stop_loss_diff_percent", "0.001%")))
+    # long tai short konfiguraatio haetaan sivun mukaan
+    direction = "long" if side == "Buy" else "short"
+
+    symbol_config = config.get(direction, {})
+    default_config = default.get(direction, {})
+
+    def get_val(key):
+        return parsed(symbol_config.get(key, default_config.get(key, "0.001%")))
+
+    set_sl = get_val("set_stoploss_percent")
+    full_sl = get_val("full_stoploss_percent")
+    trailing_sl = get_val("trailing_stoploss_percent")
+    threshold = get_val("min_stop_loss_diff_percent")
 
     return {
         "set_stoploss_percent": set_sl,
         "full_stoploss_percent": full_sl,
         "trailing_stoploss_percent": trailing_sl,
-        "min_stop_loss_diff_percent": threshold,  # ← tämä lisättiin
+        "min_stop_loss_diff_percent": threshold,
         "formatted": {
             "set": to_percent_str(set_sl),
             "full": to_percent_str(full_sl),

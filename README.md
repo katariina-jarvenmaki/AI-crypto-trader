@@ -6,7 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests
 ```
 
 **2. Make a credentials.py to configs-folder**
