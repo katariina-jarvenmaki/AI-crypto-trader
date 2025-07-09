@@ -83,6 +83,11 @@ cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
+To run History analyzer manually:
+```bash
+/usr/bin/python3 -m modules.history_analyzer.history_analyzer
+```
+
 **4. Testing**
 
 Test Binance-integration status

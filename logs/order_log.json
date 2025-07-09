@@ -1,468 +1,1076 @@
 {
-    "BTCUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-06T22:10:26.681966+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.001,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ],
-        "short": []
-    },
-    "ADAUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T13:33:46.639813+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 9.0,
-                "price": 0.5864,
-                "cost": 5.2776000000000005,
-                "leverage": 2,
-                "order_take_profit_price": 2.0524,
-                "order_stop_loss_price": 0.32252000000000003,
-                "mode": "momentum",
-                "interval": "5m",
-                "momentum_strength": "strong",
-                "reverse_strength": "none",
-                "volume_multiplier": 1.4000000000000001,
-                "price_change": "{'24h': 1.47, '18h': 0.2, '12h': -0.56, '6h': 0.12, '4h': 0.32, '3h': 0.15, '2h': -0.41, '1h': -0.15, '30min': 0.31}",
-                "market_state": "neutral_sideways",
-                "started_on": "2025-07-07T10:00:00"
+    "BTCUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T05:24:09.730725+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 2.81, '18h': 0.95, '12h': 0.74, '6h': -0.76, '4h': -0.57, '3h': -0.29, '2h': -0.21, '1h': -0.38, '30min': -0.3}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T02:00:00",
+                    "previous_market_state": "bear"
+                }
             },
-            {
-                "timestamp": "2025-07-07T16:41:19.852364+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 9.0,
-                "price": 0.5812,
-                "cost": 5.2308,
-                "leverage": 2,
-                "order_take_profit_price": 2.0342000000000002,
-                "order_stop_loss_price": 0.31966000000000006,
-                "mode": "log",
-                "interval": "3m",
-                "momentum_strength": "strong",
-                "reverse_strength": "weak",
-                "volume_multiplier": 1.4000000000000001,
-                "price_change": "{'24h': -0.73, '18h': -0.07, '12h': -0.6, '6h': -0.73, '4h': -1.09, '3h': -1.19, '2h': -1.21, '1h': -0.07, '30min': -0.07}",
-                "market_state": "neutral_sideways",
-                "started_on": "2025-07-07T11:00:00"
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:45:01.612423+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 2.06, '18h': 0.68, '12h': 0.98, '6h': 0.72, '4h': 0.12, '3h': 0.36, '2h': 0.41, '1h': 1.22, '30min': 0.74}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T13:00:00",
+                    "previous_market_state": "unknown"
+                }
             }
-        ],
-        "short": []
-    },
-    "PROMUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.655796+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.7,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ]
-    },
-    "SNTUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.656485+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 410.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ]
-    },
-    "TUTUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.664636+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 82.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:40:40.353420+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 3.18, '18h': 2.17, '12h': 1.25, '6h': -0.25, '4h': -0.55, '3h': -0.48, '2h': -0.36, '1h': -0.3, '30min': -0.24}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "bear"
+                }
             },
-            {
-                "timestamp": "2025-07-07T16:08:00.702255+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 81.0,
-                "price": 0.0619,
-                "cost": 5.0139,
-                "leverage": 2,
-                "order_take_profit_price": -0.09284999999999999,
-                "order_stop_loss_price": 0.08975499999999999,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:36:54.892777+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 1.97, '18h': 0.29, '12h': 0.71, '6h': 0.34, '4h': -0.13, '3h': 0.04, '2h': 0.14, '1h': 0.78, '30min': 0.48}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T13:00:00",
+                    "previous_market_state": "unknown"
+                }
             }
-        ]
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T05:29:01.115888+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 2.82, '18h': 0.94, '12h': 0.72, '6h': -0.79, '4h': -0.74, '3h': -0.34, '2h': -0.18, '1h': -0.39, '30min': -0.23}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T02:00:00",
+                    "previous_market_state": "bear"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:49:55.619287+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 2.43, '18h': 0.74, '12h': 1.21, '6h': 0.94, '4h': 0.35, '3h': 0.44, '2h': 0.63, '1h': 1.22, '30min': 0.96}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T13:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:43:14.055938+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': -1.95, '18h': -1.81, '12h': -1.51, '6h': -1.26, '4h': -0.56, '3h': -0.68, '2h': -0.72, '1h': -0.41}",
+                    "market_state": "bear",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-02T23:07:35.841820+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 3.93, '18h': 3.79, '12h': 2.05, '6h': 1.46, '4h': 0.12, '3h': 0.1, '2h': 0.38, '1h': 0.12, '30min': 0.08}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T20:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        },
+        "15m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T12:27:57.157429+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 2.21, '18h': 1.52, '12h': 0.56, '6h': 1.1, '4h': 0.67, '3h': 0.5, '2h': 0.59, '1h': 0.39, '30min': 0.51}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T09:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T12:47:35.246459+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 2.42, '18h': 1.53, '12h': 0.66, '6h': 1.41, '4h': 0.8, '3h': 0.64, '2h': 0.85, '1h': 0.73, '30min': 0.28}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T09:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T00:56:14.037219+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 3.56, '18h': 3.17, '12h': 1.75, '6h': 0.72, '4h': 0.35, '3h': -0.03, '2h': -0.16, '1h': 0.34, '30min': 0.27}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T21:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        }
     },
-    "TAOUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.665564+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 0.016,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+    "ETHUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-07T16:20:05.707166+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.3,
+                    "price_change": "{'24h': 0.58, '18h': 0.18, '12h': -0.7, '6h': -1.15, '4h': -1.3, '3h': -0.87, '2h': -0.58, '1h': -0.35, '30min': -0.2}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-07T09:00:00",
+                    "previous_market_state": "unknown"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:32:22.187546+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 6.41, '18h': 0.78, '12h': 0.95, '6h': 0.12, '4h': -0.12, '3h': 0.42, '2h': 0.64, '1h': 0.65, '30min': 0.43}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T13:00:00",
+                    "previous_market_state": "bull"
+                }
             }
-        ]
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T05:34:19.699684+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.04, '18h': 4.35, '12h': 3.77, '6h': -1.6, '4h': -1.88, '3h': -0.89, '2h': -0.45, '1h': -0.85, '30min': -0.65}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:50:15.615082+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 7.51, '18h': 1.79, '12h': 2.12, '6h': 1.28, '4h': 1.25, '3h': 1.3, '2h': 1.48, '1h': 1.92, '30min': 1.65}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-02T14:53:54.713285+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -0.23, '18h': 0.45, '12h': 1.6, '6h': -0.03, '4h': -0.15, '3h': -0.25, '2h': -0.22, '1h': -0.41, '30min': -0.48}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T03:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:42:08.042788+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 6.82, '18h': 1.4, '12h': 1.54, '6h': 0.77, '4h': 0.15, '3h': 0.99, '2h': 0.96, '1h': 1.55, '30min': 1.09}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "15m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T08:22:27.532134+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.3,
+                    "price_change": "{'24h': -1.69, '18h': -0.32, '12h': -0.94, '6h': -1.32, '4h': -1.55, '3h': -1.41, '2h': -1.22, '1h': -0.96}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-06-30T06:00:00"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T01:01:21.323557+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 7.97, '18h': 7.16, '12h': 6.37, '6h': 3.82, '4h': 1.13, '3h': 0.76, '2h': 0.04, '1h': 0.45, '30min': 0.39}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T22:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:02:06.819816+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -3.45, '18h': -3.42, '12h': -2.24, '6h': -1.3, '4h': -0.68, '3h': -0.57, '2h': -0.47, '1h': -0.9}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T01:46:19.594767+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 7.77, '18h': 6.65, '12h': 5.96, '6h': 1.45, '4h': 0.66, '3h': 0.61, '2h': -0.12, '1h': 0.17, '30min': 0.12}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T22:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:45:20.969605+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 6.92, '18h': 1.58, '12h': 1.64, '6h': 0.91, '4h': 0.93, '3h': 1.24, '2h': 1.07, '1h': 2.02, '30min': 1.34}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:37:13.372867+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 6.47, '18h': 1.04, '12h': 1.14, '6h': 0.18, '4h': 0.08, '3h': 0.6, '2h': 0.73, '1h': 1.52, '30min': 0.7}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T00:56:30.216410+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.97, '18h': 6.94, '12h': 6.13, '6h': 3.99, '4h': 1.23, '3h': 0.61, '2h': -0.25, '1h': 0.32, '30min': 0.46}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T21:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        }
     },
-    "QNTUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.666537+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 0.1,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+    "HBARUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T11:57:31.453140+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.82, '18h': 6.7, '12h': 1.77, '6h': 2.52, '4h': 1.65, '3h': 0.45, '2h': -0.33, '1h': -0.66, '30min': -0.58}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T08:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-02T16:15:54.315989+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 0.82, '18h': 2.31, '12h': 2.63, '6h': 0.39, '4h': -0.23, '3h': 0.59, '2h': -0.14, '1h': 0.97, '30min': 0.99}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-02T07:00:00",
+                    "previous_market_state": "unknown"
+                }
             }
-        ]
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:22:25.689642+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.82, '18h': 6.02, '12h': 5.25, '6h': 0.26, '4h': 0.04, '3h': -0.35, '2h': -0.4, '1h': -0.97, '30min': -0.79}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "bull"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T10:57:26.960595+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.69, '18h': 8.37, '12h': 2.57, '6h': 2.73, '4h': 3.39, '3h': 2.58, '2h': 0.87, '1h': 0.43, '30min': 0.45}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T07:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:13:52.890011+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -6.12, '18h': -5.28, '12h': -4.66, '6h': -3.32, '4h': -2.29, '3h': -2.01, '2h': -1.53, '1h': -0.98}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T20:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T10:52:40.861842+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.64, '18h': 8.32, '12h': 2.52, '6h': 2.68, '4h': 3.34, '3h': 2.54, '2h': 0.82, '1h': 0.38, '30min': 0.41}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T07:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "1h": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:36:36.449692+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -5.1, '18h': -4.45, '12h': -3.26, '6h': -1.93, '4h': -1.18, '3h': -1.29, '2h': -0.83, '1h': -0.15}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T16:51:29.828245+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.8,
+                    "price_change": "{'24h': 9.28, '18h': 3.64, '12h': 3.57, '6h': 0.65, '4h': 0.37, '3h': 0.8, '2h': 1.3, '1h': 1.13, '30min': 1.32}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:31:45.733945+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -5.3, '18h': -4.58, '12h': -3.35, '6h': -2.06, '4h': -1.51, '3h': -1.5, '2h': -0.75, '1h': -0.03}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T11:32:59.408936+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.69, '18h': 8.08, '12h': 2.26, '6h': 3.6, '4h': 2.93, '3h': 1.25, '2h': 0.51, '1h': 0.38, '30min': 0.05}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T08:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "15m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:01:43.470368+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -5.97, '18h': -5.07, '12h': -4.57, '6h': -3.04, '4h': -1.81, '3h': -1.53, '2h': -1.62, '1h': -0.65}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T20:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T10:38:12.002880+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.39, '18h': 8.04, '12h': 2.86, '6h': 2.65, '4h': 2.55, '3h': 2.64, '2h': 0.88, '1h': 0.15, '30min': 0.36}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T07:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T17:05:51.010812+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 9.25, '18h': 2.68, '12h': 3.83, '6h': 0.79, '4h': 1.09, '3h': 1.29, '2h': 0.97, '1h': 1.33, '30min': 0.93}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T14:00:00",
+                    "previous_market_state": "bull"
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T17:01:06.736943+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 9.41, '18h': 3.14, '12h': 4.05, '6h': 1.03, '4h': 1.01, '3h': 0.99, '2h': 1.48, '1h': 1.27, '30min': 1.25}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T14:00:00",
+                    "previous_market_state": "bull"
+                }
+            }
+        }
     },
-    "YFIUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T13:34:54.667655+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 0.0021,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+    "XRPUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:06:59.055534+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 3.33, '18h': 2.7, '12h': 2.47, '6h': -0.61, '4h': -0.26, '3h': -0.66, '2h': -0.57, '1h': -0.23, '30min': -0.51}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-07T16:28:15.292641+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 0.65, '18h': 1.61, '12h': 1.05, '6h': 0.98, '4h': 0.81, '3h': 0.11, '2h': 0.46, '1h': 0.43, '30min': 0.54}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-07T13:00:00",
+                    "previous_market_state": "unknown"
+                }
             }
-        ],
-        "short": []
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:21:51.378154+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 3.1, '18h': 2.21, '12h': 2.37, '6h': -1.41, '4h': -1.0, '3h': -0.84, '2h': -0.6, '1h': -0.58, '30min': -0.57}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-07T13:17:26.459746+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 0.76, '18h': 0.32, '12h': 0.19, '6h': 0.74, '4h': 0.79, '3h': 0.94, '2h': 0.78, '1h': 0.69, '30min': 0.32}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-07T10:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-02T14:49:32.162889+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.3,
+                    "price_change": "{'24h': -0.91, '18h': -0.55, '12h': 0.29, '6h': -0.46, '4h': -0.73, '3h': -0.85, '2h': -0.39, '1h': -0.43, '30min': -0.38}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-02T05:00:00",
+                    "previous_market_state": "unknown"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T08:13:32.721721+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 3.51, '18h': 3.36, '12h': 0.0, '6h': 1.09, '4h': 1.07, '3h': 1.18, '2h': 1.05, '1h': 0.55, '30min': 0.35}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T05:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:05:53.448253+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -6.76, '18h': -3.41, '12h': -2.95, '6h': -2.17, '4h': -1.73, '3h': -1.53, '2h': -1.4, '1h': -0.78}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T18:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T14:08:26.462455+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 4.91, '18h': 1.47, '12h': 2.42, '6h': 1.55, '4h': 1.15, '3h': 0.88, '2h': 0.67, '1h': 0.31, '30min': 0.03}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T11:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "15m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:11:05.874193+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -6.63, '18h': -3.5, '12h': -3.01, '6h': -2.35, '4h': -2.04, '3h': -1.89, '2h': -1.54, '1h': -0.88}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T18:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T14:11:31.193494+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 4.95, '18h': 1.51, '12h': 2.46, '6h': 1.58, '4h': 1.19, '3h': 0.92, '2h': 0.71, '1h': 0.34, '30min': 0.07}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T11:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T15:02:11.919509+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 5.54, '18h': 2.03, '12h': 2.64, '6h': 1.31, '4h': 0.59, '3h': 0.84, '2h': 0.34, '1h': -0.62, '30min': 0.29}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T12:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T14:05:32.736127+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 5.33, '18h': 2.16, '12h': 2.9, '6h': 1.93, '4h': 1.44, '3h': 1.31, '2h': 1.26, '1h': 1.0, '30min': 0.58}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T11:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        }
     },
-    "LPTUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T16:10:10.967446+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.9,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+    "SOLUSDC": {
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:21:33.458507+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 4.13, '18h': 2.66, '12h': 2.39, '6h': -0.37, '4h': 0.1, '3h': -0.17, '2h': -0.52, '1h': -0.7, '30min': -0.64}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "bear"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-07T14:31:42.318424+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4000000000000001,
+                    "price_change": "{'24h': 3.95, '18h': 0.38, '12h': 1.07, '6h': 1.1, '4h': 1.11, '3h': 0.52, '2h': 0.65, '1h': 0.75, '30min': 0.58}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-07T11:00:00",
+                    "previous_market_state": "bear"
+                }
             }
-        ],
-        "short": [
-            {
-                "timestamp": "2025-07-07T13:34:54.668577+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.9,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+        },
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T17:29:37.882464+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.3,
+                    "price_change": "{'24h': 1.86, '18h': -0.91, '12h': 0.34, '6h': -2.08, '4h': -1.55, '3h': -1.2, '2h': -0.7, '1h': -0.94, '30min': -1.22}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-03T14:00:00",
+                    "previous_market_state": "bear"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-02T22:29:07.336200+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4000000000000001,
+                    "price_change": "{'24h': 4.83, '18h': 3.81, '12h': 2.67, '6h': 3.15, '4h': 1.54, '3h': 0.21, '2h': 0.2, '1h': 0.68, '30min': 0.45}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-02T19:00:00",
+                    "previous_market_state": "bear"
+                }
             }
-        ]
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-02T15:18:26.812097+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.3,
+                    "price_change": "{'24h': -0.47, '18h': 0.46, '12h': 0.29, '6h': -0.97, '4h': -1.4, '3h': -1.19, '2h': -0.92, '1h': -0.93, '30min': -0.55}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-02T06:00:00",
+                    "previous_market_state": "bear"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-07T14:30:13.220277+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4000000000000001,
+                    "price_change": "{'24h': 3.93, '18h': 0.37, '12h': 1.05, '6h': 1.09, '4h': 1.09, '3h': 0.51, '2h': 0.64, '1h': 0.74, '30min': 0.56}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-07T11:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        },
+        "15m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T14:14:25.166171+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -1.66, '18h': -5.67, '12h': -4.72, '6h': -2.45, '4h': -1.2, '3h': -1.03, '2h': -0.56, '1h': -0.51}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T08:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T08:42:01.750918+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 4.6, '18h': 4.66, '12h': 2.74, '6h': 2.46, '4h': 1.81, '3h': 2.51, '2h': 1.21, '1h': 1.26, '30min': 0.77}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T05:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:35:45.860653+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -7.09, '18h': -5.79, '12h': -2.58, '6h': -1.26, '4h': -0.92, '3h': -1.24, '2h': -1.25, '1h': -0.69}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T11:27:15.958941+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 4.2, '18h': 3.88, '12h': 1.58, '6h': 2.43, '4h': 1.29, '3h': 0.5, '2h': 0.22, '1h': 0.28, '30min': 0.15}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T06:00:00",
+                    "previous_market_state": "bear"
+                }
+            }
+        },
+        "1h": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T22:53:54.795274+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': -7.51, '18h': -5.49, '12h': -2.77, '6h': -1.64, '4h': -0.9, '3h': -1.64, '2h': -1.35, '1h': -0.05}",
+                    "market_state": "bear",
+                    "started_on": "2025-07-01T18:00:00",
+                    "previous_market_state": "unknown"
+                }
+            }
+        }
     },
-    "ETHUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T14:39:19.122762+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 0.01,
-                "price": 2559.2,
-                "cost": 25.592,
-                "leverage": 4,
-                "order_take_profit_price": 5758.2,
-                "order_stop_loss_price": 1983.3799999999999,
-                "mode": "momentum",
-                "interval": "5m",
-                "momentum_strength": "strong",
-                "reverse_strength": "weak",
-                "volume_multiplier": 1.3,
-                "price_change": "{'24h': 1.81, '18h': 0.35, '12h': -0.46, '6h': -0.56, '4h': -0.58, '3h': -0.96, '2h': -0.64, '1h': -0.15, '30min': 0.08}",
-                "market_state": "neutral_sideways",
-                "started_on": "2025-07-07T10:00:00"
+    "ADAUSDC": {
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T05:45:00.248393+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.76, '18h': 4.37, '12h': 3.06, '6h': -2.38, '4h': -1.7, '3h': -0.17, '2h': -0.8, '1h': -0.85, '30min': -0.48}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T01:00:00"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T08:42:37.384748+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 7.88, '18h': 6.71, '12h': 1.48, '6h': 2.45, '4h': 1.75, '3h': 2.27, '2h': 1.93, '1h': 1.29, '30min': 0.61}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T01:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
             }
-        ],
-        "short": []
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-07T15:31:55.485295+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4000000000000001,
+                    "price_change": "{'24h': 0.43, '18h': 0.09, '12h': -0.39, '6h': -0.73, '4h': -1.09, '3h': -0.92, '2h': -0.94, '1h': -1.02, '30min': -0.87}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-07T11:00:00",
+                    "previous_market_state": "unknown"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T09:25:54.146004+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.95, '18h': 8.04, '12h': 1.28, '6h': 3.09, '4h': 3.25, '3h': 2.69, '2h': 2.36, '1h': 1.39, '30min': 0.28}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T06:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "30m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:11:24.101686+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -8.01, '18h': -5.65, '12h': -4.48, '6h': -2.64, '4h': -1.86, '3h': -1.37, '2h': -1.14, '1h': -0.61}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T10:57:08.630900+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 9.4, '18h': 8.48, '12h': 2.18, '6h': 3.29, '4h': 3.73, '3h': 3.17, '2h': 1.16, '1h': 0.58, '30min': 0.89}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T07:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "15m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T15:44:02.648893+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -1.43, '18h': -3.78, '12h': -3.43, '6h': -1.92, '4h': -1.95, '3h': -1.85, '2h': -1.62, '1h': -1.39}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T12:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T11:01:56.369842+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 9.09, '18h': 8.24, '12h': 2.18, '6h': 3.59, '4h': 3.38, '3h': 2.84, '2h': 1.37, '1h': 0.58, '30min': 0.36}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T08:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-03T02:22:08.480035+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 8.77, '18h': 6.04, '12h': 4.59, '6h': -1.72, '4h': -0.91, '3h': -1.13, '2h': -1.23, '1h': -0.86, '30min': -0.84}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-02T23:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T10:37:54.189616+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 9.09, '18h': 8.02, '12h': 2.36, '6h': 3.37, '4h': 3.2, '3h': 2.86, '2h': 1.52, '1h': 0.4, '30min': 0.7}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T07:00:00",
+                    "previous_market_state": "bull"
+                }
+            }
+        },
+        "1h": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-01T23:07:45.781990+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': -8.01, '18h': -5.65, '12h': -4.48, '6h': -2.64, '4h': -1.86, '3h': -1.37, '2h': -1.14, '1h': -0.61}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-01T19:00:00",
+                    "previous_market_state": "bear"
+                }
+            },
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T12:48:44.158881+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 8.65, '18h': 4.69, '12h': 1.66, '6h': 3.06, '4h': 0.6, '3h': -0.16, '2h': -0.59, '1h': -0.35, '30min': -0.18}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T09:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T12:29:09.575610+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 8.85, '18h': 5.32, '12h': 1.66, '6h': 3.15, '4h': 1.39, '3h': 0.15, '2h': 0.0, '1h': -0.46, '30min': 0.25}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T09:00:00",
+                    "previous_market_state": "neutral_sideways"
+                }
+            }
+        }
     },
-    "SOLOUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T16:07:54.149019+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 16.0,
-                "price": 0.3282,
-                "cost": 5.2512,
-                "leverage": 2,
-                "order_take_profit_price": -0.49229999999999996,
-                "order_stop_loss_price": 0.47589,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
+    "GASUSDT": {
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-03T12:00:56.266217+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': None, '18h': None, '12h': None, '6h': -0.35, '4h': -0.97, '3h': -1.2, '2h': -0.53, '1h': -0.53, '30min': -0.02}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-03T09:00:00"
+                }
             }
-        ]
-    },
-    "PAXGUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T16:07:57.630385+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 0.002,
-                "price": 3317.94,
-                "cost": 6.63588,
-                "leverage": 2,
-                "order_take_profit_price": -4976.91,
-                "order_stop_loss_price": 4811.013,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ]
-    },
-    "INITUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T16:10:10.965960+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 13.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ],
-        "short": []
-    },
-    "BERAUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T16:23:36.543720+03:00",
-                "platform": "ByBit",
-                "status": "completed",
-                "qty": 3.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ],
-        "short": []
-    },
-    "MAGICUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T16:30:52.054716+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 42.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ]
-    },
-    "JTOUSDT": {
-        "long": [],
-        "short": [
-            {
-                "timestamp": "2025-07-07T16:43:48.564988+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 2.7,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ]
-    },
-    "SIRENUSDT": {
-        "long": [
-            {
-                "timestamp": "2025-07-07T16:52:20.771245+03:00",
-                "platform": "ByBit",
-                "status": "initiated",
-                "qty": 108.0,
-                "price": 0.0,
-                "cost": 0.0,
-                "leverage": 0,
-                "order_take_profit_price": null,
-                "order_stop_loss_price": null,
-                "mode": "default",
-                "interval": null,
-                "momentum_strength": null,
-                "reverse_strength": null,
-                "volume_multiplier": null,
-                "price_change": null,
-                "market_state": null,
-                "started_on": null
-            }
-        ],
-        "short": []
+        }
     }
 }
