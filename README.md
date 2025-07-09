@@ -75,7 +75,7 @@ python3 main.py long-only
 python3 main.py short-only
 ```
 
-To run Symbol data fetchers manually:
+To run Symbol data fetchers manually (supposted to be ran by cron):
 ```bash
 cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
@@ -83,7 +83,12 @@ cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
-To run History analyzer manually:
+To run Price Data Fetcher manually (supposted to run with Symbol Data Fetchers):
+```bash
+/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
+```
+
+To run History analyzer manually  (supposted to run with Symbol Data Fetchers):
 ```bash
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 ```
