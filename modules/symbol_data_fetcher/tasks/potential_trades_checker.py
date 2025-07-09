@@ -12,7 +12,8 @@ from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
     OHLCV_FETCH_LIMIT,
     MAX_APPEND_RETRIES,
     TASK_CONFIG,
-    SUPPORTED_SYMBOLS as ALL_SYMBOLS
+    SUPPORTED_SYMBOLS as ALL_SYMBOLS,
+    OHLCV_MAX_AGE_MINUTES
 )
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
 from modules.symbol_data_fetcher.utils import (
@@ -23,7 +24,6 @@ from modules.symbol_data_fetcher.utils import (
 
 # Use configuration according to the "potential" task
 CONFIG = TASK_CONFIG["potential"]
-MAX_AGE_MINUTES = CONFIG.get("cooldown_minutes", 3) * 60
 RETRY_DELAY = CONFIG.get("retry_delay", 60)
 TEMP_LOG_PATH = CONFIG.get("temp_log", "temporary_log_potential.jsonl")
 
@@ -31,6 +31,7 @@ def get_symbols_to_scan():
     return [s for s in ALL_SYMBOLS if s not in MAIN_SYMBOLS]
 
 def find_recent_log_entry(symbol: str):
+    
     if not OHLCV_LOG_PATH.exists():
         return None
 
@@ -64,7 +65,7 @@ def find_recent_log_entry(symbol: str):
 
     return latest_entry
 
-def needs_update(symbol: str, max_age_minutes: int = MAX_AGE_MINUTES) -> bool:
+def needs_update(symbol: str, max_age_minutes: int = OHLCV_MAX_AGE_MINUTES) -> bool:
     last_fetch = last_fetch_time(symbol)
     if last_fetch is None:
         return True
@@ -81,26 +82,33 @@ def print_and_save_recommendations():
         return
 
     print("\n🧠 Verbal interpretation:")
-    for sym, data in sorted(scores.items(), key=lambda x: -abs(x[1]["score"])):
-        score = data["score"]
-        bias = "LONG" if score > 0 else "SHORT"
-        print(f" - {sym}: {bias} bias (score: {score:.2f})")
 
-    print("\n📈 💚  LONG RECOMMENDATIONS (most potential first):")
-    print(" ".join(long_syms))
+    for sym in long_syms:
+        score = scores[sym]["score"]
+        print(f" - {sym}: LONG bias (score: {score:.2f})")
 
-    print("\n📉 ❤️  SHORT RECOMMENDATIONS (most potential first):")
-    print(" ".join(short_syms))
+    for sym in short_syms:
+        score = scores[sym]["score"]
+        print(f" - {sym}: SHORT bias (score: {score:.2f})")
+
+    if long_syms:
+        print("\n📈 💚  LONG RECOMMENDATIONS (most potential first):")
+        print(" ".join(long_syms))
+
+    if short_syms:
+        print("\n📉 ❤️  SHORT RECOMMENDATIONS (most potential first):")
+        print(" ".join(short_syms))
 
     # Save analysis log if implemented elsewhere
     from modules.symbol_data_fetcher.analysis_summary import save_analysis_log
     save_analysis_log(scores)
 
 def run_potential_trades_checker():
+
     symbols_to_process = get_symbols_to_scan()
     temporary_path = prepare_temporary_log(TEMP_LOG_PATH)
 
-    print(f"🔍 Scanning {len(symbols_to_process)} symbols...")
+    print(f"🔍 Scanning {len(symbols_to_process)} symbols at {datetime.now(LOCAL_TIMEZONE)}")
 
     for symbol in symbols_to_process:
         print(f"\n🔁 Checking symbol: {symbol}")
@@ -114,8 +122,8 @@ def run_potential_trades_checker():
                 log_path=temporary_path
             )
         else:
-            hours = MAX_AGE_MINUTES // 60
-            minutes = MAX_AGE_MINUTES % 60
+            hours = OHLCV_MAX_AGE_MINUTES // 60
+            minutes = OHLCV_MAX_AGE_MINUTES % 60
             age_str = f"{hours}h {minutes}min" if hours else f"{minutes}min"
             print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
 

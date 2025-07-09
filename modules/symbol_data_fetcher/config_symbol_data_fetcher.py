@@ -348,7 +348,7 @@ SUPPORTED_SYMBOLS = [
     "OMNIUSDT", 
     "MERLUSDT", 
     "MEWUSDT", 
-    # "MELANIAUSDT", -> disabled cause it has too big fees with general stop loss settings
+    "MELANIAUSDT",
     "BRETTUSDT", 
     "SAFEUSDT", 
     "REZUSDT", 
@@ -446,7 +446,7 @@ SUPPORTED_SYMBOLS = [
     "COOKUSDT", 
     "THEUSDT", 
     "PENGUUSDT", 
-    # "SOLOUSDT", -> disabled cause it has too big fees with general stop loss settings
+    "SOLOUSDT",
     # "1000TOSHIUSDT", -> not supported by exchanges 3.7.2025 
     "MOVEUSDT", 
     "XIONUSDT", 
@@ -483,7 +483,7 @@ SUPPORTED_SYMBOLS = [
     "SIRENUSDT", 
     "PARTIUSDT", 
     "WALUSDT", 
-    "BANANAS31USDT", 
+    "BANANAS31USDT",
     "GUNUSDT", 
     "BABYUSDT", 
     "XAUTUSDT", 

@@ -52,18 +52,22 @@ def save_analysis_log(symbol_scores):
     )
 
     # 🥇 Top-N long
-    top_long = long_syms[:TOP_N_LONG]
-    if TOP_N_EXTRA_TIES and len(long_syms) > TOP_N_LONG:
-        cutoff_score = long_syms[TOP_N_LONG - 1][1]
-        extra = [x for x in long_syms[TOP_N_LONG:] if x[1] == cutoff_score]
-        top_long += extra
+    top_long = []
+    if TOP_N_LONG > 0:
+        top_long = long_syms[:TOP_N_LONG]
+        if TOP_N_EXTRA_TIES and len(long_syms) > TOP_N_LONG:
+            cutoff_score = long_syms[TOP_N_LONG - 1][1]
+            extra = [x for x in long_syms[TOP_N_LONG:] if x[1] == cutoff_score]
+            top_long += extra
 
     # 🥇 Top-N short
-    top_short = short_syms[:TOP_N_SHORT]
-    if TOP_N_EXTRA_TIES and len(short_syms) > TOP_N_SHORT:
-        cutoff_score = short_syms[TOP_N_SHORT - 1][1]
-        extra = [x for x in short_syms[TOP_N_SHORT:] if x[1] == cutoff_score]
-        top_short += extra
+    top_short = []
+    if TOP_N_SHORT > 0:
+        top_short = short_syms[:TOP_N_SHORT]
+        if TOP_N_EXTRA_TIES and len(short_syms) > TOP_N_SHORT:
+            cutoff_score = short_syms[TOP_N_SHORT - 1][1]
+            extra = [x for x in short_syms[TOP_N_SHORT:] if x[1] == cutoff_score]
+            top_short += extra
 
     result = {
         "timestamp": now.isoformat(),
@@ -128,8 +132,11 @@ def analyze_all_symbols():
 
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0]
-    short_symbols = [s for s, data in sorted_symbols if data["score"] < 0]
+    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0 and s not in MAIN_SYMBOLS]
+    short_symbols = sorted(
+        [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in MAIN_SYMBOLS],
+        key=lambda s: symbol_scores[s]["score"]
+    )
     print(f"Long symbols: {long_symbols}")
     print(f"Short symbols: {short_symbols}")
 
