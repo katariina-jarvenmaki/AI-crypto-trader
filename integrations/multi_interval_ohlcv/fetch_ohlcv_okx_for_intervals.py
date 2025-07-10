@@ -50,7 +50,7 @@ def fetch_ohlcv_okx(symbol, intervals=None, limit=None, start_time=None, end_tim
 
             # ✅ Validate API response
             if data.get("code") != "0":
-                print(f"❌ OKX API error for {symbol} @ {interval}: {data.get('msg')}")
+                # print(f"❌ OKX API error for {symbol} @ {interval}: {data.get('msg')}")
                 result[interval] = pd.DataFrame()
                 continue
 

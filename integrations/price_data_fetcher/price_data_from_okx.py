@@ -16,11 +16,17 @@ def fetch_from_okx(symbol):
     url = f"https://www.okx.com/api/v5/market/ticker?instId={symbol}"
     r = requests.get(url)
     data = r.json()
+
     if data['code'] == '0' and data.get("data"):
         t = data['data'][0]
+
+        last = float(t["last"])
+        open_price = float(t["open24h"])
+        price_change_percent = ((last - open_price) / open_price * 100) if open_price else 0.0
+
         return {
-            "lastPrice": float(t["last"]),
-            "priceChangePercent": float(t.get("chg", 0.0)),  # suoja virheiltä
+            "lastPrice": last,
+            "priceChangePercent": round(price_change_percent, 2),
             "highPrice": float(t["high24h"]),
             "lowPrice": float(t["low24h"]),
             "volume": float(t["vol24h"]),

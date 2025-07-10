@@ -1,11 +1,7 @@
 # Price data fetcher
 
-## Usage
+To run Price Data Fetcher manually (supposted to run with Symbol Data Fetchers through cron):
+
 ```bash
-fetcher = ExchangeDataFetcher(
-    symbol="ETH-USDT", 
-    order=["okx", "binance", "kucoin", "bybit"]
-)
-data = fetcher.fetch()
-print(data)
+/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
 ```

@@ -41,9 +41,14 @@ crontab -e
 
 **Add these Symbol data fetching lines to the cron**
 ```bash
-0 3,9,15,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
+0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
 */30 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron/temporary_log_top_symbols_data_fetcher_cron.log 2>&1
 */5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
+```
+
+**Add these Price data fetching lines to the cron**
+```bash
+*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> logs/cron/temporary_log_price_data_fetcher_cron.log 2>&1
 ```
 
 **Check cron log**
@@ -118,6 +123,11 @@ python3 -m tests.price_change_backtest
 Test log momentum signal limits
 ```bash
 python3 -m tests.test_rsi_deviation_signal
+```
+
+Test multi ohlcv handler manually:
+```bash
+python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
 ```
 
 ##  Tested with
