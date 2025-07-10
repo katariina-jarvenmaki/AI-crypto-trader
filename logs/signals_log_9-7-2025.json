@@ -104,6 +104,21 @@
                     "previous_market_state": "unknown"
                 }
             }
+        },
+        "4h": {
+            "sell": {
+                "log": {
+                    "time": "2025-07-09T23:07:39.862159+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 5.7, '18h': 5.58, '12h': 4.95, '6h': 3.6, '4h': 3.74, '3h': 3.35, '2h': 1.48, '1h': 1.14, '30min': -0.33}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-09T20:00:00",
+                    "previous_market_state": "bull"
+                }
+            }
         }
     },
     "HBARUSDC": {
