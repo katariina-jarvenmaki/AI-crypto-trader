@@ -17,7 +17,6 @@ from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
 )
 from modules.symbol_data_fetcher.utils import score_asset
 
-
 def save_analysis_log(symbol_scores):
     now = datetime.now(LOCAL_TIMEZONE)
     logs_dir = Path("logs")
@@ -105,7 +104,10 @@ def analyze_all_symbols():
                 if not (ts_str.startswith(today.isoformat()) or ts_str.startswith(yesterday.isoformat())):
                     continue
 
-                symbol = entry.get("symbol")
+                symbol = entry.get("symbol", "").upper()
+                if symbol in BLOCKED_SYMBOLS or symbol in MAIN_SYMBOLS:
+                    continue
+
                 data_preview = entry.get("data_preview")
                 timestamp_str = entry.get("timestamp")
 
@@ -138,7 +140,7 @@ def analyze_all_symbols():
         [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS],
         key=lambda s: symbol_scores[s]["score"]
     )
-    
+
     print(f"Long symbols: {long_symbols}")
     print(f"Short symbols: {short_symbols}")
 
