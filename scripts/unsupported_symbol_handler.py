@@ -4,9 +4,9 @@ from trade.execute_bybit_short_limit import execute_bybit_short_limit
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
 from scripts.trade_order_logger import log_trade
 
-# Muokattavat hintavaihtelurajat prosentteina (esim. 0.02 = 2 %)
-LONG_PRICE_OFFSET_PERCENT = -0.03
-SHORT_PRICE_OFFSET_PERCENT = 0.03
+# Muokattavat hintavaihtelurajat prosentteina (esim. 0.04 = 4 %)
+LONG_PRICE_OFFSET_PERCENT = -0.04
+SHORT_PRICE_OFFSET_PERCENT = 0.04
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
 

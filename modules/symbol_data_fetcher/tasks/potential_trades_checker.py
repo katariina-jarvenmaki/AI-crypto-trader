@@ -13,7 +13,8 @@ from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
     MAX_APPEND_RETRIES,
     TASK_CONFIG,
     SUPPORTED_SYMBOLS as ALL_SYMBOLS,
-    OHLCV_MAX_AGE_MINUTES
+    OHLCV_MAX_AGE_MINUTES,
+    BLOCKED_SYMBOLS
 )
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
 from modules.symbol_data_fetcher.utils import (
@@ -28,7 +29,10 @@ RETRY_DELAY = CONFIG.get("retry_delay", 60)
 TEMP_LOG_PATH = CONFIG.get("temp_log", "temporary_log_potential.jsonl")
 
 def get_symbols_to_scan():
-    return [s for s in ALL_SYMBOLS if s not in MAIN_SYMBOLS]
+    return [
+        s for s in ALL_SYMBOLS
+        if s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS
+    ]
 
 def find_recent_log_entry(symbol: str):
     

@@ -189,6 +189,21 @@
                     "previous_market_state": "bear"
                 }
             }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-09T22:43:40.310329+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 2.35, '18h': 2.43, '12h': 2.48, '6h': 1.69, '4h': 2.24, '3h': 1.85, '2h': 2.12, '1h': 1.77, '30min': 1.32}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-09T19:00:00",
+                    "previous_market_state": "bull"
+                }
+            }
         }
     },
     "ETHUSDC": {

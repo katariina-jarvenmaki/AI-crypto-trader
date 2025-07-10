@@ -123,9 +123,9 @@ SUPPORTED_SYMBOLS = [
     "CRVUSDT", 
     "ENJUSDT", 
     "GRTUSDT", 
-    # "SHIB1000USDT", -> not supported by exchanges 3.7.2025 
+    "SHIB1000USDT"
     "YFIUSDT", 
-    # "BSVUSDT", -> not supported by exchanges 3.7.2025 
+    "BSVUSDT",
     "ICPUSDT", 
     "ALGOUSDT", 
     "DYDXUSDT", 
@@ -210,7 +210,7 @@ SUPPORTED_SYMBOLS = [
     "FXSUSDT", 
     "MINAUSDT", 
     "BOBAUSDT", 
-    # "1000XECUSDT", -> not supported by exchanges 3.7.2025 
+    "1000XECUSDT",
     "ACHUSDT", 
     "BALUSDT", 
     "MTLUSDT", 
@@ -218,7 +218,7 @@ SUPPORTED_SYMBOLS = [
     "XCNUSDT", 
     "FLMUSDT", 
     "CTCUSDT", 
-    # "LUNA2USDT", -> not supported by exchanges 3.7.2025  
+    "LUNA2USDT", 
     "OPUSDT", 
     "ONTUSDT", 
     "TRBUSDT", 
@@ -227,18 +227,18 @@ SUPPORTED_SYMBOLS = [
     "LDOUSDT", 
     "INJUSDT", 
     "STGUSDT", 
-    # "1000LUNCUSDT", -> not supported by exchanges 3.7.2025 
+    "1000LUNCUSDT",
     "ETHWUSDT", 
     "GMXUSDT", 
     "APTUSDT", 
     "TWTUSDT", 
     "MAGICUSDT", 
-    # "1000BONKUSDT", -> not supported by exchanges 3.7.2025  
+    "1000BONKUSDT",
     "HIGHUSDT", 
-    # "COREUSDT", -> not supported by exchanges 3.7.2025 
+    "COREUSDT",
     "BLURUSDT", 
     "CFXUSDT", 
-    # "1000FLOKIUSDT", -> not supported by exchanges 3.7.2025  
+    "1000FLOKIUSDT",
     "SSVUSDT", 
     "RPLUSDT", 
     "TUSDT", 
@@ -250,10 +250,10 @@ SUPPORTED_SYMBOLS = [
     "IDUSDT", 
     "JOEUSDT", 
     "SUIUSDT", 
-    # "1000PEPEUSDT", -> not supported by exchanges 3.7.2025 
+    "1000PEPEUSDT",
     "EDUUSDT", 
     "ORDIUSDT", 
-    # "10000LADYSUSDT", -> not supported by exchanges 3.7.2025 
+    "10000LADYSUSDT",
     "PHBUSDT", 
     "RADUSDT", 
     "UMAUSDT", 
@@ -294,12 +294,12 @@ SUPPORTED_SYMBOLS = [
     "CAKEUSDT", 
     "TOKENUSDT", 
     "BEAMUSDT", 
-    # "10000SATSUSDT", -> not supported by exchanges 3.7.2025 
+    "10000SATSUSDT",
     "AERGOUSDT", 
     "AGIUSDT", 
     "PYTHUSDT", 
     "GODSUSDT", 
-    # "1000RATSUSDT", -> not supported by exchanges 3.7.2025 
+    "1000RATSUSDT",
     "MOVRUSDT", 
     "SUPERUSDT", 
     "USTCUSDT", 
@@ -317,7 +317,7 @@ SUPPORTED_SYMBOLS = [
     "ONDOUSDT", 
     "ALTUSDT", 
     "TAOUSDT", 
-    # "10000WENUSDT", -> not supported by exchanges 3.7.2025 
+    "10000WENUSDT",
     "JUPUSDT", 
     "ZETAUSDT", 
     "CETUSUSDT", 
@@ -327,7 +327,7 @@ SUPPORTED_SYMBOLS = [
     "PIXELUSDT", 
     "STRKUSDT", 
     "MOBILEUSDT", 
-    # "1000TURBOUSDT", -> not supported by exchanges 3.7.2025 
+    "1000TURBOUSDT",
     "PORTALUSDT", 
     "SCAUSDT", 
     "AEVOUSDT", 
@@ -355,16 +355,16 @@ SUPPORTED_SYMBOLS = [
     "BBUSDT", 
     "VELOUSDT", 
     "NOTUSDT", 
-    # "1000000MOGUSDT", -> not supported by exchanges 3.7.2025 
+    "1000000MOGUSDT",
     "DRIFTUSDT", 
     "PHAUSDT", 
-    # "RAYDIUMUSDT", -> not supported by exchanges 3.7.2025 
+    "RAYDIUMUSDT",
     "GRIFFAINUSDT", 
-    # "DOGUSDT", -> not supported by exchanges 3.7.2025 
+    "DOGUSDT",
     "TRUMPUSDT", 
     "PONKEUSDT", 
     "TAIKOUSDT", 
-    # "1000000BABYDOGEUSDT", -> not supported by exchanges 3.7.2025 
+    "1000000BABYDOGEUSDT", 
     "IOUSDT", 
     "ATHUSDT", 
     "LISTAUSDT", 
@@ -372,7 +372,7 @@ SUPPORTED_SYMBOLS = [
     "AEROUSDT", 
     "AKTUSDT", 
     "AIXBTUSDT", 
-    # "10000QUBICUSDT", -> not supported by exchanges 3.7.2025 
+    "10000QUBICUSDT",
     "HIVEUSDT", 
     "BIOUSDT", 
     "MOCAUSDT", 
@@ -390,7 +390,7 @@ SUPPORTED_SYMBOLS = [
     "CGPTUSDT", 
     "SWARMSUSDT", 
     "EIGENUSDT", 
-    # "NEIROETHUSDT", -> not supported by exchanges 3.7.2025 
+    "NEIROETHUSDT",
     "DOGSUSDT", 
     "SYNUSDT", 
     "SUNDOGUSDT", 
@@ -404,9 +404,9 @@ SUPPORTED_SYMBOLS = [
     "CATIUSDT", 
     "HMSTRUSDT", 
     "1000CATUSDT", 
-    # "REXUSDT", -> not supported by exchanges 3.7.2025 
-    # "ALEOUSDT", -> not supported by exchanges 3.7.2025 
-    # "1000NEIROCTOUSDT", -> not supported by exchanges 3.7.2025 
+    "REXUSDT",
+    "ALEOUSDT",
+    "1000NEIROCTOUSDT", 
     "FBUSDT", 
     "COOKIEUSDT", 
     "FIDAUSDT", 
@@ -423,7 +423,7 @@ SUPPORTED_SYMBOLS = [
     "GOATUSDT", 
     "ALUUSDT", 
     "LUMIAUSDT", 
-    # "1000XUSDT", -> not supported by exchanges 3.7.2025 
+    "1000XUSDT",
     "TAIUSDT", 
     "VIRTUALUSDT", 
     "KAIAUSDT", 
@@ -442,12 +442,12 @@ SUPPORTED_SYMBOLS = [
     "CHILLGUYUSDT", 
     "ZRCUSDT", 
     "MEUSDT", 
-    # "1000000CHEEMSUSDT", -> not supported by exchanges 3.7.2025 
+    "1000000CHEEMSUSDT", 
     "COOKUSDT", 
     "THEUSDT", 
     "PENGUUSDT", 
     "SOLOUSDT",
-    # "1000TOSHIUSDT", -> not supported by exchanges 3.7.2025 
+    "1000TOSHIUSDT", 
     "MOVEUSDT", 
     "XIONUSDT", 
     "ACXUSDT", 
@@ -458,7 +458,7 @@ SUPPORTED_SYMBOLS = [
     "PLUMEUSDT", 
     "ANIMEUSDT", 
     "VINEUSDT", 
-    # "10000ELONUSDT", -> not supported by exchanges 3.7.2025 
+    "10000ELONUSDT", 
     "VVVUSDT", 
     "JELLYJELLYUSDT", 
     "BERAUSDT", 
@@ -491,7 +491,7 @@ SUPPORTED_SYMBOLS = [
     "INITUSDT", 
     "KERNELUSDT", 
     "WCTUSDT", 
-    # "BANKUSDT", -> not supported by exchanges 3.7.2025 
+    "BANKUSDT",
     "EPTUSDT", 
     "HYPERUSDT", 
     "OBTUSDT", 
@@ -499,10 +499,10 @@ SUPPORTED_SYMBOLS = [
     "PUNDIXUSDT", 
     "SXTUSDT", 
     "OBOLUSDT", 
-    # "SKYAIUSDT", -> not supported by exchanges 3.7.2025 
+    "SKYAIUSDT", 
     "SYRUPUSDT", 
     "SOONUSDT", 
-    # "BUSDT", -> not supported by exchanges 3.7.2025 
+    "BUSDT",
     "HUMAUSDT", 
     "AUSDT", 
     "SOPHUSDT", 
@@ -510,4 +510,39 @@ SUPPORTED_SYMBOLS = [
     "SQDUSDT", 
     "SPKUSDT", 
     "SAHARAUSDT"
+]
+
+BLOCKED_SYMBOLS =  [ 
+    "SHIB1000USDT", # -> not supported by exchanges 3.7.2025 
+    "BSVUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000XECUSDT", # -> not supported by exchanges 3.7.2025 
+    "LUNA2USDT", # -> not supported by exchanges 3.7.2025  
+    "1000LUNCUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000BONKUSDT", # -> not supported by exchanges 3.7.2025  
+    "COREUSDT", # -> not supported by exchanges 3.7.2025  
+    "1000FLOKIUSDT", # -> not supported by exchanges 3.7.2025  
+    "1000PEPEUSDT", # -> not supported by exchanges 3.7.2025 
+    "10000LADYSUSDT", # -> not supported by exchanges 3.7.2025 
+    "10000SATSUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000RATSUSDT", # -> not supported by exchanges 3.7.2025 
+    "10000WENUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000TURBOUSDT", # -> not supported by exchanges 3.7.2025  
+    "1000000MOGUSDT", # -> not supported by exchanges 3.7.2025 
+    "RAYDIUMUSDT", # -> not supported by exchanges 3.7.2025 
+    "DOGUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000000BABYDOGEUSDT", # -> not supported by exchanges 3.7.2025  
+    "10000QUBICUSDT", # -> not supported by exchanges 3.7.2025 
+    "NEIROETHUSDT", # -> not supported by exchanges 3.7.2025 
+    "REXUSDT", # -> not supported by exchanges 3.7.2025 
+    "ALEOUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000NEIROCTOUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000XUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000000CHEEMSUSDT", # -> not supported by exchanges 3.7.2025 
+    "1000TOSHIUSDT", # -> not supported by exchanges 3.7.2025 
+    "10000ELONUSDT", # -> not supported by exchanges 3.7.2025 
+    "BANANAS31USDT", # -> just too manipulated, with continious short liquidations
+    "BANKUSDT", # -> not supported by exchanges 3.7.2025 
+    "SKYAIUSDT", # -> not supported by exchanges 3.7.2025 
+    "BUSDT", # -> not supported by exchanges 3.7.2025
+    "ZBCNUSDT", # -> too high fees 
 ]
