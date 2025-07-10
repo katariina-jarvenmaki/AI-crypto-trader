@@ -13,6 +13,7 @@ from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
     LOCAL_TIMEZONE,
     ANALYSIS_MIN_INTERVAL_HOURS,
     TOP_N_EXTRA_TIES,
+    BLOCKED_SYMBOLS
 )
 from modules.symbol_data_fetcher.utils import score_asset
 
@@ -132,11 +133,12 @@ def analyze_all_symbols():
 
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0 and s not in MAIN_SYMBOLS]
+    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0 and s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS]
     short_symbols = sorted(
-        [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in MAIN_SYMBOLS],
+        [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS],
         key=lambda s: symbol_scores[s]["score"]
     )
+    
     print(f"Long symbols: {long_symbols}")
     print(f"Short symbols: {short_symbols}")
 
