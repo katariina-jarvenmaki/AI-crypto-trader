@@ -83,21 +83,11 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
     return now - last_time >= SIGNAL_TIMEOUT
 
 # Make a new record to log
-def update_signal_log(
-    symbol: str,
-    interval: str,
-    rsi: str,
-    signal_type: str,
-    now: datetime,
-    mode: str = "default",
-    market_state: str = None,
-    started_on: str = None,
-    momentum_strength: str = None,
-    status: str = None,
-    price_change: str = None,
-    volume_multiplier: float = None,
-    reverse_signal_info: dict = None
-):
+def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
+                      momentum_strength, reverse_signal_info, volume_multiplier,
+                      price_change, market_state, started_on,
+                      ohlcv_data=None, price_data=None):
+
     if now.tzinfo is None:
         now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
     else:
@@ -133,6 +123,10 @@ def update_signal_log(
         mode_entry["market_state"] = market_state
     if started_on:
         mode_entry["started_on"] = started_on
+    if ohlcv_data:
+        mode_entry["ohlcv_data"] = ohlcv_data
+    if price_data:
+        mode_entry["price_data"] = price_data
 
     # Tarkista previous_market_state muiden analyysien alta
     previous_state = None

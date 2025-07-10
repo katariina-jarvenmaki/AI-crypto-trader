@@ -28,8 +28,7 @@ class PriceDataFetcher:
                     if any([price, volume, high, low]):
                         data['source'] = exchange
                         return data
-                    else:
-                        # print(f"⚠️  {self.symbol} from {exchange} has empty or zero data, trying next exchange...")
+
             except Exception as e:
                 print(f"❌ Error fetching from {exchange}: {e}")
                 continue

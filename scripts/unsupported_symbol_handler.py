@@ -3,6 +3,7 @@ from trade.execute_bybit_long_limit import execute_bybit_long_limit
 from trade.execute_bybit_short_limit import execute_bybit_short_limit
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
 from scripts.trade_order_logger import log_trade
+import json
 
 # Muokattavat hintavaihtelurajat prosentteina (esim. 0.04 = 4 %)
 LONG_PRICE_OFFSET_PERCENT = -0.04
@@ -44,16 +45,24 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_short_limit(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
+            
+            # Hae viimeisimmät logitiedot
+            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", symbol)
+            price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", symbol)
+
+            # Lisää logitietoihin
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
-                direction="short",
+                direction="long",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
                 cost=bybit_result["cost"],
                 leverage=bybit_result["leverage"],
                 order_take_profit=bybit_result["tp_price"],
-                order_stop_loss=bybit_result["sl_price"]
+                order_stop_loss=bybit_result["sl_price"],
+                ohlcv_data=ohlcv_entry,
+                price_data=price_entry
             )
 
     elif long_only is True:
@@ -87,3 +96,16 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     else:
         print(f"⚠️  Skipping: No direction specified.")
         return None
+
+def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
+    latest_entry = None
+    with open(log_path, "r") as f:
+        for line in reversed(f.readlines()):
+            try:
+                entry = json.loads(line)
+                if entry.get("symbol") == symbol:
+                    latest_entry = entry
+                    break
+            except json.JSONDecodeError:
+                continue
+    return latest_entry

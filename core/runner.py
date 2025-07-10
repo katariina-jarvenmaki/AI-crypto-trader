@@ -29,7 +29,7 @@ from integrations.bybit_api_client import client as bybit_client, set_stop_loss_
 import pandas as pd
 import json
 from configs.binance_config import SUPPORTED_SYMBOLS
-from scripts.unsupported_symbol_handler import handle_unsupported_symbol
+from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_latest_log_entry_for_symbol
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
@@ -109,6 +109,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     # Do the signal logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
+    ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", symbol)
+    price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", symbol)
     if risk_strength in ("strong", "weak", "none") and (
         mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):
@@ -126,7 +128,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             volume_multiplier=volume_multiplier,
             price_change=selected_change_text,
             market_state=market_state,
-            started_on=started_on
+            started_on=started_on,
+            ohlcv_data=ohlcv_entry,
+            price_data=price_entry
         )
 
     # Continue only, if a risk_strength is strong AND reverse signal is not strong
@@ -183,7 +187,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 momentum_strength=risk_strength,
                 price_change=selected_change_text,
                 volume_multiplier=volume_multiplier,
-                reverse_signal_info=reverse_result
+                reverse_signal_info=reverse_result,
+                ohlcv_data=ohlcv_entry,
+                price_data=price_entry
             )
 
         # Bybit
@@ -207,7 +213,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 momentum_strength=risk_strength,
                 price_change=selected_change_text,
                 volume_multiplier=volume_multiplier,
-                reverse_signal_info=reverse_result
+                reverse_signal_info=reverse_result,
+                ohlcv_data=ohlcv_entry,
+                price_data=price_entry
             )
 
     #***** SHORTS *****#
@@ -235,7 +243,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 momentum_strength=risk_strength,
                 price_change=selected_change_text,
                 volume_multiplier=volume_multiplier,
-                reverse_signal_info=reverse_result
+                reverse_signal_info=reverse_result,
+                ohlcv_data=ohlcv_entry,
+                price_data=price_entry
             )
 
 import json

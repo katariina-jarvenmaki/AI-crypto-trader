@@ -3,6 +3,7 @@
 import requests
 
 def format_symbol_for_kucoin(symbol: str) -> str:
+    
     for quote in ["USDT", "USDC", "BTC", "ETH", "EUR"]:
         if symbol.endswith(quote):
             base = symbol[:-len(quote)]
