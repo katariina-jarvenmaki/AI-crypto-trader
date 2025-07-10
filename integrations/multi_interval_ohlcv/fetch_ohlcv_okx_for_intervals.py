@@ -4,7 +4,20 @@ import requests
 import pandas as pd
 from configs.config import DEFAULT_INTERVALS, DEFAULT_OHLCV_LIMIT
 
+def format_symbol_for_okx(symbol: str) -> str:
+    symbol = symbol.upper()
+    if "-" in symbol:
+        return symbol
+
+    for quote in ["USDT", "USDC", "BTC", "ETH", "EUR"]:
+        if symbol.endswith(quote):
+            base = symbol[:-len(quote)]
+            return f"{base}-{quote}"
+    return symbol
+
 def fetch_ohlcv_okx(symbol, intervals=None, limit=None, start_time=None, end_time=None):
+
+    symbol = format_symbol_for_okx(symbol)  # Already handles formatting!
     intervals = intervals or DEFAULT_INTERVALS
     limit = limit or DEFAULT_OHLCV_LIMIT
     interval_map = {
@@ -13,7 +26,6 @@ def fetch_ohlcv_okx(symbol, intervals=None, limit=None, start_time=None, end_tim
         '1d': '1D', '1w': '1W'
     }
 
-    symbol = symbol.replace("USDT", "-USDT")
     base_url = "https://www.okx.com/api/v5/market/candles"
     result = {}
 
@@ -26,24 +38,41 @@ def fetch_ohlcv_okx(symbol, intervals=None, limit=None, start_time=None, end_tim
                 "limit": str(limit)
             }
 
+            # ✅ Corrected timestamp mapping
             if start_time:
-                params["before"] = int(start_time.timestamp() * 1000)
+                params["after"] = int(start_time.timestamp() * 1000)
             if end_time:
-                params["after"] = int(end_time.timestamp() * 1000)
+                params["before"] = int(end_time.timestamp() * 1000)
 
-            r = requests.get(base_url, params=params).json()
-            rows = r['data']
+            # ⬇️ Make the request
+            response = requests.get(base_url, params=params)
+            data = response.json()
 
+            # ✅ Validate API response
+            if data.get("code") != "0":
+                print(f"❌ OKX API error for {symbol} @ {interval}: {data.get('msg')}")
+                result[interval] = pd.DataFrame()
+                continue
+
+            rows = data.get("data", [])
+            if not rows:
+                print(f"⚠️ No OHLCV data returned from OKX for {symbol} @ {interval}")
+                result[interval] = pd.DataFrame()
+                continue
+
+            # ✅ Parse DataFrame
             df = pd.DataFrame(rows, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume', 'quote_volume'
+                'timestamp', 'open', 'high', 'low', 'close', 'volume', 'quote_volume', 'ignore1', 'ignore2'
             ])
-            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+
+            df['timestamp'] = pd.to_datetime(pd.to_numeric(df['timestamp']), unit='ms')
             df.set_index('timestamp', inplace=True)
             df = df[['open', 'high', 'low', 'close', 'volume']].astype(float)
 
             result[interval] = df.sort_index()
 
-        except Exception:
+        except Exception as e:
+            print(f"❌ Exception while fetching {symbol} @ {interval} from OKX: {e}")
             result[interval] = pd.DataFrame()
 
     return result, "Okx"

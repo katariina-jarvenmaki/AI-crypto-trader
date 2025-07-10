@@ -6,12 +6,16 @@ from ta.volatility import BollingerBands
 from shutil import copyfile
 
 import os
+import sys
 import time
 import json
 import logging
 
 from pathlib import Path
 from datetime import datetime
+
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
 from configs.config import MULTI_INTERVAL_EXCHANGE_PRIORITY, DEFAULT_OHLCV_LIMIT, DEFAULT_INTERVALS, LOCAL_TIMEZONE
 from integrations.multi_interval_ohlcv.fetch_ohlcv_okx_for_intervals import fetch_ohlcv_okx
 from integrations.multi_interval_ohlcv.fetch_ohlcv_kucoin_for_intervals import fetch_ohlcv_kucoin
@@ -150,3 +154,34 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
     print(f"\033[93m⚠️ This coin pair can't be found from any supported exchange: {symbol}\033[0m")
     return None, None
+
+def test_single_exchange_ohlcv(symbol, exchange_name, intervals=None):
+    print(f"\n🔍 Testing OHLCV fetch from: {exchange_name} for symbol {symbol}")
+    fetch_fn = FETCH_FUNCTIONS.get(exchange_name)
+    if not fetch_fn:
+        print(f"❌ Fetch function for {exchange_name} not found.")
+        return
+
+    try:
+        data_by_interval, source = fetch_fn(symbol, intervals=intervals)
+        if not any(not df.empty for df in data_by_interval.values()):
+            print(f"⚠️  No data fetched from {exchange_name} for {symbol}")
+        else:
+            print(f"✅ Successfully fetched OHLCV from {source}")
+            for interval, df in data_by_interval.items():
+                if df.empty:
+                    print(f"  - {interval}: ❌ empty")
+                else:
+                    print(f"  - {interval}: ✅ {len(df)} rows")
+    except Exception as e:
+        print(f"❌ Exception while fetching from {exchange_name}: {e}")
+
+if __name__ == "__main__":
+
+    test_symbol = "BTCUSDT"
+    test_intervals = ["1m", "5m", "1h"]  # voit säätää haluamasi
+
+    test_single_exchange_ohlcv(test_symbol, "okx", intervals=test_intervals)
+    test_single_exchange_ohlcv(test_symbol, "kucoin", intervals=test_intervals)
+    test_single_exchange_ohlcv(test_symbol, "binance", intervals=test_intervals)
+    test_single_exchange_ohlcv(test_symbol, "bybit", intervals=test_intervals)
