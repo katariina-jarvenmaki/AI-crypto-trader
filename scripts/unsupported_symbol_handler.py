@@ -45,7 +45,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_short_limit(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
-            
+
             # Hae viimeisimmät logitiedot
             ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", symbol)
@@ -54,7 +54,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
-                direction="long",
+                direction="short",
                 qty=bybit_result["qty"],
                 price=bybit_result["price"],
                 cost=bybit_result["cost"],
@@ -109,3 +109,4 @@ def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
             except json.JSONDecodeError:
                 continue
     return latest_entry
+    

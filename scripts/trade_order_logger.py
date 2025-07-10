@@ -39,7 +39,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
               interval: str = None, rsi: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
               price_change: str = None, volume_multiplier: float = None,
-              reverse_signal_info: dict = None, platform: dict = None, status=None):
+              reverse_signal_info: dict = None, platform: dict = None, status=None, ohlcv_data=None, price_data=None):
     print(f"[log_trade] Logging {symbol} {direction} {qty} @ {price} on {platform}")
 
     log = load_trade_log()
@@ -67,9 +67,10 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
         "volume_multiplier": volume_multiplier,
         "price_change": price_change,
         "market_state": market_state,
-        "started_on": started_on   
+        "started_on": started_on,
+        "ohlcv_data": ohlcv_data,
+        "price_data": price_data  
     }
-
     log[symbol][direction_lower].append(new_order)
 
     save_trade_log(log)

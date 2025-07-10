@@ -152,3 +152,38 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     else:
         print("⏳ Condition not yet met.")
 
+        if stop_loss == 0 and trailing_stop == 0:
+
+            print("⚠️ No SL or TP found. Setting default SL/TP...")
+
+            # Lasketaan vivulla skaalatut arvot
+            config = stop_loss_config["default"][direction]
+            initial_tp_percent = parsed(config.get("initial_take_profit", "500%")) / leverage
+            initial_sl_percent = parsed(config.get("initial_stop_loss", "90%")) / leverage
+
+            # ÄLÄ käytä parsed uudelleen!
+            adjusted_tp = entry_price * (1 + initial_tp_percent) if side == "Buy" else entry_price * (1 - initial_tp_percent)
+            adjusted_sl = entry_price * (1 - initial_sl_percent) if side == "Buy" else entry_price * (1 + initial_sl_percent)
+
+
+            try:
+                body = {
+                    "category": "linear",
+                    "symbol": symbol,
+                    "takeProfit": str(round(adjusted_tp, 4)),
+                    "stopLoss": str(round(adjusted_sl, 4)),
+                    "tpTriggerBy": "MarkPrice",
+                    "slTriggerBy": "MarkPrice",
+                    "tpslMode": "Full",
+                    "tpOrderType": "Market",
+                    "slOrderType": "Market",
+                    "positionIdx": position_idx
+                }
+
+                print(f"📤 Setting initial TP/SL: {body}")
+                response = client.set_trading_stop(**body)
+                print(f"✅ TP/SL set: {response}")
+                
+            except Exception as e:
+                print(f"[ERROR] Failed to set initial TP/SL: {e}")
+            return []  # Ei jatketa enää muita SL-logiikoita, koska TP/SL juuri asetettiin

@@ -183,33 +183,10 @@ def place_leveraged_bybit_limit_order(client, symbol: str, qty: float, price: fl
             reduceOnly=False
         )
 
-        adjusted_tp_percent = DEFAULT_BYBIT_TAKE_PROFIT_PERCENT / leverage
-        adjusted_sl_percent = DEFAULT_BYBIT_STOP_LOSS_PERCENT / leverage
-
-        if side == "Buy":
-            tp_price = price * (1 + adjusted_tp_percent)
-            sl_price = price * (1 - adjusted_sl_percent)
-        else:
-            tp_price = price * (1 - adjusted_tp_percent)
-            sl_price = price * (1 + adjusted_sl_percent)
-
-        client.set_trading_stop(
-            category="linear",
-            symbol=symbol,
-            takeProfit=str(tp_price),
-            stopLoss=str(sl_price),
-            tpTriggerBy="MarkPrice",
-            slTriggerBy="MarkPrice",
-            tpslMode="Full",
-            tpOrderType="Market",
-            slOrderType="Market",
-            positionIdx=position_idx
-        )
-
-        print(f"✅ Bybit LIMIT order placed: TP @ {tp_price}, SL @ {sl_price}")
+        print(f"✅ Bybit LIMIT order placed!")
         return {
-            "tp_price": tp_price,
-            "sl_price": sl_price,
+            "tp_price": None,
+            "sl_price": None,
             "order": order
         }
 
