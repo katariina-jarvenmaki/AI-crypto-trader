@@ -87,13 +87,13 @@
   "EDUUSDT": {
     "long": {
       "_comment": "Value specified 10.7.2025, will need more specification",
-      "set_stoploss_percent": "0.17%",
-      "full_stoploss_percent": "0.16%"
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
     },
     "short": {
       "_comment": "Value specified 10.7.2025, will need more specification",
-      "set_stoploss_percent": "0.17%",
-      "full_stoploss_percent": "0.16%"
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
     }
   },
   "IOSTUSDT": {

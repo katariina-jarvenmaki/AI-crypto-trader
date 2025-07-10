@@ -545,4 +545,5 @@ BLOCKED_SYMBOLS =  [
     "SKYAIUSDT", # -> not supported by exchanges 3.7.2025 
     "BUSDT", # -> not supported by exchanges 3.7.2025
     "ZBCNUSDT", # -> too high fees 
+    "HYPERUSDT", # -> too fast to move
 ]
