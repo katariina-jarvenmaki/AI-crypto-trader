@@ -35,7 +35,7 @@ INTERVAL_WEIGHTS = {
 
 # Number of symbols selected for long/short recommendations
 TOP_N_LONG = 0
-TOP_N_SHORT = 20
+TOP_N_SHORT = 0
 
 # If multiple symbols share the same value, allow additional ties
 TOP_N_EXTRA_TIES = True
@@ -546,4 +546,5 @@ BLOCKED_SYMBOLS =  [
     "BUSDT", # -> not supported by exchanges 3.7.2025
     "ZBCNUSDT", # -> too high fees 
     "HYPERUSDT", # -> too fast to move
+    "VANRYUSDT", # -> too volatile without momentum checks
 ]
