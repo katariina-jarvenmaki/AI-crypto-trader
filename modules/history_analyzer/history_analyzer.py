@@ -123,17 +123,12 @@ def process_log_entry(entry: dict):
 """)
 
 def save_history(symbol: str, history: List[dict]):
-    filepath = os.path.join(CONFIG["history_log_path"])
-    if os.path.exists(filepath):
-        with open(filepath, "r") as f:
-            data = json.load(f)
-    else:
-        data = {}
-
-    data[symbol] = history
-
-    with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+    filepath = CONFIG["history_log_path"]
+    if not history:
+        return
+    with open(filepath, "a") as f:
+        json.dump(history[-1], f)
+        f.write("\n")
 
 def average_macd_signal_1h_4h_1d_1w(macd_signal: dict) -> float:
     values = [macd_signal.get(k) for k in ['1h', '4h', '1d', '1w'] if macd_signal.get(k) is not None]
@@ -216,17 +211,19 @@ def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
     return "none"
 
 def load_history(symbol: str) -> List[dict]:
-    filepath = os.path.join(CONFIG["history_log_path"])
+    filepath = CONFIG["history_log_path"]
     if not os.path.exists(filepath):
         return []
+    history = []
     with open(filepath, "r") as f:
-        data = json.load(f)
-    if not isinstance(data, dict):
-        return []
-    symbol_history = data.get(symbol, [])
-    if not isinstance(symbol_history, list):
-        return []
-    return symbol_history
+        for line in f:
+            try:
+                entry = json.loads(line.strip())
+                if entry.get("symbol") == symbol:
+                    history.append(entry)
+            except json.JSONDecodeError:
+                continue
+    return history
 
 def average_rsi_1h_4h_1d_1w(rsi_dict):
     keys = ['1h', '4h', '1d', '1w']

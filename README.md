@@ -46,9 +46,10 @@ crontab -e
 */5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
 ```
 
-**Add these Price data fetching lines to the cron**
+**Add also these lines to the cron**
 ```bash
 */5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> logs/cron/temporary_log_price_data_fetcher_cron.log 2>&1
+*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.history_analyzer.history_analyzer >> logs/cron/temporary_log_history_analyzer_cron.log 2>&1
 ```
 
 **Check cron log**

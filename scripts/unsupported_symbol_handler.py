@@ -50,8 +50,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             bybit_symbol = symbol.replace("USDC", "USDT")
             ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
-
-            # Lisää logitietoihin
+            history_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
@@ -63,7 +62,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_take_profit=bybit_result["tp_price"],
                 order_stop_loss=bybit_result["sl_price"],
                 ohlcv_data=ohlcv_entry,
-                price_data=price_entry
+                price_data=price_entry,
+                history_data=history_entry
             )
 
     elif long_only is True:

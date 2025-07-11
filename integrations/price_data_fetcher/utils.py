@@ -41,7 +41,7 @@ def trim_log_file(log_path: str, max_lines: int):
         lines = f.readlines()
 
     if len(lines) > max_lines:
-        print(f"✂️ Trimming log file from {len(lines)} to {max_lines}")
+        print(f"✂️  Trimming log file from {len(lines)} to {max_lines}")
         with open(log_path, "w") as f:
             f.writelines(lines[-max_lines:])
 

@@ -7,7 +7,7 @@ def fetch_from_bybit(symbol):
     symbol = symbol.replace("-", "")
     url = f"https://api.bybit.com/v5/market/tickers?category=spot&symbol={symbol}"
     r = requests.get(url)
-    print(f"[DEBUG] Bybit response ({r.status_code}): {r.text}")
+    # print(f"[DEBUG] Bybit response ({r.status_code}): {r.text}")
     data = r.json()
     if data.get("retCode") == 0 and data.get("result") and data["result"].get("list"):
         t = data["result"]["list"][0]

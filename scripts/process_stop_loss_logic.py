@@ -154,7 +154,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print("⏳ Condition not yet met.")
 
         if stop_loss == 0 and trailing_stop == 0:
-            print("⚠️ No SL or TP found. Setting default SL/TP...")
+            print("⚠️  No SL or TP found. Setting default SL/TP...")
 
             config = stop_loss_config["default"][direction]
             initial_tp_percent = parsed(config.get("initial_take_profit", "500%")) / leverage
