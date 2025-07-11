@@ -1,15 +1,13 @@
 from integrations.bybit_api_client import get_bybit_symbol_price, has_open_limit_order
-from trade.execute_bybit_long_limit import execute_bybit_long_limit
-from trade.execute_bybit_short_limit import execute_bybit_short_limit
+from trade.execute_bybit_long import execute_bybit_long
+from trade.execute_bybit_short import execute_bybit_short
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
 from scripts.trade_order_logger import log_trade
 import json
 
-# Muokattavat hintavaihtelurajat prosentteina (esim. 0.01 = 1 %, huom. max 1 %!!)
-LONG_PRICE_OFFSET_PERCENT = -0.01
-SHORT_PRICE_OFFSET_PERCENT = 0.01
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
+
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
 
     if selected_symbols is None:
@@ -61,10 +59,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             print(f"⛔ Skipping {bybit_symbol} {direction}: open limit order already exists.")
             return
 
-        target_price = live_price * (1 + SHORT_PRICE_OFFSET_PERCENT)
-        print(f"📉 Short signal: Placing LIMIT SHORT @ {target_price:.4f}")
-
-        bybit_result = execute_bybit_short_limit(symbol=bybit_symbol, risk_strength="strong")
+        bybit_result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
             ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
@@ -104,10 +99,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             print(f"⛔ Skipping {bybit_symbol} {direction}: open limit order already exists.")
             return
 
-        target_price = live_price * (1 + LONG_PRICE_OFFSET_PERCENT)
-        print(f"📈 Long signal: Placing LIMIT LONG @ {target_price:.4f}")
-
-        bybit_result = execute_bybit_long_limit(symbol=bybit_symbol, risk_strength="strong")
+        bybit_result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
             ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
