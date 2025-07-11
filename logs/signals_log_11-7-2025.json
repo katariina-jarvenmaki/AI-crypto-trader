@@ -1,0 +1,272 @@
+{
+    "ETHUSDC": {
+        "1d": {
+            "sell": {
+                "log": {
+                    "time": "2025-07-11T21:36:22.182072+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "none",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 6.81, '18h': 2.05, '12h': -0.53, '6h': 0.4, '4h': -0.31, '3h': 0.07, '2h': 0.76, '1h': 0.34, '30min': 0.02}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T18:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T21:35:15.400290+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDT",
+                        "intervals": [
+                            "1m",
+                            "3m",
+                            "5m",
+                            "15m",
+                            "30m",
+                            "1h",
+                            "2h",
+                            "4h",
+                            "1d",
+                            "1w"
+                        ],
+                        "data_preview": {
+                            "1m": {
+                                "rsi": 50.6,
+                                "ema": 2989.75,
+                                "macd": -0.36,
+                                "macd_signal": -0.58,
+                                "bb_upper": 2995.18,
+                                "bb_lower": 2984.21,
+                                "close": 2990.14
+                            },
+                            "3m": {
+                                "rsi": 53.52,
+                                "ema": 2988.81,
+                                "macd": 2.29,
+                                "macd_signal": 3.28,
+                                "bb_upper": 2998.47,
+                                "bb_lower": 2980.89,
+                                "close": 2990.59
+                            },
+                            "5m": {
+                                "rsi": 54.48,
+                                "ema": 2986.23,
+                                "macd": 3.76,
+                                "macd_signal": 3.89,
+                                "bb_upper": 2999.22,
+                                "bb_lower": 2976.01,
+                                "close": 2989.82
+                            },
+                            "15m": {
+                                "rsi": 52.81,
+                                "ema": 2983.82,
+                                "macd": 0.17,
+                                "macd_signal": -2.03,
+                                "bb_upper": 3011.74,
+                                "bb_lower": 2953.17,
+                                "close": 2990.14
+                            },
+                            "30m": {
+                                "rsi": 54.4,
+                                "ema": 2982.94,
+                                "macd": 6.34,
+                                "macd_signal": 9.39,
+                                "bb_upper": 3021.4,
+                                "bb_lower": 2957.86,
+                                "close": 2990.14
+                            },
+                            "1h": {
+                                "rsi": 60.73,
+                                "ema": 2961.2,
+                                "macd": 35.88,
+                                "macd_signal": 45.04,
+                                "bb_upper": 3021.89,
+                                "bb_lower": 2938.02,
+                                "close": 2990.0
+                            },
+                            "2h": {
+                                "rsi": 66.39,
+                                "ema": 2909.32,
+                                "macd": 78.11,
+                                "macd_signal": 80.75,
+                                "bb_upper": 3093.65,
+                                "bb_lower": 2715.34,
+                                "close": 2990.0
+                            },
+                            "4h": {
+                                "rsi": 81.09,
+                                "ema": 2812.68,
+                                "macd": 107.24,
+                                "macd_signal": 87.74,
+                                "bb_upper": 3067.91,
+                                "bb_lower": 2489.02,
+                                "close": 2990.0
+                            },
+                            "1d": {
+                                "rsi": 73.27,
+                                "ema": 2615.88,
+                                "macd": 93.43,
+                                "macd_signal": 37.06,
+                                "bb_upper": 2893.72,
+                                "bb_lower": 2190.15,
+                                "close": 2990.14
+                            },
+                            "1w": {
+                                "rsi": 59.91,
+                                "ema": 2452.19,
+                                "macd": -13.09,
+                                "macd_signal": -117.15,
+                                "bb_upper": 2967.79,
+                                "bb_lower": 1420.37,
+                                "close": 2990.59
+                            }
+                        },
+                        "limit": 200,
+                        "start_time": null,
+                        "end_time": null
+                    },
+                    "price_data": {
+                        "timestamp": "2025-07-11T21:35:03.617096+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDT",
+                        "data_preview": {
+                            "last_price": 2990.59,
+                            "price_change_percent": 6.31,
+                            "high_price": 3039.95,
+                            "low_price": 2795.72,
+                            "volume": 394661.699001,
+                            "turnover": 1169841453.4408665
+                        }
+                    },
+                    "history_data": {
+                        "timestamp": "2025-07-11T20:15:40.440828+03:00",
+                        "symbol": "ETHUSDT",
+                        "price": 2982.27,
+                        "price_trend": "price-up",
+                        "volume": 405136.46044,
+                        "volume_class": "medium-volume",
+                        "change_24h": 6.19,
+                        "change_class": "strong-up",
+                        "rsi": {
+                            "1m": 70.24,
+                            "1h": 60.09,
+                            "4h": 80.76,
+                            "1d": 73.06,
+                            "1w": 59.8
+                        },
+                        "avg_rsi": 68.42750000000001,
+                        "avg_rsi_1h_4h": 70.42500000000001,
+                        "avg_rsi_1d_1w": 66.43,
+                        "ema_rsi": 70.27295000000001,
+                        "macd": {
+                            "1m": 4.15,
+                            "1h": 36.88,
+                            "4h": 106.71,
+                            "1d": 92.86,
+                            "1w": -13.69
+                        },
+                        "macd_signal_raw": {
+                            "1m": 3.58,
+                            "1h": 47.17,
+                            "4h": 87.63,
+                            "1d": 36.94,
+                            "1w": -117.27
+                        },
+                        "macd_diff": 33.772000000000006,
+                        "macd_signal": "bullish",
+                        "avg_macd_all": 55.69,
+                        "avg_macd_1h_4h": 71.795,
+                        "avg_macd_1d_1w": 39.585,
+                        "ema_macd": 54.314125000000004,
+                        "avg_macd_signal_all": 13.617500000000003,
+                        "avg_macd_signal_1h_4h": 67.4,
+                        "avg_macd_signal_1d_1w": -40.165,
+                        "ema_macd_signal": 10.7636,
+                        "rsi_divergence": "bullish-divergence",
+                        "flag": "bull-flag",
+                        "prev_avg_rsi": 66.2525,
+                        "delta": 2.1750000000000114,
+                        "prev_ema_rsi": 70.47800000000001,
+                        "prev_ema_macd": 54.16125,
+                        "prev_ema_macd_signal": 10.446499999999999
+                    }
+                }
+            }
+        }
+    },
+    "SOLUSDC": {
+        "4h": {
+            "sell": {
+                "log": {
+                    "time": "2025-07-11T16:27:51.082314+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.5,
+                    "price_change": "{'24h': 5.08, '18h': 4.16, '12h': 0.5, '6h': 0.82, '4h': 0.32, '3h': 0.39, '2h': 0.74, '1h': 1.07, '30min': -0.28}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T13:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T16:27:51.039459+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "SOLUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 60.06,
+                                "ema": 164.61,
+                                "macd": 0.09,
+                                "macd_signal": null,
+                                "bb_upper": 165.7,
+                                "bb_lower": 163.32,
+                                "close": 165.59
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "ADAUSDC": {
+        "4h": {
+            "sell": {
+                "log": {
+                    "time": "2025-07-11T16:20:21.123623+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "weak",
+                    "volume_multiplier": 1.8,
+                    "price_change": "{'24h': 18.07, '18h': 13.68, '12h': 9.23, '6h': 6.51, '4h': 3.24, '3h': 2.12, '2h': 2.8, '1h': 1.75, '30min': 0.64}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-11T12:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T16:20:21.090934+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 67.06,
+                                "ema": 0.73,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.75,
+                                "bb_lower": 0.71,
+                                "close": 0.7431
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    },
+                    "previous_market_state": "unknown"
+                }
+            }
+        }
+    }
+}

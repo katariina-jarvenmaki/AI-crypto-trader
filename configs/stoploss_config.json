@@ -1,16 +1,18 @@
 {
   "default": {
     "long": {
-      "initial_take_profit": "150%",
-      "initial_stop_loss": "90%",
+      "initial_take_profit": "149%",
+      "_comment": "Stop loss to 30% cause volatile markets, originally had 90%",
+      "initial_stop_loss": "30%",
       "set_stoploss_percent": "0.35%",
       "full_stoploss_percent": "0.15%",
       "trailing_stoploss_percent": "0.005%",
       "min_stop_loss_diff_percent": "0.001%"
     },
     "short": {
-      "initial_take_profit": "150%",
-      "initial_stop_loss": "90%",
+      "initial_take_profit": "149%",
+      "_comment": "Stop loss to 30% cause volatile markets, originally had 90%",
+      "initial_stop_loss": "30%",
       "set_stoploss_percent": "0.35%",
       "full_stoploss_percent": "0.15%",
       "trailing_stoploss_percent": "0.005%",
@@ -50,6 +52,42 @@
     "short": {
       "_comment": "Value specified 2.6.2025",
       "trailing_stoploss_percent": "0.0019%"
+    }
+  },  
+  "CTSIUSDT": {
+    "long": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
+  },  
+  "LUMIAUSDT": {
+    "long": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
+  },  
+  "STRKUSDT": {
+    "long": {
+      "_comment": "Value specified 11.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 11.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
     }
   }
 }

@@ -5,18 +5,16 @@ from scripts.order_limiter import can_initiate, load_initiated_orders, normalize
 from scripts.trade_order_logger import log_trade
 import json
 
-# Muokattavat hintavaihtelurajat prosentteina (esim. 0.04 = 4 %)
-LONG_PRICE_OFFSET_PERCENT = -0.04
-SHORT_PRICE_OFFSET_PERCENT = 0.04
+# Muokattavat hintavaihtelurajat prosentteina (esim. 0.01 = 1 %, huom. max 1 %!!)
+LONG_PRICE_OFFSET_PERCENT = -0.01
+SHORT_PRICE_OFFSET_PERCENT = 0.01
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
-
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
 
     if selected_symbols is None:
-        selected_symbols = [symbol]  # fallback, tarvitaan order limiterille
+        selected_symbols = [symbol]
 
-    # Korvataan USDC → USDT jos tarpeen
     bybit_symbol = normalize_symbol(symbol)
     live_price = get_bybit_symbol_price(bybit_symbol)
 
@@ -26,12 +24,35 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
-    # Lataa jo aloitetut tilaukset ja tarkista rajat
-    initiated_counts = load_initiated_orders()
+    # Hae kaksi viimeisintä historia-entryä
+    history_entries = get_latest_two_log_entries_for_symbol(
+        "modules/history_analyzer/history_data_log.jsonl", bybit_symbol
+    )
 
+    if not history_entries:
+        print(f"❌ No history data for {bybit_symbol}, skipping trade.")
+        return None
+
+    latest_entry = history_entries[0]
+    previous_entry = history_entries[1] if len(history_entries) > 1 else {}
+
+    rsi_divergence = latest_entry.get("rsi_divergence")
+    latest_flag = latest_entry.get("flag", "neutral")
+    previous_flag = previous_entry.get("flag", "neutral")
+
+    # ----- SHORT -----
     if short_only is True:
+        # Hyväksytään jos divergence on bearish TAI flag-ehto täyttyy
+        if not (
+            rsi_divergence == "bearish-divergence" or 
+            (latest_flag == "bear-flag" and previous_flag != "bear-flag")
+        ):
+            print(f"⛔ Skipping SHORT: conditions not met (rsi_divergence={rsi_divergence}, latest_flag={latest_flag}, previous_flag={previous_flag})")
+            return
+
         direction = "short"
 
+        initiated_counts = load_initiated_orders()
         if not can_initiate(bybit_symbol, direction, initiated_counts, all_symbols=selected_symbols):
             print(f"⛔ Skipping {bybit_symbol} {direction}: too many initiations compared to others.")
             return
@@ -45,12 +66,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_short_limit(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
-
-            # Hae viimeisimmät logitiedot
-            bybit_symbol = symbol.replace("USDC", "USDT")
             ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
-            history_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
@@ -63,12 +80,22 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_stop_loss=bybit_result["sl_price"],
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=history_entry
+                history_data=latest_entry
             )
 
+    # ----- LONG -----
     elif long_only is True:
+        # Hyväksytään jos divergence on bullish TAI flag-ehto täyttyy
+        if not (
+            rsi_divergence == "bullish-divergence" or 
+            (latest_flag == "bull-flag" and previous_flag != "bull-flag")
+        ):
+            print(f"⛔ Skipping LONG: conditions not met (rsi_divergence={rsi_divergence}, latest_flag={latest_flag}, previous_flag={previous_flag})")
+            return
+
         direction = "long"
 
+        initiated_counts = load_initiated_orders()
         if not can_initiate(bybit_symbol, direction, initiated_counts, all_symbols=selected_symbols):
             print(f"⛔ Skipping {bybit_symbol} {direction}: too many initiations compared to others.")
             return
@@ -82,6 +109,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_long_limit(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
+            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
+            price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
@@ -91,7 +120,10 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 cost=bybit_result["cost"],
                 leverage=bybit_result["leverage"],
                 order_take_profit=bybit_result["tp_price"],
-                order_stop_loss=bybit_result["sl_price"]
+                order_stop_loss=bybit_result["sl_price"],
+                ohlcv_data=ohlcv_entry,
+                price_data=price_entry,
+                history_data=latest_entry
             )
 
     else:
@@ -111,3 +143,16 @@ def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
                 continue
     return latest_entry
     
+def get_latest_two_log_entries_for_symbol(log_path: str, symbol: str) -> list:
+    entries = []
+    with open(log_path, "r") as f:
+        for line in reversed(f.readlines()):
+            try:
+                entry = json.loads(line)
+                if entry.get("symbol") == symbol:
+                    entries.append(entry)
+                    if len(entries) == 2:
+                        break
+            except json.JSONDecodeError:
+                continue
+    return entries
