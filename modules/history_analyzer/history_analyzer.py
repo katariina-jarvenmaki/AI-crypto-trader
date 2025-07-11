@@ -307,9 +307,9 @@ def parse_log_entry(entry: dict) -> dict:
     }
 
 def process_latest_entries_for_symbols(symbols: List[str]):
+
     seen = set()
     price_data_entries = get_latest_price_data_for_symbols(symbols)
-
     with open(CONFIG["ohlcv_log_path"], "r") as f:
         for line in reversed(f.readlines()):
             try:

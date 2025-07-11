@@ -334,6 +334,48 @@
                 "started_on": null,
                 "ohlcv_data": null,
                 "price_data": null
+            },
+            {
+                "timestamp": "2025-07-11T16:27:53.798947+03:00",
+                "platform": "ByBit",
+                "status": "completed",
+                "qty": 0.1,
+                "price": 165.48,
+                "cost": 16.548,
+                "leverage": 4,
+                "order_take_profit_price": -41.37,
+                "order_stop_loss_price": 202.713,
+                "mode": "log",
+                "interval": "4h",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.5,
+                "price_change": "{'24h': 5.08, '18h': 4.16, '12h': 0.5, '6h': 0.82, '4h': 0.32, '3h': 0.39, '2h': 0.74, '1h': 1.07, '30min': -0.28}",
+                "market_state": "unknown",
+                "started_on": "2025-07-11T13:00:00",
+                "ohlcv_data": {
+                    "timestamp": "2025-07-11T16:27:51.039459+03:00",
+                    "source_exchange": "Okx",
+                    "symbol": "SOLUSDC",
+                    "intervals": [
+                        "15m"
+                    ],
+                    "data_preview": {
+                        "15m": {
+                            "rsi": 60.06,
+                            "ema": 164.61,
+                            "macd": 0.09,
+                            "macd_signal": null,
+                            "bb_upper": 165.7,
+                            "bb_lower": 163.32,
+                            "close": 165.59
+                        }
+                    },
+                    "limit": 30,
+                    "start_time": null,
+                    "end_time": null
+                },
+                "price_data": null
             }
         ]
     },
@@ -343,7 +385,7 @@
             {
                 "timestamp": "2025-07-11T13:53:28.149743+03:00",
                 "platform": "ByBit",
-                "status": "initiated",
+                "status": "completed",
                 "qty": 54.0,
                 "price": 0.0,
                 "cost": 0.0,
@@ -395,7 +437,7 @@
             {
                 "timestamp": "2025-07-11T14:52:42.185492+03:00",
                 "platform": "ByBit",
-                "status": "initiated",
+                "status": "completed",
                 "qty": 117.0,
                 "price": 0.0,
                 "cost": 0.0,
@@ -411,6 +453,53 @@
                 "market_state": null,
                 "started_on": null,
                 "ohlcv_data": null,
+                "price_data": null
+            }
+        ]
+    },
+    "ADAUSDT": {
+        "long": [],
+        "short": [
+            {
+                "timestamp": "2025-07-11T16:20:23.543079+03:00",
+                "platform": "ByBit",
+                "status": "initiated",
+                "qty": 7.0,
+                "price": 0.7431,
+                "cost": 5.2017,
+                "leverage": 2,
+                "order_take_profit_price": -1.11465,
+                "order_stop_loss_price": 1.0774949999999999,
+                "mode": "log",
+                "interval": "4h",
+                "momentum_strength": "strong",
+                "reverse_strength": "weak",
+                "volume_multiplier": 1.8,
+                "price_change": "{'24h': 18.07, '18h': 13.68, '12h': 9.23, '6h': 6.51, '4h': 3.24, '3h': 2.12, '2h': 2.8, '1h': 1.75, '30min': 0.64}",
+                "market_state": "bull",
+                "started_on": "2025-07-11T12:00:00",
+                "ohlcv_data": {
+                    "timestamp": "2025-07-11T16:20:21.090934+03:00",
+                    "source_exchange": "Okx",
+                    "symbol": "ADAUSDC",
+                    "intervals": [
+                        "15m"
+                    ],
+                    "data_preview": {
+                        "15m": {
+                            "rsi": 67.06,
+                            "ema": 0.73,
+                            "macd": 0.01,
+                            "macd_signal": null,
+                            "bb_upper": 0.75,
+                            "bb_lower": 0.71,
+                            "close": 0.7431
+                        }
+                    },
+                    "limit": 30,
+                    "start_time": null,
+                    "end_time": null
+                },
                 "price_data": null
             }
         ]
