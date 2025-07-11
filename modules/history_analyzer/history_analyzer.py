@@ -1,11 +1,51 @@
 # modules/history_analyzer/history_analyzer.py
 
 import json
-from typing import List
+from typing import Dict, List
 from modules.history_analyzer.config_history_analyzer import CONFIG
 
 def process_log_entry(entry: dict):
-    print(f"ENTRY: {entry}")
+    parsed = parse_log_entry(entry)
+    print(f"PARSED: {parsed}")
+
+def parse_log_entry(entry: dict) -> dict:
+    symbol = entry["symbol"]
+    timestamp = entry["timestamp"]
+
+    price = entry["data_preview"].get("1m", {}).get("close")
+    price_data = entry["data_preview"].get("price_data", {})
+    volume = price_data.get("volume")
+    change_24h = price_data.get("price_change_percent")
+
+    # ➕ override with price_data if exists
+    price_data = entry["data_preview"].get("price_data", {})
+    price = price_data.get("last_price", price)
+    volume = price_data.get("volume", volume)
+    change_24h = price_data.get("price_change_percent", change_24h)
+
+    rsi_data = {
+        interval: entry["data_preview"].get(interval, {}).get("rsi")
+        for interval in CONFIG["intervals_to_use"]
+    }
+    macd_data = {
+        interval: entry["data_preview"].get(interval, {}).get("macd")
+        for interval in CONFIG["intervals_to_use"]
+    }
+    signal_data = {
+        interval: entry["data_preview"].get(interval, {}).get("macd_signal")
+        for interval in CONFIG["intervals_to_use"]
+    }
+
+    return {
+        "symbol": symbol,
+        "timestamp": timestamp,
+        "price": price,
+        "volume": volume,
+        "change_24h": change_24h,
+        "rsi": rsi_data,
+        "macd": macd_data,
+        "macd_signal": signal_data,
+    }
 
 def process_latest_entries_for_symbols(symbols: List[str]):
     seen = set()
@@ -20,9 +60,8 @@ def process_latest_entries_for_symbols(symbols: List[str]):
                 if symbol in symbols and symbol not in seen:
                     price_entry = price_data_entries.get(symbol)
                     if price_entry:
-                        # Päivitetään OHLCV-entryn data_preview:iin hintadata:
                         entry["data_preview"]["price_data"] = price_entry["data_preview"]
-                    process_log_entry(entry)  # nyt se käyttää rikastettua entryä
+                    process_log_entry(entry) 
                     seen.add(symbol)
 
                 if len(seen) == len(symbols):

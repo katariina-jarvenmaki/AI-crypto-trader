@@ -14,44 +14,6 @@ CONFIG = {
     "data_dir": "rsi_logs",
 }
 
-def parse_log_entry(entry: dict) -> Dict:
-    symbol = entry["symbol"]
-    timestamp = entry["timestamp"]
-
-    price = entry["data_preview"].get("1m", {}).get("close")
-    volume = entry["data_preview"].get("1d", {}).get("volume")
-    change_24h = entry["data_preview"].get("1d", {}).get("change_24h")
-
-    # ➕ override with price_data if exists
-    price_data = entry["data_preview"].get("price_data", {})
-    price = price_data.get("last_price", price)
-    volume = price_data.get("volume", volume)
-    change_24h = price_data.get("price_change_percent", change_24h)
-
-    rsi_data = {
-        interval: entry["data_preview"].get(interval, {}).get("rsi")
-        for interval in CONFIG["intervals_to_use"]
-    }
-    macd_data = {
-        interval: entry["data_preview"].get(interval, {}).get("macd")
-        for interval in CONFIG["intervals_to_use"]
-    }
-    signal_data = {
-        interval: entry["data_preview"].get(interval, {}).get("macd_signal")
-        for interval in CONFIG["intervals_to_use"]
-    }
-
-    return {
-        "symbol": symbol,
-        "timestamp": timestamp,
-        "price": price,
-        "volume": volume,
-        "change_24h": change_24h,
-        "rsi": rsi_data,
-        "macd": macd_data,
-        "macd_signal": signal_data,
-    }
-
 def average_rsi(rsi_data: Dict[str, float]) -> float:
     valid_rsi = [v for v in rsi_data.values() if isinstance(v, (float, int)) and not math.isnan(v)]
     return sum(valid_rsi) / len(valid_rsi) if valid_rsi else None

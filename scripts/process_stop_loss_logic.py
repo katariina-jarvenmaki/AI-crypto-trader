@@ -7,6 +7,12 @@ from integrations.bybit_api_client import client, get_bybit_symbol_info
 config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
 config_path = os.path.abspath(config_path)
 
+def decimal_places(value):
+    s = str(value)
+    if '.' in s:
+        return len(s.split('.')[1])
+    return 0
+
 with open(config_path, "r") as f:
     stop_loss_config = json.load(f)
 
@@ -23,9 +29,7 @@ def get_stop_loss_values(symbol, side):
     config = stop_loss_config.get(symbol, {})
     default = stop_loss_config["default"]
 
-    # long tai short konfiguraatio haetaan sivun mukaan
     direction = "long" if side == "Buy" else "short"
-
     symbol_config = config.get(direction, {})
     default_config = default.get(direction, {})
 
@@ -55,10 +59,12 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
-            f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
-            f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
+              f"Set stop loss percent: {formatted['set']}, Stop loss percent: {formatted['full']}, "
+              f"Trailing stop loss percent: {formatted['trailing']}, Threshold percent: {formatted['min_diff']}")
 
     sl_offset = entry_price * full_sl_percent
+    decimals = decimal_places(entry_price)
+
     if side == "Buy":
         direction = "long"
         target_price = entry_price * (1 + set_sl_percent)
@@ -75,7 +81,6 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
 
     threshold_amount = entry_price * threshold_percent
 
-    # Skip logic: decide whether full SL or trailing SL need updates
     skip_full_sl = False
     skip_trailing = False
 
@@ -90,12 +95,10 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         if trailing_stop > 0:
             skip_trailing = True
 
-    # If both updates can be skipped, exit early
     if skip_full_sl and skip_trailing:
         print("⏩ Skipping both full SL and trailing SL updates – no significant change needed.")
         return []
 
-    # Get current price
     price_data = client.get_tickers(category="linear", symbol=symbol)
     if "result" in price_data and "list" in price_data["result"]:
         last_price = float(price_data["result"]["list"][0]["lastPrice"])
@@ -103,22 +106,20 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print(f"[WARN] No price data found for {symbol}")
         return []
 
-    if direction == "long":
-        condition_met = last_price > target_price
-    else:
-        condition_met = last_price < target_price
+    condition_met = (last_price > target_price) if direction == "long" else (last_price < target_price)
 
-    print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}  | Full SL: {full_sl_price:.4f}")
+    print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.{decimals}f} | Target: {target_price:.{decimals}f} | Live: {last_price:.{decimals}f}  | Full SL: {full_sl_price:.{decimals}f}")
 
     if condition_met:
         print(f"✅ Trigger condition met for {symbol} ({direction})")
 
         try:
             if not skip_full_sl:
+                full_sl_str = f"{full_sl_price:.{decimals}f}"
                 full_body = {
                     "category": "linear",
                     "symbol": symbol,
-                    "stopLoss": format(full_sl_price, '.6f'),
+                    "stopLoss": full_sl_str,
                     "slSize": str(size),
                     "slTriggerBy": "LastPrice",
                     "tpslMode": "Full",
@@ -153,25 +154,24 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print("⏳ Condition not yet met.")
 
         if stop_loss == 0 and trailing_stop == 0:
-
             print("⚠️ No SL or TP found. Setting default SL/TP...")
 
-            # Lasketaan vivulla skaalatut arvot
             config = stop_loss_config["default"][direction]
             initial_tp_percent = parsed(config.get("initial_take_profit", "500%")) / leverage
             initial_sl_percent = parsed(config.get("initial_stop_loss", "90%")) / leverage
 
-            # ÄLÄ käytä parsed uudelleen!
             adjusted_tp = entry_price * (1 + initial_tp_percent) if side == "Buy" else entry_price * (1 - initial_tp_percent)
             adjusted_sl = entry_price * (1 - initial_sl_percent) if side == "Buy" else entry_price * (1 + initial_sl_percent)
 
+            adjusted_tp_str = f"{adjusted_tp:.{decimals}f}"
+            adjusted_sl_str = f"{adjusted_sl:.{decimals}f}"
 
             try:
                 body = {
                     "category": "linear",
                     "symbol": symbol,
-                    "takeProfit": str(round(adjusted_tp, 4)),
-                    "stopLoss": str(round(adjusted_sl, 4)),
+                    "takeProfit": adjusted_tp_str,
+                    "stopLoss": adjusted_sl_str,
                     "tpTriggerBy": "MarkPrice",
                     "slTriggerBy": "MarkPrice",
                     "tpslMode": "Full",
@@ -183,7 +183,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
                 print(f"📤 Setting initial TP/SL: {body}")
                 response = client.set_trading_stop(**body)
                 print(f"✅ TP/SL set: {response}")
-                
+
             except Exception as e:
                 print(f"[ERROR] Failed to set initial TP/SL: {e}")
-            return []  # Ei jatketa enää muita SL-logiikoita, koska TP/SL juuri asetettiin
+            return []
