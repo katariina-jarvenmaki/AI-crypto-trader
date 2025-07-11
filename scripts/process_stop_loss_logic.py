@@ -108,7 +108,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     else:
         condition_met = last_price < target_price
 
-    print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}")
+    print(f"🔸 {symbol} | Dir: {direction.upper()} | Entry: {entry_price:.4f} | Target: {target_price:.4f} | Live: {last_price:.4f}  | Full SL: {full_sl_price:.4f}")
 
     if condition_met:
         print(f"✅ Trigger condition met for {symbol} ({direction})")
@@ -118,7 +118,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
                 full_body = {
                     "category": "linear",
                     "symbol": symbol,
-                    "stopLoss": str(round(full_sl_price, 4)),
+                    "stopLoss": format(full_sl_price, '.6f'),
                     "slSize": str(size),
                     "slTriggerBy": "LastPrice",
                     "tpslMode": "Full",

@@ -1,0 +1,1097 @@
+{
+    "BTCUSDC": {
+        "1w": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:52:46.025612+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.31, '18h': 4.83, '12h': 1.83, '6h': 1.04, '4h': 0.39, '3h': 0.47, '2h': 0.11, '1h': -0.31, '30min': -0.13}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:52:45.959793+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 47.51,
+                                "ema": 118238.38,
+                                "macd": 16.25,
+                                "macd_signal": 65.43,
+                                "bb_upper": 118772.05,
+                                "bb_lower": 117921.93,
+                                "close": 118152.0
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1d": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:54:14.197884+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.31, '18h': 4.83, '12h': 1.83, '6h': 1.04, '4h': 0.39, '3h': 0.47, '2h': 0.11, '1h': -0.31, '30min': -0.13}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:54:14.133333+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 47.51,
+                                "ema": 118238.38,
+                                "macd": 16.25,
+                                "macd_signal": 65.43,
+                                "bb_upper": 118772.05,
+                                "bb_lower": 117921.93,
+                                "close": 118152.0
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:58:35.497854+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.21, '18h': 4.66, '12h': 1.76, '6h': 0.86, '4h': 0.36, '3h': 0.26, '2h': 0.02, '1h': -0.33, '30min': -0.17}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:58:35.460162+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 42.7,
+                                "ema": 118217.21,
+                                "macd": -2.35,
+                                "macd_signal": 51.91,
+                                "bb_upper": 118782.63,
+                                "bb_lower": 117894.07,
+                                "close": 118014.1
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:00:40.982255+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.29, '18h': 4.73, '12h': 1.83, '6h': 0.94, '4h': 0.43, '3h': 0.34, '2h': 0.09, '1h': -0.26, '30min': -0.09}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:00:40.910883+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 46.31,
+                                "ema": 118207.02,
+                                "macd": -9.46,
+                                "macd_signal": 39.76,
+                                "bb_upper": 118784.99,
+                                "bb_lower": 117879.08,
+                                "close": 118101.3
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:03:28.907190+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 6.19, '18h': 4.14, '12h': 1.7, '6h': 0.63, '4h': 0.45, '3h': 0.25, '2h': 0.02, '1h': -0.25, '30min': -0.04}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:03:28.837490+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 44.68,
+                                "ema": 118203.28,
+                                "macd": -12.6,
+                                "macd_signal": 39.13,
+                                "bb_upper": 118787.33,
+                                "bb_lower": 117872.81,
+                                "close": 118062.0
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "3m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-11T14:13:31.332520+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 5.99, '18h': 3.95, '12h': 1.56, '6h': 0.46, '4h': 0.11, '3h': -0.13, '2h': -0.34, '1h': -0.3, '30min': -0.33}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T08:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:13:31.270909+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "BTCUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 37.25,
+                                "ema": 118157.72,
+                                "macd": -45.79,
+                                "macd_signal": 14.18,
+                                "bb_upper": 118803.84,
+                                "bb_lower": 117779.42,
+                                "close": 117790.0
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "ETHUSDC": {
+        "1d": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:52:52.388863+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.97, '18h': 7.08, '12h': 1.14, '6h': 1.27, '4h': 0.58, '3h': 1.27, '2h': 0.14, '1h': -0.26, '30min': -0.15}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:52:52.323998+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 49.81,
+                                "ema": 3009.65,
+                                "macd": 1.23,
+                                "macd_signal": 2.74,
+                                "bb_upper": 3032.07,
+                                "bb_lower": 2997.36,
+                                "close": 3008.31
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:54:20.443988+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.97, '18h': 7.08, '12h': 1.14, '6h': 1.27, '4h': 0.59, '3h': 1.27, '2h': 0.14, '1h': -0.25, '30min': -0.15}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:54:20.380039+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 49.88,
+                                "ema": 3009.66,
+                                "macd": 1.24,
+                                "macd_signal": 2.74,
+                                "bb_upper": 3032.07,
+                                "bb_lower": 2997.37,
+                                "close": 3008.4
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:58:41.957877+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.91, '18h': 6.87, '12h': 1.31, '6h': 0.92, '4h': 0.6, '3h': 0.88, '2h': 0.09, '1h': -0.22, '30min': -0.23}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:58:41.917435+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 45.24,
+                                "ema": 3008.75,
+                                "macd": 0.39,
+                                "macd_signal": 2.24,
+                                "bb_upper": 3032.37,
+                                "bb_lower": 2995.65,
+                                "close": 3002.09
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:00:48.038823+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.98, '18h': 6.94, '12h': 1.37, '6h': 0.98, '4h': 0.67, '3h': 0.94, '2h': 0.16, '1h': -0.16, '30min': -0.16}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:00:47.969438+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 46.54,
+                                "ema": 3008.52,
+                                "macd": 0.15,
+                                "macd_signal": 1.86,
+                                "bb_upper": 3031.82,
+                                "bb_lower": 2994.95,
+                                "close": 3003.99
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "5m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-11T14:48:22.118337+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 7.06, '18h': 4.87, '12h': 0.56, '6h': -1.56, '4h': -0.58, '3h': -0.93, '2h': -1.58, '1h': -1.11, '30min': -0.56}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:48:22.078461+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ETHUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 27.14,
+                                "ema": 2995.64,
+                                "macd": -6.76,
+                                "macd_signal": -3.93,
+                                "bb_upper": 3020.4,
+                                "bb_lower": 2977.05,
+                                "close": 2972.8
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "SOLUSDC": {
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:52:58.827567+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 4.37, '18h': 4.09, '12h': 0.07, '6h': -0.13, '4h': 0.82, '3h': 0.92, '2h': 0.58, '1h': -0.01, '30min': -0.09}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-10T23:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:52:58.766315+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "SOLUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 53.99,
+                                "ema": 164.7,
+                                "macd": 0.14,
+                                "macd_signal": 0.16,
+                                "bb_upper": 165.29,
+                                "bb_lower": 164.35,
+                                "close": 164.87
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1m": {
+            "buy": {
+                "rsi": {
+                    "time": "2025-07-11T14:48:29.185434+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "none",
+                    "volume_multiplier": 1.4,
+                    "price_change": "{'24h': 3.84, '18h': 1.59, '12h': -0.38, '6h': -1.72, '4h': 0.02, '3h': -0.05, '2h': -0.53, '1h': -0.78, '30min': -0.19}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-10T23:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:48:29.146773+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "SOLUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 40.16,
+                                "ema": 164.37,
+                                "macd": -0.1,
+                                "macd_signal": null,
+                                "bb_upper": 165.17,
+                                "bb_lower": 163.29,
+                                "close": 163.72
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "XRPUSDC": {
+        "1d": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:53:06.297003+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.05, '18h': 6.64, '12h': 3.65, '6h': 2.49, '4h': 2.62, '3h': 2.29, '2h': 2.02, '1h': 1.02, '30min': 0.0}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:53:06.239704+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 72.31,
+                                "ema": 2.61,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 2.64,
+                                "bb_lower": 2.56,
+                                "close": 2.6402
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:54:33.132902+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.03, '18h': 6.62, '12h': 3.62, '6h': 2.46, '4h': 2.6, '3h': 2.26, '2h': 1.99, '1h': 0.99, '30min': -0.03}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:54:33.075057+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 71.8,
+                                "ema": 2.61,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 2.64,
+                                "bb_lower": 2.56,
+                                "close": 2.6395
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:58:55.356581+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 8.29, '18h': 6.62, '12h': 3.97, '6h': 2.67, '4h': 3.22, '3h': 2.43, '2h': 2.44, '1h': 0.99, '30min': 0.46}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:58:55.322776+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 74.91,
+                                "ema": 2.61,
+                                "macd": 0.02,
+                                "macd_signal": null,
+                                "bb_upper": 2.64,
+                                "bb_lower": 2.56,
+                                "close": 2.6464
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:01:00.311985+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 8.28, '18h': 6.61, '12h': 3.96, '6h': 2.66, '4h': 3.21, '3h': 2.42, '2h': 2.43, '1h': 0.98, '30min': 0.45}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:01:00.252324+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 73.37,
+                                "ema": 2.61,
+                                "macd": 0.02,
+                                "macd_signal": null,
+                                "bb_upper": 2.65,
+                                "bb_lower": 2.55,
+                                "close": 2.6461
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "30m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:03:48.665523+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 8.15, '18h': 5.98, '12h': 3.58, '6h': 2.25, '4h': 3.29, '3h': 2.07, '2h': 2.29, '1h': 0.85, '30min': 0.11}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:03:48.600467+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 71.52,
+                                "ema": 2.61,
+                                "macd": 0.02,
+                                "macd_signal": null,
+                                "bb_upper": 2.65,
+                                "bb_lower": 2.55,
+                                "close": 2.6436
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "15m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:10:03.515267+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.5999999999999999,
+                    "price_change": "{'24h': 8.9, '18h': 6.56, '12h': 4.18, '6h': 2.94, '4h': 3.7, '3h': 2.38, '2h': 2.71, '1h': 1.38, '30min': 0.58}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:10:03.449650+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "XRPUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 77.69,
+                                "ema": 2.61,
+                                "macd": 0.02,
+                                "macd_signal": null,
+                                "bb_upper": 2.65,
+                                "bb_lower": 2.55,
+                                "close": 2.6589
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "ADAUSDC": {
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:53:13.668283+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 15.73, '18h': 14.08, '12h': 7.61, '6h': 4.98, '4h': 5.94, '3h': 4.29, '2h': 2.43, '1h': 1.35, '30min': 0.25}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:53:13.612284+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 79.34,
+                                "ema": 0.71,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7292
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                },
+                "log": {
+                    "time": "2025-07-11T14:14:02.608222+03:00",
+                    "status": "completed",
+                    "momentum_strength": "strong",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 15.44, '18h': 12.25, '12h': 7.24, '6h': 4.44, '4h': 5.06, '3h': 2.67, '2h': 1.21, '1h': 0.51, '30min': -0.3}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:14:02.532553+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 69.3,
+                                "ema": 0.71,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7269
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:54:40.808507+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 16.27, '18h': 14.61, '12h': 8.11, '6h': 5.47, '4h': 6.43, '3h': 4.77, '2h': 2.9, '1h': 1.82, '30min': 0.71}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:54:40.755063+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 80.64,
+                                "ema": 0.71,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7317
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:59:02.624188+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 16.14, '18h': 14.47, '12h': 8.04, '6h': 4.85, '4h': 6.5, '3h': 4.63, '2h': 3.02, '1h': 1.36, '30min': 0.94}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T10:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:59:02.593248+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 81.02,
+                                "ema": 0.71,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7325
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "30m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:01:07.477562+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 16.41, '18h': 14.74, '12h': 8.29, '6h': 5.1, '4h': 6.75, '3h': 4.87, '2h': 3.26, '1h': 1.59, '30min': 1.17}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:01:07.422000+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 81.68,
+                                "ema": 0.72,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7342
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "15m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:03:55.841435+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 16.89, '18h': 14.14, '12h': 8.44, '6h': 5.53, '4h': 7.34, '3h': 4.78, '2h': 3.15, '1h': 1.81, '30min': 1.42}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:03:55.769925+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "ADAUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 82.32,
+                                "ema": 0.72,
+                                "macd": 0.01,
+                                "macd_signal": null,
+                                "bb_upper": 0.74,
+                                "bb_lower": 0.68,
+                                "close": 0.7356
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    },
+    "HBARUSDC": {
+        "1d": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T13:59:11.634900+03:00",
+                    "status": "unused",
+                    "momentum_strength": "weak",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.8,
+                    "price_change": "{'24h': 15.76, '18h': 14.56, '12h': 9.29, '6h': 4.02, '4h': 4.58, '3h': 3.44, '2h': 2.8, '1h': 0.21, '30min': -0.21}",
+                    "market_state": "bull",
+                    "started_on": "2025-07-11T05:00:00",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T13:59:11.604445+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "HBARUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 64.77,
+                                "ema": 0.2,
+                                "macd": 0.0,
+                                "macd_signal": null,
+                                "bb_upper": 0.21,
+                                "bb_lower": 0.2,
+                                "close": 0.206
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "4h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:01:15.150916+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.7,
+                    "price_change": "{'24h': 16.01, '18h': 14.8, '12h': 9.52, '6h': 4.25, '4h': 4.81, '3h': 3.66, '2h': 3.02, '1h': 0.42, '30min': 0.0}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:01:15.100016+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "HBARUSDC",
+                        "intervals": [
+                            "15m"
+                        ],
+                        "data_preview": {
+                            "15m": {
+                                "rsi": 66.31,
+                                "ema": 0.2,
+                                "macd": 0.0,
+                                "macd_signal": null,
+                                "bb_upper": 0.21,
+                                "bb_lower": 0.2,
+                                "close": 0.2064
+                            }
+                        },
+                        "limit": 30,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "2h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:04:02.333608+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 15.33, '18h': 13.52, '12h': 8.69, '6h': 3.36, '4h': 3.93, '3h': 2.3, '2h': 2.05, '1h': -0.35, '30min': -0.03}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:04:02.265640+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "HBARUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 54.29,
+                                "ema": 0.21,
+                                "macd": 0.0,
+                                "macd_signal": 0.0,
+                                "bb_upper": 0.21,
+                                "bb_lower": 0.2,
+                                "close": 0.2054
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "1h": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:08:02.916121+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 14.74, '18h': 12.6, '12h': 8.4, '6h': 2.8, '4h': 3.46, '3h': 1.68, '2h': 2.05, '1h': -0.77, '30min': -0.36}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:08:02.862167+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "HBARUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 50.68,
+                                "ema": 0.21,
+                                "macd": 0.0,
+                                "macd_signal": 0.0,
+                                "bb_upper": 0.21,
+                                "bb_lower": 0.2,
+                                "close": 0.2048
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        },
+        "30m": {
+            "sell": {
+                "rsi": {
+                    "time": "2025-07-11T14:10:16.362527+03:00",
+                    "status": "unused",
+                    "momentum_strength": "none",
+                    "reverse_strength": "n/a",
+                    "volume_multiplier": 1.0,
+                    "price_change": "{'24h': 15.45, '18h': 13.29, '12h': 9.07, '6h': 3.43, '4h': 4.1, '3h': 2.3, '2h': 2.68, '1h': -0.16, '30min': 0.25}",
+                    "market_state": "unknown",
+                    "started_on": "2025-07-11T11:00:00",
+                    "previous_market_state": "bull",
+                    "ohlcv_data": {
+                        "timestamp": "2025-07-11T14:10:16.293033+03:00",
+                        "source_exchange": "Okx",
+                        "symbol": "HBARUSDC",
+                        "intervals": [
+                            "5m"
+                        ],
+                        "data_preview": {
+                            "5m": {
+                                "rsi": 57.0,
+                                "ema": 0.21,
+                                "macd": 0.0,
+                                "macd_signal": 0.0,
+                                "bb_upper": 0.21,
+                                "bb_lower": 0.2,
+                                "close": 0.206
+                            }
+                        },
+                        "limit": 300,
+                        "start_time": null,
+                        "end_time": null
+                    }
+                }
+            }
+        }
+    }
+}

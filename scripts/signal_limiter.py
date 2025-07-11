@@ -87,15 +87,7 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
                       momentum_strength, reverse_signal_info, volume_multiplier,
                       price_change, market_state, started_on,
                       ohlcv_data=None, price_data=None):
-    from pprint import pprint
 
-    # ✅ Tarkistetaan että kaikki kriittiset kentät on validia stringejä
-    for name, val in [("symbol", symbol), ("interval", interval), ("signal_type", signal_type), ("mode", mode)]:
-        if not isinstance(val, str) or not val.strip():
-            print(f"[ERROR] Invalid {name}: {val!r}")
-            return
-
-    # ✅ Aikavyöhykkeen varmistus
     if now.tzinfo is None:
         now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
     else:
@@ -103,22 +95,20 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
 
     log = load_signal_log()
 
-    print(f"[INFO] Logging signal: {symbol} {interval} {signal_type} {mode}")
-    print(f"[INFO] Momentum: {momentum_strength}, Status: {status}, Time: {now.isoformat()}")
-
-    # ✅ Luo logirakenne
+    # Luo rakenne: symbol > interval > signal_type (buy/sell) > mode (rsi/momentum/...)
     mode_entry = log.setdefault(symbol, {}) \
                     .setdefault(interval, {}) \
                     .setdefault(signal_type, {}) \
                     .setdefault(mode, {})
 
-    # Jos on vanha str-muoto → muunna dictiksi
+    # Korjaa vanha formaatti, jos mode_entry on str, muutetaan dictiksi
     if isinstance(mode_entry, str):
         mode_entry = {"time": mode_entry}
         log[symbol][interval][signal_type][mode] = mode_entry
 
-    # ✅ Kirjataan tiedot
+    # Tallenna aikaleima erilliseen avainkenttään
     mode_entry["time"] = now.isoformat()
+
     if status:
         mode_entry["status"] = status
     if momentum_strength:
@@ -134,7 +124,7 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
     if started_on:
         mode_entry["started_on"] = started_on
 
-    # Etsi mahdollinen edellinen market_state
+    # Tarkista previous_market_state muiden analyysien alta
     previous_state = None
     for _interval_data in log.get(symbol, {}).values():
         for _signal_data in _interval_data.values():
@@ -144,6 +134,7 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
                         logged_state = _mode_data.get("market_state")
                         if logged_state and market_state and logged_state != market_state:
                             previous_state = logged_state
+
     if previous_state:
         mode_entry["previous_market_state"] = previous_state
     if ohlcv_data:
@@ -151,14 +142,9 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
     if price_data:
         mode_entry["price_data"] = price_data
 
-    # ✅ Tulostetaan tallennettava rakenne
-    print("[DEBUG] Final signal log entry:")
-    pprint(log[symbol][interval][signal_type][mode], indent=2)
-
     # ✅ Tallenna
     try:
         save_signal_log(log)
-        print("[✅] Signal log saved successfully.")
+        print("✅ Signal log saved successfully.")
     except Exception as e:
         print(f"[❌] Failed to save signal log: {e}")
-

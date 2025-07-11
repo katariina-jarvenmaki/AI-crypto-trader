@@ -22,6 +22,12 @@ def parse_log_entry(entry: dict) -> Dict:
     volume = entry["data_preview"].get("1d", {}).get("volume")
     change_24h = entry["data_preview"].get("1d", {}).get("change_24h")
 
+    # ➕ override with price_data if exists
+    price_data = entry["data_preview"].get("price_data", {})
+    price = price_data.get("last_price", price)
+    volume = price_data.get("volume", volume)
+    change_24h = price_data.get("price_change_percent", change_24h)
+
     rsi_data = {
         interval: entry["data_preview"].get(interval, {}).get("rsi")
         for interval in CONFIG["intervals_to_use"]

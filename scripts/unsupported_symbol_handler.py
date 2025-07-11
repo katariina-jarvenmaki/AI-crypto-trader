@@ -47,8 +47,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         if bybit_result:
 
             # Hae viimeisimmät logitiedot
-            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", symbol)
-            price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", symbol)
+            bybit_symbol = symbol.replace("USDC", "USDT")
+            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
+            price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
 
             # Lisää logitietoihin
             log_trade(

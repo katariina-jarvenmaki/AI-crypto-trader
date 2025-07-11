@@ -109,8 +109,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     # Do the signal logging
     selected_change_text = str(price_changes) if price_changes else "n/a"
-    ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", symbol)
-    price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", symbol)
+    bybit_symbol = symbol.replace("USDC", "USDT")
+    ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
+    price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
     if risk_strength in ("strong", "weak", "none") and (
         mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):
