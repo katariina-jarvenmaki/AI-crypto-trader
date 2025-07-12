@@ -32,9 +32,9 @@ Every 5 minutes:
 
 **Supported symbol data fetching (Potential trades checker is supposted to run first at least once before this)**
 
-Every 30 minutes:
+Every 15 minutes:
 ```bash
-*/30 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron.log 2>&1
+*/15 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron.log 2>&1
 ```
 
 **Potential trades checker**

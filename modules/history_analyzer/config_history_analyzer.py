@@ -6,10 +6,10 @@ CONFIG = {
     "price_log_path": "integrations/price_data_fetcher/price_data_log.jsonl",
     "daily_logs_path": "modules/history_analyzer/logs/",
     "intervals_to_use": ["1m", "1h", "4h", "1d", "1w"],
-    "price_change_threshold": 2.0, # %
-    "rsi_change_threshold": 2.0,
     "ema_alpha": 0.2,
-    "macd_diff_threshold": 0.5,
     "rsi_divergence_window": 2,
+    "price_change_threshold": 1.0, # %
+    "rsi_change_threshold": 1.0,
+    "macd_diff_threshold": 0.4,
     "symbol_keys": ["potential_both_ways", "potential_to_long", "potential_to_short"],
 }

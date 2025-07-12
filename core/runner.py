@@ -366,7 +366,7 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                 for side_key, orders in sides.items():
                     for order in orders:
                         if not isinstance(order, dict):
-                            print(f"[WARN] Skipping invalid order: {order}")
+                            # print(f"[WARN] Skipping invalid order: {order}")
                             continue
                         if order.get("status") != "completed":
                             expected_pos_side = side_mapping.get(side_key.lower())

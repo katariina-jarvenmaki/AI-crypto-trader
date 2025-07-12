@@ -5,6 +5,8 @@ from scripts.order_limiter import can_initiate, load_initiated_orders, normalize
 from scripts.trade_order_logger import log_trade
 import json
 
+from datetime import datetime, timedelta
+from dateutil.parser import isoparse
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
 
@@ -22,7 +24,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
-    # Hae kaksi viimeisintä historia-entryä
     history_entries = get_latest_two_log_entries_for_symbol(
         "modules/history_analyzer/history_data_log.jsonl", bybit_symbol
     )
@@ -34,13 +35,30 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     latest_entry = history_entries[0]
     previous_entry = history_entries[1] if len(history_entries) > 1 else {}
 
+    # --- 🔎 Tarkista aikaehdot ---
+    try:
+        entry_time = isoparse(latest_entry.get("timestamp"))
+        if datetime.now(entry_time.tzinfo) - entry_time > timedelta(hours=2):
+            print(f"⏳ Skipping {bybit_symbol}: latest history entry is older than 2 hours.")
+            return
+    except Exception as e:
+        print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
+        return
+
     rsi_divergence = latest_entry.get("rsi_divergence")
     latest_flag = latest_entry.get("flag", "neutral")
     previous_flag = previous_entry.get("flag", "neutral")
 
     # ----- SHORT -----
     if short_only is True:
-        # Hyväksytään jos divergence on bearish TAI flag-ehto täyttyy
+
+        # 🔴 Volume-tarkistus
+        volume = latest_entry.get("volume")
+        print(f"Volume: {volume}")
+        if volume is not None and volume > 18000000:
+            print(f"📉 Skipping SHORT: volume too high ({volume}).")
+            return
+
         if not (
             rsi_divergence == "bearish-divergence" or 
             (latest_flag == "bear-flag" and previous_flag != "bear-flag")
@@ -80,7 +98,15 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     # ----- LONG -----
     elif long_only is True:
-        # Hyväksytään jos divergence on bullish TAI flag-ehto täyttyy
+
+        # 🟠 RSI-tarkistus
+        ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
+        if ohlcv_entry:
+            rsi_2h = ohlcv_entry.get("data_preview", {}).get("2h", {}).get("rsi")
+            if rsi_2h is not None and rsi_2h > 70:
+                print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
+                return
+
         if not (
             rsi_divergence == "bullish-divergence" or 
             (latest_flag == "bull-flag" and previous_flag != "bull-flag")
@@ -101,7 +127,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
-            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
             price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=bybit_result["symbol"],
