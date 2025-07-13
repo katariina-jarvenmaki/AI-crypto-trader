@@ -34,8 +34,8 @@ INTERVAL_WEIGHTS = {
 # === PARAMETERS RELATED TO SYMBOL FETCHING ===
 
 # Number of symbols selected for long/short recommendations
-TOP_N_LONG = 1
-TOP_N_SHORT = 20
+TOP_N_LONG = 10
+TOP_N_SHORT = 10
 
 # If multiple symbols share the same value, allow additional ties
 TOP_N_EXTRA_TIES = True
@@ -551,4 +551,5 @@ BLOCKED_SYMBOLS =  [
     "VANRYUSDT", # -> too volatile without momentum checks
     "SLFUSDT", # -> too volatile without momentum checks
     "SOLOUSDT", # -> too volatile without momentum checks
+    "PENGUUSDT", # -> too volatile without momentum checks
 ]
