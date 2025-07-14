@@ -98,6 +98,8 @@ def load_history(symbol: str) -> List[dict]:
     return history
 
 def compute_ema(prev_ema: float, current_value: float, alpha=0.1) -> float:
+    if current_value is None:
+        return prev_ema
     if prev_ema is None:
         return current_value
     return alpha * current_value + (1 - alpha) * prev_ema

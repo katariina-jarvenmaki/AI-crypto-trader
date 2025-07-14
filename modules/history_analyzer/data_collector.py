@@ -63,15 +63,18 @@ def get_latest_price_data_for_symbols(symbols: List[str]) -> dict:
     latest = {}
     with open(CONFIG["price_log_path"], "r") as f:
         for line in reversed(f.readlines()):
+            stripped = line.strip()
+            if not stripped or '\x00' in stripped:
+                continue
             try:
-                entry = json.loads(line.strip())
+                entry = json.loads(stripped)
                 symbol = entry.get("symbol")
                 if symbol in symbols and symbol not in latest:
                     latest[symbol] = entry
                 if len(latest) == len(symbols):
                     break
             except Exception as e:
-                print(f"Skipping invalid PRICE line: {e}")
+                print(f"Skipping invalid PRICE line:\n  Raw: {repr(line)}\n  Error: {e}")
 
     return latest
 
