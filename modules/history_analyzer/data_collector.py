@@ -8,14 +8,12 @@ def parse_log_entry(entry: dict) -> Dict:
     symbol = entry["symbol"]
     timestamp = entry["timestamp"]
 
-    price = entry["data_preview"].get("1m", {}).get("close")
     price_data = entry["data_preview"].get("price_data", {})
-    last_price = price_data.get("last_price")
+    price = price_data.get("last_price")
     change_24h = price_data.get("price_change_percent")
     high_price = price_data.get("high_price")
     low_price = price_data.get("low_price")
     volume = price_data.get("volume")
-    turnover = price_data.get("turnover")
 
     rsi_data = {
         interval: entry["data_preview"].get(interval, {}).get("rsi")

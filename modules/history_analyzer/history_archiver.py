@@ -2,7 +2,8 @@
 
 import os
 import json
-from typing import List
+from dateutil.parser import isoparse
+from typing import Dict, Tuple, List
 from datetime import datetime, timedelta
 from modules.history_analyzer.config_history_analyzer import CONFIG
 
@@ -109,7 +110,8 @@ def retain_last_entry_per_hour_per_symbol(entries: List[dict]) -> List[dict]:
     print(f"[INFO] Skipped entries due to parsing errors: {parse_errors}")
     print(f"[INFO] Total retained entries: {len(latest_entries)}")
 
-    return list(latest_entries.values())
+    # Sortataan aikaleiman mukaan ennen palautusta
+    return sorted(latest_entries.values(), key=lambda e: isoparse(e["timestamp"]))
 
 def rewrite_log_without_old_entries(source_file: str, date_str: str, retained_entries: List[dict]):
     print(f"[DEBUG] Rewriting log file: {source_file}")
@@ -134,7 +136,6 @@ def rewrite_log_without_old_entries(source_file: str, date_str: str, retained_en
                         new_lines.append(json.dumps(entry))
                         retained_count += 1
                     else:
-                        # entry for date_str but not retained
                         continue
                 else:
                     new_lines.append(json.dumps(entry))
@@ -149,11 +150,21 @@ def rewrite_log_without_old_entries(source_file: str, date_str: str, retained_en
     print(f"[INFO] Entries from other dates retained: {skipped_date_count}")
     print(f"[INFO] Lines skipped due to parsing errors: {parse_errors}")
 
+    # Sortataan aikaleiman mukaan ennen tallennusta
+    try:
+        new_lines_sorted = sorted(
+            new_lines,
+            key=lambda line: isoparse(json.loads(line)["timestamp"])
+        )
+    except Exception as e:
+        print(f"[ERROR] Sorting failed: {e}")
+        new_lines_sorted = new_lines  # fallback ilman sorttausta
+
     with open(source_file, "w") as f:
-        for line in new_lines:
+        for line in new_lines_sorted:
             f.write(line + "\n")
 
-    print(f"[✔] Rewrite completed. New total lines in file: {len(new_lines)}")
+    print(f"[✔] Rewrite completed. New total lines in file: {len(new_lines_sorted)}")
 
 def write_entries_to_file(entries: List[dict], target_file: str):
     with open(target_file, "a") as f:

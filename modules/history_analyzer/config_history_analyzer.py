@@ -6,6 +6,7 @@ CONFIG = {
     "price_log_path": "integrations/price_data_fetcher/price_data_log.jsonl",
     "daily_logs_path": "modules/history_analyzer/logs/",
     "intervals_to_use": ["1m", "1h", "4h", "1d", "1w"],
+    "min_prev_entry_age_minutes": 60, # prev-data aikaraja minuutteinan, minimi 60 min
     "ema_alpha": 0.2,
     "rsi_divergence_window": 2,
     "price_change_threshold": 1.0, # %

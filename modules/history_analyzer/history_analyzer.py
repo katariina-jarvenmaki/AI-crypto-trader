@@ -5,6 +5,7 @@ from modules.history_analyzer.config_history_analyzer import CONFIG
 from modules.history_analyzer.data_collector import data_collector
 from modules.history_analyzer.history_log_processor import history_log_processor
 from modules.history_analyzer.history_archiver import history_archiver
+from modules.history_analyzer.analysis_engine import analysis_engine
 from modules.history_analyzer.utils import get_latest_symbols_from_log
 
 def main():
@@ -25,6 +26,9 @@ def main():
 
     # Running history_log_processor
     history_log_processor(parsed_entries)
+
+    # Running analysis_engine
+    analysis_engine(symbols)
 
 if __name__ == "__main__":
     main()
