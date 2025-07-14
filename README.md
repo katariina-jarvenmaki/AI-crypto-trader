@@ -99,6 +99,11 @@ To run History analyzer manually  (supposted to run with Symbol Data Fetchers):
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 ```
 
+To run dublicate history log entry remover:
+```bash
+/usr/bin/python3 -m modules.history_analyzer.remove_duplicates_from_jsonl
+```
+
 **4. Testing**
 
 Test Binance-integration status
