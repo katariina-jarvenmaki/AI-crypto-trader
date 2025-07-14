@@ -1,4 +1,174 @@
+OLD:
+
+
+# modules/history_analyzer/history_analyzer.py
+
+import os
+import json
+import math
+from collections import defaultdict
+from dateutil.parser import isoparse
+from typing import List, Dict, Tuple
+from datetime import datetime, timedelta, timezone
+from modules.history_analyzer.config_history_analyzer import CONFIG
+
 def process_log_entry(entry: dict):
+
+    ...
+
+    divergence = detect_rsi_divergence(history, avg_rsi)
+    delta = abs(avg_rsi - prev_avg) if prev_avg is not None else None
+
+    if delta is not None and delta < CONFIG["rsi_change_threshold"]:
+        return
+
+    flag = detect_flag(prev_avg, avg_rsi) if prev_avg is not None else "neutral"
+
+    if macd_diff is not None and abs(macd_diff) > CONFIG["macd_diff_threshold"]:
+        macd_trend = "bullish" if macd_diff > 0 else "bearish"
+    else:
+        macd_trend = "neutral"
+
+    price_trend = detect_price_trend(last_entry.get("price") if last_entry else None, price)
+    volume_class = classify_volume(volume)
+    change_class = interpret_change_24h(change_24h)
+
+    new_entry = {
+        "timestamp": timestamp,
+        "symbol": symbol,
+        "price": price,
+        "price_trend": price_trend,
+        "volume": volume,
+        "volume_class": volume_class,
+        "change_24h": change_24h,
+        "change_class": change_class,
+        "rsi": current_rsi,
+        "avg_rsi": avg_rsi,
+        "avg_rsi_1h_4h": avg_rsi_1h_4h_val,
+        "avg_rsi_1d_1w": avg_rsi_1d_1w_val,
+        "ema_rsi": ema_rsi,
+        "macd": macd,
+        "macd_signal_raw": macd_signal,
+        "macd_diff": macd_diff,
+        "macd_signal": macd_trend,
+        "avg_macd_all": avg_macd_all,
+        "avg_macd_1h_4h": avg_macd_1h_4h_val,
+        "avg_macd_1d_1w": avg_macd_1d_1w_val,
+        "ema_macd": ema_macd,
+        "avg_macd_signal_all": avg_macd_signal_all,
+        "avg_macd_signal_1h_4h": avg_macd_signal_1h_4h_val,
+        "avg_macd_signal_1d_1w": avg_macd_signal_1d_1w_val,
+        "ema_macd_signal": ema_macd_signal,
+        "rsi_divergence": divergence,
+        "flag": flag,
+        "prev_avg_rsi": prev_avg,
+        "delta": delta,
+        "prev_ema_rsi": prev_ema_rsi,
+        "prev_ema_macd": prev_ema_macd,
+        "prev_ema_macd_signal": prev_ema_macd_signal
+    }
+
+    history.append(new_entry)
+    save_history(symbol, history)
+
+    print(f"""
+✅ FINAL ANALYSIS for {symbol} @ {timestamp}
+- price: {price} ({price_trend})
+- volume: {volume} ({volume_class})
+- 24h change: {change_24h}% ({change_class})
+- avg_rsi: {avg_rsi}
+- ema_rsi: {ema_rsi}
+- avg_macd_all: {avg_macd_all}
+- ema_macd: {ema_macd}
+- avg_macd_signal_all: {avg_macd_signal_all}
+- ema_macd_signal: {ema_macd_signal}
+- macd_diff: {macd_diff}
+- rsi_divergence: {divergence}
+- flag: {flag}
+- macd_trend: {macd_trend}
+""")
+
+def interpret_change_24h(change: float) -> str:
+    if change is None:
+        return "unknown"
+    if change > 5:
+        return "strong-up"
+    elif change > 0:
+        return "mild-up"
+    elif change < -5:
+        return "strong-down"
+    elif change < 0:
+        return "mild-down"
+    return "neutral"
+
+def detect_flag(prev_avg: float, current_avg: float) -> str:
+    if current_avg > prev_avg:
+        return "bull-flag"
+    elif current_avg < prev_avg:
+        return "bear-flag"
+    return "neutral"
+
+def detect_price_trend(prev_price: float, current_price: float) -> str:
+    if prev_price is None:
+        return "neutral"
+    if current_price > prev_price:
+        return "price-up"
+    elif current_price < prev_price:
+        return "price-down"
+    return "neutral"
+
+def classify_volume(volume: float) -> str:
+    if volume is None:
+        return "unknown"
+    if volume > 1_000_000:
+        return "high-volume"
+    elif volume > 100_000:
+        return "medium-volume"
+    return "low-volume"
+
+def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
+    if len(history) < CONFIG["rsi_divergence_window"]:
+        return "none"
+    prev = history[-1]
+    prev2 = history[-2]
+    if prev["avg_rsi"] > prev2["avg_rsi"] and current_avg < prev["avg_rsi"]:
+        return "bearish-divergence"
+    elif prev["avg_rsi"] < prev2["avg_rsi"] and current_avg > prev["avg_rsi"]:
+        return "bullish-divergence"
+    return "none"
+
+def convert_price_log_entry_to_ohlcv_format(entry):
+    """
+    Convert price_data_log.jsonl format into a format expected by process_log_entry
+    """
+    symbol = entry.get("symbol")
+    timestamp = entry.get("timestamp")
+    data_preview = {
+        "1m": {
+            "close": entry["data_preview"].get("last_price")
+        },
+        "1d": {
+            "volume": entry["data_preview"].get("volume"),
+            "change_24h": entry["data_preview"].get("price_change_percent")
+        }
+    }
+
+    return {
+        "symbol": symbol,
+        "timestamp": timestamp,
+        "data_preview": data_preview
+    }
+
+
+
+
+
+    
+    
+ ---------------   
+    
+    
+    def process_log_entry(entry: dict):
 
     ...
 
@@ -608,3 +778,152 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+ChatGPT-ehdotus:
+
+def process_log_entry(entry: dict):
+    parsed = parse_log_entry(entry)
+    symbol = parsed["symbol"]
+    timestamp = parsed["timestamp"]
+    price = parsed["price"]
+    volume = parsed["volume"]
+    turnover = parsed["turnover"]
+    change_24h = parsed["change_24h"]
+    rsi = parsed["rsi"]
+    macd = parsed["macd"]
+    macd_signal = parsed["macd_signal"]
+    ema = parsed["ema"]
+    bb_upper = parsed["bb_upper"]
+    bb_lower = parsed["bb_lower"]
+    high_price = parsed["high_price"]
+    low_price = parsed["low_price"]
+
+    # Yleiset keskiarvot
+    avg_rsi = average_rsi_1h_4h_1d_1w(rsi)
+    avg_macd = average_macd_1h_4h_1d_1w(macd)
+    avg_macd_signal = average_macd_signal_1h_4h_1d_1w(macd_signal)
+
+    history = load_history(symbol)
+    last_entry = history[-1] if history else {}
+
+    prev_avg_rsi = last_entry.get("avg_rsi")
+    prev_ema_rsi = last_entry.get("ema_rsi")
+    prev_ema_macd = last_entry.get("ema_macd")
+    prev_ema_macd_signal = last_entry.get("ema_macd_signal")
+
+    ema_rsi = compute_ema(prev_ema_rsi, avg_rsi)
+    ema_macd = compute_ema(prev_ema_macd, avg_macd)
+    ema_macd_signal = compute_ema(prev_ema_macd_signal, avg_macd_signal)
+    macd_diff = compute_macd_diff(macd, macd_signal)
+
+    # Bollinger-analyysi
+    def analyze_bollinger(price, bb_upper, bb_lower):
+        if price >= bb_upper:
+            return "overbought"
+        elif price <= bb_lower:
+            return "oversold"
+        return "neutral"
+
+    bollinger_status = analyze_bollinger(price, bb_upper["1d"], bb_lower["1d"])
+
+    # EMA vs Price
+    def detect_ema_trend(price, ema_1d):
+        if price > ema_1d * 1.01:
+            return "strong_above"
+        elif price < ema_1d * 0.99:
+            return "strong_below"
+        return "near_ema"
+
+    ema_trend = detect_ema_trend(price, ema["1d"])
+
+    # Turnover analyysi
+    def detect_turnover_anomaly(turnover, volume, price):
+        if volume == 0:
+            return "invalid"
+        avg_price = turnover / volume
+        deviation = abs(avg_price - price) / price
+        return "mismatch" if deviation > 0.02 else "normal"
+
+    turnover_status = detect_turnover_anomaly(turnover, volume, price)
+
+    # RSI divergence
+    rsi_divergence = detect_rsi_divergence(history, avg_rsi)
+    delta_rsi = abs(avg_rsi - prev_avg_rsi) if prev_avg_rsi is not None else None
+
+    if delta_rsi is not None and delta_rsi < CONFIG["rsi_change_threshold"]:
+        return  # Ei riittävästi muutosta
+
+    flag = detect_flag(prev_avg_rsi, avg_rsi) if prev_avg_rsi else "neutral"
+
+    # MACD trendin suunta
+    macd_trend = "neutral"
+    if macd_diff is not None and abs(macd_diff) > CONFIG["macd_diff_threshold"]:
+        macd_trend = "bullish" if macd_diff > 0 else "bearish"
+
+    price_trend = detect_price_trend(last_entry.get("price"), price)
+    volume_class = classify_volume(volume)
+    change_class = interpret_change_24h(change_24h)
+
+    # Signaalin vahvuuden arviointi
+    def estimate_signal_strength(flag, macd_trend, bollinger_status, rsi_divergence, ema_trend):
+        if flag == "bullish" and macd_trend == "bullish" and bollinger_status == "oversold" and ema_trend == "strong_above":
+            return "very_strong_bullish"
+        if flag == "bearish" and macd_trend == "bearish" and bollinger_status == "overbought" and ema_trend == "strong_below":
+            return "very_strong_bearish"
+        if rsi_divergence:
+            return "watch_for_reversal"
+        return "neutral"
+
+    signal_strength = estimate_signal_strength(flag, macd_trend, bollinger_status, rsi_divergence, ema_trend)
+
+    new_entry = {
+        "timestamp": timestamp,
+        "symbol": symbol,
+        "price": price,
+        "price_trend": price_trend,
+        "volume": volume,
+        "volume_class": volume_class,
+        "change_24h": change_24h,
+        "change_class": change_class,
+        "rsi": rsi,
+        "avg_rsi": avg_rsi,
+        "ema_rsi": ema_rsi,
+        "macd": macd,
+        "macd_signal": macd_signal,
+        "macd_diff": macd_diff,
+        "ema_macd": ema_macd,
+        "ema_macd_signal": ema_macd_signal,
+        "rsi_divergence": rsi_divergence,
+        "flag": flag,
+        "macd_trend": macd_trend,
+        "bollinger_status": bollinger_status,
+        "ema_trend": ema_trend,
+        "turnover_status": turnover_status,
+        "signal_strength": signal_strength,
+        "prev_avg_rsi": prev_avg_rsi,
+        "delta_rsi": delta_rsi
+    }
+
+    history.append(new_entry)
+    save_history(symbol, history)
+
+    print(f"""
+✅ FINAL ANALYSIS for {symbol} @ {timestamp}
+- price: {price} ({price_trend})
+- volume: {volume} ({volume_class})
+- 24h change: {change_24h}% ({change_class})
+- avg_rsi: {avg_rsi}, ema_rsi: {ema_rsi}
+- macd_diff: {macd_diff}, trend: {macd_trend}
+- bollinger: {bollinger_status}, ema_trend: {ema_trend}
+- turnover check: {turnover_status}
+- RSI divergence: {rsi_divergence}, flag: {flag}
+- 🔥 signal_strength: {signal_strength}
+""")

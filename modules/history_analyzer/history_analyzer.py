@@ -4,10 +4,15 @@ from pprint import pprint
 from modules.history_analyzer.config_history_analyzer import CONFIG
 from modules.history_analyzer.data_collector import data_collector
 from modules.history_analyzer.history_log_processor import history_log_processor
+from modules.history_analyzer.history_archiver import history_archiver
 from modules.history_analyzer.utils import get_latest_symbols_from_log
 
 def main():
     
+    # Archive previous logs
+    history_archiver()
+
+    # Get the symbols
     symbols = get_latest_symbols_from_log(CONFIG["symbol_log_path"])
     if not symbols:
         print("No symbols found in latest symbol log.")
