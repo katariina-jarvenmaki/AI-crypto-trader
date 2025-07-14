@@ -790,67 +790,10 @@ if __name__ == "__main__":
 ChatGPT-ehdotus:
 
 def process_log_entry(entry: dict):
-    parsed = parse_log_entry(entry)
-    symbol = parsed["symbol"]
-    timestamp = parsed["timestamp"]
-    price = parsed["price"]
-    volume = parsed["volume"]
-    turnover = parsed["turnover"]
-    change_24h = parsed["change_24h"]
-    rsi = parsed["rsi"]
-    macd = parsed["macd"]
-    macd_signal = parsed["macd_signal"]
-    ema = parsed["ema"]
-    bb_upper = parsed["bb_upper"]
-    bb_lower = parsed["bb_lower"]
-    high_price = parsed["high_price"]
-    low_price = parsed["low_price"]
-
-    # Yleiset keskiarvot
-    avg_rsi = average_rsi_1h_4h_1d_1w(rsi)
-    avg_macd = average_macd_1h_4h_1d_1w(macd)
-    avg_macd_signal = average_macd_signal_1h_4h_1d_1w(macd_signal)
-
-    history = load_history(symbol)
-    last_entry = history[-1] if history else {}
-
-    prev_avg_rsi = last_entry.get("avg_rsi")
-    prev_ema_rsi = last_entry.get("ema_rsi")
-    prev_ema_macd = last_entry.get("ema_macd")
-    prev_ema_macd_signal = last_entry.get("ema_macd_signal")
-
-    ema_rsi = compute_ema(prev_ema_rsi, avg_rsi)
-    ema_macd = compute_ema(prev_ema_macd, avg_macd)
-    ema_macd_signal = compute_ema(prev_ema_macd_signal, avg_macd_signal)
-    macd_diff = compute_macd_diff(macd, macd_signal)
-
-    # Bollinger-analyysi
-    def analyze_bollinger(price, bb_upper, bb_lower):
-        if price >= bb_upper:
-            return "overbought"
-        elif price <= bb_lower:
-            return "oversold"
-        return "neutral"
 
     bollinger_status = analyze_bollinger(price, bb_upper["1d"], bb_lower["1d"])
 
-    # EMA vs Price
-    def detect_ema_trend(price, ema_1d):
-        if price > ema_1d * 1.01:
-            return "strong_above"
-        elif price < ema_1d * 0.99:
-            return "strong_below"
-        return "near_ema"
-
     ema_trend = detect_ema_trend(price, ema["1d"])
-
-    # Turnover analyysi
-    def detect_turnover_anomaly(turnover, volume, price):
-        if volume == 0:
-            return "invalid"
-        avg_price = turnover / volume
-        deviation = abs(avg_price - price) / price
-        return "mismatch" if deviation > 0.02 else "normal"
 
     turnover_status = detect_turnover_anomaly(turnover, volume, price)
 
@@ -871,16 +814,6 @@ def process_log_entry(entry: dict):
     price_trend = detect_price_trend(last_entry.get("price"), price)
     volume_class = classify_volume(volume)
     change_class = interpret_change_24h(change_24h)
-
-    # Signaalin vahvuuden arviointi
-    def estimate_signal_strength(flag, macd_trend, bollinger_status, rsi_divergence, ema_trend):
-        if flag == "bullish" and macd_trend == "bullish" and bollinger_status == "oversold" and ema_trend == "strong_above":
-            return "very_strong_bullish"
-        if flag == "bearish" and macd_trend == "bearish" and bollinger_status == "overbought" and ema_trend == "strong_below":
-            return "very_strong_bearish"
-        if rsi_divergence:
-            return "watch_for_reversal"
-        return "neutral"
 
     signal_strength = estimate_signal_strength(flag, macd_trend, bollinger_status, rsi_divergence, ema_trend)
 

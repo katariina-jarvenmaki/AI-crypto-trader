@@ -14,6 +14,7 @@ def parse_log_entry(entry: dict) -> Dict:
     high_price = price_data.get("high_price")
     low_price = price_data.get("low_price")
     volume = price_data.get("volume")
+    turnover = price_data.get("turnover")
 
     rsi_data = {
         interval: entry["data_preview"].get(interval, {}).get("rsi")

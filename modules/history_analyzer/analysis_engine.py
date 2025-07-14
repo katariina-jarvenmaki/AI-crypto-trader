@@ -10,13 +10,19 @@ def analyze_log_data(symbol, latest, previous):
     print(f"\n🔍 Analysoidaan symbolia: {symbol}")
     print(f"⏱ Aika: {latest['timestamp']}  vs.  {previous['timestamp']}")
 
+    # For text formating only
     def format_change(current, prev, label, fmt="{}"):
         if current is None or prev is None:
-            return f"{label}: {current} (ei vertailuarvoa)"
+            return f"{label}: {fmt.format(current)} (ei vertailuarvoa)"
+
         delta = current - prev
         perc = (delta / prev) * 100 if prev != 0 else 0
         sign = "+" if delta > 0 else ""
-        return f"{label}: {fmt.format(current)} ({sign}{delta:.2f}, {sign}{perc:.2f}%)"
+
+        return (
+            f"{label}: {fmt.format(current)} vs {fmt.format(prev)} "
+            f"({sign}{delta:.2f}, {sign}{perc:.2f}%)"
+        )
 
     # --- Analyysifunktiot ---
     def analyze_bollinger(price, bb_upper, bb_lower):
@@ -32,6 +38,13 @@ def analyze_log_data(symbol, latest, previous):
         elif price < ema_1d * 0.99:
             return "strong_below"
         return "near_ema"
+
+    def detect_turnover_anomaly(turnover, volume, price):
+        if volume == 0:
+            return "invalid"
+        avg_price = turnover / volume
+        deviation = abs(avg_price - price) / price
+        return "mismatch" if deviation > 0.02 else "normal"
 
     def detect_flag(prev_rsi, curr_rsi):
         if prev_rsi is None:
@@ -55,6 +68,11 @@ def analyze_log_data(symbol, latest, previous):
         if macd_diff is None or abs(macd_diff) < threshold:
             return "neutral"
         return "bullish" if macd_diff > 0 else "bearish"
+
+
+
+
+
 
     # --- Lasketaan puuttuvat analyysit, jos eivät ole mukana ---
     for entry, ref in [(latest, previous)]:
@@ -101,6 +119,38 @@ def analyze_log_data(symbol, latest, previous):
 
     print(f"Uusin entry:  {latest.get('timestamp')}  |  Hinta: {latest.get('price')}")
     print(f"Vertailuentry: {previous.get('timestamp')}  |  Hinta: {previous.get('price')}")
+
+    # --- Tulostukset: Hintamuutokset ja indikaattorit ---
+    print("\n📊 Perusmuutokset:")
+    print(format_change(latest.get("price"), previous.get("price"), "Hinta", "{:.2f}"))
+    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)", "{:.2f}"))
+    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI", "{:.2f}"))
+    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero", "{:.2f}"))
+
+    # --- Trendit ja signaalit ---
+    print("\n📈 Trendianalyysit:")
+    print(f"MACD trendi: {previous.get('macd_trend')} ➜ {latest.get('macd_trend')}")
+    print(f"Bollinger status: {previous.get('bollinger_status')} ➜ {latest.get('bollinger_status')}")
+    print(f"EMA trendi: {previous.get('ema_trend')} ➜ {latest.get('ema_trend')}")
+    print(f"Signaalin vahvuus: {previous.get('signal_strength')} ➜ {latest.get('signal_strength')}")
+
+    # --- Mahdolliset varoitukset ja signaalimuutokset ---
+    print("\n⚠️ Muutokset tai poikkeamat:")
+    if latest.get("flag") != previous.get("flag"):
+        print(f"🔁 RSI-lippu muuttunut: {previous.get('flag')} ➜ {latest.get('flag')}")
+    if latest.get("signal_strength") != previous.get("signal_strength"):
+        print(f"🔥 Signaalivahvuus muuttunut: {previous.get('signal_strength')} ➜ {latest.get('signal_strength')}")
+
+    # --- Turnover-analyysi (uusi hyödyntö) ---
+    print("\n💱 Turnover-analyysi:")
+    turnover_status = detect_turnover_anomaly(latest["turnover"], latest["volume"], latest["price"])
+    print(f"Turnover vs. hinta: {turnover_status}")
+
+    # --- Yhteenveto ---
+    print("\n🧾 Yhteenveto:")
+    print(f"Uusin entry:    {latest.get('timestamp')}  |  Hinta: {latest.get('price')}")
+    print(f"Vertailuentry: {previous.get('timestamp')}  |  Hinta: {previous.get('price')}")
+
 
 def load_history_entries_with_prev(symbols, path):
     """
