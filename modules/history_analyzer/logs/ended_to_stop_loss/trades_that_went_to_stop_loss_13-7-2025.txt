@@ -1,0 +1,198 @@
+            {
+                "timestamp": "2025-07-13T12:12:26.842319+03:00",
+                "platform": "ByBit",
+                "status": "completed",
+                "qty": 210.0,
+                "price": 0.023911,
+                "cost": 5.021310000000001,
+                "leverage": 2,
+                "order_take_profit_price": null,
+                "order_stop_loss_price": null,
+                "mode": "default",
+                "interval": null,
+                "momentum_strength": null,
+                "reverse_strength": null,
+                "volume_multiplier": null,
+                "price_change": null,
+                "market_state": null,
+                "started_on": null,
+                "ohlcv_data": {
+                    "timestamp": "2025-07-13T12:01:28.573017+03:00",
+                    "source_exchange": "Okx",
+                    "symbol": "PENGUUSDT",
+                    "intervals": [
+                        "1m",
+                        "3m",
+                        "5m",
+                        "15m",
+                        "30m",
+                        "1h",
+                        "2h",
+                        "4h",
+                        "1d",
+                        "1w"
+                    ],
+                    "data_preview": {
+                        "1m": {
+                            "rsi": 75.04,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "3m": {
+                            "rsi": 66.68,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "5m": {
+                            "rsi": 63.39,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "15m": {
+                            "rsi": 58.82,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "30m": {
+                            "rsi": 56.41,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "1h": {
+                            "rsi": 57.58,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "2h": {
+                            "rsi": 61.69,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "4h": {
+                            "rsi": 65.16,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.03,
+                            "bb_lower": 0.02,
+                            "close": 0.0234
+                        },
+                        "1d": {
+                            "rsi": 81.49,
+                            "ema": 0.02,
+                            "macd": 0.0,
+                            "macd_signal": 0.0,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.01,
+                            "close": 0.0234
+                        },
+                        "1w": {
+                            "rsi": 65.07,
+                            "ema": 0.01,
+                            "macd": -0.0,
+                            "macd_signal": null,
+                            "bb_upper": 0.02,
+                            "bb_lower": 0.0,
+                            "close": 0.0234
+                        }
+                    },
+                    "limit": 200,
+                    "start_time": null,
+                    "end_time": null
+                },
+                "price_data": {
+                    "timestamp": "2025-07-13T12:10:12.263352+03:00",
+                    "source_exchange": "Okx",
+                    "symbol": "PENGUUSDT",
+                    "data_preview": {
+                        "last_price": 0.023754,
+                        "price_change_percent": 4.63,
+                        "high_price": 0.023981,
+                        "low_price": 0.021365,
+                        "volume": 1320560411.0,
+                        "turnover": 29921311.101313
+                    }
+                },
+                "history_data": {
+                    "timestamp": "2025-07-13T09:45:13.902325+03:00",
+                    "symbol": "PENGUUSDT",
+                    "price": 0.02299,
+                    "price_trend": "price-down",
+                    "volume": 1437970327.0,
+                    "volume_class": "high-volume",
+                    "change_24h": -1.55,
+                    "change_class": "mild-down",
+                    "rsi": {
+                        "1m": 26.28,
+                        "1h": 52.83,
+                        "4h": 63.73,
+                        "1d": 81.01,
+                        "1w": 64.65
+                    },
+                    "avg_rsi": 65.555,
+                    "avg_rsi_1h_4h": 58.28,
+                    "avg_rsi_1d_1w": 72.83000000000001,
+                    "ema_rsi": 66.62566648117023,
+                    "macd": {
+                        "1m": -0.0,
+                        "1h": 0.0,
+                        "4h": 0.0,
+                        "1d": 0.0,
+                        "1w": -0.0
+                    },
+                    "macd_signal_raw": {
+                        "1m": -0.0,
+                        "1h": 0.0,
+                        "4h": 0.0,
+                        "1d": 0.0,
+                        "1w": null
+                    },
+                    "macd_diff": 0.0,
+                    "macd_signal": "neutral",
+                    "avg_macd_all": 0.0,
+                    "avg_macd_1h_4h": 0.0,
+                    "avg_macd_1d_1w": 0.0,
+                    "ema_macd": 0.0,
+                    "avg_macd_signal_all": 0.0,
+                    "avg_macd_signal_1h_4h": 0.0,
+                    "avg_macd_signal_1d_1w": 0.0,
+                    "ema_macd_signal": 0.0,
+                    "rsi_divergence": "bearish-divergence",
+                    "flag": "bear-flag",
+                    "prev_avg_rsi": 66.805,
+                    "delta": 1.25,
+                    "prev_ema_rsi": 66.74462942352247,
+                    "prev_ema_macd": 0.0,
+                    "prev_ema_macd_signal": 0.0
+                }
+            }
+        ]
+    }
