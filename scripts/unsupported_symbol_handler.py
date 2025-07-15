@@ -33,7 +33,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         return None
 
     latest_entry = history_entries[0]
-    previous_entry = history_entries[1] if len(history_entries) > 1 else {}
 
     # --- 🔎 Tarkista aikaehdot ---
     try:
@@ -45,10 +44,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
         return
 
-    rsi_divergence = latest_entry.get("rsi_divergence")
-    latest_flag = latest_entry.get("flag", "neutral")
-    previous_flag = previous_entry.get("flag", "neutral")
-
     # ----- SHORT -----
     if short_only is True:
 
@@ -57,13 +52,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         print(f"Volume: {volume}")
         if volume is not None and volume > 18000000:
             print(f"📉 Skipping SHORT: volume too high ({volume}).")
-            return
-
-        if not (
-            rsi_divergence == "bearish-divergence" or 
-            (latest_flag == "bear-flag" and previous_flag != "bear-flag")
-        ):
-            print(f"⛔ Skipping SHORT: conditions not met (rsi_divergence={rsi_divergence}, latest_flag={latest_flag}, previous_flag={previous_flag})")
             return
 
         direction = "short"
@@ -106,13 +94,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             if rsi_2h is not None and rsi_2h > 70:
                 print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
                 return
-
-        if not (
-            rsi_divergence == "bullish-divergence" or 
-            (latest_flag == "bull-flag" and previous_flag != "bull-flag")
-        ):
-            print(f"⛔ Skipping LONG: conditions not met (rsi_divergence={rsi_divergence}, latest_flag={latest_flag}, previous_flag={previous_flag})")
-            return
 
         direction = "long"
 
@@ -159,7 +140,7 @@ def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
             except json.JSONDecodeError:
                 continue
     return latest_entry
-    
+
 def get_latest_two_log_entries_for_symbol(log_path: str, symbol: str) -> list:
     entries = []
     with open(log_path, "r") as f:

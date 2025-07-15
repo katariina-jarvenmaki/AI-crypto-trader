@@ -131,7 +131,7 @@ SELL_CLOSE_ORDER_LIMIT = 0.985
 # Volume multipliers per symbol and signal
 # These are base numbers that momentum_validator.py will modify
 VOLUME_MULTIPLIERS = {
-    'BTCUSDC': {'buy': 1.2, 'sell': 1.2},
+    'BTCUSDC': {'buy': 1.2, 'sell': 1.3},
     'ETHUSDC': {'buy': 1.2, 'sell': 1.2},
     'SOLUSDC': {'buy': 1.2, 'sell': 1.3},
     'XRPUSDC': {'buy': 1.2, 'sell': 1.4},

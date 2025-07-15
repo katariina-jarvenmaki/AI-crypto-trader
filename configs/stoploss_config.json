@@ -246,6 +246,18 @@
       "full_stoploss_percent": "0.16%"
     }
   },
+  "SERAPHUSDT": {
+    "long": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
+  },  
   "SFPUSDT": {
     "long": {
       "_comment": "Value specified 12.7.2025, may need further specification",
