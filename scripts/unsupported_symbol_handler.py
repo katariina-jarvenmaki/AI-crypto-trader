@@ -36,6 +36,12 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
 
+    price_data = price_entry.get("data_preview", {})
+    turnover = price_data.get("turnover")
+    volume = price_data.get("volume")
+    last_price = price_data.get("last_price")
+    price_change_percent = price_data.get("price_change_percent")
+
     # --- 🔎 Tarkista aikaehdot ---
     try:
         entry_time = isoparse(latest_entry.get("timestamp"))
@@ -64,17 +70,11 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     # ----- SHORT -----
     if short_only is True:
 
-        # 🔴 Suojafiltteri: turnover/volume vs. last_price & nousuprosentti
-        price_data = price_entry.get("data_preview", {})
-        turnover = price_data.get("turnover")
-        volume = price_data.get("volume")
-        last_price = price_data.get("last_price")
-        price_change_percent = price_data.get("price_change_percent")
-
+        # 🔴 Suojafiltteri yli -30% tappio-kauppoja estämään: turnover/volume vs. last_price & nousuprosentti
         if turnover and volume and last_price and price_change_percent:
             try:
                 avg_price = turnover / volume
-                if last_price < avg_price * 0.95 and price_change_percent > 30:
+                if last_price < avg_price * 1.05 and price_change_percent > 28:
                     log_skipped_order(
                         symbol=bybit_symbol,
                         reason=f"Price below avg_price after big move – possible premature short",

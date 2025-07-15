@@ -33,12 +33,14 @@ def verify_signal_with_momentum_and_volume(
         volume_multiplier += 0.3
     elif market_state == "bear" and signal == "buy":
         volume_multiplier += 0.3
-    elif market_state == "unknown" and signal in ("buy", "sell"):
+    elif market_state == "unknown" and signal == "sell":
+        volume_multiplier += 0.2
+    elif market_state == "unknown" and signal == "buy":
         volume_multiplier += 0.2
     elif market_state == "neutral_sideways" and signal == "sell":
         volume_multiplier += 0.2
     elif market_state == "neutral_sideways" and signal == "buy":
-        volume_multiplier += 0.1
+        volume_multiplier += 0.2
     elif market_state == "bull" and signal == "buy":
         volume_multiplier -= 0.1
     elif market_state == "bear" and signal == "sell":
