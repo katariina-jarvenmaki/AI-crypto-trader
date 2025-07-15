@@ -2,7 +2,7 @@ from integrations.bybit_api_client import get_bybit_symbol_price, has_open_limit
 from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
-from scripts.trade_order_logger import log_trade
+from scripts.trade_order_logger import log_trade, log_skipped_order
 import json
 
 from datetime import datetime, timedelta
@@ -33,11 +33,28 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         return None
 
     latest_entry = history_entries[0]
+    ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
+    price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
 
     # --- 🔎 Tarkista aikaehdot ---
     try:
         entry_time = isoparse(latest_entry.get("timestamp"))
         if datetime.now(entry_time.tzinfo) - entry_time > timedelta(hours=2):
+            log_skipped_order(
+                symbol=bybit_symbol,
+                reason=f"Volume too high ({volume})",
+                direction="short",
+                details={"volume": volume},
+                order_data={
+                    "price": live_price,
+                    "qty": None,
+                    "cost": None,
+                    "leverage": None,
+                    "ohlcv_data": ohlcv_entry,
+                    "price_data": price_entry,
+                    "history_data": latest_entry
+                }
+            )
             print(f"⏳ Skipping {bybit_symbol}: latest history entry is older than 2 hours.")
             return
     except Exception as e:
@@ -47,12 +64,40 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     # ----- SHORT -----
     if short_only is True:
 
-        # 🔴 Volume-tarkistus
-        volume = latest_entry.get("volume")
-        print(f"Volume: {volume}")
-        if volume is not None and volume > 18000000:
-            print(f"📉 Skipping SHORT: volume too high ({volume}).")
-            return
+        # 🔴 Suojafiltteri: turnover/volume vs. last_price & nousuprosentti
+        price_data = price_entry.get("data_preview", {})
+        turnover = price_data.get("turnover")
+        volume = price_data.get("volume")
+        last_price = price_data.get("last_price")
+        price_change_percent = price_data.get("price_change_percent")
+
+        if turnover and volume and last_price and price_change_percent:
+            try:
+                avg_price = turnover / volume
+                if last_price < avg_price * 0.95 and price_change_percent > 30:
+                    log_skipped_order(
+                        symbol=bybit_symbol,
+                        reason=f"Price below avg_price after big move – possible premature short",
+                        direction="short",
+                        details={
+                            "avg_price": round(avg_price, 6),
+                            "last_price": last_price,
+                            "price_change_percent": price_change_percent
+                        },
+                        order_data={
+                            "price": live_price,
+                            "qty": None,
+                            "cost": None,
+                            "leverage": None,
+                            "ohlcv_data": ohlcv_entry,
+                            "price_data": price_entry,
+                            "history_data": latest_entry
+                        }
+                    )
+                    print(f"📉 Skipping SHORT: last_price ({last_price}) < 95% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}% → käänne ei vielä vahvistunut.")
+                    return
+            except Exception as e:
+                print(f"⚠️ Failed turnover/volume filter for {bybit_symbol}: {e}")
 
         direction = "short"
 
@@ -67,8 +112,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bybit_result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
         if bybit_result:
-            ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
-            price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
@@ -92,8 +135,58 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         if ohlcv_entry:
             rsi_2h = ohlcv_entry.get("data_preview", {}).get("2h", {}).get("rsi")
             if rsi_2h is not None and rsi_2h > 70:
+                log_skipped_order(
+                    symbol=bybit_symbol,
+                    reason=f"Volume too high ({volume})",
+                    direction="short",
+                    details={"volume": volume},
+                    order_data={
+                        "price": live_price,
+                        "qty": None,
+                        "cost": None,
+                        "leverage": None,
+                        "ohlcv_data": ohlcv_entry,
+                        "price_data": price_entry,
+                        "history_data": latest_entry
+                    }
+                )
                 print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
                 return
+
+        # 🟢 Suojafiltteri: estä LONG jos hinta jo reilusti yli keskihinnan
+        price_data = price_entry.get("data_preview", {})
+        turnover = price_data.get("turnover")
+        volume = price_data.get("volume")
+        last_price = price_data.get("last_price")
+        price_change_percent = price_data.get("price_change_percent")
+
+        if turnover and volume and last_price and price_change_percent:
+            try:
+                avg_price = turnover / volume
+                if last_price > avg_price * 1.05 and price_change_percent > 30:
+                    log_skipped_order(
+                        symbol=bybit_symbol,
+                        reason="Price above avg_price after strong move – possible late long entry",
+                        direction="long",
+                        details={
+                            "avg_price": round(avg_price, 6),
+                            "last_price": last_price,
+                            "price_change_percent": price_change_percent
+                        },
+                        order_data={
+                            "price": live_price,
+                            "qty": None,
+                            "cost": None,
+                            "leverage": None,
+                            "ohlcv_data": ohlcv_entry,
+                            "price_data": price_entry,
+                            "history_data": latest_entry
+                        }
+                    )
+                    print(f"📈 Skipping LONG: last_price ({last_price}) > 105% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}% → mahdollisesti huipun perässä ostaminen.")
+                    return
+            except Exception as e:
+                print(f"⚠️ Failed turnover/volume filter for {bybit_symbol}: {e}")
 
         direction = "long"
 

@@ -120,43 +120,45 @@ def archive_old_orders():
     current_data = load_json(ORDERS_LATEST)
     archive_data = {}
 
-    for symbol, directions in list(current_data.items()):
-        for direction in ["long", "short"]:
-            orders = directions.get(direction, [])
-            kept_orders = []
-            archived_orders = []
+    for symbol, timeframes in list(current_data.items()):
+        for tf, directions in list(timeframes.items()):
+            for direction, indicators in list(directions.items()):
+                if not isinstance(indicators, dict):
+                    continue
+                for indicator, log_data in list(indicators.items()):
+                    timestamp = log_data.get("time") or log_data.get("started_on")
+                    log_date = None
+                    try:
+                        if timestamp:
+                            log_date = datetime.fromisoformat(timestamp.split("+")[0])
+                    except Exception:
+                        pass
 
-            for order in orders:
-                log_date = extract_date_from_order_entry(order)
-                archive_this = False
+                    archive_this = False
+                    if log_date:
+                        if log_date.date() < yesterday.date():
+                            archive_this = True
+                        elif log_date.date() == yesterday.date() and log_data.get("status") == "completed":
+                            archive_this = True
 
-                if log_date:
-                    if log_date.date() < yesterday.date():
-                        archive_this = True
-                    elif log_date.date() == yesterday.date() and order.get("status") == "completed":
-                        archive_this = True
+                    if archive_this:
+                        print(f"Archiving order: {symbol} {tf} {direction} {indicator} @ {log_date}")
+                        archive_data.setdefault(symbol, {}).setdefault(tf, {}).setdefault(direction, {})[indicator] = log_data
+                        del current_data[symbol][tf][direction][indicator]
 
-                if archive_this:
-                    # print(f"Archiving order: {symbol} {direction} @ {log_date}")
-                    archived_orders.append(order)
-                else:
-                    kept_orders.append(order)
-
-            if archived_orders:
-                archive_data.setdefault(symbol, {}).setdefault(direction, []).extend(archived_orders)
-                if kept_orders:
-                    current_data[symbol][direction] = kept_orders
-                else:
-                    current_data[symbol].pop(direction, None)
-
-        if not current_data.get(symbol, {}).get("long") and not current_data.get(symbol, {}).get("short"):
-            # print(f"Removing empty symbol: {symbol}")
-            current_data.pop(symbol, None)
+                if not current_data[symbol][tf][direction]:
+                    del current_data[symbol][tf][direction]
+            if not current_data[symbol][tf]:
+                del current_data[symbol][tf]
+        if not current_data[symbol]:
+            del current_data[symbol]
 
     if archive_data:
         save_json(archive_path, archive_data)
-        save_json(ORDERS_LATEST, current_data)
+        save_json(ORDERS_LATEST, current_data, allow_empty_overwrite=True)
         print(f"Archived complete orders to {archive_filename}")
+    else:
+        print("No orders to archive.")
 
 def remove_old_archives(months=2):
     cutoff_date = datetime.now() - timedelta(days=30 * months)

@@ -255,58 +255,83 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             )
 
 import json
-import pandas as pd
-from scripts.trade_order_logger import load_trade_logs, update_order_status, safe_load_json
-from scripts.sorting import sort_orders_by_stoploss_priority
 import traceback
+import pandas as pd
+from scripts.trade_order_logger import (
+    load_trade_logs,
+    update_order_status,
+    safe_load_json,
+    log_trade,
+)
 
-def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
+def fetch_all_positions_bybit():
+    """Hakee kaikki lineaariset USDT-positiot Bybitistä käyttäen sivutusta."""
+    all_positions = []
+    cursor = None
 
-    print(f"\n🔍 Doing position checks and log updates...")
+    while True:
+        params = {
+            "category": "linear",
+            "settleCoin": "USDT",
+            "limit": 50  # Bybitin maksimi yhdelle sivulle
+        }
+        if cursor:
+            params["cursor"] = cursor
 
+        try:
+            response = bybit_client.get_positions(**params)
+            result = response.get("result", {})
+            positions = result.get("list", [])
+            all_positions.extend(positions)
+
+            print(f"➡️ Retrieved {len(positions)} positions (Total so far: {len(all_positions)})")
+
+            cursor = result.get("nextPageCursor")
+            if not cursor:
+                break
+
+        except Exception as e:
+            print(f"[ERROR] Failed to fetch positions: {e}")
+            break
+
+    return all_positions
+
+def check_positions_and_update_logs(symbols_to_check=None, platform="ByBit"):
     try:
         if platform != "ByBit":
-            print(f"[ERROR] Unsupported platform for this method: {platform}")
+            print(f"[ERROR] Unsupported platform: {platform}")
             return []
 
-        if not symbols_to_check:
-            print("[WARN] No symbols provided for open position check.")
-            return []
+        all_raw_positions = fetch_all_positions_bybit()
 
         all_positions = []
 
-        # Go thought the given symbols and get position data for those
-        for symbol in symbols_to_check:
-            bybit_symbol = symbol.replace("USDC", "USDT")
-
+        for pos in all_raw_positions:
             try:
-                response = bybit_client.get_positions(
-                    category="linear",
-                    symbol=bybit_symbol
-                )
-                if "result" in response and "list" in response["result"]:
-                    for pos in response["result"]["list"]:
-                        size = float(pos["size"])
-                        if size > 0:
-                            symbol = pos.get("symbol", "unknown")
-                            side = pos.get("side") or None  # handle empty string here
-                            avgPrice = pos.get("avgPrice", None)
-                            leverage = float(pos.get("leverage", 1))
-                            stopLoss = pos.get("stopLoss", None)
-                            trailingStop = pos.get("trailingStop", None)
-                            all_positions.append({
-                                "symbol": symbol,
-                                "side": side,
-                                "size": size,
-                                "avgPrice": avgPrice,
-                                "leverage": leverage,
-                                "stopLoss": stopLoss,
-                                "trailingStop": trailingStop
-                            })
+                size = float(pos.get("size", 0))
+                status = pos.get("positionStatus", "").lower()
+                symbol = pos.get("symbol", "unknown")
+                side = pos.get("side", "").lower()
 
-            except Exception as inner_e:
-                print(f"[ERROR] Failed to fetch position for {bybit_symbol}: {inner_e}")
-                continue
+                if size > 0 and status == "normal":
+                    avgPrice = float(pos.get("avgPrice", 0))
+                    leverage = float(pos.get("leverage", 1))
+                    stopLoss = pos.get("stopLoss")
+                    trailingStop = pos.get("trailingStop")
+
+                    all_positions.append({
+                        "symbol": symbol,
+                        "side": side,
+                        "size": size,
+                        "avgPrice": avgPrice,
+                        "leverage": leverage,
+                        "stopLoss": stopLoss,
+                        "trailingStop": trailingStop
+                    })
+
+            except Exception as pos_e:
+                print(f"[ERROR] Failed to process position: {pos_e}")
+
         try:
             order_data = safe_load_json("logs/order_log.json")
 
@@ -318,19 +343,17 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
 
             updated_any = False
 
-            # Loop through positions, check that there is log order for every open position
             for position in all_positions:
                 pos_symbol = position["symbol"]
                 pos_side = position["side"]
 
                 log_side_key = reverse_side_mapping.get(pos_side.lower(), "").lower()
+                if not log_side_key:
+                    continue
 
-                if pos_symbol not in order_data or log_side_key not in order_data[pos_symbol]:
-                    order_data.setdefault(pos_symbol, {}).setdefault(log_side_key, [])
-
+                order_data.setdefault(pos_symbol, {}).setdefault(log_side_key, [])
                 existing_orders = order_data[pos_symbol][log_side_key]
 
-                # Suodatetaan initiated-tilaiset orderit
                 existing_orders, changed = filter_initiated_orders(existing_orders, pos_side)
                 if changed:
                     updated_any = True
@@ -338,15 +361,13 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                 has_initiated = any(o.get("status") == "initiated" for o in existing_orders)
 
                 if not has_initiated:
-                    print(f"No initiated orders for this symbol on the log")
                     complete_orders = [o for o in existing_orders if o.get("status") == "completed"]
                     if complete_orders:
-                        latest_order = sorted(complete_orders, key=lambda x: x["timestamp"], reverse=True)[0]
+                        latest_order = sorted(complete_orders, key=lambda x: x.get("timestamp", 0), reverse=True)[0]
                         latest_order["status"] = "initiated"
                         with open("logs/order_log.json", "w") as f:
                             json.dump(order_data, f, indent=4)
                         updated_any = True
-                        print(f"🔄 Re-activated completed order as initiated for {pos_symbol} {log_side_key}")
                     else:
                         log_trade(
                             symbol=pos_symbol,
@@ -359,41 +380,36 @@ def check_positions_and_update_logs(symbols_to_check, platform="ByBit"):
                             status="initiated"
                         )
                         updated_any = True
-                        print(f"🆕 Created new initiated order for {pos_symbol} {log_side_key}")
 
-            # Update orders to complete if no position found
             for sym_key, sides in order_data.items():
                 for side_key, orders in sides.items():
                     for order in orders:
-                        if not isinstance(order, dict):
-                            # print(f"[WARN] Skipping invalid order: {order}")
+                        if not isinstance(order, dict) or order.get("status") == "completed":
                             continue
-                        if order.get("status") != "completed":
-                            expected_pos_side = side_mapping.get(side_key.lower())
-                            match_found = any(
-                                pos["symbol"] == sym_key and pos["side"] == expected_pos_side
-                                for pos in all_positions
-                            )
-                            if not match_found:
-                                updated = update_order_status(order.get("timestamp"), "completed")
-                                if updated:
-                                    updated_any = True
-                                else:
-                                    print(f"[WARN] Could not update status for {order.get('timestamp')}")
+                        expected_pos_side = side_mapping.get(side_key.lower())
+                        match_found = any(
+                            pos["symbol"] == sym_key and pos["side"] == expected_pos_side.lower()
+                            for pos in all_positions
+                        )
+                        if not match_found:
+                            updated = update_order_status(order.get("timestamp"), "completed")
+                            if updated:
+                                updated_any = True
 
             if updated_any:
-                print("✅ Updated order statuses\n.")
+                print("✅ Order log updated.")
             else:
-                print("ℹ️  No order statuses needed updating.\n")
+                print("ℹ️ No changes to order log.")
 
-        except Exception as e:
-            print(f"[ERROR] Failed to update order status logs: {e}")
+        except Exception as log_e:
+            print(f"[ERROR] Failed while updating logs: {log_e}")
             traceback.print_exc()
 
+        print(f"📊 Total open positions found: {len(all_positions)}")
         return all_positions
 
     except Exception as e:
-        print(f"[ERROR] Failed to fetch positions: {e}")
+        print(f"[FATAL ERROR] Position check failed: {e}")
         traceback.print_exc()
         return []
 
@@ -431,8 +447,9 @@ def stop_loss_checker(positions):
                 continue
 
             symbol_usdt = symbol.replace("USDC", "USDT")
-            side_mapping = {"Buy": "long", "Sell": "short"}
-            mapped_side = side_mapping.get(side)
+            side_mapping = {"buy": "long", "sell": "short"}
+            side_lower = side.lower()
+            mapped_side = side_mapping.get(side_lower)
 
             if not mapped_side:
                 print(f"[WARNING] Unknown side '{side}' for {symbol}, skipping.")
@@ -450,11 +467,11 @@ def stop_loss_checker(positions):
                     continue
 
                 try:
-                    sl_values = get_stop_loss_values(symbol, side)
+                    sl_values = get_stop_loss_values(symbol, mapped_side)
 
                     process_stop_loss_logic(
                         symbol=symbol,
-                        side=side,
+                        side=mapped_side,  # ✅ Käytetään nyt oikein
                         size=size,
                         entry_price=avg_price,
                         leverage=leverage,

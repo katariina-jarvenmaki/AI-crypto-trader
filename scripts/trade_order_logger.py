@@ -6,6 +6,7 @@ import pandas as pd
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOG_PATH = os.path.join(BASE_DIR, "logs", "order_log.json")
+SKIPPED_LOG_PATH = os.path.join(BASE_DIR, "logs", "skipped_orders.json")
 
 def safe_load_json(filepath):
     if not os.path.exists(filepath):
@@ -134,3 +135,59 @@ def reactivate_completed_orders(filepath=LOG_PATH):
         print("No completed orders to reactivate.")
 
     return updated_any
+
+def log_skipped_order(symbol: str, reason: str, direction: str = None, details: dict = None, order_data: dict = None):
+    filepath = SKIPPED_LOG_PATH.replace(".jsonl", ".json")
+
+    now = datetime.now(TIMEZONE).isoformat()
+
+    entry = {
+        "timestamp": now,
+        "symbol": symbol,
+        "direction": direction,
+        "platform": "ByBit",
+        "status": "skipped",
+        "skipped": True,
+        "skipped_reason": reason,
+        "qty": None,
+        "price": None,
+        "cost": None,
+        "leverage": None,
+        "order_take_profit_price": None,
+        "order_stop_loss_price": None,
+        "mode": "default",
+        "interval": None,
+        "momentum_strength": None,
+        "reverse_strength": None,
+        "volume_multiplier": None,
+        "price_change": None,
+        "market_state": None,
+        "started_on": None,
+        "ohlcv_data": None,
+        "price_data": None,
+        "history_data": None,
+        "details": details or {}
+    }
+
+    # Täytetään tiedot mahdollisesta olemassa olevasta order_datasta
+    if order_data:
+        for key in entry.keys():
+            if key in order_data:
+                entry[key] = order_data[key]
+
+    # Ladataan aiemmat tiedot
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r") as f:
+                skipped_orders = json.load(f)
+        except json.JSONDecodeError:
+            skipped_orders = []
+    else:
+        skipped_orders = []
+
+    skipped_orders.append(entry)
+
+    with open(filepath, "w") as f:
+        json.dump(skipped_orders, f, indent=4)
+
+    print(f"[log_skipped_order] {symbol} {direction or ''} skipped: {reason}")

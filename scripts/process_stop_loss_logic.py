@@ -29,7 +29,7 @@ def get_stop_loss_values(symbol, side):
     config = stop_loss_config.get(symbol, {})
     default = stop_loss_config["default"]
 
-    direction = "long" if side == "Buy" else "short"
+    direction = side  # "long" tai "short"
     symbol_config = config.get(direction, {})
     default_config = default.get(direction, {})
 
@@ -55,7 +55,6 @@ def get_stop_loss_values(symbol, side):
     }
 
 def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss, trailing_stop, set_sl_percent, full_sl_percent, trailing_percent, threshold_percent, formatted=None):
-
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
@@ -65,12 +64,12 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     sl_offset = entry_price * full_sl_percent
     decimals = decimal_places(entry_price)
 
-    if side == "Buy":
+    if side == "long":
         direction = "long"
         target_price = entry_price * (1 + set_sl_percent)
         full_sl_price = entry_price + sl_offset
         position_idx = 1
-    elif side == "Sell":
+    elif side == "short":
         direction = "short"
         target_price = entry_price * (1 - set_sl_percent)
         full_sl_price = entry_price - sl_offset
@@ -160,8 +159,8 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             initial_tp_percent = parsed(config.get("initial_take_profit", "500%")) / leverage
             initial_sl_percent = parsed(config.get("initial_stop_loss", "90%")) / leverage
 
-            adjusted_tp = entry_price * (1 + initial_tp_percent) if side == "Buy" else entry_price * (1 - initial_tp_percent)
-            adjusted_sl = entry_price * (1 - initial_sl_percent) if side == "Buy" else entry_price * (1 + initial_sl_percent)
+            adjusted_tp = entry_price * (1 + initial_tp_percent) if direction == "long" else entry_price * (1 - initial_tp_percent)
+            adjusted_sl = entry_price * (1 - initial_sl_percent) if direction == "long" else entry_price * (1 + initial_sl_percent)
 
             adjusted_tp_str = f"{adjusted_tp:.{decimals}f}"
             adjusted_sl_str = f"{adjusted_sl:.{decimals}f}"
