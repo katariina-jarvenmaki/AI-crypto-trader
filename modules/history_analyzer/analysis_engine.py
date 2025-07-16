@@ -1,29 +1,46 @@
 # modules/history_analyzer/analysis_engine.py
 
 import json
-from datetime import datetime, timedelta
 from collections import defaultdict
+from datetime import datetime, timedelta
 from modules.history_analyzer.config_history_analyzer import CONFIG
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 
 def analyze_log_data(symbol, latest, previous):
 
     print(f"\n🔍 Analysoidaan symbolia: {symbol}")
     print(f"⏱ Aika: {latest['timestamp']}  vs.  {previous['timestamp']}")
 
+    def decimals_in_number(num):
+        s = str(num)
+        if '.' in s:
+            return len(s.split('.')[1])
+        return 0
+
     # For text formating only
-    def format_change(current, prev, label, fmt="{}"):
+    def format_change(current, prev, label):
+        print(f"current: {current}")
+        print(f"prev: {prev}")
+        print(f"label: {label}")
+
         if current is None or prev is None:
-            return f"{label}: {fmt.format(current)} (ei vertailuarvoa)"
+            return f"{label}: {current} (ei vertailuarvoa)"
+
+        decimals = decimals_in_number(current)
+        fmt = f"{{:.{decimals}f}}"
 
         delta = current - prev
         perc = (delta / prev) * 100 if prev != 0 else 0
         sign = "+" if delta > 0 else ""
 
+        print(f"delta: {delta}")
+        print(f"perc: {perc}")
+        print(f"sign: {sign}")
+
         return (
             f"{label}: {fmt.format(current)} vs {fmt.format(prev)} "
-            f"({sign}{delta:.2f}, {sign}{perc:.2f}%)"
+            f"({sign}{delta:.{decimals}f}, {sign}{perc:.2f}%)"
         )
-
     # --- Analyysifunktiot ---
     def analyze_bollinger(price, bb_upper, bb_lower):
         if price >= bb_upper:
@@ -101,10 +118,10 @@ def analyze_log_data(symbol, latest, previous):
             )
 
     # --- Tulostukset ---
-    print(format_change(latest.get("price"), previous.get("price"), "Hinta", "{:.2f}"))
-    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)", "{:.2f}"))
-    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI", "{:.2f}"))
-    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero", "{:.2f}"))
+    print(format_change(latest.get("price"), previous.get("price"), "Hinta"))
+    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)"))
+    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI"))
+    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero"))
 
     print(f"MACD trendi: {previous.get('macd_trend')} ➜ {latest.get('macd_trend')}")
     print(f"Bollinger status: {previous.get('bollinger_status')} ➜ {latest.get('bollinger_status')}")
@@ -122,10 +139,10 @@ def analyze_log_data(symbol, latest, previous):
 
     # --- Tulostukset: Hintamuutokset ja indikaattorit ---
     print("\n📊 Perusmuutokset:")
-    print(format_change(latest.get("price"), previous.get("price"), "Hinta", "{:.2f}"))
-    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)", "{:.2f}"))
-    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI", "{:.2f}"))
-    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero", "{:.2f}"))
+    print(format_change(latest.get("price"), previous.get("price"), "Hinta"))
+    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)"))
+    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI"))
+    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero"))
 
     # --- Trendit ja signaalit ---
     print("\n📈 Trendianalyysit:")
