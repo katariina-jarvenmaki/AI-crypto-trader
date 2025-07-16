@@ -5,42 +5,29 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from modules.history_analyzer.config_history_analyzer import CONFIG
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
+from modules.history_analyzer.utils import format_value, decimals_in_number, format_change_for_price_data
 
 def analyze_log_data(symbol, latest, previous):
 
     print(f"\n🔍 Analysoidaan symbolia: {symbol}")
     print(f"⏱ Aika: {latest['timestamp']}  vs.  {previous['timestamp']}")
 
-    def decimals_in_number(num):
-        s = str(num)
-        if '.' in s:
-            return len(s.split('.')[1])
-        return 0
-
-    # For text formating only
+    # For text formating only price
     def format_change(current, prev, label):
-        print(f"current: {current}")
-        print(f"prev: {prev}")
-        print(f"label: {label}")
-
+        
+        fmt="{}"
         if current is None or prev is None:
-            return f"{label}: {current} (ei vertailuarvoa)"
-
-        decimals = decimals_in_number(current)
-        fmt = f"{{:.{decimals}f}}"
+            return f"{label}: {fmt.format(current)} (ei vertailuarvoa)"
 
         delta = current - prev
         perc = (delta / prev) * 100 if prev != 0 else 0
         sign = "+" if delta > 0 else ""
 
-        print(f"delta: {delta}")
-        print(f"perc: {perc}")
-        print(f"sign: {sign}")
-
         return (
             f"{label}: {fmt.format(current)} vs {fmt.format(prev)} "
-            f"({sign}{delta:.{decimals}f}, {sign}{perc:.2f}%)"
+            f"({sign}{delta:.2f}, {sign}{perc:.2f}%)"
         )
+
     # --- Analyysifunktiot ---
     def analyze_bollinger(price, bb_upper, bb_lower):
         if price >= bb_upper:
@@ -118,7 +105,7 @@ def analyze_log_data(symbol, latest, previous):
             )
 
     # --- Tulostukset ---
-    print(format_change(latest.get("price"), previous.get("price"), "Hinta"))
+    print(format_change_for_price_data(latest.get("price"), previous.get("price"), "Hinta"))
     print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)"))
     print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI"))
     print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero"))
