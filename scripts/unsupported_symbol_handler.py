@@ -49,7 +49,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
     latest_entry = next(iter(get_latest_two_log_entries_for_symbol(
-        "modules/history_analyzer/history_data_log.jsonl", bybit_symbol)), None)
+        "modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)), None)
 
     if not latest_entry:
         print(f"❌ No history data for {bybit_symbol}, skipping trade.")
@@ -79,7 +79,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 "leverage": None,
                 "ohlcv_data": ohlcv_entry,
                 "price_data": price_entry,
-                "history_data": latest_entry
+                "history_analysis_data": latest_entry
             }
         )
 
@@ -154,7 +154,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_stop_loss=result["sl_price"],
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=latest_entry
+                history_analysis_data=latest_entry
             )
 
     elif long_only:
@@ -209,7 +209,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_stop_loss=result["sl_price"],
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=latest_entry
+                history_analysis_data=latest_entry
             )
     else:
         print(f"⚠️  Skipping: No direction specified.")

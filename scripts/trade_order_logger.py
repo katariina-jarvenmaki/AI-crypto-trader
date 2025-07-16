@@ -40,7 +40,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
               interval: str = None, rsi: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
               price_change: str = None, volume_multiplier: float = None,
-              reverse_signal_info: dict = None, platform: dict = None, status=None, ohlcv_data=None, price_data=None, history_data=None):
+              reverse_signal_info: dict = None, platform: dict = None, status=None, ohlcv_data=None, price_data=None, history_analysis_data=None):
     print(f"[log_trade] Logging {symbol} {direction} {qty} @ {price} on {platform}")
 
     log = load_trade_log()
@@ -71,7 +71,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
         "started_on": started_on,
         "ohlcv_data": ohlcv_data,
         "price_data": price_data,
-        "history_data": history_data
+        "history_analysis_data": history_analysis_data
     }
     log[symbol][direction_lower].append(new_order)
 
@@ -165,7 +165,7 @@ def log_skipped_order(symbol: str, reason: str, direction: str = None, details: 
         "started_on": None,
         "ohlcv_data": None,
         "price_data": None,
-        "history_data": None,
+        "history_analysis_data": None,
         "details": details or {}
     }
 

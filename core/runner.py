@@ -112,7 +112,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     bybit_symbol = symbol.replace("USDC", "USDT")
     ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
-    history_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_data_log.jsonl", bybit_symbol)
+    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)
     if risk_strength in ("strong", "weak", "none") and (
         mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):
@@ -133,7 +133,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             started_on=started_on,
             ohlcv_data=ohlcv_entry,
             price_data=price_entry,
-            history_data=history_entry
+            history_analysis_data=history_analysis_entry
         )
 
     # Continue only, if a risk_strength is strong AND reverse signal is not strong
@@ -193,7 +193,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=history_entry
+                history_analysis_data=history_analysis_entry
             )
 
         # Bybit
@@ -220,7 +220,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=history_entry
+                history_analysis_data=history_analysis_entry
             )
 
     #***** SHORTS *****#
@@ -251,7 +251,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_data=history_entry
+                history_analysis_data=history_analysis_entry
             )
 
 import json
