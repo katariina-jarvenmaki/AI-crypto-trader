@@ -2,8 +2,8 @@
   "default": {
     "long": {
       "initial_take_profit": "149%",
-      "_comment": "Stop loss to 30% cause volatile markets, originally had 90%",
-      "initial_stop_loss": "30%",
+      "initial_stop_loss": "90%",
+      "excessive_stop_loss_percent": "30%",
       "set_stoploss_percent": "0.36%",
       "full_stoploss_percent": "0.16%",
       "trailing_stoploss_percent": "0.005%",
@@ -11,8 +11,8 @@
     },
     "short": {
       "initial_take_profit": "149%",
-      "_comment": "Stop loss to 30% cause volatile markets, originally had 90%",
-      "initial_stop_loss": "30%",
+      "initial_stop_loss": "90%",
+      "excessive_stop_loss_percent": "30%",
       "set_stoploss_percent": "0.36%",
       "full_stoploss_percent": "0.16%",
       "trailing_stoploss_percent": "0.005%",
@@ -126,6 +126,18 @@
       "full_stoploss_percent": "0.16%"
     }
   }, 
+  "BEAMUSDT": {
+    "long": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },
   "BOBAUSDT": {
     "long": {
       "_comment": "Value specified 16.7.2025, may need further specification",
@@ -170,6 +182,18 @@
     },
     "short": {
       "_comment": "Value specified 12.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    }
+  },   
+  "JSTUSDT": {
+    "long": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.17%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
       "set_stoploss_percent": "0.17%",
       "full_stoploss_percent": "0.16%"
     }
@@ -332,14 +356,14 @@
   },   
   "TUTUSDT": {
     "long": {
-      "_comment": "Value specified 15.7.2025, may need further specification",
-      "set_stoploss_percent": "0.19%",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.20%",
+      "full_stoploss_percent": "0.19%"
     },
     "short": {
-      "_comment": "Value specified 15.7.2025, may need further specification",
-      "set_stoploss_percent": "0.19%",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.20%",
+      "full_stoploss_percent": "0.19%"
     }
   },   
   "XDCUSDT": {

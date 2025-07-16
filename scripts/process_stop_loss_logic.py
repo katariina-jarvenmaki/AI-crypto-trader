@@ -132,17 +132,21 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
 
             if not skip_trailing:
                 trail_amount = entry_price * trailing_percent
-                trailingStop = to_str(trail_amount)
-                trailing_body = {
-                    "category": "linear",
-                    "symbol": symbol,
-                    "trailingStop": trailingStop,
-                    "tpslMode": "Full",
-                    "positionIdx": position_idx
-                }
-                print(f"📤 Sending trailing SL update: {trailing_body}")
-                response_trailing = client.set_trading_stop(**trailing_body)
-                print(f"🟢 Trailing SL updated: {response_trailing}")
+
+                if trail_amount <= 0:
+                    print(f"⚠️ Trailing stop amount is too low: {trail_amount:.8f}. Skipping trailing SL update.")
+                else:
+                    trailingStop = to_str(trail_amount)
+                    trailing_body = {
+                        "category": "linear",
+                        "symbol": symbol,
+                        "trailingStop": trailingStop,
+                        "tpslMode": "Full",
+                        "positionIdx": position_idx
+                    }
+                    print(f"📤 Sending trailing SL update: {trailing_body}")
+                    response_trailing = client.set_trading_stop(**trailing_body)
+                    print(f"🟢 Trailing SL updated: {response_trailing}")
             else:
                 print("⏩ Skipping trailing SL update.")
 
@@ -152,37 +156,50 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
     else:
         print("⏳ Condition not yet met.")
 
-        if stop_loss == 0 and trailing_stop == 0:
-            print("⚠️  No SL or TP found. Setting default SL/TP...")
+        config = stop_loss_config["default"][direction]
+        excessive_sl_percent  = parsed(config.get("excessive_stop_loss_percent", "30%")) / leverage
 
-            config = stop_loss_config["default"][direction]
-            initial_tp_percent = parsed(config.get("initial_take_profit", "500%")) / leverage
-            initial_sl_percent = parsed(config.get("initial_stop_loss", "90%")) / leverage
+        excessive_sl = False
+        missing_sl = stop_loss <= 0  # SL puuttuu kokonaan
 
-            adjusted_tp = entry_price * (1 + initial_tp_percent) if direction == "long" else entry_price * (1 - initial_tp_percent)
-            adjusted_sl = entry_price * (1 - initial_sl_percent) if direction == "long" else entry_price * (1 + initial_sl_percent)
+        if direction == "long":
+            excessive_sl = stop_loss > 0 and stop_loss < (entry_price - entry_price * 2 * full_sl_percent)
+        elif direction == "short":
+            excessive_sl = stop_loss > 0 and stop_loss > (entry_price + entry_price * 2 * full_sl_percent)
 
-            adjusted_tp_str = f"{adjusted_tp:.{decimals}f}"
-            adjusted_sl_str = f"{adjusted_sl:.{decimals}f}"
+        if excessive_sl or missing_sl:
+            print(f"⚠️  {'Missing' if missing_sl else 'Excessive'} SL detected, updating using 'excessive_stop_loss_percent' config.")
+
+        adjusted_sl = entry_price * (1 - excessive_sl_percent) if side == "Buy" else entry_price * (1 + excessive_sl_percent)
+
+        if excessive_sl:
+            print(f"⚠️  Existing SL is too far ({stop_loss}), updating using 'excessive_stop_loss_percent' config.")
 
             try:
+                if direction == "long":
+                    new_sl_price = entry_price - (entry_price * excessive_sl_percent)
+                    if new_sl_price >= last_price:
+                        print(f"❌ New SL {new_sl_price:.{decimals}f} is above market price {last_price:.{decimals}f}, skipping update.")
+                        return []
+                else:
+                    new_sl_price = entry_price + (entry_price * excessive_sl_percent)
+                    if new_sl_price <= last_price:
+                        print(f"❌ New SL {new_sl_price:.{decimals}f} is below market price {last_price:.{decimals}f}, skipping update.")
+                        return []
+
+                new_sl_str = f"{new_sl_price:.{decimals}f}"
                 body = {
                     "category": "linear",
                     "symbol": symbol,
-                    "takeProfit": adjusted_tp_str,
-                    "stopLoss": adjusted_sl_str,
-                    "tpTriggerBy": "MarkPrice",
-                    "slTriggerBy": "MarkPrice",
+                    "stopLoss": new_sl_str,
+                    "slTriggerBy": "LastPrice",
                     "tpslMode": "Full",
-                    "tpOrderType": "Market",
-                    "slOrderType": "Market",
                     "positionIdx": position_idx
                 }
 
-                print(f"📤 Setting initial TP/SL: {body}")
+                print(f"📤 Updating excessive SL to: {body}")
                 response = client.set_trading_stop(**body)
-                print(f"✅ TP/SL set: {response}")
+                print(f"✅ SL updated using excessive_stop_loss_percent: {response}")
 
             except Exception as e:
-                print(f"[ERROR] Failed to set initial TP/SL: {e}")
-            return []
+                print(f"[ERROR] Failed to correct excessive SL: {e}")
