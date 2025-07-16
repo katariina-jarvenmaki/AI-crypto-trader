@@ -104,14 +104,14 @@
   }, 
   "ARCUSDT": {
     "long": {
-      "_comment": "Value specified 12.7.2025, may need further specification",
-      "set_stoploss_percent": "0.17%",
-      "full_stoploss_percent": "0.16%"
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
     },
     "short": {
-      "_comment": "Value specified 12.7.2025, may need further specification",
-      "set_stoploss_percent": "0.17%",
-      "full_stoploss_percent": "0.16%"
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
     }
   },
   "ASTRUSDT": {
