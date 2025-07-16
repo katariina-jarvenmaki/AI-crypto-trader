@@ -12,7 +12,7 @@ def process_log_entry(entry: dict):
 
     # Disable saving duplicates
     if any(e.get("timestamp") == timestamp for e in history):
-        print(f"Duplicate entry for symbol={symbol} and timestamp={timestamp}, skipping.")
+        # print(f"Duplicate entry for symbol={symbol} and timestamp={timestamp}, skipping.")
         return
 
     last_entry = history[-1] if history else {}

@@ -6,14 +6,13 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from modules.history_analyzer.config_history_analyzer import CONFIG
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
-from modules.history_analyzer.utils import format_value, decimals_in_number, format_change_for_price_data, format_change
+from modules.history_analyzer.utils import format_value, decimals_in_number
 
 def analyze_log_data(symbol, latest, previous):
-
     print(f"\n🔍 Analysoidaan symbolia: {symbol}")
     print(f"⏱ Aika: {latest['timestamp']}  vs.  {previous['timestamp']}")
 
-    # --- Lasketaan puuttuvat analyysit, jos eivät ole mukana ---
+    # --- Lasketaan puuttuvat analyysit ---
     for entry, ref in [(latest, previous)]:
         if "bollinger_status" not in entry:
             entry["bollinger_status"] = analyze_bollinger(
@@ -39,50 +38,78 @@ def analyze_log_data(symbol, latest, previous):
                 entry["ema_trend"]
             )
 
-    # --- Tulostukset ---
-    print(format_change_for_price_data(latest.get("price"), previous.get("price"), "Hinta"))
-    print(format_change(latest.get("avg_rsi_all"), previous.get("avg_rsi_all"), "RSI (avg)"))
-    print(format_change(latest.get("ema_rsi"), previous.get("ema_rsi"), "EMA RSI"))
-    print(format_change(latest.get("macd_diff"), previous.get("macd_diff"), "MACD ero"))
+    # --- Lasketaan muutokset ja prosentit ---
+    def calc_change_and_percent(current, prev):
+        if current is None or prev is None:
+            return None, None
+        delta = current - prev
+        percent = (delta / prev) * 100 if prev != 0 else None
+        return delta, percent
 
-    print("\n📈 Trendianalyysit:")
-    print(f"MACD trendi: {previous.get('macd_trend')} ➜ {latest.get('macd_trend')}")
-    print(f"Bollinger status: {previous.get('bollinger_status')} ➜ {latest.get('bollinger_status')}")
-    print(f"EMA trendi: {previous.get('ema_trend')} ➜ {latest.get('ema_trend')}")
-    print(f"Signaalin vahvuus: {previous.get('signal_strength')} ➜ {latest.get('signal_strength')}")
+    price = latest.get("price")
+    prev_price = previous.get("price")
+    price_delta, price_percent = calc_change_and_percent(price, prev_price)
 
-    # Turnover-analyysi
-    print("\n💱 Turnover-analyysi:")
+    rsi = latest.get("avg_rsi_all")
+    prev_rsi = previous.get("avg_rsi_all")
+    rsi_delta, rsi_percent = calc_change_and_percent(rsi, prev_rsi)
+
+    ema_rsi = latest.get("ema_rsi")
+    prev_ema_rsi = previous.get("ema_rsi")
+    ema_rsi_delta, ema_rsi_percent = calc_change_and_percent(ema_rsi, prev_ema_rsi)
+
+    macd = latest.get("macd_diff")
+    prev_macd = previous.get("macd_diff")
+    macd_delta, macd_percent = calc_change_and_percent(macd, prev_macd)
+
+    # --- Turnover-analyysi ---
     turnover_status = detect_turnover_anomaly(latest["turnover"], latest["volume"], latest["price"])
-    print(f"Turnover vs. hinta: {turnover_status}")
 
-    # 🔍 RSI-divergenssianalyysi
-    print("\n🔎 RSI Divergenssianalyysi:")
+    # --- RSI Divergenssi ---
     history = [
         {"avg_rsi": previous.get("avg_rsi_all")},
         {"avg_rsi": latest.get("avg_rsi_all")},
     ]
-    avg_rsi = latest.get("avg_rsi_all")
-    prev_avg = previous.get("avg_rsi_all")
+    divergence = detect_rsi_divergence(history, rsi)
+    rsi_change_delta = abs(rsi - prev_rsi) if rsi is not None and prev_rsi is not None else None
 
-    divergence = detect_rsi_divergence(history, avg_rsi)
-    delta = abs(avg_rsi - prev_avg) if prev_avg is not None else None
+    # --- Palautettavat analysoidut arvot ---
+    return {
+        "symbol": symbol,
+        "timestamp": latest["timestamp"].isoformat(),
+        
+        # Hinta
+        "price": price,
+        "price_change": price_delta,
+        "price_change_percent": price_percent,
 
-    print(f"Divergenssi: {divergence}")
-    if delta is not None:
-        print(f"RSI muutos: {delta:.2f} (kynnys: {CONFIG['rsi_change_threshold']})")
-        if delta < CONFIG["rsi_change_threshold"]:
-            print("⚠️  RSI-muutos alle kynnyksen — divergenssi ei luotettava.")
-        else:
-            if divergence != "none":
-                print(f"🚨 RSI Divergenssi havaittu: {divergence.upper()}")
+        # RSI (avg)
+        "avg_rsi_all": rsi,
+        "rsi_change": rsi_delta,
+        "rsi_change_percent": rsi_percent,
 
-    # Tarkastellaan käänteitä tai trendejä
-    print("\n⚠️  Muutokset tai poikkeamat:")
-    if latest.get("flag") != previous.get("flag"):
-        print(f"🔁 RSI-lippu muuttunut: {previous.get('flag')} ➜ {latest.get('flag')}")
-    if latest.get("signal_strength") != previous.get("signal_strength"):
-        print(f"🔥 Signaalivahvuus muuttunut: {previous.get('signal_strength')} ➜ {latest.get('signal_strength')}")
+        # EMA RSI
+        "ema_rsi": ema_rsi,
+        "ema_rsi_change": ema_rsi_delta,
+        "ema_rsi_change_percent": ema_rsi_percent,
+
+        # MACD
+        "macd_diff": macd,
+        "macd_diff_change": macd_delta,
+        "macd_diff_change_percent": macd_percent,
+
+        # Trendit ja tilat
+        "macd_trend": latest.get("macd_trend"),
+        "bollinger_status": latest.get("bollinger_status"),
+        "ema_trend": latest.get("ema_trend"),
+        "signal_strength": latest.get("signal_strength"),
+        "flag": latest.get("flag"),
+
+        # Muut analyysit
+        "turnover_status": turnover_status,
+        "rsi_divergence": divergence,
+        "rsi_delta": rsi_change_delta,
+    }
 
 # --- Analyysifunktiot ---
 def analyze_bollinger(price, bb_upper, bb_lower):
@@ -191,9 +218,14 @@ def analysis_engine(symbols):
     log_path = CONFIG["history_log_path"]
     history_data = load_history_entries_with_prev(symbols, log_path)
 
+    results = []  
+
     for symbol in symbols:
         entry_pair = history_data.get(symbol)
         if not entry_pair:
             print(f"[{symbol}] Ei löydetty riittävästi vertailukelpoista dataa.")
             continue
-        analyze_log_data(symbol, entry_pair["latest"], entry_pair["previous"])
+        result = analyze_log_data(symbol, entry_pair["latest"], entry_pair["previous"])
+        results.append(result)
+
+    return results

@@ -129,13 +129,13 @@
   "BEAMUSDT": {
     "long": {
       "_comment": "Value specified 16.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
       "_comment": "Value specified 16.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.18%"
     }
   },
   "BOBAUSDT": {
@@ -281,7 +281,19 @@
       "set_stoploss_percent": "0.17%",
       "full_stoploss_percent": "0.16%"
     }
-  },
+  },  
+  "ROAMUSDT": {
+    "long": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 16.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  }, 
   "SERAPHUSDT": {
     "long": {
       "_comment": "Value specified 15.7.2025, may need further specification",

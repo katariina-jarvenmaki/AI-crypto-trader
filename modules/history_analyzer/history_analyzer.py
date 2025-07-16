@@ -28,7 +28,8 @@ def main():
     history_log_processor(parsed_entries)
 
     # Running analysis_engine
-    analysis_engine(symbols)
+    result = analysis_engine(symbols)
+    print(result)
 
 if __name__ == "__main__":
     main()
