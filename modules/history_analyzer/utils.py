@@ -28,14 +28,15 @@ def get_latest_symbols_from_log(file_path: str) -> List[str]:
         return list(combined_symbols)
 
 def format_value(val):
+    if val == 0:
+        return "0.000"
+
     abs_val = abs(val)
     s = f"{val:.15f}"  # riittävän pitkä desimaaliosa
 
     if abs_val >= 1:
-        # Pyöristetään kolmeen desimaaliin normaalisti
         return f"{val:.3f}"
 
-    # Ei poisteta rstrip:llä, säilytetään kaikki nollat ja desimaalit
     integer_part, decimal_part = s.split('.')
 
     # Lasketaan etunollat desimaaliosassa
@@ -56,7 +57,6 @@ def format_value(val):
         decimal_part = decimal_part[:needed_len]
 
     return f"{integer_part}.{decimal_part}"
-
 
 def decimals_in_number(num):
     s = str(num)
@@ -84,4 +84,50 @@ def format_change_for_price_data(current, prev, label):
     return (
         f"{label}: ${current_fmt} vs ${prev_fmt} "
         f"({sign}${delta_fmt}, {sign}{perc:.2f}%)"
+    )
+
+# For text formating only price
+def format_change(current, prev, label):
+    def format_value(val):
+        s = f"{val:.15f}".rstrip('0').rstrip('.')
+        abs_val = abs(val)
+
+        if abs_val >= 1:
+            # Pyöristetään 3 desimaaliin normaalisti
+            return f"{val:.3f}"
+
+        # Ota desimaaliosa
+        if '.' not in s:
+            return "0.000"
+        integer_part, decimal_part = s.split('.')
+
+        # Lasketaan nollat desimaalien alussa
+        leading_zeros = 0
+        for c in decimal_part:
+            if c == '0':
+                leading_zeros += 1
+            else:
+                break
+
+        needed_len = leading_zeros + 3
+
+        if len(decimal_part) < needed_len:
+            decimal_part += '0' * (needed_len - len(decimal_part))
+        else:
+            decimal_part = decimal_part[:needed_len]
+
+        return f"{integer_part}.{decimal_part}"
+
+    fmt = format_value
+
+    if current is None or prev is None:
+        return f"{label}: {fmt(current)} (ei vertailuarvoa)"
+
+    delta = current - prev
+    perc = (delta / prev) * 100 if prev != 0 else 0
+    sign = "+" if delta > 0 else ""
+
+    return (
+        f"{label}: {fmt(current)} vs {fmt(prev)} "
+        f"({sign}{fmt(delta)}, {sign}{perc:.2f}%)"
     )
