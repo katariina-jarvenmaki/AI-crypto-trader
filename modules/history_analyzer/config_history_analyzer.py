@@ -9,8 +9,8 @@ CONFIG = {
     "min_prev_entry_age_minutes": 60, # prev-data aikaraja minuutteinan, minimi 60 min
     "ema_alpha": 0.2,
     "rsi_divergence_window": 2,
-    "price_change_threshold": 1.0, # %
     "rsi_change_threshold": 1.0,
+    "price_change_threshold": 1.0, # %
     "macd_diff_threshold": 0.4,
     "symbol_keys": ["potential_both_ways", "potential_to_long", "potential_to_short"],
 }
