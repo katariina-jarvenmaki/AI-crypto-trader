@@ -1,6 +1,7 @@
 
 CONFIG = {
     "history_log_path": "modules/history_analyzer/history_data_log.jsonl",
+    "analysis_log_path": "modules/history_analyzer/history_analysis_log.jsonl",
     "symbol_log_path": "modules/symbol_data_fetcher/symbol_data_log.jsonl",
     "ohlcv_log_path": "integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl",
     "price_log_path": "integrations/price_data_fetcher/price_data_log.jsonl",
