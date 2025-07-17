@@ -133,7 +133,7 @@ SELL_CLOSE_ORDER_LIMIT = 0.985
 VOLUME_MULTIPLIERS = {
     'BTCUSDC': {'buy': 1.2, 'sell': 1.3},
     'ETHUSDC': {'buy': 1.2, 'sell': 1.2},
-    'SOLUSDC': {'buy': 1.2, 'sell': 1.3},
+    'SOLUSDC': {'buy': 1.2, 'sell': 1.4},
     'XRPUSDC': {'buy': 1.2, 'sell': 1.4},
     'ADAUSDC': {'buy': 1.3, 'sell': 1.5},
     'HBARUSDC': {'buy': 1.2, 'sell': 1.5},
