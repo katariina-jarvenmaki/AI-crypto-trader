@@ -318,6 +318,18 @@
       "full_stoploss_percent": "0.16%"
     }
   }, 
+  "SQDUSDT": {
+    "long": {
+      "_comment": "Value specified 17.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 17.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },
   "STORJUSDT": {
     "long": {
       "_comment": "Value specified 16.7.2025, may need further specification",

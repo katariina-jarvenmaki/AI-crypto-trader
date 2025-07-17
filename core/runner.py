@@ -284,7 +284,7 @@ def fetch_all_positions_bybit():
             positions = result.get("list", [])
             all_positions.extend(positions)
 
-            print(f"➡️ Retrieved {len(positions)} positions (Total so far: {len(all_positions)})")
+            print(f"➡️  Retrieved {len(positions)} positions (Total so far: {len(all_positions)})")
 
             cursor = result.get("nextPageCursor")
             if not cursor:
@@ -399,7 +399,7 @@ def check_positions_and_update_logs(symbols_to_check=None, platform="ByBit"):
             if updated_any:
                 print("✅ Order log updated.")
             else:
-                print("ℹ️ No changes to order log.")
+                print("ℹ️  No changes to order log.")
 
         except Exception as log_e:
             print(f"[ERROR] Failed while updating logs: {log_e}")

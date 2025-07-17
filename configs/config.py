@@ -131,14 +131,14 @@ SELL_CLOSE_ORDER_LIMIT = 0.985
 # Volume multipliers per symbol and signal
 # These are base numbers that momentum_validator.py will modify
 VOLUME_MULTIPLIERS = {
-    'BTCUSDC': {'buy': 1.2, 'sell': 1.3},
-    'ETHUSDC': {'buy': 1.2, 'sell': 1.2},
-    'SOLUSDC': {'buy': 1.2, 'sell': 1.4},
-    'XRPUSDC': {'buy': 1.2, 'sell': 1.4},
-    'ADAUSDC': {'buy': 1.3, 'sell': 1.5},
-    'HBARUSDC': {'buy': 1.2, 'sell': 1.5},
+    'BTCUSDC': {'buy': 1.2, 'sell': 1.0},
+    'ETHUSDC': {'buy': 1.2, 'sell': 1.1},
+    'SOLUSDC': {'buy': 1.2, 'sell': 1.1},
+    'XRPUSDC': {'buy': 1.2, 'sell': 1.1},
+    'ADAUSDC': {'buy': 1.3, 'sell': 1.2},
+    'HBARUSDC': {'buy': 1.2, 'sell': 1.2},
     # Default arvot
-    'DEFAULT': {'buy': 1.5, 'sell': 1.5},
+    'DEFAULT': {'buy': 1.5, 'sell': 1.2},
 }
 
 # ByBit order leverage

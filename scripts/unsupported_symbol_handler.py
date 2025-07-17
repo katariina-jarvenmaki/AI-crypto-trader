@@ -87,7 +87,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     try:
         entry_time = isoparse(latest_entry.get("timestamp"))
         if datetime.now(entry_time.tzinfo) - entry_time > timedelta(hours=2):
-            log_and_skip("Volume too high ({})".format(volume), "short", {"volume": volume})
+            log_and_skip("Latest history entry is older than 2 hours.")
             print(f"⏳ Skipping {bybit_symbol}: latest history entry is older than 2 hours.")
             return
     except Exception as e:
@@ -95,6 +95,13 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         return
 
     if short_only:
+
+        macd_trend = latest_entry.get("macd_trend")
+        if macd_trend == "bullish":
+            log_and_skip("MACD-trendi on bullish – shorttaus estetty", "short", {"macd_trend": macd_trend})
+            print(f"⛔ Skipping SHORT: MACD-trendi on bullish.")
+            return
+
         data_1h = ohlcv_entry.get("data_preview", {}).get("1h", {})
         data_15m = ohlcv_entry.get("data_preview", {}).get("15m", {})
         rsi_1h = data_1h.get("rsi")
@@ -104,8 +111,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         macd_diff = macd - macd_signal if macd is not None and macd_signal is not None else None
 
         allow_short = (
-            (rsi_1h > 79 and macd_diff <= 0) or
-            (rsi_1h > 79 and rsi_15m < 61)
+            (rsi_1h > 75 and macd_diff <= 0) or
+            (rsi_1h > 75 and rsi_15m < 65)
         ) if rsi_1h and macd_diff is not None else False
 
         if not allow_short:
@@ -115,7 +122,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
 
         bb_upper = data_1h.get("bb_upper")
-        if bb_upper and last_price < bb_upper * 1.01:
+        if bb_upper and last_price < bb_upper * 1.03:
             log_and_skip("BB-suodatin: hinta ei selvästi ylä-BB:n yläpuolella", "short",
                          {"last_price": last_price, "bb_upper_1h": bb_upper})
             print(f"⛔ Skipping SHORT: last_price ({last_price}) ei selvästi ylä-BB:n ({bb_upper}) yläpuolella.")
@@ -123,7 +130,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         try:
             avg_price = turnover / volume if turnover and volume else None
-            if avg_price and last_price < avg_price * 1.05 and price_change_percent > 28:
+            if avg_price and last_price < avg_price * 1.03 and price_change_percent > 35:
                 log_and_skip("Price below avg_price after big move – possible premature short", "short",
                              {"avg_price": round(avg_price, 6), "last_price": last_price,
                               "price_change_percent": price_change_percent})
@@ -158,29 +165,36 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             )
 
     elif long_only:
+
+        macd_trend = latest_entry.get("macd_trend")
+        if macd_trend == "bearish":
+            log_and_skip("MACD-trendi on bearish – longaus estetty", "long", {"macd_trend": macd_trend})
+            print(f"⛔ Skipping LONG: MACD-trendi on bearish.")
+            return
+
         data_1h = ohlcv_entry.get("data_preview", {}).get("1h", {})
         data_2h = ohlcv_entry.get("data_preview", {}).get("2h", {})
         rsi_2h = data_2h.get("rsi")
 
-        if rsi_2h is not None and rsi_2h > 70:
-            log_and_skip(f"Volume too high ({volume})", "short", {"volume": volume})
+        if rsi_2h is not None and rsi_2h > 75:
+            log_and_skip(f"RSI 2h liian korkea ({rsi_2h})", "long", {"rsi_2h": rsi_2h})
             print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
             return
 
         bb_lower = data_1h.get("bb_lower")
-        if bb_lower and last_price > bb_lower * 0.99:
+        if bb_lower and last_price > bb_lower * 1.02:
             log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",
-                         {"last_price": last_price, "bb_lower_1h": bb_lower})
+                        {"last_price": last_price, "bb_lower_1h": bb_lower})
             print(f"⛔ Skipping LONG: last_price ({last_price}) ei selvästi ala-BB:n ({bb_lower}) alapuolella.")
             return
 
         try:
             avg_price = turnover / volume if turnover and volume else None
-            if avg_price and last_price > avg_price * 1.05 and price_change_percent > 30:
+            if avg_price and last_price > avg_price * 1.08 and price_change_percent > 40:
                 log_and_skip("Price above avg_price after strong move – possible late long entry", "long",
-                             {"avg_price": round(avg_price, 6), "last_price": last_price,
-                              "price_change_percent": price_change_percent})
-                print(f"📈 Skipping LONG: last_price ({last_price}) > 105% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}%")
+                            {"avg_price": round(avg_price, 6), "last_price": last_price,
+                            "price_change_percent": price_change_percent})
+                print(f"📈 Skipping LONG: last_price ({last_price}) > 108% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}%")
                 return
         except Exception as e:
             print(f"⚠️ Failed turnover/volume filter for {bybit_symbol}: {e}")

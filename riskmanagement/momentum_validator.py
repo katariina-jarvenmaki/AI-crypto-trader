@@ -3,6 +3,7 @@
 from typing import List, Dict
 import pandas as pd
 from configs.config import VOLUME_MULTIPLIERS
+from scripts.unsupported_symbol_handler import get_latest_log_entry_for_symbol
 
 def verify_signal_with_momentum_and_volume(
     df: pd.DataFrame,
@@ -27,6 +28,15 @@ def verify_signal_with_momentum_and_volume(
     config_multiplier = VOLUME_MULTIPLIERS.get(symbol.upper(), {}).get(signal.lower())
     if volume_multiplier is None:
         volume_multiplier = config_multiplier if config_multiplier is not None else 1.0  # fallback default
+
+    # MACD check
+    bybit_symbol = symbol.replace("USDC", "USDT")
+    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)
+    macd_trend = history_analysis_entry['macd_trend']
+    if macd_trend == "bullish" and signal == "sell":
+        volume_multiplier += 0.3
+    elif macd_trend == "bearish" and signal == "buy":
+        volume_multiplier += 0.3
 
     # 🔁 Mukauta multiplier markkinatilanteen mukaan
     if market_state == "bull" and signal == "sell":

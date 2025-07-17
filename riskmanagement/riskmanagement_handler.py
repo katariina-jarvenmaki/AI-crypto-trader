@@ -9,6 +9,7 @@ from riskmanagement.price_change_analyzer import check_price_change_risk
 
 def check_riskmanagement(symbol: str, signal: str, market_state: str, override_signal: bool = False, interval=None, intervals=None, mode: str = None):
     
+    # Override
     if override_signal:
         # return dummy defaults in override mode
         return "strong", {}, 1.0, {"momentum_strength": "n/a", "interpretation": "override mode"}

@@ -113,6 +113,8 @@ def analyze_log_data(symbol, latest, previous):
 
 # --- Analyysifunktiot ---
 def analyze_bollinger(price, bb_upper, bb_lower):
+    if price is None or bb_upper is None or bb_lower is None:
+        return "unknown"
     if price >= bb_upper:
         return "overbought"
     elif price <= bb_lower:
@@ -120,6 +122,8 @@ def analyze_bollinger(price, bb_upper, bb_lower):
     return "neutral"
 
 def detect_ema_trend(price, ema_1d):
+    if price is None or ema_1d is None:
+        return "unknown"  # tai esim. "neutral", riippuen tarpeesta
     if price > ema_1d * 1.01:
         return "strong_above"
     elif price < ema_1d * 0.99:
@@ -159,12 +163,19 @@ def detect_macd_trend(macd_diff, threshold=0.5):
 def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
     if len(history) < CONFIG["rsi_divergence_window"]:
         return "none"
+    
     prev = history[-1]
     prev2 = history[-2]
+
+    # Tarkista että kaikki tarvittavat arvot ovat numeroita
+    if prev["avg_rsi"] is None or prev2["avg_rsi"] is None or current_avg is None:
+        return "none"
+
     if prev["avg_rsi"] > prev2["avg_rsi"] and current_avg < prev["avg_rsi"]:
         return "bearish-divergence"
     elif prev["avg_rsi"] < prev2["avg_rsi"] and current_avg > prev["avg_rsi"]:
         return "bullish-divergence"
+
     return "none"
 
 def load_history_entries_with_prev(symbols, path):
