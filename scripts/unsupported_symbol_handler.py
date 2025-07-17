@@ -207,6 +207,33 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             print(f"⛔ Skipping {bybit_symbol} long: open limit order already exists.")
             return
 
+        # Median rsi check
+        data_1m = ohlcv_entry.get("data_preview", {}).get("1m", {})
+        data_5m = ohlcv_entry.get("data_preview", {}).get("5m", {})
+        data_15m = ohlcv_entry.get("data_preview", {}).get("15m", {})
+
+        rsi_1m = data_1m.get("rsi")
+        rsi_5m = data_5m.get("rsi")
+        rsi_15m = data_15m.get("rsi")
+
+        short_rsi_values = [r for r in [rsi_1m, rsi_5m, rsi_15m] if r is not None]
+
+        if macd_trend == "neutral":
+            if short_rsi_values:
+                rsi_median = sorted(short_rsi_values)[len(short_rsi_values)//2]
+
+                if rsi_median > 85:
+                    log_and_skip("RSI (1-15m) mediaani liian korkea – vältetään top long", "long",
+                                {"rsi_1m": rsi_1m, "rsi_5m": rsi_5m, "rsi_15m": rsi_15m})
+                    print(f"⛔ Skipping LONG: short-term RSI:t liian kuumat. (mediaani: {rsi_median:.2f})")
+                    return
+
+                if rsi_1m and rsi_5m and rsi_1m > 80 and rsi_5m > 80:
+                    log_and_skip("RSI 1m ja 5m molemmat > 80 – mahdollinen spike", "long",
+                                {"rsi_1m": rsi_1m, "rsi_5m": rsi_5m})
+                    print(f"⛔ Skipping LONG: RSI 1m ({rsi_1m}) ja 5m ({rsi_5m}) molemmat > 80.")
+                    return
+
         result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if result:
             price_entry = get_latest_log_entry_for_symbol(
