@@ -93,7 +93,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             skip_full_sl = True
 
     # Determine whether to skip trailing stop update
-    if trailing_stop > 0 and abs(trailing_stop - trail_amount) < threshold_amount:
+    if trailing_stop > 0:
         skip_trailing = True
 
     # Skip both only if neither update is necessary
@@ -139,29 +139,20 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             print("⏩ Skipping full SL update.")
 
         # Try setting trailing stop
-        print(f"Try setting trailing stop")
         if not skip_trailing:
-            try:
-                print(f"entry_price: {entry_price}")
-                print(f"trailing_percent: {trailing_percent}")
-                print(f"trail_amount: {trail_amount}")
-                if trail_amount < threshold_amount:
-                    print(f"⚠️ Trailing stop amount below threshold ({trail_amount:.{decimals}f} < {threshold_amount:.{decimals}f}), skipping update.")
+            trail_amount = entry_price * trailing_percent
+            trailingStop = to_str(trail_amount)
+            trailing_body = {
+                "category": "linear",
+                "symbol": symbol,
+                "trailingStop": trailingStop,
+                "tpslMode": "Full",
+                "positionIdx": position_idx
+            }
+            print(f"📤 Sending trailing SL update: {trailing_body}")
+            response_trailing = client.set_trading_stop(**trailing_body)
+            print(f"🟢 Trailing SL updated: {response_trailing}")
 
-                else:
-                    trailingStop = f"{trail_amount:.{decimals}f}"
-                    trailing_body = {
-                        "category": "linear",
-                        "symbol": symbol,
-                        "trailingStop": trailingStop,
-                        "tpslMode": "Full",
-                        "positionIdx": position_idx
-                    }
-                    print(f"📤 Sending trailing SL update: {trailing_body}")
-                    response_trailing = client.set_trading_stop(**trailing_body)
-                    print(f"🟢 Trailing SL updated: {response_trailing}")
-            except Exception as e:
-                print(f"[ERROR] Failed to update trailing SL: {e}")
         else:
             print("⏩ Skipping trailing SL update.")
 
