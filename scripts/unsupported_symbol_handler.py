@@ -20,7 +20,6 @@ def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
                 continue
     return None
 
-
 def get_latest_two_log_entries_for_symbol(log_path: str, symbol: str) -> list:
     entries = []
     with open(log_path, "r") as f:

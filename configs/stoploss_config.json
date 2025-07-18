@@ -96,25 +96,25 @@
   "ALUUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, may need further specification",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "set_stoploss_percent": "0.21%",
+      "full_stoploss_percent": "0.20%"
     },
     "short": {
       "_comment": "Value specified 18.7.2025, may need further specification",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "set_stoploss_percent": "0.21%",
+      "full_stoploss_percent": "0.20%"
     }
   }, 
   "ARCUSDT": {
     "long": {
-      "_comment": "Value specified 18.7.2025, full_stoploss_percent seems fine ",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "_comment": "Value specified 18.7.2025, may need further specification",
+      "set_stoploss_percent": "0.21%",
+      "full_stoploss_percent": "0.20%"
     },
     "short": {
-      "_comment": "Value specified 18.7.2025, full_stoploss_percent seems fine ",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "_comment": "Value specified 18.7.2025, may need further specification",
+      "set_stoploss_percent": "0.21%",
+      "full_stoploss_percent": "0.20%"
     }
   },
   "ASTRUSDT": {
@@ -420,13 +420,13 @@
   "ROAMUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, may need further specification",
-      "set_stoploss_percent": "0.23%",
-      "full_stoploss_percent": "0.22%"
+      "set_stoploss_percent": "0.24%",
+      "full_stoploss_percent": "0.23%"
     },
     "short": {
       "_comment": "Value specified 18.7.2025, may need further specification",
-      "set_stoploss_percent": "0.23%",
-      "full_stoploss_percent": "0.22%"
+      "set_stoploss_percent": "0.24%",
+      "full_stoploss_percent": "0.23%"
     }
   }, 
   "SERAPHUSDT": {

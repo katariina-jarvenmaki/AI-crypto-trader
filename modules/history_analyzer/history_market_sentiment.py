@@ -1,3 +1,4 @@
+import os
 import json
 import pprint
 from dateutil import parser
@@ -110,10 +111,41 @@ def compute_bias(logs: List[Dict], time_window_hours: float = 24.0) -> Dict:
 
     return result
 
-if __name__ == "__main__":
-    with open(CONFIG["analysis_log_path"], "r") as f:
-        data = [json.loads(line) for line in f]
+def log_sentiment_result(result: Dict) -> None:
+    """Tallenna analyysitulos lokitiedostoon."""
+    log_path = CONFIG["sentiment_log_path"]
+    
+    # Luo hakemisto tarvittaessa
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
+    # Luo tyhjä tiedosto jos ei ole olemassa
+    if not os.path.exists(log_path):
+        with open(log_path, "w") as f:
+            pass
+
+    # Luo lokimerkintä
+    result_entry = {
+        "timestamp": datetime.now(LOCAL_TIMEZONE).isoformat(),
+        "result": result
+    }
+
+    # Kirjoita lokiin
+    with open(log_path, "a") as f:
+        f.write(json.dumps(result_entry) + "\n")
+
+if __name__ == "__main__":
+    log_path = CONFIG["analysis_log_path"]
+
+    # Lue olemassa oleva lokidata
+    if os.path.exists(log_path):
+        with open(log_path, "r") as f:
+            data = [json.loads(line) for line in f if line.strip()]
+    else:
+        data = []
+
+    # Analysoi tulos
     result = compute_bias(data, time_window_hours=24.0)
     pprint.pprint(result)
 
+    # Kirjaa tulos lokiin
+    log_sentiment_result(result)
