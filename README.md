@@ -6,7 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil
 ```
 
 **2. Make a credentials.py to configs-folder**
@@ -19,7 +19,7 @@ Contents:
 BINANCE_API_KEY = 'your_api_key'
 BINANCE_API_SECRET = 'your_secret_key'
 
-# BYBIT
+# BYBIT - must to update
 BYBIT_API_KEY = "your_real_api_key"
 BYBIT_API_SECRET = "your_real_api_secret"
 
@@ -57,7 +57,24 @@ crontab -e
 tail -n 100 /opt/kjc/int/AI-crypto-trader/logs/cron.log
 ```
 
-**4. Usage guide**
+**4. Run the datacollectors and analyzers or wait crons to run them**
+
+If no time to wait crons to run, run these manually, in this order:
+```bash
+cd /opt/kjc/int/AI-crypto-trader
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
+/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
+/usr/bin/python3 -m modules.history_analyzer.history_analyzer
+```
+**5. Start trading**
+
+```bash
+python3 main.py binance
+```
+
+**Usage guide**
 
 Run the app on default platform (Binance) with default coinpair (BTCUSDC) and automatic market state detection
 ```bash

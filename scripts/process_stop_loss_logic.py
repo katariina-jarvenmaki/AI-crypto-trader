@@ -142,6 +142,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         if not skip_trailing:
             trail_amount = entry_price * trailing_percent
             trailingStop = to_str(trail_amount)
+            print(f"Calculated trailingStop: {trailingStop}")
             trailing_body = {
                 "category": "linear",
                 "symbol": symbol,

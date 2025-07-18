@@ -135,7 +135,7 @@ VOLUME_MULTIPLIERS = {
     'ETHUSDC': {'buy': 1.2, 'sell': 1.1},
     'SOLUSDC': {'buy': 1.2, 'sell': 1.1},
     'XRPUSDC': {'buy': 1.2, 'sell': 1.2},
-    'ADAUSDC': {'buy': 1.3, 'sell': 1.2},
+    'ADAUSDC': {'buy': 1.3, 'sell': 1.3},
     'HBARUSDC': {'buy': 1.2, 'sell': 1.2},
     # Default arvot
     'DEFAULT': {'buy': 1.5, 'sell': 1.2},
