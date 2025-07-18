@@ -140,14 +140,14 @@
   },  
   "BEAMUSDT": {
     "long": {
-      "_comment": "Value specified 17.7.2025, may need further specification",
-      "set_stoploss_percent": "0.21%",
-      "full_stoploss_percent": "0.20%"
+      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
+      "set_stoploss_percent": "0.23%",
+      "full_stoploss_percent": "0.21%"
     },
     "short": {
-      "_comment": "Value specified 17.7.2025, may need further specification",
-      "set_stoploss_percent": "0.21%",
-      "full_stoploss_percent": "0.20%"
+      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
+      "set_stoploss_percent": "0.23%",
+      "full_stoploss_percent": "0.21%"
     }
   },
   "BOBAUSDT": {
@@ -380,12 +380,12 @@
   }, 
   "QNTUSDT": {
     "long": {
-      "_comment": "Value specified 17.7.2025, seems fine",
+      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     },
     "short": {
-      "_comment": "Value specified 17.7.2025, seems fine",
+      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     }

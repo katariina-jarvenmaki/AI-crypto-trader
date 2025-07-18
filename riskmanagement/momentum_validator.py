@@ -37,6 +37,13 @@ def verify_signal_with_momentum_and_volume(
         volume_multiplier += 0.3
     elif macd_trend == "bearish" and signal == "buy":
         volume_multiplier += 0.3
+        
+    # Ema trend
+    ema_trend = history_analysis_entry['ema_trend']
+    if ema_trend == "strong_above" and signal == "sell":
+        volume_multiplier += 0.3
+    elif ema_trend == "strong_below" and signal == "buy":
+        volume_multiplier += 0.3
 
     # 🔁 Mukauta multiplier markkinatilanteen mukaan
     if market_state == "bull" and signal == "sell":
