@@ -187,6 +187,8 @@ def log_skipped_order(symbol: str, reason: str, direction: str = None, details: 
     else:
         skipped_orders = []
 
+    entry["history_sentiment_data"] = history_sentiment
+
     skipped_orders.append(entry)
 
     with open(filepath, "w") as f:

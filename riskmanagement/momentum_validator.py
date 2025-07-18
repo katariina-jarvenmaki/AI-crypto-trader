@@ -3,7 +3,7 @@
 from typing import List, Dict
 import pandas as pd
 from configs.config import VOLUME_MULTIPLIERS
-from scripts.unsupported_symbol_handler import get_latest_log_entry_for_symbol
+from scripts.unsupported_symbol_handler import get_latest_log_entry_for_symbol, get_latest_log_entry
 
 def verify_signal_with_momentum_and_volume(
     df: pd.DataFrame,
@@ -28,6 +28,16 @@ def verify_signal_with_momentum_and_volume(
     config_multiplier = VOLUME_MULTIPLIERS.get(symbol.upper(), {}).get(signal.lower())
     if volume_multiplier is None:
         volume_multiplier = config_multiplier if config_multiplier is not None else 1.0  # fallback default
+
+    # Market state status
+    sentiment_entry = get_latest_log_entry(
+        "modules/history_analyzer/logs/history_sentiment_log.jsonl")
+    broad_state = sentiment_entry["result"].get("broad_state")
+    hour_state = sentiment_entry["result"].get("last_hour_state")
+    if signal == "buy" and broad_state == "buy" and hour_state == "sell":
+        volume_multiplier += 0.1
+    elif signal == "sell" and broad_state == "bull" and hour_state == "bull":
+        volume_multiplier += 0.1
 
     # MACD check
     bybit_symbol = symbol.replace("USDC", "USDT")

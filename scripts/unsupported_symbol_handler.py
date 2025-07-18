@@ -34,6 +34,19 @@ def get_latest_two_log_entries_for_symbol(log_path: str, symbol: str) -> list:
                 continue
     return entries
 
+def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
+    """Palauttaa True, jos ehtoja tulisi tiukentaa annetun directionin perusteella ('long' tai 'short')."""
+    if not sentiment_entry or "result" not in sentiment_entry:
+        return False
+
+    broad = sentiment_entry["result"].get("broad_state")
+    hour = sentiment_entry["result"].get("last_hour_state")
+
+    if direction == "short" and broad == "bull" and hour == "bull":
+        return True
+    if direction == "long" and broad == "bear" and hour == "bear":
+        return True
+    return False
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
@@ -98,6 +111,10 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     if short_only:
 
+        tighten_short = should_tighten_conditions(sentiment_entry, "short")
+        if tighten_short:
+            print("⚠️ Sentimentti bullish → tiukennetaan shorttaus-ehtoja.")
+
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bullish":
             log_and_skip("MACD-trendi on bullish – shorttaus estetty", "short", {"macd_trend": macd_trend})
@@ -113,8 +130,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         macd_diff = macd - macd_signal if macd is not None and macd_signal is not None else None
 
         allow_short = (
-            (rsi_1h > 75 and macd_diff <= 0) or
-            (rsi_1h > 75 and rsi_15m < 65)
+            (rsi_1h > (78 if tighten_short else 75) and macd_diff <= 0) or
+            (rsi_1h > (78 if tighten_short else 75) and rsi_15m < 63 if tighten_short else 65)
         ) if rsi_1h and macd_diff is not None else False
 
         if not allow_short:
@@ -124,7 +141,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
 
         bb_upper = data_1h.get("bb_upper")
-        if bb_upper and last_price < bb_upper * 1.03:
+        if bb_upper and last_price < bb_upper * (1.035 if tighten_short else 1.03):
             log_and_skip("BB-suodatin: hinta ei selvästi ylä-BB:n yläpuolella", "short",
                          {"last_price": last_price, "bb_upper_1h": bb_upper})
             print(f"⛔ Skipping SHORT: last_price ({last_price}) ei selvästi ylä-BB:n ({bb_upper}) yläpuolella.")
@@ -132,7 +149,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         try:
             avg_price = turnover / volume if turnover and volume else None
-            if avg_price and last_price < avg_price * 1.03 and price_change_percent > 35:
+            if avg_price and last_price < avg_price * (1.035 if tighten_short else 1.03) and price_change_percent > (38 if tighten_short else 35):
                 log_and_skip("Price below avg_price after big move – possible premature short", "short",
                              {"avg_price": round(avg_price, 6), "last_price": last_price,
                               "price_change_percent": price_change_percent})
@@ -169,6 +186,10 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     elif long_only:
 
+        tighten_long = should_tighten_conditions(sentiment_entry, "long")
+        if tighten_long:
+            print("⚠️ Sentimentti bearish → tiukennetaan longaus-ehtoja.")
+
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bearish":
             log_and_skip("MACD-trendi on bearish – longaus estetty", "long", {"macd_trend": macd_trend})
@@ -179,13 +200,13 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         data_2h = ohlcv_entry.get("data_preview", {}).get("2h", {})
         rsi_2h = data_2h.get("rsi")
 
-        if rsi_2h is not None and rsi_2h > 75:
+        if rsi_2h is not None and rsi_2h > (72 if tighten_long else 75):
             log_and_skip(f"RSI 2h liian korkea ({rsi_2h})", "long", {"rsi_2h": rsi_2h})
             print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
             return
 
         bb_lower = data_1h.get("bb_lower")
-        if bb_lower and last_price > bb_lower * 1.02:
+        if bb_lower and last_price > bb_lower * (1.01 if tighten_long else 1.02):
             log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",
                         {"last_price": last_price, "bb_lower_1h": bb_lower})
             print(f"⛔ Skipping LONG: last_price ({last_price}) ei selvästi ala-BB:n ({bb_lower}) alapuolella.")
@@ -193,7 +214,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         try:
             avg_price = turnover / volume if turnover and volume else None
-            if avg_price and last_price > avg_price * 1.08 and price_change_percent > 40:
+            if avg_price and last_price > avg_price * (1.06 if tighten_long else 1.08) and price_change_percent > (43 if tighten_long else 40):
                 log_and_skip("Price above avg_price after strong move – possible late long entry", "long",
                             {"avg_price": round(avg_price, 6), "last_price": last_price,
                             "price_change_percent": price_change_percent})
@@ -225,13 +246,13 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             if short_rsi_values:
                 rsi_median = sorted(short_rsi_values)[len(short_rsi_values)//2]
 
-                if rsi_median > 85:
+                if rsi_median > (82 if tighten_long else 85):
                     log_and_skip("RSI (1-15m) mediaani liian korkea – vältetään top long", "long",
                                 {"rsi_1m": rsi_1m, "rsi_5m": rsi_5m, "rsi_15m": rsi_15m})
                     print(f"⛔ Skipping LONG: short-term RSI:t liian kuumat. (mediaani: {rsi_median:.2f})")
                     return
 
-                if rsi_1m and rsi_5m and rsi_1m > 80 and rsi_5m > 80:
+                if rsi_1m and rsi_5m and rsi_1m > (78 if tighten_long else 80) and rsi_5m > (78 if tighten_long else 80):
                     log_and_skip("RSI 1m ja 5m molemmat > 80 – mahdollinen spike", "long",
                                 {"rsi_1m": rsi_1m, "rsi_5m": rsi_5m})
                     print(f"⛔ Skipping LONG: RSI 1m ({rsi_1m}) ja 5m ({rsi_5m}) molemmat > 80.")
