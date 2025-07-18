@@ -133,7 +133,8 @@ def log_sentiment_result(result: Dict) -> None:
     with open(log_path, "a") as f:
         f.write(json.dumps(result_entry) + "\n")
 
-if __name__ == "__main__":
+def run_sentiment_analysis() -> Dict:
+    """Lue analyysidata, laske sentimenttibias ja tallenna se lokiin."""
     log_path = CONFIG["analysis_log_path"]
 
     # Lue olemassa oleva lokidata
@@ -143,9 +144,13 @@ if __name__ == "__main__":
     else:
         data = []
 
-    # Analysoi tulos
+    # Suorita analyysi
     result = compute_bias(data, time_window_hours=24.0)
+
+    # Tulosta (debug-mielessä, voi poistaa)
     pprint.pprint(result)
 
-    # Kirjaa tulos lokiin
+    # Kirjaa tulos erilliseen sentimenttilokiin
     log_sentiment_result(result)
+
+    return result

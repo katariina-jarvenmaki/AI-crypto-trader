@@ -8,6 +8,7 @@ from modules.history_analyzer.history_archiver import history_archiver
 from modules.history_analyzer.analysis_engine import analysis_engine
 from modules.history_analyzer.utils import get_latest_symbols_from_log
 from modules.history_analyzer.analysis_log_processor import analysis_log_processor
+from modules.history_analyzer.history_market_sentiment import run_sentiment_analysis
 
 def main():
     
@@ -31,8 +32,11 @@ def main():
     # Running analysis_engine
     analysis_results = analysis_engine(symbols)
 
-    # Archive previous logs
+    # Make analysis logs
     analysis_log_processor(parsed_entries, analysis_results)
+
+    # Analyse broad market and make a log about it
+    run_sentiment_analysis()
 
 if __name__ == "__main__":
     main()
