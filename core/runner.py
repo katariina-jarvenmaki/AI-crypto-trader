@@ -29,7 +29,7 @@ from integrations.bybit_api_client import client as bybit_client, set_stop_loss_
 import pandas as pd
 import json
 from configs.binance_config import SUPPORTED_SYMBOLS
-from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_latest_log_entry_for_symbol
+from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_latest_log_entry_for_symbol, get_latest_log_entry
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
@@ -112,7 +112,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     bybit_symbol = symbol.replace("USDC", "USDT")
     ohlcv_entry = get_latest_log_entry_for_symbol("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol("integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
-    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)
+    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/logs/history_analysis_log.jsonl", bybit_symbol)
+    history_sentiment_entry = get_latest_log_entry("modules/history_analyzer/logs/history_sentiment_log.jsonl")
     if risk_strength in ("strong", "weak", "none") and (
         mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):
@@ -133,7 +134,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             started_on=started_on,
             ohlcv_data=ohlcv_entry,
             price_data=price_entry,
-            history_analysis_data=history_analysis_entry
+            history_analysis_data=history_analysis_entry,
+            history_sentiment=history_sentiment_entry
         )
 
     # Continue only, if a risk_strength is strong AND reverse signal is not strong
@@ -193,7 +195,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_analysis_data=history_analysis_entry
+                history_analysis_data=history_analysis_entry,
+                history_sentiment=history_sentiment_entry
             )
 
         # Bybit
@@ -220,7 +223,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_analysis_data=history_analysis_entry
+                history_analysis_data=history_analysis_entry,
+                history_sentiment=history_sentiment_entry
             )
 
     #***** SHORTS *****#
@@ -251,7 +255,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 reverse_signal_info=reverse_result,
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_analysis_data=history_analysis_entry
+                history_analysis_data=history_analysis_entry,
+                history_sentiment=history_sentiment_entry
             )
 
 import json

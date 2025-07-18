@@ -31,7 +31,7 @@ def verify_signal_with_momentum_and_volume(
 
     # MACD check
     bybit_symbol = symbol.replace("USDC", "USDT")
-    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)
+    history_analysis_entry = get_latest_log_entry_for_symbol("modules/history_analyzer/logs/history_analysis_log.jsonl", bybit_symbol)
     macd_trend = history_analysis_entry['macd_trend']
     if macd_trend == "bullish" and signal == "sell":
         volume_multiplier += 0.3

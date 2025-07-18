@@ -40,7 +40,7 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
               interval: str = None, rsi: str = None, mode: str = "default", market_state: str = None,
               started_on: str = None, momentum_strength: str = None,
               price_change: str = None, volume_multiplier: float = None,
-              reverse_signal_info: dict = None, platform: dict = None, status=None, ohlcv_data=None, price_data=None, history_analysis_data=None):
+              reverse_signal_info: dict = None, platform: dict = None, status=None, ohlcv_data=None, price_data=None, history_analysis_data=None, history_sentiment=None):
     print(f"[log_trade] Logging {symbol} {direction} {qty} @ {price} on {platform}")
 
     log = load_trade_log()
@@ -71,7 +71,8 @@ def log_trade(symbol: str, direction: str, qty: float, price: float, cost: float
         "started_on": started_on,
         "ohlcv_data": ohlcv_data,
         "price_data": price_data,
-        "history_analysis_data": history_analysis_data
+        "history_analysis_data": history_analysis_data,
+        "history_sentiment_data": history_sentiment
     }
     log[symbol][direction_lower].append(new_order)
 
@@ -136,7 +137,7 @@ def reactivate_completed_orders(filepath=LOG_PATH):
 
     return updated_any
 
-def log_skipped_order(symbol: str, reason: str, direction: str = None, details: dict = None, order_data: dict = None):
+def log_skipped_order(symbol: str, reason: str, direction: str = None, details: dict = None, order_data: dict = None, history_sentiment: dict = None):
     filepath = SKIPPED_LOG_PATH.replace(".jsonl", ".json")
 
     now = datetime.now(TIMEZONE).isoformat()
@@ -166,6 +167,7 @@ def log_skipped_order(symbol: str, reason: str, direction: str = None, details: 
         "ohlcv_data": None,
         "price_data": None,
         "history_analysis_data": None,
+        "history_sentiment_data": None,
         "details": details or {}
     }
 

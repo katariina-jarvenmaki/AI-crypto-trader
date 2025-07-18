@@ -86,7 +86,7 @@ def is_signal_allowed(symbol: str, interval: str, signal_type: str, now: datetim
 def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
                       momentum_strength, reverse_signal_info, volume_multiplier,
                       price_change, market_state, started_on,
-                      ohlcv_data=None, price_data=None, history_analysis_data=None):
+                      ohlcv_data=None, price_data=None, history_analysis_data=None, history_sentiment=None):
 
     if now.tzinfo is None:
         now = now.replace(tzinfo=UTC).astimezone(TIMEZONE)
@@ -143,6 +143,8 @@ def update_signal_log(symbol, interval, rsi, signal_type, mode, now, status,
         mode_entry["price_data"] = price_data
     if history_analysis_data:
         mode_entry["history_analysis_data"] = history_analysis_data
+    if history_sentiment:
+        mode_entry["history_sentiment_data"] = history_sentiment
 
     # ✅ Tallenna
     try:

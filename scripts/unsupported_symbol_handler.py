@@ -48,7 +48,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
     latest_entry = next(iter(get_latest_two_log_entries_for_symbol(
-        "modules/history_analyzer/history_analysis_log.jsonl", bybit_symbol)), None)
+        "modules/history_analyzer/logs/history_analysis_log.jsonl", bybit_symbol)), None)
 
     if not latest_entry:
         print(f"❌ No history data for {bybit_symbol}, skipping trade.")
@@ -58,7 +58,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         "integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol(
         "integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
-
+    sentiment_entry = get_latest_log_entry(
+        "modules/history_analyzer/logs/history_sentiment_log.jsonl")
+ 
     price_data = price_entry.get("data_preview", {}) if price_entry else {}
     turnover = price_data.get("turnover")
     volume = price_data.get("volume")
@@ -78,7 +80,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 "leverage": None,
                 "ohlcv_data": ohlcv_entry,
                 "price_data": price_entry,
-                "history_analysis_data": latest_entry
+                "history_analysis_data": latest_entry,
+                "history_sentiment": sentiment_entry
             }
         )
 
@@ -160,7 +163,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_stop_loss=result["sl_price"],
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_analysis_data=latest_entry
+                history_analysis_data=latest_entry,
+                history_sentiment=sentiment_entry
             )
 
     elif long_only:
@@ -249,7 +253,22 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 order_stop_loss=result["sl_price"],
                 ohlcv_data=ohlcv_entry,
                 price_data=price_entry,
-                history_analysis_data=latest_entry
+                history_analysis_data=latest_entry,
+                history_sentiment= sentiment_entry
             )
     else:
         print(f"⚠️  Skipping: No direction specified.")
+
+import json
+
+def get_latest_log_entry(filepath):
+    """Palauttaa tiedoston viimeisen JSONL-rivin dict-muodossa."""
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            if not lines:
+                return None
+            return json.loads(lines[-1])
+    except Exception as e:
+        print(f"Virhe logia luettaessa: {e}")
+        return None
