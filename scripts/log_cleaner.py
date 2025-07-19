@@ -210,6 +210,47 @@ def clean_symbol_data_log(file_path="modules/symbol_data_fetcher/symbol_data_log
     shutil.move(temp_path, file_path)
     print(f"Cleaned symbol_data_log.jsonl: kept {kept}, removed {removed} old entries.")
 
+def clean_skipped_orders_log(path="logs/skipped_orders.json", max_age_hours=24):
+    if not os.path.exists(path):
+        print(f"{path} not found.")
+        return
+
+    now = datetime.now()
+    cutoff = now - timedelta(hours=max_age_hours)
+
+    try:
+        with open(path, "r") as f:
+            entries = json.load(f)
+    except Exception as e:
+        print(f"Error loading {path}: {e}")
+        return
+
+    if not isinstance(entries, list):
+        print(f"Unexpected format in {path}, expected list.")
+        return
+
+    kept_entries = []
+    removed_count = 0
+    for entry in entries:
+        ts_str = entry.get("timestamp")
+        if ts_str:
+            try:
+                ts = datetime.fromisoformat(ts_str.split("+")[0])
+                if ts >= cutoff:
+                    kept_entries.append(entry)
+                else:
+                    removed_count += 1
+            except ValueError:
+                print(f"Invalid timestamp in entry: {ts_str}, keeping it.")
+                kept_entries.append(entry)
+        else:
+            kept_entries.append(entry)
+
+    with open(path, "w") as f:
+        json.dump(kept_entries, f, indent=4)
+
+    print(f"Cleaned {path}: removed {removed_count} old entries, kept {len(kept_entries)}.")
+
 def delete_temporary_logs(directories, prefix="temporary_", suffix=".jsonl"):
     deleted_files = []
     for directory in directories:
@@ -235,6 +276,7 @@ def run_log_cleanup():
     archive_old_orders()
     remove_old_archives()
     clean_symbol_data_log()
+    clean_skipped_orders_log()
     delete_temporary_logs([
         "modules/symbol_data_fetcher",
         "logs/cron"
