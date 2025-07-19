@@ -3,16 +3,16 @@
         "1w": {
             "sell": {
                 "rsi": {
-                    "time": "2025-07-18T20:31:47.433454+03:00",
+                    "time": "2025-07-19T10:24:28.005422+03:00",
                     "status": "unused",
                     "momentum_strength": "none",
-                    "reverse_strength": "n/a",
-                    "volume_multiplier": 1.0,
-                    "price_change": "{'24h': -0.68, '18h': -1.33, '12h': -2.15, '6h': -0.84, '4h': -0.62, '3h': 0.15, '2h': 0.06, '1h': 0.36, '30min': 0.48}",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 1.9000000000000001,
+                    "price_change": "{'24h': -1.13, '18h': -0.39, '12h': 0.45, '6h': 0.29, '4h': 0.04, '3h': 0.09, '2h': 0.15, '1h': 0.2, '30min': 0.11}",
                     "market_state": "neutral_sideways",
-                    "started_on": "2025-07-17T01:00:00",
+                    "started_on": "2025-07-18T21:00:00",
                     "ohlcv_data": {
-                        "timestamp": "2025-07-18T20:30:37.115458+03:00",
+                        "timestamp": "2025-07-18T21:55:22.154957+03:00",
                         "source_exchange": "Okx",
                         "symbol": "BTCUSDT",
                         "intervals": [
@@ -29,94 +29,94 @@
                         ],
                         "data_preview": {
                             "1m": {
-                                "rsi": 65.85,
-                                "ema": 117777.38,
-                                "macd": 81.41,
-                                "macd_signal": 54.19,
-                                "bb_upper": 118009.31,
-                                "bb_lower": 117459.44,
-                                "close": 117939.9
+                                "rsi": 43.69,
+                                "ema": 117528.55,
+                                "macd": -21.76,
+                                "macd_signal": -11.97,
+                                "bb_upper": 117678.47,
+                                "bb_lower": 117409.85,
+                                "close": 117466.8
                             },
                             "3m": {
-                                "rsi": 59.48,
-                                "ema": 117740.36,
-                                "macd": 15.64,
-                                "macd_signal": -28.39,
-                                "bb_upper": 118013.21,
-                                "bb_lower": 117429.92,
-                                "close": 117940.0
+                                "rsi": 43.86,
+                                "ema": 117556.21,
+                                "macd": -38.05,
+                                "macd_signal": -35.98,
+                                "bb_upper": 117681.09,
+                                "bb_lower": 117390.66,
+                                "close": 117459.6
                             },
                             "5m": {
-                                "rsi": 54.46,
-                                "ema": 117758.04,
-                                "macd": -48.32,
-                                "macd_signal": -105.4,
-                                "bb_upper": 118039.17,
-                                "bb_lower": 117403.8,
-                                "close": 117939.9
+                                "rsi": 42.66,
+                                "ema": 117586.69,
+                                "macd": -67.36,
+                                "macd_signal": -68.33,
+                                "bb_upper": 117924.31,
+                                "bb_lower": 117314.34,
+                                "close": 117459.6
                             },
                             "15m": {
-                                "rsi": 44.12,
-                                "ema": 118093.73,
-                                "macd": -343.58,
-                                "macd_signal": -374.07,
-                                "bb_upper": 119225.93,
-                                "bb_lower": 117021.55,
-                                "close": 117940.0
+                                "rsi": 39.43,
+                                "ema": 117854.48,
+                                "macd": -329.35,
+                                "macd_signal": -355.32,
+                                "bb_upper": 118424.27,
+                                "bb_lower": 117110.1,
+                                "close": 117459.6
                             },
                             "30m": {
-                                "rsi": 39.33,
-                                "ema": 118471.21,
-                                "macd": -466.45,
-                                "macd_signal": -389.89,
-                                "bb_upper": 119703.13,
-                                "bb_lower": 117319.92,
-                                "close": 117940.0
+                                "rsi": 35.28,
+                                "ema": 118283.02,
+                                "macd": -499.44,
+                                "macd_signal": -431.56,
+                                "bb_upper": 119672.17,
+                                "bb_lower": 117059.12,
+                                "close": 117491.1
                             },
                             "1h": {
-                                "rsi": 40.45,
-                                "ema": 118859.74,
-                                "macd": -308.21,
-                                "macd_signal": -57.44,
-                                "bb_upper": 121066.71,
-                                "bb_lower": 117484.99,
-                                "close": 117940.0
+                                "rsi": 35.5,
+                                "ema": 118696.29,
+                                "macd": -399.15,
+                                "macd_signal": -130.14,
+                                "bb_upper": 121132.1,
+                                "bb_lower": 117153.39,
+                                "close": 117452.0
                             },
                             "2h": {
-                                "rsi": 43.29,
-                                "ema": 118917.33,
-                                "macd": -2.29,
-                                "macd_signal": 197.72,
-                                "bb_upper": 120609.55,
-                                "bb_lower": 117362.18,
-                                "close": 117940.0
+                                "rsi": 40.37,
+                                "ema": 118748.4,
+                                "macd": -137.27,
+                                "macd_signal": 126.37,
+                                "bb_upper": 120699.69,
+                                "bb_lower": 117171.14,
+                                "close": 117452.0
                             },
                             "4h": {
-                                "rsi": 47.23,
-                                "ema": 118548.83,
-                                "macd": 278.15,
-                                "macd_signal": 424.54,
-                                "bb_upper": 120266.5,
-                                "bb_lower": 116524.34,
-                                "close": 117916.3
+                                "rsi": 44.58,
+                                "ema": 118504.61,
+                                "macd": 241.12,
+                                "macd_signal": 417.13,
+                                "bb_upper": 120277.69,
+                                "bb_lower": 116466.72,
+                                "close": 117452.0
                             },
                             "1d": {
-                                "rsi": 65.02,
-                                "ema": 113899.08,
-                                "macd": 3285.75,
-                                "macd_signal": 2826.85,
-                                "bb_upper": 122653.97,
-                                "bb_lower": 102921.11,
-                                "close": 117916.3
+                                "rsi": 63.59,
+                                "ema": 113854.86,
+                                "macd": 3248.72,
+                                "macd_signal": 2819.44,
+                                "bb_upper": 122584.45,
+                                "bb_lower": 102944.2,
+                                "close": 117452.0
                             },
                             "1w": {
-                                "rsi": 70.08,
-                                "ema": 102133.22,
-                                "macd": 7228.17,
-                                "macd_signal": 5728.94,
-                                "bb_upper": 121910.7,
-                                "bb_lower": 74038.46,
-                                "close": 117940.0
+                                "rsi": 69.47,
+                                "ema": 102090.47,
+                                "macd": 7192.36,
+                                "macd_signal": 5721.78,
+                                "bb_upper": 121814.05,
+                                "bb_lower": 74090.22,
+                                "close": 117491.1
                             }
                         },
                         "limit": 200,
@@ -124,16 +124,16 @@
                         "end_time": null
                     },
                     "price_data": {
-                        "timestamp": "2025-07-18T20:30:30.247399+03:00",
+                        "timestamp": "2025-07-18T21:55:14.982299+03:00",
                         "source_exchange": "Okx",
                         "symbol": "BTCUSDT",
                         "data_preview": {
-                            "last_price": 117940.0,
-                            "price_change_percent": -0.68,
+                            "last_price": 117491.1,
+                            "price_change_percent": -1.74,
                             "high_price": 120941.8,
                             "low_price": 117292.6,
-                            "volume": 7036.47390197,
-                            "turnover": 839010432.3645697
+                            "volume": 7056.10968415,
+                            "turnover": 840844852.501884
                         }
                     },
                     "history_data": {
@@ -197,20 +197,20 @@
                     },
                     "previous_market_state": "unknown",
                     "history_analysis_data": {
-                        "timestamp": "2025-07-18T20:25:30.069126+03:00",
+                        "timestamp": "2025-07-18T21:50:34.060905+03:00",
                         "symbol": "BTCUSDT",
-                        "price": 117870.1,
-                        "price_change": 203.90000000000873,
-                        "price_change_percent": 0.17328680623663273,
-                        "avg_rsi": 55.455,
-                        "rsi_change": 1.227499999999992,
-                        "rsi_change_percent": 2.263611636162449,
-                        "ema_rsi": 54.26925,
-                        "ema_rsi_change": -0.2192500000000024,
-                        "ema_rsi_change_percent": -0.4023784835332269,
-                        "macd_diff": 387.4375000000002,
-                        "macd_diff_change": 10.88000000000028,
-                        "macd_diff_change_percent": 2.8893329703963624,
+                        "price": 117584.2,
+                        "price_change": -90.60000000000582,
+                        "price_change_percent": -0.07699184532287781,
+                        "avg_rsi": 53.84499999999999,
+                        "rsi_change": -0.51250000000001,
+                        "rsi_change_percent": -0.942832175872713,
+                        "ema_rsi": 53.63799999999999,
+                        "ema_rsi_change": -0.5147500000000065,
+                        "ema_rsi_change_percent": -0.9505519110294611,
+                        "macd_diff": 371.5199999999999,
+                        "macd_diff_change": -2.8850000000001614,
+                        "macd_diff_change_percent": -0.7705559487720945,
                         "macd_trend": "bullish",
                         "bollinger_status": "neutral",
                         "ema_trend": "strong_above",
@@ -218,58 +218,58 @@
                         "flag": "neutral",
                         "turnover_status": "normal",
                         "rsi_divergence": "none",
-                        "rsi_delta": 1.227499999999992,
-                        "change_24h": -0.73,
+                        "rsi_delta": 0.51250000000001,
+                        "change_24h": -1.71,
                         "high_price": 120941.8,
                         "low_price": 117292.6,
-                        "volume": 7023.27661162,
-                        "turnover": 837464568.8746971,
+                        "volume": 7049.62247345,
+                        "turnover": 840091728.3693603,
                         "rsi": {
-                            "1h": 39.85,
-                            "4h": 47.0,
-                            "1d": 64.96,
-                            "1w": 70.01
+                            "1h": 36.47,
+                            "4h": 45.29,
+                            "1d": 64.02,
+                            "1w": 69.6
                         },
                         "ema": {
-                            "1h": 118854.4,
-                            "4h": 118545.57,
-                            "1d": 113895.82,
-                            "1w": 102128.27
+                            "1h": 118708.88,
+                            "4h": 118517.2,
+                            "1d": 113867.45,
+                            "1w": 102099.34
                         },
                         "macd": {
-                            "1h": -312.67,
-                            "4h": 275.43,
-                            "1d": 3283.03,
-                            "1w": 7224.02
+                            "1h": -388.61,
+                            "4h": 251.66,
+                            "1d": 3259.26,
+                            "1w": 7199.79
                         },
                         "macd_signal": {
-                            "1h": -58.34,
-                            "4h": 423.99,
-                            "1d": 2826.3,
-                            "1w": 5728.11
+                            "1h": -128.03,
+                            "4h": 419.24,
+                            "1d": 2821.55,
+                            "1w": 5723.26
                         },
                         "bb_upper": {
-                            "1h": 121072.41,
-                            "4h": 120266.6,
-                            "1d": 122648.72,
-                            "1w": 121899.44
+                            "1h": 121116.96,
+                            "4h": 120272.37,
+                            "1d": 122603.85,
+                            "1w": 121833.99
                         },
                         "bb_lower": {
-                            "1h": 117473.69,
-                            "4h": 116520.82,
-                            "1d": 102922.94,
-                            "1w": 74044.52
+                            "1h": 117181.75,
+                            "4h": 116485.26,
+                            "1d": 102938.02,
+                            "1w": 74079.59
                         }
                     },
                     "history_sentiment_data": {
-                        "timestamp": "2025-07-18T20:30:31.420485+03:00",
+                        "timestamp": "2025-07-18T21:55:34.725871+03:00",
                         "result": {
                             "broad_state": "bull",
-                            "broad_bias": 0.407,
-                            "avg_score": 1.221,
-                            "coins_counted": 170,
+                            "broad_bias": 0.384,
+                            "avg_score": 1.151,
+                            "coins_counted": 176,
                             "last_hour_state": "bull",
-                            "last_hour_bias": 0.365
+                            "last_hour_bias": 0.359
                         }
                     }
                 },
@@ -5135,16 +5135,16 @@
         "1d": {
             "sell": {
                 "rsi": {
-                    "time": "2025-07-18T21:30:51.506368+03:00",
+                    "time": "2025-07-19T10:24:34.724971+03:00",
                     "status": "unused",
                     "momentum_strength": "none",
-                    "reverse_strength": "n/a",
-                    "volume_multiplier": 1.0,
-                    "price_change": "{'24h': 4.79, '18h': 3.22, '12h': -1.21, '6h': 0.05, '4h': 0.74, '3h': 1.37, '2h': 1.07, '1h': -0.26, '30min': 0.1}",
-                    "market_state": "unknown",
-                    "started_on": "2025-07-18T15:00:00",
+                    "reverse_strength": "strong",
+                    "volume_multiplier": 2.0000000000000004,
+                    "price_change": "{'24h': -1.76, '18h': -1.1, '12h': 0.2, '6h': 1.28, '4h': -0.13, '3h': -0.23, '2h': 0.01, '1h': 0.41, '30min': 0.35}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-19T01:00:00",
                     "ohlcv_data": {
-                        "timestamp": "2025-07-18T21:30:29.756505+03:00",
+                        "timestamp": "2025-07-18T21:55:50.008268+03:00",
                         "source_exchange": "Okx",
                         "symbol": "ETHUSDT",
                         "intervals": [
@@ -5161,112 +5161,112 @@
                         ],
                         "data_preview": {
                             "1m": {
-                                "rsi": 63.23,
-                                "ema": 3595.47,
-                                "macd": 2.66,
-                                "macd_signal": 0.2,
-                                "bb_upper": 3608.76,
-                                "bb_lower": 3572.27,
-                                "close": 3605.59
+                                "rsi": 38.98,
+                                "ema": 3586.13,
+                                "macd": -3.18,
+                                "macd_signal": -2.39,
+                                "bb_upper": 3596.61,
+                                "bb_lower": 3576.68,
+                                "close": 3577.11
                             },
                             "3m": {
-                                "rsi": 59.1,
-                                "ema": 3595.41,
-                                "macd": 2.54,
-                                "macd_signal": 2.41,
-                                "bb_upper": 3616.89,
-                                "bb_lower": 3579.67,
-                                "close": 3605.57
+                                "rsi": 43.55,
+                                "ema": 3589.71,
+                                "macd": -2.02,
+                                "macd_signal": -0.32,
+                                "bb_upper": 3606.28,
+                                "bb_lower": 3576.03,
+                                "close": 3579.57
                             },
                             "5m": {
-                                "rsi": 57.43,
-                                "ema": 3593.51,
-                                "macd": 5.13,
-                                "macd_signal": 4.96,
-                                "bb_upper": 3622.35,
-                                "bb_lower": 3566.34,
-                                "close": 3605.59
+                                "rsi": 43.73,
+                                "ema": 3589.2,
+                                "macd": -0.02,
+                                "macd_signal": 2.53,
+                                "bb_upper": 3618.24,
+                                "bb_lower": 3573.55,
+                                "close": 3577.11
                             },
                             "15m": {
-                                "rsi": 53.1,
-                                "ema": 3592.5,
-                                "macd": -1.52,
-                                "macd_signal": -5.6,
-                                "bb_upper": 3644.64,
-                                "bb_lower": 3529.73,
-                                "close": 3605.25
+                                "rsi": 46.12,
+                                "ema": 3589.77,
+                                "macd": -3.52,
+                                "macd_signal": -5.36,
+                                "bb_upper": 3634.95,
+                                "bb_lower": 3531.76,
+                                "close": 3576.51
                             },
                             "30m": {
-                                "rsi": 53.27,
-                                "ema": 3595.98,
-                                "macd": 4.85,
-                                "macd_signal": 7.39,
-                                "bb_upper": 3647.51,
-                                "bb_lower": 3553.95,
-                                "close": 3605.59
+                                "rsi": 47.99,
+                                "ema": 3593.47,
+                                "macd": 2.75,
+                                "macd_signal": 6.97,
+                                "bb_upper": 3647.04,
+                                "bb_lower": 3551.78,
+                                "close": 3579.23
                             },
                             "1h": {
-                                "rsi": 59.28,
-                                "ema": 3577.14,
-                                "macd": 37.62,
-                                "macd_signal": 49.66,
-                                "bb_upper": 3682.97,
-                                "bb_lower": 3520.21,
-                                "close": 3604.39
+                                "rsi": 54.27,
+                                "ema": 3574.54,
+                                "macd": 35.45,
+                                "macd_signal": 49.23,
+                                "bb_upper": 3682.29,
+                                "bb_lower": 3518.17,
+                                "close": 3577.13
                             },
                             "2h": {
-                                "rsi": 64.77,
-                                "ema": 3516.85,
-                                "macd": 94.64,
-                                "macd_signal": 102.02,
-                                "bb_upper": 3712.0,
-                                "bb_lower": 3333.19,
-                                "close": 3605.59
+                                "rsi": 61.48,
+                                "ema": 3514.14,
+                                "macd": 92.37,
+                                "macd_signal": 101.56,
+                                "bb_upper": 3708.47,
+                                "bb_lower": 3333.87,
+                                "close": 3577.11
                             },
                             "4h": {
-                                "rsi": 76.91,
-                                "ema": 3388.84,
-                                "macd": 153.0,
-                                "macd_signal": 138.0,
-                                "bb_upper": 3738.24,
-                                "bb_lower": 2976.93,
-                                "close": 3605.59
+                                "rsi": 75.69,
+                                "ema": 3386.13,
+                                "macd": 150.73,
+                                "macd_signal": 137.54,
+                                "bb_upper": 3733.29,
+                                "bb_lower": 2979.03,
+                                "close": 3577.11
                             },
                             "1d": {
-                                "rsi": 84.92,
-                                "ema": 2965.03,
-                                "macd": 253.06,
-                                "macd_signal": 159.76,
-                                "bb_upper": 3579.33,
-                                "bb_lower": 2101.33,
-                                "close": 3605.59
+                                "rsi": 84.53,
+                                "ema": 2962.31,
+                                "macd": 250.78,
+                                "macd_signal": 159.3,
+                                "bb_upper": 3572.08,
+                                "bb_lower": 2105.73,
+                                "close": 3577.06
                             },
                             "1w": {
-                                "rsi": 67.7,
-                                "ema": 2562.13,
-                                "macd": 78.77,
-                                "macd_signal": -77.94,
-                                "bb_upper": 3251.87,
-                                "bb_lower": 1273.96,
-                                "close": 3604.71
+                                "rsi": 67.41,
+                                "ema": 2559.51,
+                                "macd": 76.58,
+                                "macd_signal": -78.37,
+                                "bb_upper": 3243.09,
+                                "bb_lower": 1280.0,
+                                "close": 3577.22
                             }
                         },
                         "limit": 200,
                         "start_time": null,
                         "end_time": null
                     },
-                    "previous_market_state": "bull",
+                    "previous_market_state": "unknown",
                     "price_data": {
-                        "timestamp": "2025-07-18T21:30:09.939127+03:00",
+                        "timestamp": "2025-07-18T21:55:31.058899+03:00",
                         "source_exchange": "Okx",
                         "symbol": "ETHUSDT",
                         "data_preview": {
-                            "last_price": 3605.69,
-                            "price_change_percent": 4.9,
+                            "last_price": 3578.35,
+                            "price_change_percent": 4.36,
                             "high_price": 3674.19,
                             "low_price": 3372.3,
-                            "volume": 440893.299312,
-                            "turnover": 1573763811.908878
+                            "volume": 441588.747523,
+                            "turnover": 1576722713.6567338
                         }
                     },
                     "history_data": {
@@ -5329,20 +5329,20 @@
                         "macd_diff": 63.78999999999999
                     },
                     "history_analysis_data": {
-                        "timestamp": "2025-07-18T21:25:50.102991+03:00",
+                        "timestamp": "2025-07-18T21:50:10.825355+03:00",
                         "symbol": "ETHUSDT",
-                        "price": 3605.69,
-                        "price_change": 19.5300000000002,
-                        "price_change_percent": 0.544593660070945,
-                        "avg_rsi": 71.785,
-                        "rsi_change": 0.5474999999999994,
-                        "rsi_change_percent": 0.768555886997718,
-                        "ema_rsi": 71.26975,
-                        "ema_rsi_change": 0.43949999999999534,
-                        "ema_rsi_change_percent": 0.6204975981307356,
-                        "macd_diff": 62.7675,
-                        "macd_diff_change": 0.9050000000000011,
-                        "macd_diff_change_percent": 1.462921802384322,
+                        "price": 3588.01,
+                        "price_change": -14.109999999999673,
+                        "price_change_percent": -0.3917137685585065,
+                        "avg_rsi": 71.13,
+                        "rsi_change": -0.9225000000000136,
+                        "rsi_change_percent": -1.2803164359321515,
+                        "ema_rsi": 71.34825000000001,
+                        "ema_rsi_change": -1.336500000000001,
+                        "ema_rsi_change_percent": -1.8387626015085705,
+                        "macd_diff": 62.125,
+                        "macd_diff_change": -0.7600000000000051,
+                        "macd_diff_change_percent": -1.2085552993559754,
                         "macd_trend": "bullish",
                         "bollinger_status": "overbought",
                         "ema_trend": "strong_above",
@@ -5350,58 +5350,58 @@
                         "flag": "neutral",
                         "turnover_status": "normal",
                         "rsi_divergence": "none",
-                        "rsi_delta": 0.5474999999999994,
-                        "change_24h": 4.9,
+                        "rsi_delta": 0.9225000000000136,
+                        "change_24h": 4.74,
                         "high_price": 3674.19,
                         "low_price": 3372.3,
-                        "volume": 440893.299312,
-                        "turnover": 1573763811.908878,
+                        "volume": 440899.96077,
+                        "turnover": 1574203574.9368105,
                         "rsi": {
-                            "1h": 58.11,
-                            "4h": 76.59,
-                            "1d": 84.81,
-                            "1w": 67.63
+                            "1h": 56.17,
+                            "4h": 76.15,
+                            "1d": 84.68,
+                            "1w": 67.52
                         },
                         "ema": {
-                            "1h": 3576.48,
-                            "4h": 3388.12,
-                            "1d": 2964.24,
-                            "1w": 2561.47
+                            "1h": 3575.53,
+                            "4h": 3387.12,
+                            "1d": 2963.31,
+                            "1w": 2560.49
                         },
                         "macd": {
-                            "1h": 37.07,
-                            "4h": 152.39,
-                            "1d": 252.4,
-                            "1w": 78.22
+                            "1h": 36.28,
+                            "4h": 151.56,
+                            "1d": 251.62,
+                            "1w": 77.4
                         },
                         "macd_signal": {
-                            "1h": 49.55,
-                            "4h": 137.88,
-                            "1d": 159.63,
-                            "1w": -78.05
+                            "1h": 49.39,
+                            "4h": 137.71,
+                            "1d": 159.47,
+                            "1w": -78.21
                         },
                         "bb_upper": {
-                            "1h": 3682.64,
-                            "4h": 3736.88,
-                            "1d": 3577.22,
-                            "1w": 3249.66
+                            "1h": 3682.35,
+                            "4h": 3735.05,
+                            "1d": 3574.72,
+                            "1w": 3246.37
                         },
                         "bb_lower": {
-                            "1h": 3519.86,
-                            "4h": 2977.53,
-                            "1d": 2102.62,
-                            "1w": 1275.48
+                            "1h": 3519.15,
+                            "4h": 2978.31,
+                            "1d": 2104.14,
+                            "1w": 1277.75
                         }
                     },
                     "history_sentiment_data": {
-                        "timestamp": "2025-07-18T21:30:31.783762+03:00",
+                        "timestamp": "2025-07-18T21:55:34.725871+03:00",
                         "result": {
                             "broad_state": "bull",
-                            "broad_bias": 0.401,
-                            "avg_score": 1.203,
-                            "coins_counted": 170,
+                            "broad_bias": 0.384,
+                            "avg_score": 1.151,
+                            "coins_counted": 176,
                             "last_hour_state": "bull",
-                            "last_hour_bias": 0.353
+                            "last_hour_bias": 0.359
                         }
                     }
                 },
@@ -18969,17 +18969,17 @@
         "1w": {
             "sell": {
                 "rsi": {
-                    "time": "2025-07-18T21:31:04.957788+03:00",
+                    "time": "2025-07-19T10:24:47.052333+03:00",
                     "status": "unused",
                     "momentum_strength": "none",
                     "reverse_strength": "n/a",
                     "volume_multiplier": 1.0,
-                    "price_change": "{'24h': 3.78, '18h': -3.71, '12h': -2.98, '6h': -1.28, '4h': 0.71, '3h': 2.02, '2h': 0.88, '1h': -0.31, '30min': 0.14}",
+                    "price_change": "{'24h': -2.17, '18h': -0.95, '12h': -0.35, '6h': 0.03, '4h': 0.18, '3h': -0.33, '2h': 0.1, '1h': 0.65, '30min': 0.26}",
                     "market_state": "unknown",
-                    "started_on": "2025-07-18T18:00:00",
+                    "started_on": "2025-07-19T01:00:00",
                     "previous_market_state": "bull",
                     "ohlcv_data": {
-                        "timestamp": "2025-07-18T21:30:33.855567+03:00",
+                        "timestamp": "2025-07-18T21:55:18.160361+03:00",
                         "source_exchange": "Okx",
                         "symbol": "XRPUSDT",
                         "intervals": [
@@ -18996,76 +18996,76 @@
                         ],
                         "data_preview": {
                             "1m": {
-                                "rsi": 63.8,
-                                "ema": 3.44,
+                                "rsi": 52.69,
+                                "ema": 3.45,
                                 "macd": 0.0,
-                                "macd_signal": -0.0,
-                                "bb_upper": 3.45,
-                                "bb_lower": 3.42,
-                                "close": 3.4535
+                                "macd_signal": 0.0,
+                                "bb_upper": 3.46,
+                                "bb_lower": 3.45,
+                                "close": 3.4561
                             },
                             "3m": {
-                                "rsi": 54.26,
-                                "ema": 3.44,
+                                "rsi": 53.78,
+                                "ema": 3.45,
                                 "macd": 0.0,
                                 "macd_signal": 0.0,
                                 "bb_upper": 3.47,
                                 "bb_lower": 3.43,
-                                "close": 3.4461
+                                "close": 3.4545
                             },
                             "5m": {
-                                "rsi": 57.9,
-                                "ema": 3.44,
+                                "rsi": 57.56,
+                                "ema": 3.45,
                                 "macd": 0.01,
                                 "macd_signal": 0.01,
-                                "bb_upper": 3.46,
-                                "bb_lower": 3.42,
-                                "close": 3.452
+                                "bb_upper": 3.47,
+                                "bb_lower": 3.43,
+                                "close": 3.4545
                             },
                             "15m": {
-                                "rsi": 51.77,
+                                "rsi": 52.12,
                                 "ema": 3.44,
-                                "macd": -0.01,
+                                "macd": -0.0,
                                 "macd_signal": -0.01,
-                                "bb_upper": 3.5,
-                                "bb_lower": 3.36,
-                                "close": 3.4537
+                                "bb_upper": 3.49,
+                                "bb_lower": 3.37,
+                                "close": 3.4559
                             },
                             "30m": {
-                                "rsi": 48.95,
+                                "rsi": 49.28,
                                 "ema": 3.46,
                                 "macd": -0.01,
                                 "macd_signal": -0.01,
                                 "bb_upper": 3.52,
                                 "bb_lower": 3.38,
-                                "close": 3.4524
+                                "close": 3.4545
                             },
                             "1h": {
-                                "rsi": 52.65,
+                                "rsi": 52.94,
                                 "ema": 3.45,
                                 "macd": 0.03,
                                 "macd_signal": 0.05,
                                 "bb_upper": 3.66,
                                 "bb_lower": 3.36,
-                                "close": 3.4529
+                                "close": 3.4559
                             },
                             "2h": {
-                                "rsi": 59.89,
+                                "rsi": 59.96,
                                 "ema": 3.38,
                                 "macd": 0.11,
                                 "macd_signal": 0.12,
                                 "bb_upper": 3.68,
                                 "bb_lower": 3.11,
-                                "close": 3.4524
+                                "close": 3.4537
                             },
                             "4h": {
-                                "rsi": 66.97,
+                                "rsi": 67.05,
                                 "ema": 3.23,
                                 "macd": 0.17,
                                 "macd_signal": 0.15,
                                 "bb_upper": 3.64,
-                                "bb_lower": 2.7,
-                                "close": 3.4535
+                                "bb_lower": 2.69,
+                                "close": 3.4559
                             },
                             "1d": {
                                 "rsi": 83.1,
@@ -19074,16 +19074,16 @@
                                 "macd_signal": 0.19,
                                 "bb_upper": 3.44,
                                 "bb_lower": 1.78,
-                                "close": 3.454
+                                "close": 3.4542
                             },
                             "1w": {
-                                "rsi": 70.79,
+                                "rsi": 70.86,
                                 "ema": 2.37,
                                 "macd": 0.2,
                                 "macd_signal": 0.14,
                                 "bb_upper": 2.94,
                                 "bb_lower": 1.67,
-                                "close": 3.4496
+                                "close": 3.4567
                             }
                         },
                         "limit": 200,
@@ -19091,33 +19091,33 @@
                         "end_time": null
                     },
                     "price_data": {
-                        "timestamp": "2025-07-18T21:30:23.203629+03:00",
+                        "timestamp": "2025-07-18T21:55:22.969366+03:00",
                         "source_exchange": "Okx",
                         "symbol": "XRPUSDT",
                         "data_preview": {
-                            "last_price": 3.4519,
-                            "price_change_percent": 4.33,
+                            "last_price": 3.455,
+                            "price_change_percent": 2.88,
                             "high_price": 3.6618,
                             "low_price": 3.2828,
-                            "volume": 163656873.855109,
-                            "turnover": 570209083.1527096
+                            "volume": 161446538.260281,
+                            "turnover": 562890624.0009675
                         }
                     },
                     "history_analysis_data": {
-                        "timestamp": "2025-07-18T21:25:14.589809+03:00",
+                        "timestamp": "2025-07-18T21:50:18.548061+03:00",
                         "symbol": "XRPUSDT",
-                        "price": 3.4347,
-                        "price_change": -0.005800000000000249,
-                        "price_change_percent": -0.16858014823427553,
-                        "avg_rsi": 67.675,
-                        "rsi_change": -0.15750000000001307,
-                        "rsi_change_percent": -0.23218958463865116,
-                        "ema_rsi": 67.81900000000002,
-                        "ema_rsi_change": 0.22500000000002274,
-                        "ema_rsi_change_percent": 0.33286978134157286,
-                        "macd_diff": 0.037500000000000006,
-                        "macd_diff_change": 0.0024999999999999953,
-                        "macd_diff_change_percent": 7.142857142857127,
+                        "price": 3.4602,
+                        "price_change": 0.007000000000000117,
+                        "price_change_percent": 0.2027105293640715,
+                        "avg_rsi": 68.68,
+                        "rsi_change": 0.26250000000001705,
+                        "rsi_change_percent": 0.3836737676764236,
+                        "ema_rsi": 68.65075,
+                        "ema_rsi_change": 0.4830000000000041,
+                        "ema_rsi_change_percent": 0.7085461966985915,
+                        "macd_diff": 0.039999999999999994,
+                        "macd_diff_change": 0.004999999999999984,
+                        "macd_diff_change_percent": 14.285714285714235,
                         "macd_trend": "neutral",
                         "bollinger_status": "overbought",
                         "ema_trend": "strong_above",
@@ -19125,28 +19125,28 @@
                         "flag": "neutral",
                         "turnover_status": "normal",
                         "rsi_divergence": "none",
-                        "rsi_delta": 0.15750000000001307,
-                        "change_24h": 3.89,
+                        "rsi_delta": 0.26250000000001705,
+                        "change_24h": 3.34,
                         "high_price": 3.6618,
                         "low_price": 3.2828,
-                        "volume": 163747363.536467,
-                        "turnover": 570500667.0730026,
+                        "volume": 162158502.450241,
+                        "turnover": 565268673.2831364,
                         "rsi": {
-                            "1h": 50.85,
-                            "4h": 66.31,
-                            "1d": 82.86,
-                            "1w": 70.68
+                            "1h": 53.41,
+                            "4h": 67.22,
+                            "1d": 83.19,
+                            "1w": 70.9
                         },
                         "ema": {
                             "1h": 3.45,
                             "4h": 3.23,
-                            "1d": 2.74,
-                            "1w": 2.36
+                            "1d": 2.75,
+                            "1w": 2.37
                         },
                         "macd": {
                             "1h": 0.03,
                             "4h": 0.17,
-                            "1d": 0.28,
+                            "1d": 0.29,
                             "1w": 0.2
                         },
                         "macd_signal": {
@@ -19157,26 +19157,26 @@
                         },
                         "bb_upper": {
                             "1h": 3.66,
-                            "4h": 3.64,
-                            "1d": 3.43,
-                            "1w": 2.94
+                            "4h": 3.65,
+                            "1d": 3.44,
+                            "1w": 2.95
                         },
                         "bb_lower": {
                             "1h": 3.36,
-                            "4h": 2.7,
+                            "4h": 2.69,
                             "1d": 1.78,
-                            "1w": 1.67
+                            "1w": 1.66
                         }
                     },
                     "history_sentiment_data": {
-                        "timestamp": "2025-07-18T21:30:31.783762+03:00",
+                        "timestamp": "2025-07-18T21:55:34.725871+03:00",
                         "result": {
                             "broad_state": "bull",
-                            "broad_bias": 0.401,
-                            "avg_score": 1.203,
-                            "coins_counted": 170,
+                            "broad_bias": 0.384,
+                            "avg_score": 1.151,
+                            "coins_counted": 176,
                             "last_hour_state": "bull",
-                            "last_hour_bias": 0.353
+                            "last_hour_bias": 0.359
                         }
                     }
                 },
@@ -23510,17 +23510,17 @@
         "1d": {
             "sell": {
                 "rsi": {
-                    "time": "2025-07-18T21:31:10.849556+03:00",
+                    "time": "2025-07-19T10:24:52.833584+03:00",
                     "status": "unused",
                     "momentum_strength": "none",
                     "reverse_strength": "n/a",
                     "volume_multiplier": 1.0,
-                    "price_change": "{'24h': 2.92, '18h': -2.2, '12h': -4.28, '6h': -2.68, '4h': -1.15, '3h': 0.68, '2h': 0.05, '1h': -0.74, '30min': -0.2}",
-                    "market_state": "unknown",
-                    "started_on": "2025-07-18T17:00:00",
-                    "previous_market_state": "neutral_sideways",
+                    "price_change": "{'24h': -4.98, '18h': -3.0, '12h': 0.56, '6h': 1.3, '4h': 0.46, '3h': -0.6, '2h': 0.07, '1h': 0.77, '30min': 0.52}",
+                    "market_state": "neutral_sideways",
+                    "started_on": "2025-07-18T21:00:00",
+                    "previous_market_state": "unknown",
                     "ohlcv_data": {
-                        "timestamp": "2025-07-18T21:30:25.660769+03:00",
+                        "timestamp": "2025-07-18T21:55:38.063443+03:00",
                         "source_exchange": "Okx",
                         "symbol": "ADAUSDT",
                         "intervals": [
@@ -23537,94 +23537,94 @@
                         ],
                         "data_preview": {
                             "1m": {
-                                "rsi": 58.44,
+                                "rsi": 44.53,
+                                "ema": 0.83,
+                                "macd": -0.0,
+                                "macd_signal": 0.0,
+                                "bb_upper": 0.83,
+                                "bb_lower": 0.82,
+                                "close": 0.8246
+                            },
+                            "3m": {
+                                "rsi": 43.75,
                                 "ema": 0.83,
                                 "macd": -0.0,
                                 "macd_signal": -0.0,
                                 "bb_upper": 0.83,
                                 "bb_lower": 0.82,
-                                "close": 0.8276
-                            },
-                            "3m": {
-                                "rsi": 49.2,
-                                "ema": 0.83,
-                                "macd": -0.0,
-                                "macd_signal": -0.0,
-                                "bb_upper": 0.84,
-                                "bb_lower": 0.82,
-                                "close": 0.8275
+                                "close": 0.8246
                             },
                             "5m": {
-                                "rsi": 47.56,
+                                "rsi": 42.87,
                                 "ema": 0.83,
                                 "macd": -0.0,
                                 "macd_signal": -0.0,
                                 "bb_upper": 0.84,
                                 "bb_lower": 0.82,
-                                "close": 0.8275
+                                "close": 0.8248
                             },
                             "15m": {
-                                "rsi": 43.36,
+                                "rsi": 41.35,
                                 "ema": 0.83,
                                 "macd": -0.01,
                                 "macd_signal": -0.01,
                                 "bb_upper": 0.85,
                                 "bb_lower": 0.81,
-                                "close": 0.8276
+                                "close": 0.8251
                             },
                             "30m": {
-                                "rsi": 42.49,
+                                "rsi": 41.03,
                                 "ema": 0.84,
                                 "macd": -0.01,
                                 "macd_signal": -0.0,
                                 "bb_upper": 0.87,
                                 "bb_lower": 0.82,
-                                "close": 0.8277
+                                "close": 0.8251
                             },
                             "1h": {
-                                "rsi": 47.07,
+                                "rsi": 46.35,
                                 "ema": 0.84,
                                 "macd": 0.01,
                                 "macd_signal": 0.01,
                                 "bb_upper": 0.88,
                                 "bb_lower": 0.82,
-                                "close": 0.8275
+                                "close": 0.8258
                             },
                             "2h": {
-                                "rsi": 54.83,
+                                "rsi": 53.8,
                                 "ema": 0.82,
                                 "macd": 0.02,
                                 "macd_signal": 0.02,
                                 "bb_upper": 0.88,
                                 "bb_lower": 0.77,
-                                "close": 0.8275
+                                "close": 0.8244
                             },
                             "4h": {
-                                "rsi": 62.82,
+                                "rsi": 62.2,
                                 "ema": 0.79,
                                 "macd": 0.03,
                                 "macd_signal": 0.03,
                                 "bb_upper": 0.87,
                                 "bb_lower": 0.7,
-                                "close": 0.8276
+                                "close": 0.8244
                             },
                             "1d": {
-                                "rsi": 74.02,
+                                "rsi": 73.9,
                                 "ema": 0.7,
                                 "macd": 0.05,
                                 "macd_signal": 0.03,
                                 "bb_upper": 0.85,
                                 "bb_lower": 0.48,
-                                "close": 0.8275
+                                "close": 0.826
                             },
                             "1w": {
-                                "rsi": 57.82,
+                                "rsi": 57.67,
                                 "ema": 0.69,
                                 "macd": -0.01,
                                 "macd_signal": -0.01,
                                 "bb_upper": 0.83,
                                 "bb_lower": 0.53,
-                                "close": 0.8276
+                                "close": 0.8244
                             }
                         },
                         "limit": 200,
@@ -23632,30 +23632,30 @@
                         "end_time": null
                     },
                     "price_data": {
-                        "timestamp": "2025-07-18T21:30:20.331803+03:00",
+                        "timestamp": "2025-07-18T21:55:34.233679+03:00",
                         "source_exchange": "Okx",
                         "symbol": "ADAUSDT",
                         "data_preview": {
-                            "last_price": 0.8276,
-                            "price_change_percent": 2.81,
+                            "last_price": 0.8246,
+                            "price_change_percent": 1.33,
                             "high_price": 0.8955,
                             "low_price": 0.7877,
-                            "volume": 93194323.9079,
-                            "turnover": 78845292.50901113
+                            "volume": 92435854.043,
+                            "turnover": 78235596.32112418
                         }
                     },
                     "history_analysis_data": {
-                        "timestamp": "2025-07-18T21:25:30.366221+03:00",
+                        "timestamp": "2025-07-18T21:50:37.793887+03:00",
                         "symbol": "ADAUSDT",
-                        "price": 0.8253,
-                        "price_change": -0.0034999999999999476,
-                        "price_change_percent": -0.422297297297291,
-                        "avg_rsi": 59.895,
-                        "rsi_change": -0.7624999999999957,
-                        "rsi_change_percent": -1.2570580719614157,
-                        "ema_rsi": 59.886,
-                        "ema_rsi_change": -0.35524999999999807,
-                        "ema_rsi_change_percent": -0.5897121988670522,
+                        "price": 0.827,
+                        "price_change": -0.0044000000000000705,
+                        "price_change_percent": -0.529227808515765,
+                        "avg_rsi": 60.3325,
+                        "rsi_change": -0.5849999999999937,
+                        "rsi_change_percent": -0.9603151803668794,
+                        "ema_rsi": 60.2515,
+                        "ema_rsi_change": -1.1924999999999955,
+                        "ema_rsi_change_percent": -1.940791615129216,
                         "macd_diff": 0.005000000000000001,
                         "macd_diff_change": 0.0,
                         "macd_diff_change_percent": 0.0,
@@ -23666,17 +23666,17 @@
                         "flag": "neutral",
                         "turnover_status": "mismatch",
                         "rsi_divergence": "none",
-                        "rsi_delta": 0.7624999999999957,
-                        "change_24h": 2.71,
+                        "rsi_delta": 0.5849999999999937,
+                        "change_24h": 1.88,
                         "high_price": 0.8955,
                         "low_price": 0.7877,
-                        "volume": 93323079.3844,
-                        "turnover": 78948042.8363566,
+                        "volume": 92562402.2378,
+                        "turnover": 78337718.7842256,
                         "rsi": {
-                            "1h": 45.81,
-                            "4h": 62.22,
-                            "1d": 73.84,
-                            "1w": 57.71
+                            "1h": 46.86,
+                            "4h": 62.7,
+                            "1d": 73.98,
+                            "1w": 57.79
                         },
                         "ema": {
                             "1h": 0.84,
@@ -23710,14 +23710,14 @@
                         }
                     },
                     "history_sentiment_data": {
-                        "timestamp": "2025-07-18T21:30:31.783762+03:00",
+                        "timestamp": "2025-07-18T21:55:34.725871+03:00",
                         "result": {
                             "broad_state": "bull",
-                            "broad_bias": 0.401,
-                            "avg_score": 1.203,
-                            "coins_counted": 170,
+                            "broad_bias": 0.384,
+                            "avg_score": 1.151,
+                            "coins_counted": 176,
                             "last_hour_state": "bull",
-                            "last_hour_bias": 0.353
+                            "last_hour_bias": 0.359
                         }
                     }
                 },

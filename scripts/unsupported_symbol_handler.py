@@ -102,11 +102,23 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     try:
         entry_time = isoparse(latest_entry.get("timestamp"))
         if datetime.now(entry_time.tzinfo) - entry_time > timedelta(hours=2):
-            log_and_skip("Latest history entry is older than 2 hours.")
+            log_and_skip("Latest history entry is older than 2 hours.", "unknown", {})
             print(f"⏳ Skipping {bybit_symbol}: latest history entry is older than 2 hours.")
             return
     except Exception as e:
         print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
+        return
+
+    long_initiated, short_initiated = count_initiated_orders()
+
+    if short_only and short_initiated >= 18:
+        log_and_skip("Short-positioiden max määrä (18) saavutettu", "short", {"initiated_count": short_initiated})
+        print(f"⛔ Skipping SHORT: {short_initiated} initiated short orders already.")
+        return
+
+    if long_only and long_initiated >= 18:
+        log_and_skip("Long-positioiden max määrä (18) saavutettu", "long", {"initiated_count": long_initiated})
+        print(f"⛔ Skipping LONG: {long_initiated} initiated long orders already.")
         return
 
     if short_only:
@@ -293,3 +305,33 @@ def get_latest_log_entry(filepath):
     except Exception as e:
         print(f"Virhe logia luettaessa: {e}")
         return None
+
+def count_initiated_orders(log_path="logs/order_log.json"):
+    try:
+        with open(log_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"❌ Failed to read order log: {e}")
+        return 0, 0  # long_count, short_count
+
+    long_count = 0
+    short_count = 0
+
+    for symbol_data in data.values():
+        if not isinstance(symbol_data, dict):
+            continue
+        for tf_data in symbol_data.values():
+            if not isinstance(tf_data, dict):
+                continue
+            for side, strategy_data in tf_data.items():
+                # Skip if not a dict (e.g., if side is 'sell' but value is a list or unexpected type)
+                if not isinstance(strategy_data, dict):
+                    continue
+                rsi_data = strategy_data.get("rsi", {})
+                if isinstance(rsi_data, dict) and rsi_data.get("status") == "initiated":
+                    if side.lower() == "buy":
+                        long_count += 1
+                    elif side.lower() == "sell":
+                        short_count += 1
+
+    return long_count, short_count
