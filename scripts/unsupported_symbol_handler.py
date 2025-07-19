@@ -60,6 +60,10 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
+    weekday = datetime.now().weekday()  # 0 = maanantai, 6 = sunnuntai
+    tighten_long = weekday in [4, 5, 6]  # perjantai, lauantai, sunnuntai
+    tighten_short = weekday in [0, 1, 2, 3]  # maanantai–torstai
+
     latest_entry = next(iter(get_latest_two_log_entries_for_symbol(
         "modules/history_analyzer/logs/history_analysis_log.jsonl", bybit_symbol)), None)
 
@@ -110,7 +114,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         return
 
     long_initiated, short_initiated = count_initiated_orders()
-
     if short_only and short_initiated >= 18:
         log_and_skip("Short-positioiden max määrä (18) saavutettu", "short", {"initiated_count": short_initiated})
         print(f"⛔ Skipping SHORT: {short_initiated} initiated short orders already.")
@@ -123,9 +126,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     if short_only:
 
-        tighten_short = should_tighten_conditions(sentiment_entry, "short")
+        tighten_short = tighten_short or should_tighten_conditions(sentiment_entry, "short")
         if tighten_short:
-            print("⚠️ Sentimentti bullish → tiukennetaan shorttaus-ehtoja.")
+            print("⚠️ Sentimentti bullish tai viikonpäivä ma-to → → tiukennetaan shorttaus-ehtoja.")
 
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bullish":
@@ -198,9 +201,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     elif long_only:
 
-        tighten_long = should_tighten_conditions(sentiment_entry, "long")
+        tighten_long = tighten_long or should_tighten_conditions(sentiment_entry, "long")
         if tighten_long:
-            print("⚠️ Sentimentti bearish → tiukennetaan longaus-ehtoja.")
+            print("⚠️ Sentimentti bearish tai viikonpäivä pe-su → tiukennetaan longaus-ehtoja.")
 
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bearish":
@@ -312,7 +315,7 @@ def count_initiated_orders(log_path="logs/order_log.json"):
             data = json.load(f)
     except Exception as e:
         print(f"❌ Failed to read order log: {e}")
-        return 0, 0  # long_count, short_count
+        return 0, 0
 
     long_count = 0
     short_count = 0
@@ -320,18 +323,15 @@ def count_initiated_orders(log_path="logs/order_log.json"):
     for symbol_data in data.values():
         if not isinstance(symbol_data, dict):
             continue
-        for tf_data in symbol_data.values():
-            if not isinstance(tf_data, dict):
-                continue
-            for side, strategy_data in tf_data.items():
-                # Skip if not a dict (e.g., if side is 'sell' but value is a list or unexpected type)
-                if not isinstance(strategy_data, dict):
-                    continue
-                rsi_data = strategy_data.get("rsi", {})
-                if isinstance(rsi_data, dict) and rsi_data.get("status") == "initiated":
-                    if side.lower() == "buy":
-                        long_count += 1
-                    elif side.lower() == "sell":
-                        short_count += 1
+
+        # Count initiated longs
+        longs = symbol_data.get("long", [])
+        if isinstance(longs, list):
+            long_count += sum(1 for entry in longs if entry.get("status") == "initiated")
+
+        # Count initiated shorts
+        shorts = symbol_data.get("short", [])
+        if isinstance(shorts, list):
+            short_count += sum(1 for entry in shorts if entry.get("status") == "initiated")
 
     return long_count, short_count
