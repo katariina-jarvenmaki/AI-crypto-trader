@@ -236,6 +236,15 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             print(f"📈 Skipping LONG: 2h RSI too high ({rsi_2h}).")
             return
 
+        rsi_1h = data_1h.get("rsi")
+        rsi_1h_previous = data_1h.get("rsi_prev")  # or whatever the key is for previous 1h RSI
+        rsi_1h_delta = rsi_1h - rsi_1h_previous if rsi_1h is not None and rsi_1h_previous is not None else None
+
+        if rsi_1h_delta is not None and rsi_1h_delta <= 0:
+            log_and_skip("RSI-delta ≤ 0 – ei nousutrendiä", "long", {"rsi_1h_delta": rsi_1h_delta})
+            print("⛔ Skipping LONG: RSI-delta ei ole positiivinen.")
+            return
+
         bb_lower = data_1h.get("bb_lower")
         if bb_lower and last_price > bb_lower * (1.01 if tighten_long else 1.02):
             log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",

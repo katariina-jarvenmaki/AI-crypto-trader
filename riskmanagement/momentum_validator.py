@@ -31,13 +31,20 @@ def verify_signal_with_momentum_and_volume(
 
     # Market state status
     sentiment_entry = get_latest_log_entry(
-        "modules/history_analyzer/logs/history_sentiment_log.jsonl")
-    broad_state = sentiment_entry["result"].get("broad_state")
-    hour_state = sentiment_entry["result"].get("last_hour_state")
-    if signal == "buy" and broad_state == "buy" and hour_state == "sell":
-        volume_multiplier += 0.2
-    elif signal == "sell" and broad_state == "bull" and hour_state == "bull":
-        volume_multiplier += 0.2
+        "modules/history_analyzer/logs/history_sentiment_log.jsonl"
+    )
+
+    if sentiment_entry and "result" in sentiment_entry:
+        broad_state = sentiment_entry["result"].get("broad_state")
+        hour_state = sentiment_entry["result"].get("last_hour_state")
+
+        if signal == "buy" and broad_state == "buy" and hour_state == "sell":
+            volume_multiplier += 0.2
+        elif signal == "sell" and broad_state == "bull" and hour_state == "bull":
+            volume_multiplier += 0.2
+    else:
+        # Optional: log or fallback
+        print(f"⚠️ Warning: No sentiment data found for {symbol}")
 
     # MACD check
     bybit_symbol = symbol.replace("USDC", "USDT")
