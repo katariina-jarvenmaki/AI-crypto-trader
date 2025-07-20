@@ -146,7 +146,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         allow_short = (
             (rsi_1h > (78 if tighten_short else 75) and macd_diff <= 0) or
-            (rsi_1h > (78 if tighten_short else 75) and rsi_15m < 63 if tighten_short else 65)
+            (rsi_1h > (78 if tighten_short else 75) and rsi_15m < (63 if tighten_short else 65))
         ) if rsi_1h and macd_diff is not None else False
 
         if not allow_short:
@@ -156,6 +156,22 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
 
         bb_upper = data_1h.get("bb_upper")
+
+        # 🔹 UUSI EHTO: BB-filtteri vain jos >=18% change
+        if price_change_percent and price_change_percent >= 18:
+            bb_upper_threshold = 1.06 if rsi_1h and rsi_1h > 80 else 1.03
+            if last_price < bb_upper * bb_upper_threshold:
+                log_and_skip("Hinta ei tarpeeksi BB:n yläpuolella – ei overextensionia", "short", {
+                    "last_price": last_price,
+                    "bb_upper": bb_upper,
+                    "bb_threshold": bb_upper * bb_upper_threshold,
+                    "rsi_1h": rsi_1h,
+                    "price_change_percent": price_change_percent
+                })
+                print(f"⛔ Skipping SHORT: last_price ({last_price}) < BB * threshold.")
+                return
+
+        # Vanha BB-check, toimii tilanteissa kun price_change_percent ≤ 19
         if bb_upper and last_price < bb_upper * (1.035 if tighten_short else 1.03):
             log_and_skip("BB-suodatin: hinta ei selvästi ylä-BB:n yläpuolella", "short",
                          {"last_price": last_price, "bb_upper_1h": bb_upper})

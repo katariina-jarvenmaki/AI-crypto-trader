@@ -35,9 +35,9 @@ def verify_signal_with_momentum_and_volume(
     broad_state = sentiment_entry["result"].get("broad_state")
     hour_state = sentiment_entry["result"].get("last_hour_state")
     if signal == "buy" and broad_state == "buy" and hour_state == "sell":
-        volume_multiplier += 0.1
+        volume_multiplier += 0.2
     elif signal == "sell" and broad_state == "bull" and hour_state == "bull":
-        volume_multiplier += 0.1
+        volume_multiplier += 0.2
 
     # MACD check
     bybit_symbol = symbol.replace("USDC", "USDT")

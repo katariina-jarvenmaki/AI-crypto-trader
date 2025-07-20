@@ -163,22 +163,24 @@
   },   
   "AXSUSDT": {
     "long": {
-      "_comment": "Value specified 18.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.20%",
+      "full_stoploss_percent": "0.19%"
     },
     "short": {
-      "_comment": "Value specified 18.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.20%",
+      "full_stoploss_percent": "0.19%"
     }
-  },  
+  }, 
   "BEAMUSDT": {
     "long": {
-      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.21%"
+      "_comment": "Value specified 20.7.2025, full_stoploss_percent seems fine ",
+      "full_stoploss_percent": "0.22%"
     },
     "short": {
       "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.21%"
+      "full_stoploss_percent": "0.22%"
     }
   },
   "BOBAUSDT": {
@@ -362,7 +364,19 @@
       "_comment": "Value specified 17.7.2025, may need further specification",
       "full_stoploss_percent": "0.18%"
     }
-  },
+  },  
+  "MAVIAUSDT": {
+    "long": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  }, 
   "METISUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, may need further specification",
@@ -392,7 +406,19 @@
       "_comment": "Value specified 15.7.2025, may need further specification",
       "full_stoploss_percent": "0.17%"
     }
-  }, 
+  },  
+  "MTLUSDT": {
+    "long": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.18%"
+    },
+    "short": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },  
   "NMRUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, full_stoploss_percent seems fine ",
@@ -475,14 +501,14 @@
   },  
   "ROAMUSDT": {
     "long": {
-      "_comment": "Value specified 19.7.2025, may need further specification",
-      "set_stoploss_percent": "0.26%",
-      "full_stoploss_percent": "0.25%"
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.28%",
+      "full_stoploss_percent": "0.27%"
     },
     "short": {
-      "_comment": "Value specified 19.7.2025, may need further specification",
-      "set_stoploss_percent": "0.26%",
-      "full_stoploss_percent": "0.25%"
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.28%",
+      "full_stoploss_percent": "0.27%"
     }
   }, 
   "SERAPHUSDT": {
@@ -545,6 +571,18 @@
       "full_stoploss_percent": "0.17%"
     }
   },  
+  "SOLAYERUSDT": {
+    "long": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.18%"
+    },
+    "short": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.18%"
+    }
+  },   
   "SUSHIUSDT": {
     "long": {
       "_comment": "Value specified 17.7.2025, may need further specification",
@@ -604,7 +642,19 @@
       "_comment": "Value specified 18.7.2025, may need further specification",
       "full_stoploss_percent": "0.17%"
     }
-  },  
+  },   
+  "TRBUSDT": {
+    "long": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 20.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  }, 
   "TUTUSDT": {
     "long": {
       "_comment": "Value specified 16.7.2025, may need further specification",
