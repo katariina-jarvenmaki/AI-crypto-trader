@@ -39,4 +39,4 @@ def remove_duplicates_from_jsonl(file_path: str):
 
 # Esimerkki kutsusta
 if __name__ == "__main__":
-    remove_duplicates_from_jsonl("modules/history_analyzer/logs/history_data_log_day_13_07_2025.jsonl")
+    remove_duplicates_from_jsonl("../AI-crypto-trader-logs/analysis-data/history_data_log_day_13_07_2025.jsonl")

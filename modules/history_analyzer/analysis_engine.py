@@ -131,6 +131,8 @@ def detect_ema_trend(price, ema_1d):
     return "near_ema"
 
 def detect_turnover_anomaly(turnover, volume, price):
+    if turnover is None or volume is None or price is None:
+        return "invalid"
     if volume == 0:
         return "invalid"
     avg_price = turnover / volume

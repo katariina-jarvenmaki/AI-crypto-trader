@@ -1,14 +1,14 @@
 
 CONFIG = {
-    "history_log_path": "modules/history_analyzer/logs/history_data_log.jsonl",
-    "analysis_log_path": "modules/history_analyzer/logs/history_analysis_log.jsonl",
-    "sentiment_log_path": "modules/history_analyzer/logs/history_sentiment_log.jsonl", 
+    "history_log_path": "../AI-crypto-trader-logs/analysis-data/history_data_log.jsonl",
+    "analysis_log_path": "../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl",
+    "sentiment_log_path": "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl", 
     "symbol_log_path": "../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl",
     "ohlcv_log_path": "../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl",
     "price_log_path": "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl",
-    "analysis_daily_logs_path": "modules/history_analyzer/logs/daily/",
-    "analysis_weekly_logs_path": "modules/history_analyzer/logs/weekly/",
-    "analysis_monthly_logs_path": "modules/history_analyzer/logs/mothly/",
+    "analysis_daily_logs_path": "../AI-crypto-trader-logs/analysis-data/daily/",
+    "analysis_weekly_logs_path": "../AI-crypto-trader-logs/analysis-data/weekly/",
+    "analysis_monthly_logs_path": "../AI-crypto-trader-logs/analysis-data/mothly/",
     "intervals_to_use": ["1h", "4h", "1d", "1w"],
     "min_prev_entry_age_minutes": 60, # prev-data aikaraja minuutteinan, minimi 60 min
     "ema_alpha": 0.2,

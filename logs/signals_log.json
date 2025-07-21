@@ -2918,17 +2918,17 @@
             },
             "buy": {
                 "rsi": {
-                    "time": "2025-07-21T20:30:31.130192+03:00",
+                    "time": "2025-07-21T21:45:26.433584+03:00",
                     "status": "unused",
                     "momentum_strength": "none",
                     "reverse_strength": "weak",
                     "volume_multiplier": 1.4,
-                    "price_change": "{'24h': -0.7, '18h': 0.38, '12h': -0.55, '6h': -0.82, '4h': -0.7, '3h': -1.24, '2h': -0.85, '1h': -0.38, '30min': -0.33}",
+                    "price_change": "{'24h': -0.79, '18h': 0.2, '12h': -1.34, '6h': -0.7, '4h': -1.32, '3h': -0.9, '2h': -0.23, '1h': -0.1, '30min': -0.48}",
                     "market_state": "neutral_sideways",
                     "started_on": "2025-07-21T08:00:00",
                     "previous_market_state": "unknown",
                     "ohlcv_data": {
-                        "timestamp": "2025-07-21T20:25:47.455331+03:00",
+                        "timestamp": "2025-07-21T21:40:47.570251+03:00",
                         "source_exchange": "Okx",
                         "symbol": "BTCUSDT",
                         "intervals": [
@@ -2945,94 +2945,94 @@
                         ],
                         "data_preview": {
                             "1m": {
-                                "rsi": 44.83,
-                                "ema": 117877.53,
-                                "macd": -17.38,
-                                "macd_signal": 0.32,
-                                "bb_upper": 118100.18,
-                                "bb_lower": 117743.68,
-                                "close": 117821.9
+                                "rsi": 37.54,
+                                "ema": 117790.4,
+                                "macd": -68.86,
+                                "macd_signal": -40.55,
+                                "bb_upper": 118179.49,
+                                "bb_lower": 117527.36,
+                                "close": 117655.9
                             },
                             "3m": {
-                                "rsi": 41.94,
-                                "ema": 117920.23,
-                                "macd": -77.53,
-                                "macd_signal": -102.07,
-                                "bb_upper": 118104.8,
-                                "bb_lower": 117663.46,
-                                "close": 117807.0
+                                "rsi": 42.03,
+                                "ema": 117805.72,
+                                "macd": -19.18,
+                                "macd_signal": 1.14,
+                                "bb_upper": 118148.79,
+                                "bb_lower": 117447.43,
+                                "close": 117655.9
                             },
                             "5m": {
-                                "rsi": 41.28,
-                                "ema": 117996.14,
-                                "macd": -169.2,
-                                "macd_signal": -187.02,
-                                "bb_upper": 118374.95,
-                                "bb_lower": 117506.75,
-                                "close": 117821.9
+                                "rsi": 41.39,
+                                "ema": 117832.48,
+                                "macd": -71.66,
+                                "macd_signal": -85.48,
+                                "bb_upper": 118139.4,
+                                "bb_lower": 117434.04,
+                                "close": 117655.9
                             },
                             "15m": {
-                                "rsi": 37.67,
-                                "ema": 118260.76,
-                                "macd": -192.52,
-                                "macd_signal": -108.01,
-                                "bb_upper": 119167.53,
-                                "bb_lower": 117530.54,
-                                "close": 117822.0
+                                "rsi": 39.89,
+                                "ema": 118055.53,
+                                "macd": -217.66,
+                                "macd_signal": -188.11,
+                                "bb_upper": 119208.25,
+                                "bb_lower": 117217.89,
+                                "close": 117655.9
                             },
                             "30m": {
-                                "rsi": 40.43,
-                                "ema": 118373.98,
-                                "macd": -93.35,
-                                "macd_signal": 26.59,
-                                "bb_upper": 119424.64,
-                                "bb_lower": 117670.3,
-                                "close": 117822.0
+                                "rsi": 40.14,
+                                "ema": 118212.29,
+                                "macd": -173.56,
+                                "macd_signal": -63.83,
+                                "bb_upper": 119166.66,
+                                "bb_lower": 117487.18,
+                                "close": 117655.9
                             },
                             "1h": {
-                                "rsi": 43.8,
-                                "ema": 118304.09,
-                                "macd": 14.92,
-                                "macd_signal": 102.07,
-                                "bb_upper": 119493.45,
-                                "bb_lower": 117047.66,
-                                "close": 117822.0
+                                "rsi": 41.98,
+                                "ema": 118244.02,
+                                "macd": -36.41,
+                                "macd_signal": 74.62,
+                                "bb_upper": 119481.75,
+                                "bb_lower": 117078.28,
+                                "close": 117655.9
                             },
                             "2h": {
-                                "rsi": 46.36,
-                                "ema": 118237.16,
-                                "macd": 35.32,
-                                "macd_signal": 16.69,
-                                "bb_upper": 119139.54,
-                                "bb_lower": 117203.18,
-                                "close": 117822.0
+                                "rsi": 45.26,
+                                "ema": 118186.14,
+                                "macd": -12.89,
+                                "macd_signal": 11.02,
+                                "bb_upper": 119144.66,
+                                "bb_lower": 117171.44,
+                                "close": 117684.0
                             },
                             "4h": {
-                                "rsi": 47.42,
-                                "ema": 118226.43,
-                                "macd": -4.48,
-                                "macd_signal": 12.07,
-                                "bb_upper": 118961.02,
-                                "bb_lower": 117225.39,
-                                "close": 117821.9
+                                "rsi": 46.44,
+                                "ema": 118210.62,
+                                "macd": -17.72,
+                                "macd_signal": 9.43,
+                                "bb_upper": 118966.02,
+                                "bb_lower": 117203.79,
+                                "close": 117655.9
                             },
                             "1d": {
-                                "rsi": 63.16,
-                                "ema": 115036.08,
-                                "macd": 3027.6,
-                                "macd_signal": 2979.87,
-                                "bb_upper": 123752.59,
-                                "bb_lower": 105090.24,
-                                "close": 117822.0
+                                "rsi": 62.55,
+                                "ema": 115020.26,
+                                "macd": 3014.35,
+                                "macd_signal": 2977.22,
+                                "bb_upper": 123732.45,
+                                "bb_lower": 105093.77,
+                                "close": 117655.9
                             },
                             "1w": {
-                                "rsi": 69.81,
-                                "ema": 103690.73,
-                                "macd": 7632.57,
-                                "macd_signal": 6119.16,
-                                "bb_upper": 124257.9,
-                                "bb_lower": 75240.04,
-                                "close": 117814.0
+                                "rsi": 69.6,
+                                "ema": 103676.83,
+                                "macd": 7620.93,
+                                "macd_signal": 6116.83,
+                                "bb_upper": 124229.15,
+                                "bb_lower": 75254.19,
+                                "close": 117668.0
                             }
                         },
                         "limit": 200,
@@ -3040,16 +3040,16 @@
                         "end_time": null
                     },
                     "price_data": {
-                        "timestamp": "2025-07-21T20:26:23.393495+03:00",
+                        "timestamp": "2025-07-21T21:45:24.762963+03:00",
                         "source_exchange": "Okx",
                         "symbol": "BTCUSDT",
                         "data_preview": {
-                            "last_price": 117858.0,
-                            "price_change_percent": -0.39,
+                            "last_price": 117431.8,
+                            "price_change_percent": -0.72,
                             "high_price": 119669.0,
                             "low_price": 116462.0,
-                            "volume": 5040.78769564,
-                            "turnover": 595933627.7227819
+                            "volume": 5197.54339127,
+                            "turnover": 614320125.9825099
                         }
                     },
                     "history_data": {
@@ -3112,20 +3112,20 @@
                         "macd_diff": 615.8625
                     },
                     "history_analysis_data": {
-                        "timestamp": "2025-07-21T20:25:47.455331+03:00",
+                        "timestamp": "2025-07-21T21:40:47.570251+03:00",
                         "symbol": "BTCUSDT",
-                        "price": 117858.0,
-                        "price_change": 182.39999999999418,
-                        "price_change_percent": 0.1550023964186239,
-                        "avg_rsi": 56.0475,
-                        "rsi_change": 0.9975000000000023,
-                        "rsi_change_percent": 1.811989100817443,
-                        "ema_rsi": 56.16225,
-                        "ema_rsi_change": 1.5239999999999938,
-                        "ema_rsi_change_percent": 2.789254780304994,
-                        "macd_diff": 364.35999999999996,
-                        "macd_diff_change": 2.925000000000125,
-                        "macd_diff_change_percent": 0.8092741433453114,
+                        "price": 117598.5,
+                        "price_change": -53.5,
+                        "price_change_percent": -0.04547309013021453,
+                        "avg_rsi": 55.14249999999999,
+                        "rsi_change": 0.19499999999998607,
+                        "rsi_change_percent": 0.3548842076527341,
+                        "ema_rsi": 55.40575,
+                        "ema_rsi_change": 0.4852499999999864,
+                        "ema_rsi_change_percent": 0.8835498584317082,
+                        "macd_diff": 350.7625000000001,
+                        "macd_diff_change": -1.627499999999884,
+                        "macd_diff_change_percent": -0.46184624989355094,
                         "macd_trend": "bullish",
                         "bollinger_status": "neutral",
                         "ema_trend": "strong_above",
@@ -3133,58 +3133,58 @@
                         "flag": "neutral",
                         "turnover_status": "normal",
                         "rsi_divergence": "none",
-                        "rsi_delta": 0.9975000000000023,
-                        "change_24h": -0.39,
+                        "rsi_delta": 0.19499999999998607,
+                        "change_24h": -0.5,
                         "high_price": 119669.0,
                         "low_price": 116462.0,
-                        "volume": 5040.78769564,
-                        "turnover": 595933627.7227819,
+                        "volume": 5195.47330636,
+                        "turnover": 614079840.0786072,
                         "rsi": {
-                            "1h": 43.8,
-                            "4h": 47.42,
-                            "1d": 63.16,
-                            "1w": 69.81
+                            "1h": 41.98,
+                            "4h": 46.44,
+                            "1d": 62.55,
+                            "1w": 69.6
                         },
                         "ema": {
-                            "1h": 118304.09,
-                            "4h": 118226.43,
-                            "1d": 115036.08,
-                            "1w": 103690.73
+                            "1h": 118244.02,
+                            "4h": 118210.62,
+                            "1d": 115020.26,
+                            "1w": 103676.83
                         },
                         "macd": {
-                            "1h": 14.92,
-                            "4h": -4.48,
-                            "1d": 3027.6,
-                            "1w": 7632.57
+                            "1h": -36.41,
+                            "4h": -17.72,
+                            "1d": 3014.35,
+                            "1w": 7620.93
                         },
                         "macd_signal": {
-                            "1h": 102.07,
-                            "4h": 12.07,
-                            "1d": 2979.87,
-                            "1w": 6119.16
+                            "1h": 74.62,
+                            "4h": 9.43,
+                            "1d": 2977.22,
+                            "1w": 6116.83
                         },
                         "bb_upper": {
-                            "1h": 119493.45,
-                            "4h": 118961.02,
-                            "1d": 123752.59,
-                            "1w": 124257.9
+                            "1h": 119481.75,
+                            "4h": 118966.02,
+                            "1d": 123732.45,
+                            "1w": 124229.15
                         },
                         "bb_lower": {
-                            "1h": 117047.66,
-                            "4h": 117225.39,
-                            "1d": 105090.24,
-                            "1w": 75240.04
+                            "1h": 117078.28,
+                            "4h": 117203.79,
+                            "1d": 105093.77,
+                            "1w": 75254.19
                         }
                     },
                     "history_sentiment_data": {
-                        "timestamp": "2025-07-21T20:27:37.865290+03:00",
+                        "timestamp": "2025-07-21T21:43:14.495958+03:00",
                         "result": {
                             "broad_state": "bull",
-                            "broad_bias": 0.441,
-                            "avg_score": 1.322,
-                            "coins_counted": 191,
+                            "broad_bias": 0.453,
+                            "avg_score": 1.358,
+                            "coins_counted": 197,
                             "last_hour_state": "bull",
-                            "last_hour_bias": 0.406
+                            "last_hour_bias": 0.447
                         }
                     }
                 },
