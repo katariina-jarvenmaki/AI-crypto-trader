@@ -14,7 +14,7 @@ from scripts.order_limiter import load_initiated_orders
 
 def load_symbol_modes(symbols, long_only_flag, short_only_flag):
     
-    log_path = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
+    log_path = Path("../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl")
 
     with open(log_path, "r") as f:
         lines = f.readlines()

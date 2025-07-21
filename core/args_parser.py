@@ -60,7 +60,7 @@ def parse_arguments():
     # Jos käyttäjä ei ole antanut symboleja, haetaan ne logista
     symbol_args = args[1:] if platform_name == args[0].lower() else args
     if not symbol_args:
-        log_path = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
+        log_path = Path("../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl")
         selected_symbols = load_latest_symbols_from_log(log_path)
     else:
         selected_symbols = get_selected_symbols(selected_platform, symbol_args)

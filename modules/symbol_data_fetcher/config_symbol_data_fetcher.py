@@ -53,7 +53,7 @@ MAX_APPEND_RETRIES = 10
 OHLCV_LOG_PATH = Path("../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl")
 
 # Path to symbol data log
-SYMBOL_LOG_PATH = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
+SYMBOL_LOG_PATH = Path("../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl")
 
 
 # === TASK CONFIGURATIONS FOR SYMBOL FETCHING ===

@@ -176,7 +176,7 @@ def remove_old_archives(months=2):
             except ValueError:
                 print(f"Invalid date in filename: {filename}")
 
-def clean_symbol_data_log(file_path="modules/symbol_data_fetcher/symbol_data_log.jsonl", days=30):
+def clean_symbol_data_log(file_path="../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl", days=30):
     if not os.path.exists(file_path):
         print(f"{file_path} not found.")
         return
