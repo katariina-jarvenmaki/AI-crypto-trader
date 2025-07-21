@@ -49,7 +49,7 @@ class PriceDataFetcher:
 
 def main():
 
-    print("Running a price data fetcher...")
+    print("Running a Price Data Fetcher...")
 
     log_path = CONFIG["price_data_log_path"]
     ensure_log_file_exists(log_path)

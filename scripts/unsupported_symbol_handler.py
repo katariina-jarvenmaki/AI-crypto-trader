@@ -93,7 +93,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
     ohlcv_entry = get_latest_log_entry_for_symbol(
         "../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol(
-        "integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
+        "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
     sentiment_entry = get_latest_log_entry(
         "modules/history_analyzer/logs/history_sentiment_log.jsonl")
  
@@ -320,7 +320,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if result:
             price_entry = get_latest_log_entry_for_symbol(
-                "integrations/price_data_fetcher/price_data_log.jsonl", bybit_symbol)
+                "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
             log_trade(
                 symbol=result["symbol"],
                 platform="ByBit",

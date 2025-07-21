@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from core.cron_tasks_processor import cron_tasks_processor
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
     INTERVAL_WEIGHTS,
@@ -93,6 +94,10 @@ def append_temp_to_ohlcv_log_until_success(temp_path: Path, target_path: Path, m
 
             if target_lines[-len(temp_lines):] == temp_lines:
                 print(f"✅ Successfully appended temp file contents to {target_path} on attempt {attempt}.")
+
+                # 🔽 Tähän kohtaan kutsu seuraavaa funktiota
+                cron_tasks_processor()
+
                 break
             else:
                 raise IOError("Verification failed: appended lines not found in target file.")

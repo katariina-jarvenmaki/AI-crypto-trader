@@ -5,7 +5,7 @@ CONFIG = {
     "sentiment_log_path": "modules/history_analyzer/logs/history_sentiment_log.jsonl", 
     "symbol_log_path": "modules/symbol_data_fetcher/symbol_data_log.jsonl",
     "ohlcv_log_path": "../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl",
-    "price_log_path": "integrations/price_data_fetcher/price_data_log.jsonl",
+    "price_log_path": "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl",
     "analysis_daily_logs_path": "modules/history_analyzer/logs/daily/",
     "analysis_weekly_logs_path": "modules/history_analyzer/logs/weekly/",
     "analysis_monthly_logs_path": "modules/history_analyzer/logs/mothly/",

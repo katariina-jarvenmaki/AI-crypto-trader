@@ -47,16 +47,6 @@ TZ=Europe/Helsinki
 */5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
 ```
 
-**Add also these lines to the cron**
-```bash
-TZ=Europe/Helsinki
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> logs/cron/temporary_log_price_data_fetcher_cron.log 2>&1
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.history_analyzer.history_analyzer >> logs/cron/temporary_log_history_analyzer_cron.log 2>&1
-TZ=UTC
-0 0 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.balance_logger.balance_logger >> logs/cron/temporary_log_balance_logger_cron.log 2>&1
-5 0 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.balance_logger.balance_logger >> logs/cron/temporary_log_balance_logger_cron.log 2>&1
-```
-
 **Check cron log**
 ```bash
 tail -n 100 /opt/kjc/int/AI-crypto-trader/logs/cron.log
@@ -111,17 +101,17 @@ cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
 ```
 
-To run Price Data Fetcher manually (supposted to run with Symbol Data Fetchers):
+To run Price Data Fetcher manually (supposted to be ran through cron_tasks_processor.py):
 ```bash
 /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
 ```
 
-To run History analyzer manually  (supposted to run with Symbol Data Fetchers):
+To run History analyzer manually  (supposted to be ran through cron_tasks_processor.py):
 ```bash
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 ```
 
-To run Balance logger manually (supposted to be ran by cron):
+To run Balance logger manually (supposted to be ran through cron_tasks_processor.py):
 ```bash
 /usr/bin/python3 -m modules.balance_logger.balance_logger
 ```
