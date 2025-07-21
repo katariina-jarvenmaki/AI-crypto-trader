@@ -7,7 +7,7 @@ from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
 from scripts.trade_order_logger import log_trade, log_skipped_order
-
+from modules.datetime_analyzer.datetime_analyzer import analyze_datetime_preferences
 
 def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
     with open(log_path, "r") as f:
@@ -60,9 +60,28 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     print(f"📈 Live price for {bybit_symbol}: {live_price:.4f} USDT")
 
-    weekday = datetime.now().weekday()  # 0 = maanantai, 6 = sunnuntai
-    tighten_long = weekday in [4, 5, 6]  # perjantai, lauantai, sunnuntai
-    tighten_short = weekday in [0, 1, 2, 3]  # maanantai–torstai
+    tighten_long = False
+    tighten_short = False
+
+    try:
+        preferences = analyze_datetime_preferences()
+        print(f"Datetime-preferences: {preferences}")
+        week_pref = preferences.get("week_preference")
+        time_pref = preferences.get("time_preference")
+
+        if week_pref == "short" or time_pref == "short":
+            tighten_long = True
+        elif week_pref == "long" or time_pref == "long":
+            tighten_short = True
+
+        print(f"🕒 Datetime preferences: week={week_pref}, time={time_pref}")
+        if tighten_long:
+            print("⚠️ Tiukennetaan *long* ehtoja ajan perusteella.")
+        if tighten_short:
+            print("⚠️ Tiukennetaan *short* ehtoja ajan perusteella.")
+
+    except Exception as e:
+        print(f"❌ Failed to analyze datetime preferences: {e}")
 
     latest_entry = next(iter(get_latest_two_log_entries_for_symbol(
         "modules/history_analyzer/logs/history_analysis_log.jsonl", bybit_symbol)), None)

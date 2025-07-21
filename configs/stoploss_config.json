@@ -191,13 +191,13 @@
   }, 
   "BEAMUSDT": {
     "long": {
-      "_comment": "Value specified 20.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.22%",
+      "_comment": "Value specified 21.7.2025, full_stoploss_percent seems fine ",
+      "full_stoploss_percent": "0.23%",
       "trailing_stoploss_percent": "0.006%"
     },
     "short": {
-      "_comment": "Value specified 17.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.22%",
+      "_comment": "Value specified 21.7.2025, full_stoploss_percent seems fine ",
+      "full_stoploss_percent": "0.23%",
       "trailing_stoploss_percent": "0.006%"
     }
   },
@@ -720,7 +720,19 @@
       "_comment": "Value specified 16.7.2025, may need further specification",
       "full_stoploss_percent": "0.19%"
     }
-  },   
+  },  
+  "YGGUSDT": {
+    "long": {
+      "_comment": "Value specified 21.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 21.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },    
   "VIRTUALUSDT": {
     "long": {
       "_comment": "Value specified 20.7.2025, may need further specification",
@@ -734,11 +746,13 @@
   "VRUSDT": {
     "long": {
       "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "full_stoploss_percent": "0.18%",
+      "trailing_stoploss_percent": "0.006%"
     },
     "short": {
       "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "full_stoploss_percent": "0.18%",
+      "trailing_stoploss_percent": "0.006%"
     }
   },   
   "WAVEUSDT": {
@@ -790,7 +804,19 @@
       "_comment": "Value specified 18.7.2025, may need further specification",
       "full_stoploss_percent": "0.17%"
     }
-  },     
+  },  
+  "ZECSDT": {
+    "long": {
+      "_comment": "Value specified 21.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 21.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },        
   "ZENUUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, full_stoploss_percent seems fine ",

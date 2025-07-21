@@ -600,3 +600,9 @@
 {"timestamp": "2025-07-21T10:20:55.928698+03:00", "result": {"broad_state": "bull", "broad_bias": 0.455, "avg_score": 1.364, "coins_counted": 188, "last_hour_state": "bull", "last_hour_bias": 0.485}}
 {"timestamp": "2025-07-21T10:25:52.778159+03:00", "result": {"broad_state": "bull", "broad_bias": 0.457, "avg_score": 1.37, "coins_counted": 188, "last_hour_state": "bull", "last_hour_bias": 0.478}}
 {"timestamp": "2025-07-21T10:30:51.592755+03:00", "result": {"broad_state": "bull", "broad_bias": 0.457, "avg_score": 1.37, "coins_counted": 188, "last_hour_state": "bull", "last_hour_bias": 0.485}}
+{"timestamp": "2025-07-21T12:30:46.222439+03:00", "result": {"broad_state": "bull", "broad_bias": 0.449, "avg_score": 1.347, "coins_counted": 190}}
+{"timestamp": "2025-07-21T12:35:45.032356+03:00", "result": {"broad_state": "bull", "broad_bias": 0.449, "avg_score": 1.347, "coins_counted": 190, "last_hour_state": "bull", "last_hour_bias": 0.621}}
+{"timestamp": "2025-07-21T12:37:21.594073+03:00", "result": {"broad_state": "bull", "broad_bias": 0.453, "avg_score": 1.358, "coins_counted": 190, "last_hour_state": "bull", "last_hour_bias": 0.475}}
+{"timestamp": "2025-07-21T12:40:52.982117+03:00", "result": {"broad_state": "bull", "broad_bias": 0.453, "avg_score": 1.358, "coins_counted": 190, "last_hour_state": "bull", "last_hour_bias": 0.467}}
+{"timestamp": "2025-07-21T12:45:55.701884+03:00", "result": {"broad_state": "bull", "broad_bias": 0.453, "avg_score": 1.358, "coins_counted": 190, "last_hour_state": "bull", "last_hour_bias": 0.467}}
+{"timestamp": "2025-07-21T12:50:50.676975+03:00", "result": {"broad_state": "bull", "broad_bias": 0.453, "avg_score": 1.358, "coins_counted": 190, "last_hour_state": "bull", "last_hour_bias": 0.467}}
