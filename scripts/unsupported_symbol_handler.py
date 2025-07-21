@@ -353,7 +353,7 @@ def get_latest_log_entry(filepath):
         print(f"Virhe logia luettaessa: {e}")
         return None
 
-def count_initiated_orders(log_path="logs/order_log.json"):
+def count_initiated_orders(log_path="../AI-crypto-trader-logs/order-data/order_log.json"):
     try:
         with open(log_path, "r", encoding="utf-8") as f:
             data = json.load(f)

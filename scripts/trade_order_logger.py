@@ -5,8 +5,8 @@ from configs.config import TRADE_LOG_FILE, TIMEZONE
 import pandas as pd
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-LOG_PATH = os.path.join(BASE_DIR, "logs", "order_log.json")
-SKIPPED_LOG_PATH = os.path.join(BASE_DIR, "logs", "skipped_orders.json")
+LOG_PATH = os.path.join(BASE_DIR, "../AI-crypto-trader-logs/order-data/order_log.json")
+SKIPPED_LOG_PATH = os.path.join(BASE_DIR, "../AI-crypto-trader-logs/order-data/skipped_orders.json")
 
 def safe_load_json(filepath):
     if not os.path.exists(filepath):

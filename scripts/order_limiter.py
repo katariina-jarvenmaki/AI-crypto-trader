@@ -5,7 +5,7 @@ from collections import defaultdict
 def normalize_symbol(symbol):
     return symbol.replace("USDC", "USDT")
 
-def load_initiated_orders(log_path="logs/order_log.json"):
+def load_initiated_orders(log_path="../AI-crypto-trader-logs/order-data/order_log.json"):
     try:
         with open(log_path, "r") as f:
             data = json.load(f)

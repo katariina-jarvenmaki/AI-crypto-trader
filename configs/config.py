@@ -5,8 +5,7 @@ import pytz
 import os
 from zoneinfo import ZoneInfo
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-TRADE_LOG_FILE = os.path.join(BASE_DIR, 'logs', 'order_log.json')
+TRADE_LOG_FILE = "../AI-crypto-trader-logs/order-data/order_log.json"
 
 # TIMEZONE
 TIMEZONE = pytz.timezone("Europe/Helsinki")
@@ -66,7 +65,7 @@ RSI_THRESHOLDS = {
 
 # SIGNAL LIMITER SETTINGS
 # scripts/signal_limiter.py
-LOG_FILE = "logs/signals_log.json"
+LOG_FILE = "../AI-crypto-trader-logs/signals-data/signals_log.json"
 SIGNAL_TIMEOUT = timedelta(hours=1)
 
 # SIGNAL LOGGER SETTINGS

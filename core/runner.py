@@ -338,7 +338,7 @@ def check_positions_and_update_logs(symbols_to_check=None, platform="ByBit"):
                 print(f"[ERROR] Failed to process position: {pos_e}")
 
         try:
-            order_data = safe_load_json("logs/order_log.json")
+            order_data = safe_load_json("../AI-crypto-trader-logs/order-data/order_log.json")
 
             side_mapping = {
                 "long": "Buy",
@@ -370,7 +370,7 @@ def check_positions_and_update_logs(symbols_to_check=None, platform="ByBit"):
                     if complete_orders:
                         latest_order = sorted(complete_orders, key=lambda x: x.get("timestamp", 0), reverse=True)[0]
                         latest_order["status"] = "initiated"
-                        with open("logs/order_log.json", "w") as f:
+                        with open("../AI-crypto-trader-logs/order-data/order_log.json", "w") as f:
                             json.dump(order_data, f, indent=4)
                         updated_any = True
                     else:
@@ -435,7 +435,7 @@ def stop_loss_checker(positions):
             return default
 
     try:
-        with open("logs/order_log.json", "r") as f:
+        with open("../AI-crypto-trader-logs/order-data/order_log.json", "r") as f:
             order_data = json.load(f)
 
         for position in positions:

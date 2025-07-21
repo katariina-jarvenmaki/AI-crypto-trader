@@ -111,9 +111,9 @@ To run History analyzer manually  (supposted to be ran through cron_tasks_proces
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 ```
 
-To run Balance logger manually (supposted to be ran through cron_tasks_processor.py):
+To run Master Balance logger manually (supposted to be ran through cron_tasks_processor.py):
 ```bash
-/usr/bin/python3 -m modules.master_balance_logger.balance_logger
+/usr/bin/python3 -m modules.master_balance_logger.master_balance_logger
 ```
 
 To run dublicate history log entry remover:
