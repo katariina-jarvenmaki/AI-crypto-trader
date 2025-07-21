@@ -29,7 +29,8 @@ FETCH_FUNCTIONS = {
     'bybit': fetch_ohlcv_bybit
 }
 
-LOG_FILE_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
+LOG_FILE_PATH = Path("../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl").resolve()
+LOG_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # LOG CLEANUP
 MAX_LOG_SIZE_MB = 10

@@ -50,7 +50,7 @@ MAX_APPEND_RETRIES = 10
 # === LOG FILES ===
 
 # Path to OHLCV fetch log
-OHLCV_LOG_PATH = Path("integrations/multi_interval_ohlcv/ohlcv_fetch_log.jsonl")
+OHLCV_LOG_PATH = Path("../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl")
 
 # Path to symbol data log
 SYMBOL_LOG_PATH = Path("modules/symbol_data_fetcher/symbol_data_log.jsonl")
