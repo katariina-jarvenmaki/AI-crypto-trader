@@ -42,7 +42,7 @@ def run_balance_logger():
     try:
         print("Calling Balance Logger module...")
         subprocess.run(
-            ["/usr/bin/python3", "-m", "modules.master_balance_logger.balance_logger"],
+            ["/usr/bin/python3", "-m", "modules.master_balance_logger.master_balance_logger"],
             check=True
         )
         print("✅ Balance Logger executed successfully.")
