@@ -1,4 +1,4 @@
-# modules/balance_logger/balance_logger.py
+# modules/master_balance_logger/master_balance_logger.py
 
 import json
 from datetime import datetime, timedelta, timezone

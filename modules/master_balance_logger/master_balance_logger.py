@@ -1,11 +1,10 @@
 import argparse
-import json
 import os
 from datetime import datetime
-from modules.balance_logger.log_master_account import get_master_account_data, append_to_jsonl, is_entry_logged_for_today
+from modules.master_balance_logger.log_master_account import get_master_account_data, append_to_jsonl, is_entry_logged_for_today
 
 # 🔧 Logitiedosto (täydellinen polku)
-LOG_FILE = os.path.join(os.path.dirname(__file__), "bybit_master_log.jsonl")
+LOG_FILE = "../AI-crypto-trader-logs/master_balance_log.jsonl"
 
 def main():
     if is_entry_logged_for_today(LOG_FILE):
