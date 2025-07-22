@@ -1,4 +1,10 @@
+from modules.positions_data_fetcher import positions_data_fetcher
+
 def run_position_handler(current_equity, allowed_negative_margins):
+
+    # Get current ByBit positions
+    bybit_positions = positions_data_fetcher.position_data_fetcher()
+
 
 
 
