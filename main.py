@@ -72,15 +72,11 @@ def main():
     global_is_first_run = True
     
     while True:
-
         equity_result = run_equity_manager()
         if equity_result.get("block_trades", False):
-            print("\n⚠️  WARNING: Sudden equity drop detected – trades blocked for safety:")
-            print(f"🔒 {equity_result['reason']}")
-            print("⏳ Trading will remain blocked. Next equity check will be attempted in 5 minutes.")
-            print("🔧 If this is incorrect, update 'master_balance_log.jsonl'. Modify 'config_equity_manager.py' only with strong justification just to be safe.\n")
-            time.sleep(300)  # 5 minuutin odotus ennen seuraavaa yritystä
+            time.sleep(300)
             continue
+        allowed_negative_margins = equity_result.get("allowed_negative_margins")
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
         print("\n-----------------------------------------------------------------")
@@ -90,7 +86,6 @@ def main():
         print("-----------------------------------------------------------------")
 
         for i, symbol in enumerate(selected_symbols):
-
             current_override_signal = override_signal if global_is_first_run and i == 0 else None
             initiated_counts = load_initiated_orders()
 
@@ -103,7 +98,8 @@ def main():
                 override_signal=current_override_signal,
                 long_only=mode["long_only"],
                 short_only=mode["short_only"],
-                initiated_counts=initiated_counts
+                initiated_counts=initiated_counts,
+                allowed_negative_margins=allowed_negative_margins 
             )
 
         global_is_first_run = False 

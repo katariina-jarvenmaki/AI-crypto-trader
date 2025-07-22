@@ -135,14 +135,14 @@ def analyze_equity_status(diff_percent, limit=None):
         "reason": f"Equity drop {diff_percent:.2f}% is within safe limits (-{limit:.1f}%)"
     }
 
-def run_equity_manager(verbose=False):
+def run_equity_manager():
     current_equity = fetch_master_equity_info()
     last_equity, last_ts = get_latest_logged_equity()
-    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity, verbose=verbose)
-    allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=verbose)
+    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity, verbose=False)
+    allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=False)
     status = analyze_equity_status(diff_percent)
 
-    return {
+    result = {
         "current_equity": current_equity,
         "last_equity": last_equity,
         "diff_amount": diff_amount,
@@ -151,6 +151,14 @@ def run_equity_manager(verbose=False):
         "block_trades": status["block_trades"],
         "reason": status["reason"]
     }
+
+    if status["block_trades"]:
+        print("\n⚠️  WARNING: Sudden equity drop detected – trades blocked for safety:")
+        print(f"🔒 {status['reason']}")
+        print("⏳ Trading will remain blocked. Next equity check will be attempted in 5 minutes.")
+        print("🔧 If this is incorrect, update 'master_balance_log.jsonl'. Modify 'config_equity_manager.py' only with strong justification just to be safe.\n")
+
+    return result
 
 if __name__ == "__main__":
 
