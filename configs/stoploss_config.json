@@ -279,16 +279,16 @@
       "full_stoploss_percent": "0.16%"
     }
   },  
-  "CTCUSDT": {
+  "CETUSUSDT": {
     "long": {
-      "_comment": "Value specified 19.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
-      "_comment": "Value specified 19.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     }
-  },  
+  },     
   "COMPUSDT": {
     "long": {
       "_comment": "Value specified 21.7.2025, may need further specification",
@@ -307,6 +307,16 @@
     "short": {
       "_comment": "Value specified 22.7.2025, may need further specification",
       "full_stoploss_percent": "0.18%"
+    }
+  },
+  "CTCUSDT": {
+    "long": {
+      "_comment": "Value specified 19.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 19.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
     }
   },      
   "CTSIUSDT": {
@@ -399,6 +409,18 @@
       "full_stoploss_percent": "0.17%"
     }
   },  
+  "GRTUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  }, 
   "HYPEUSDT": {
     "long": {
       "_comment": "Value specified 21.7.2025, may need further specification",
@@ -603,6 +625,18 @@
       "full_stoploss_percent": "0.18%"
     }
   },  
+  "OBOLUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },       
   "PNUTUSDT": {
     "long": {
       "_comment": "Value specified 20.7.2025, may need further specification",
@@ -732,6 +766,20 @@
       "_comment": "Value specified 12.7.2025, may need further specification",
       "full_stoploss_percent": "0.16%"
     }
+  },  
+  "SLPUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%",
+      "trailing_stoploss_percent": "0.006%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%",
+      "trailing_stoploss_percent": "0.006%"
+    }
   }, 
   "SPXUSDT": {
     "long": {
@@ -766,13 +814,11 @@
   "STGUSDT": {
     "long": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "full_stoploss_percent": "0.25%"
     },
     "short": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "set_stoploss_percent": "0.20%",
-      "full_stoploss_percent": "0.19%"
+      "full_stoploss_percent": "0.25%"
     }
   },  
   "STORJUSDT": {
@@ -957,6 +1003,16 @@
       "full_stoploss_percent": "0.17%"
     }
   },  
+  "XEMUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },   
   "XIONUSDT": {
     "long": {
       "_comment": "Value specified 21.7.2025, may need further specification",
@@ -989,12 +1045,12 @@
   },  
   "ZECUSDT": {
     "long": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
+      "_comment": "Value specified 22.7.2025, may need further specification",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     },
     "short": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
+      "_comment": "Value specified 22.7.2025, may need further specification",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     }

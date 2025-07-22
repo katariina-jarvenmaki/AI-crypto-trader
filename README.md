@@ -158,6 +158,11 @@ Test Equity Manager manually:
 /usr/bin/python3 -m modules.equity_manager.equity_manager
 ```
 
+Test Positions Analyzer manually:
+```bash
+/usr/bin/python3 -m modules.positions_analyzer.positions_analyzer
+```
+
 ##  Tested with
 
 Tested with Tested with Ubuntu 20.04, Python 3.10.18, Pip 25.1.1 and Numby 1.26.4
