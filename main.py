@@ -1,12 +1,17 @@
 # main.py
 
 import time
+import pytz
+import pandas as pd
 
+from configs.config import TIMEZONE
 from scripts.log_cleaner import run_log_cleanup
 from modules.equity_manager.equity_manager import run_equity_manager
 from core.position_handler import run_position_handler
 from scripts.utils import load_symbol_modes
 from core.args_parser import parse_arguments
+from scripts.order_limiter import load_initiated_orders
+from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
 
 def main():
 
@@ -34,13 +39,16 @@ def main():
         if equity_result.get("block_trades", False):
             time.sleep(300)
             continue
-        print(f"Equity result: {equity_result}")
+
+        # Position handler to update and analyse positions
+        print(f"\nEquity values to use:")
         current_equity = equity_result.get("current_equity")
         print(f"Current equity: {current_equity}")
+        min_inv_diff_percent = equity_result.get("min_inv_diff_percent")
+        print(f"Min inv diff percent: {min_inv_diff_percent}")
         allowed_negative_margins = equity_result.get("allowed_negative_margins")
         print(f"Allowed negative margins: {allowed_negative_margins}")
 
-        # Position handler to update and analyse positions
         run_position_handler(current_equity, allowed_negative_margins)
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)

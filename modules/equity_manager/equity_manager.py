@@ -135,12 +135,36 @@ def analyze_equity_status(diff_percent, limit=None):
         "reason": f"Equity drop {diff_percent:.2f}% is within safe limits (-{limit:.1f}%)"
     }
 
+def calculate_minimum_investment_diff(current_equity, verbose=True):
+
+    from modules.equity_manager.config_equity_manager import COPYTRADE_MINIMUM_INVESTMENT
+
+    diff_amount = current_equity - COPYTRADE_MINIMUM_INVESTMENT
+    if COPYTRADE_MINIMUM_INVESTMENT == 0:
+        diff_percent = 0.0
+    else:
+        diff_percent = (diff_amount / COPYTRADE_MINIMUM_INVESTMENT) * 100
+
+    if verbose:
+        print("\n💰 Minimum Investment Check:")
+        print(f"• Current Equity: {current_equity} USDT")
+        print(f"• Minimum Investment: {COPYTRADE_MINIMUM_INVESTMENT} USDT")
+        print(f"• Difference Amount:  {diff_amount:.2f} USDT")
+        print(f"• Difference Percent: {diff_percent:.2f} %")
+
+    return {
+        "minimum_investment": COPYTRADE_MINIMUM_INVESTMENT,
+        "diff_amount": diff_amount,
+        "diff_percent": diff_percent
+    }
+
 def run_equity_manager():
     current_equity = fetch_master_equity_info()
     last_equity, last_ts = get_latest_logged_equity()
     current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity, verbose=False)
     allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=False)
     status = analyze_equity_status(diff_percent)
+    min_investment_diff = calculate_minimum_investment_diff(current_equity, verbose=False)
 
     result = {
         "current_equity": current_equity,
@@ -149,7 +173,10 @@ def run_equity_manager():
         "diff_percent": diff_percent,
         "allowed_negative_margins": allowed_negative_margins,
         "block_trades": status["block_trades"],
-        "reason": status["reason"]
+        "reason": status["reason"],
+        "minimum_investment": min_investment_diff["minimum_investment"],
+        "min_inv_diff_amount": min_investment_diff["diff_amount"],
+        "min_inv_diff_percent": min_investment_diff["diff_percent"]
     }
 
     if status["block_trades"]:
@@ -172,6 +199,8 @@ if __name__ == "__main__":
 
     allowed_negative_margins = calculate_allowed_margin(last_equity)
 
+    min_investment_diff = calculate_minimum_investment_diff(current_equity)
+
     print(f"\n✅ Allowed Margin Result: {allowed_negative_margins}")
 
     status = analyze_equity_status(diff_percent)
@@ -179,4 +208,3 @@ if __name__ == "__main__":
     print("\n🔒 Trade Status Analysis:")
     print(f"• Block trades: {status['block_trades']}")
     print(f"• Reason:        {status['reason']}")
-

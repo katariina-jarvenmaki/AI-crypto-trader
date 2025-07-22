@@ -153,6 +153,11 @@ Test multi ohlcv handler manually:
 python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
 ```
 
+Test Equity Manager manually:
+```bash
+/usr/bin/python3 -m modules.equity_manager.equity_manager
+```
+
 ##  Tested with
 
 Tested with Tested with Ubuntu 20.04, Python 3.10.18, Pip 25.1.1 and Numby 1.26.4
