@@ -224,8 +224,6 @@ def clean_skipped_orders_log(path=SKIPPED_ORDERS_PATH, max_age_hours=24):
                         item = json.loads(line)
                         if isinstance(item, dict):
                             recovered.append(item)
-                        else:
-                            print(f"⚠️ Ignored non-dict entry during recovery: {type(item)}")
                     except Exception:
                         continue
 

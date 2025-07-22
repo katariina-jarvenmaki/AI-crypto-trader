@@ -28,27 +28,31 @@ def fetch_master_equity_info():
 
     return None
 
-def get_latest_logged_equity(log_path=LOG_FILE):
+def get_latest_logged_equities(log_path=LOG_FILE):
     try:
         with open(log_path, "r") as f:
             lines = f.readlines()
-            if not lines:
-                print("⚠️ Log file is empty.")
-                return None
+            if len(lines) < 2:
+                print("⚠️ Not enough log entries to compare.")
+                return None, None, None
 
             last_entry = json.loads(lines[-1])
+            previous_entry = json.loads(lines[-2])
+
             last_equity = float(last_entry["equity"])
+            previous_equity = float(previous_entry["equity"])
             last_timestamp = last_entry["timestamp"]
-            return last_equity, last_timestamp
+
+            return last_equity, previous_equity, last_timestamp
 
     except FileNotFoundError:
         print(f"⚠️ Log file not found at {log_path}")
     except Exception as e:
         print(f"❌ Error reading log file: {e}")
 
-    return None, None
+    return None, None, None
 
-def compare_equities(current_equity, last_equity, verbose=True):
+def compare_equities(current_equity, last_equity, previous_equity, verbose=True):
     if current_equity is None or last_equity is None:
         if verbose:
             print("⚠️ Cannot compare equity values — one or both are missing.")
@@ -56,15 +60,20 @@ def compare_equities(current_equity, last_equity, verbose=True):
 
     difference = current_equity - last_equity
     percent_change = (difference / last_equity * 100) if last_equity != 0 else 0.0
+    prev_difference = current_equity - previous_equity
+    prev_percent_change = (prev_difference / previous_equity * 100) if previous_equity != 0 else 0.0
 
     if verbose:
         print("\n📊 Equity Comparison:")
-        print(f"A. Current Equity:        {current_equity:.2f} USDT")
-        print(f"B. Previous Equity:       {last_equity:.2f} USDT")
-        print(f"C. Difference:            {difference:+.2f} USDT")
-        print(f"D. Percent Change:        {percent_change:+.2f}%")
+        print(f"• Current Equity:            {current_equity:.2f} USDT")
+        print(f"• Latest Logged Equity:      {last_equity:.2f} USDT")
+        print(f"• Difference (latest):       {difference:+.2f} USDT")
+        print(f"• Percent Change (latest):   {percent_change:+.2f}%")
+        print(f"• Previous Logged Equity:    {previous_equity:.2f} USDT")
+        print(f"• Difference (previous):     {prev_difference:+.2f} USDT")
+        print(f"• Percent Change (previous): {prev_percent_change:+.2f}%")
 
-    return current_equity, last_equity, difference, percent_change
+    return current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change
 
 def calculate_allowed_margin(last_equity, percent=None, verbose=True):
     if last_equity is None or last_equity <= 0:
@@ -102,37 +111,56 @@ def calculate_allowed_margin(last_equity, percent=None, verbose=True):
         "percent": margin_percent
     }
 
-def analyze_equity_status(diff_percent, limit=None):
+def analyze_equity_status(diff_percent, prev_percent_change, limit=None):
     """
-    Tarkistaa, ylittääkö tappio sallitun prosenttirajan (konfiguroitava).
+    Tarkistaa, ylittääkö tappio diff_percent TAI prev_percent_change osalta
+    sallitun prosenttirajan (konfiguroitava kummallekin).
     
     Args:
         diff_percent (float): Erotus edelliseen equityyn prosentteina (voi olla negatiivinen).
-        limit (float, optional): Prosenttiraja tappioille. Jos None, haetaan konfiguraatiosta tai käytetään oletusta (25.0).
+        prev_percent_change (float): Erotus toissimpaan equityyn prosentteina.
+        limit (float, optional): Yleinen fallback-prosenttiraja, jos konfiguraatio puuttuu.
     
     Returns:
         dict: Sisältää tiedon onko kaupankäynti estetty ja syy.
     """
-    if diff_percent is None:
-        return {"block_trades": False, "reason": "Diff percent is undefined"}
+    if diff_percent is None and prev_percent_change is None:
+        return {"block_trades": False, "reason": "Both diff percent values are undefined"}
 
-    # Hae prosenttiraja konfiguraatiosta, jos mahdollista
-    if limit is None:
-        try:
-            from modules.equity_manager.config_equity_manager import ALLOWED_EQUITY_MARGIN_PERCENT
-            limit = float(ALLOWED_EQUITY_MARGIN_PERCENT)
-        except (ImportError, AttributeError, ValueError):
-            limit = 25.0  # fallback-oletus
+    # Aseta oletusraja
+    fallback_limit = limit if limit is not None else 25.0
 
-    if diff_percent <= -limit:
+    try:
+        from modules.equity_manager.config_equity_manager import (
+            ALLOWED_EQUITY_MARGIN_PERCENT,
+            ALLOWED_PREV_EQUITY_MARGIN_PERCENT,
+        )
+        diff_limit = float(ALLOWED_EQUITY_MARGIN_PERCENT)
+        prev_limit = float(ALLOWED_PREV_EQUITY_MARGIN_PERCENT)
+    except (ImportError, AttributeError, ValueError):
+        diff_limit = fallback_limit
+        prev_limit = fallback_limit
+
+    reasons = []
+
+    if diff_percent is not None and diff_percent <= -diff_limit:
+        reasons.append(f"Equity drop {diff_percent:.2f}% (latest) exceeds allowed loss (-{diff_limit:.1f}%)")
+
+    if prev_percent_change is not None and prev_percent_change <= -prev_limit:
+        reasons.append(f"Equity drop {prev_percent_change:.2f}% (previous) exceeds allowed loss (-{prev_limit:.1f}%)")
+
+    if reasons:
         return {
             "block_trades": True,
-            "reason": f"Equity drop {diff_percent:.2f}% exceeds allowed loss limit (-{limit:.1f}%)"
+            "reason": " OR ".join(reasons)
         }
 
     return {
         "block_trades": False,
-        "reason": f"Equity drop {diff_percent:.2f}% is within safe limits (-{limit:.1f}%)"
+        "reason": (
+            f"Equity drop {diff_percent:.2f}% (latest) and {prev_percent_change:.2f}% (previous) "
+            f"are within safe limits (-{diff_limit:.1f}% / -{prev_limit:.1f}%)"
+        )
     }
 
 def calculate_minimum_investment_diff(current_equity, verbose=True):
@@ -147,7 +175,7 @@ def calculate_minimum_investment_diff(current_equity, verbose=True):
 
     if verbose:
         print("\n💰 Minimum Investment Check:")
-        print(f"• Current Equity: {current_equity} USDT")
+        print(f"• Current Equity:     {current_equity} USDT")
         print(f"• Minimum Investment: {COPYTRADE_MINIMUM_INVESTMENT} USDT")
         print(f"• Difference Amount:  {diff_amount:.2f} USDT")
         print(f"• Difference Percent: {diff_percent:.2f} %")
@@ -160,17 +188,20 @@ def calculate_minimum_investment_diff(current_equity, verbose=True):
 
 def run_equity_manager():
     current_equity = fetch_master_equity_info()
-    last_equity, last_ts = get_latest_logged_equity()
-    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity, verbose=False)
+    last_equity, previous_equity, last_ts = get_latest_logged_equities()
+    current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity, verbose=False)
     allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=False)
-    status = analyze_equity_status(diff_percent)
+    status = analyze_equity_status(percent_change, prev_percent_change)
     min_investment_diff = calculate_minimum_investment_diff(current_equity, verbose=False)
 
     result = {
         "current_equity": current_equity,
         "last_equity": last_equity,
-        "diff_amount": diff_amount,
-        "diff_percent": diff_percent,
+        "diff_amount": difference,
+        "diff_percent": percent_change,
+        "previous_equity": previous_equity,
+        "prev_diff_amount": prev_difference,
+        "prev_diff_percent": prev_percent_change,
         "allowed_negative_margins": allowed_negative_margins,
         "block_trades": status["block_trades"],
         "reason": status["reason"],
@@ -193,18 +224,16 @@ if __name__ == "__main__":
     current_equity = fetch_master_equity_info()
 
     print("\nGetting the previous Equity from the Logs...")
-    last_equity, last_ts = get_latest_logged_equity()
+    last_equity, previous_equity, last_ts = get_latest_logged_equities()
 
-    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity)
+    current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 
     allowed_negative_margins = calculate_allowed_margin(last_equity)
 
     min_investment_diff = calculate_minimum_investment_diff(current_equity)
 
-    print(f"\n✅ Allowed Margin Result: {allowed_negative_margins}")
-
-    status = analyze_equity_status(diff_percent)
+    status = analyze_equity_status(percent_change, prev_percent_change)
     
     print("\n🔒 Trade Status Analysis:")
     print(f"• Block trades: {status['block_trades']}")
-    print(f"• Reason:        {status['reason']}")
+    print(f"• Reason:       {status['reason']}")
