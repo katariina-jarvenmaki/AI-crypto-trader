@@ -117,9 +117,15 @@ def archive_old_orders():
 
     for symbol, timeframes in list(current_data.items()):
         for tf, directions in list(timeframes.items()):
+            if not isinstance(directions, dict):
+                print(f"Warning: Expected dict, got {type(directions)} in {symbol}/{tf}, skipping.")
+                continue
+
             for direction, indicators in list(directions.items()):
                 if not isinstance(indicators, dict):
+                    print(f"Warning: Expected dict, got {type(indicators)} in {symbol}/{tf}/{direction}, skipping.")
                     continue
+
                 for indicator, log_data in list(indicators.items()):
                     timestamp = log_data.get("time") or log_data.get("started_on")
                     log_date = None

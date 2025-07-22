@@ -42,14 +42,14 @@ crontab -e
 **Add these Symbol data fetching lines to the cron**
 ```bash
 TZ=Europe/Helsinki
-0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
-*/15 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> logs/cron/temporary_log_top_symbols_data_fetcher_cron.log 2>&1
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
+0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
+*/15 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> ../AI-crypto-trader-logs/cron/temporary_log_top_symbols_data_fetcher_cron.log 2>&1
+*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> ../AI-crypto-trader-logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
 ```
 
 **Check cron log**
 ```bash
-tail -n 100 /opt/kjc/int/AI-crypto-trader/logs/cron.log
+tail -n 100 /opt/kjc/int/AI-crypto-trader-logs/cron/cron.log
 ```
 
 **4. Run the datacollectors and analyzers or wait crons to run them**

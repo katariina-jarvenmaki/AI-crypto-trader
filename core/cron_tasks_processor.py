@@ -11,6 +11,8 @@ def cron_tasks_processor():
 
     run_history_analyzer()
 
+    run_master_balance_logger()
+
 def run_price_data_fetcher():
     
     try:
@@ -37,15 +39,15 @@ def run_history_analyzer():
     except subprocess.CalledProcessError as e:
         print(f"❌ Error while executing History Analyzer: {e}")
 
-def run_balance_logger():
+def run_master_balance_logger():
     
     try:
-        print("Calling Balance Logger module...")
+        print("Calling Master Balance Logger module...")
         subprocess.run(
             ["/usr/bin/python3", "-m", "modules.master_balance_logger.master_balance_logger"],
             check=True
         )
-        print("✅ Balance Logger executed successfully.")
+        print("✅ Master Balance Logger executed successfully.")
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Error while executing Balance Logger: {e}")
