@@ -186,7 +186,7 @@ def clean_skipped_orders_log(path=SKIPPED_ORDERS_PATH, max_age_hours=24):
     now = datetime.now()
     cutoff = now - timedelta(hours=max_age_hours)
 
-    entries = None 
+    entries = None
 
     try:
         with open(path, "r") as f:
@@ -194,13 +194,57 @@ def clean_skipped_orders_log(path=SKIPPED_ORDERS_PATH, max_age_hours=24):
     except json.JSONDecodeError as e:
         print(f"Error loading {os.path.basename(path)}: {e}")
         try:
+            # Näytä tiedoston loppu debuggausta varten
             with open(path, "r") as f:
                 lines = f.readlines()
                 print("Last few lines for inspection:")
                 print("".join(lines[-5:]))
         except Exception as e2:
             print(f"Failed to read lines from {os.path.basename(path)}: {e2}")
-        return
+
+        # 🔧 Yritä automaattista korjausta
+        print(f"Attempting to recover {os.path.basename(path)}...")
+
+        recovered = []
+        try:
+            with open(path, "r") as f:
+                raw = f.read()
+
+                # Poista alun ja lopun hakasulkeet jos on JSON-lista
+                if raw.startswith("[") and raw.endswith("]"):
+                    raw = raw[1:-1]
+
+                # Erota rivit jotka näyttävät olevan objekteja
+                lines = raw.splitlines()
+                for line in lines:
+                    line = line.strip().rstrip(",")
+                    if not line:
+                        continue
+                    try:
+                        item = json.loads(line)
+                        if isinstance(item, dict):
+                            recovered.append(item)
+                        else:
+                            print(f"⚠️ Ignored non-dict entry during recovery: {type(item)}")
+                    except Exception:
+                        continue
+
+            if recovered:
+                print(f"✅ Recovered {len(recovered)} entries from damaged {os.path.basename(path)}")
+
+                # Korvaa alkuperäinen tiedosto korjatulla versiolla
+                with open(path, "w") as f:
+                    json.dump(recovered, f, indent=4)
+
+                entries = recovered  # Käytä korjattua listaa jatkossa
+            else:
+                print(f"❌ No valid entries recovered from {os.path.basename(path)}.")
+                return
+
+        except Exception as e3:
+            print(f"Recovery failed: {e3}")
+            return
+
     except Exception as e:
         print(f"Error loading {os.path.basename(path)}: {e}")
         return
@@ -208,6 +252,33 @@ def clean_skipped_orders_log(path=SKIPPED_ORDERS_PATH, max_age_hours=24):
     if not isinstance(entries, list):
         print(f"Unexpected format in {os.path.basename(path)}, expected list.")
         return
+
+    # ✂️ Suorita varsinainen siivous
+    kept_entries = []
+    removed_count = 0
+    for entry in entries:
+        if not isinstance(entry, dict):
+            print(f"⚠️ Skipping non-dict entry: {type(entry)}")
+            continue
+
+        ts_str = entry.get("timestamp")
+        if ts_str:
+            try:
+                ts = datetime.fromisoformat(ts_str.split("+")[0])
+                if ts >= cutoff:
+                    kept_entries.append(entry)
+                else:
+                    removed_count += 1
+            except ValueError:
+                print(f"Invalid timestamp in entry: {ts_str}, keeping it.")
+                kept_entries.append(entry)
+        else:
+            kept_entries.append(entry)
+
+    with open(path, "w") as f:
+        json.dump(kept_entries, f, indent=4)
+
+    print(f"Cleaned {os.path.basename(path)}: removed {removed_count} old entries, kept {len(kept_entries)}.")
 
 def clean_symbol_data_log(file_path="../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl", days=30):
     if not os.path.exists(file_path):
@@ -261,6 +332,49 @@ def delete_temporary_logs(directories, prefix="temporary_", suffix=".jsonl"):
             print(f" - {os.path.basename(f)}")
     else:
         print("No temporary log files found to delete.")
+
+def fix_skipped_orders(input_path, output_path):
+    cleaned = []
+    with open(input_path, 'r') as f:
+        try:
+            data = json.load(f)
+            print("✅ File is already valid JSON. No fix needed.")
+            return
+        except json.JSONDecodeError:
+            print("⚠️ File is invalid JSON. Attempting to fix...")
+
+    with open(input_path, 'r') as f:
+        buffer = ""
+        for line in f:
+            buffer += line
+        try:
+            entries = json.loads(buffer)
+            # If we get here, the JSON was fixed by reloading
+            with open(output_path, 'w') as out:
+                json.dump(entries, out, indent=4)
+            print(f"✅ Fixed JSON written to {output_path}")
+            return
+        except json.JSONDecodeError:
+            pass
+
+    # Try recovering line-by-line if top-level list
+    with open(input_path, 'r') as f:
+        print("🔍 Attempting line-by-line recovery...")
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if not line or line in ("[", "]", ","):
+                continue
+            try:
+                if line.endswith(","):
+                    line = line[:-1]  # remove trailing comma
+                entry = json.loads(line)
+                cleaned.append(entry)
+            except json.JSONDecodeError as e:
+                print(f"⚠️ Skipping invalid entry on line {line_num}: {e}")
+
+    with open(output_path, 'w') as f:
+        json.dump(cleaned, f, indent=4)
+    print(f"✅ Cleaned JSON written to {output_path}, total valid entries: {len(cleaned)}")
 
 def run_log_cleanup():
     archive_complete_signals()

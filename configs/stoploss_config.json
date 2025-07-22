@@ -150,6 +150,18 @@
       "_comment": "Value specified 18.7.2025, may need further specification",
       "full_stoploss_percent": "0.21%"
     }
+  },  
+  "APEUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
   }, 
   "APTUSDT": {
     "long": {
@@ -201,6 +213,18 @@
       "full_stoploss_percent": "0.16%"
     }
   },  
+  "AUCTIONUSDT": {
+    "long": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 22.7.2025, may need further specification",
+      "set_stoploss_percent": "0.18%",
+      "full_stoploss_percent": "0.17%"
+    }
+  },   
   "AVLUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, may need further specification",

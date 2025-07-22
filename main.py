@@ -1,60 +1,16 @@
 # main.py
 
 import time
-import pytz
-import pandas as pd
-import json
 
-from pathlib import Path
-from configs.config import TIMEZONE
-from core.args_parser import parse_arguments
-from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
 from scripts.log_cleaner import run_log_cleanup
-from scripts.order_limiter import load_initiated_orders
 from modules.equity_manager.equity_manager import run_equity_manager
-
-def load_symbol_modes(symbols, long_only_flag, short_only_flag):
-    
-    log_path = Path("../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl")
-
-    with open(log_path, "r") as f:
-        lines = f.readlines()
-        if not lines:
-            raise ValueError(f"No data in {log_path}")
-
-        for line in reversed(lines):
-            try:
-                latest_entry = json.loads(line.strip())
-                break
-            except json.JSONDecodeError:
-                continue
-        else:
-            raise ValueError("No valid JSON in symbol log")
-
-    potential_both_ways = latest_entry.get("potential_both_ways", [])
-    potential_to_short = latest_entry.get("potential_to_short", [])
-    potential_to_long = latest_entry.get("potential_to_long", [])
-
-    symbol_modes = {}
-
-    for symbol in symbols:
-        if symbol in potential_to_short:
-            symbol_modes[symbol] = {"long_only": False, "short_only": True}
-        elif symbol in potential_to_long:
-            symbol_modes[symbol] = {"long_only": True, "short_only": False}
-        elif symbol in potential_both_ways:
-            symbol_modes[symbol] = {
-                "long_only": long_only_flag,
-                "short_only": short_only_flag
-            }
-        else:
-            # Jos symboli ei ole missään listassa, ei rajoituksia
-            symbol_modes[symbol] = {"long_only": False, "short_only": False}
-
-    return symbol_modes
+from core.position_handler import run_position_handler
+from scripts.utils import load_symbol_modes
+from core.args_parser import parse_arguments
 
 def main():
 
+    # Clean the logs
     run_log_cleanup()
 
     try:
@@ -70,13 +26,22 @@ def main():
         return
 
     global_is_first_run = True
-    
+
     while True:
+
+        # Make a equity safety check
         equity_result = run_equity_manager()
         if equity_result.get("block_trades", False):
             time.sleep(300)
             continue
+        print(f"Equity result: {equity_result}")
+        current_equity = equity_result.get("current_equity")
+        print(f"Current equity: {current_equity}")
         allowed_negative_margins = equity_result.get("allowed_negative_margins")
+        print(f"Allowed negative margins: {allowed_negative_margins}")
+
+        # Position handler to update and analyse positions
+        run_position_handler(current_equity, allowed_negative_margins)
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
         print("\n-----------------------------------------------------------------")
@@ -98,8 +63,7 @@ def main():
                 override_signal=current_override_signal,
                 long_only=mode["long_only"],
                 short_only=mode["short_only"],
-                initiated_counts=initiated_counts,
-                allowed_negative_margins=allowed_negative_margins 
+                initiated_counts=initiated_counts
             )
 
         global_is_first_run = False 
