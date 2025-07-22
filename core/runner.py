@@ -30,9 +30,13 @@ import pandas as pd
 import json
 from configs.binance_config import SUPPORTED_SYMBOLS
 from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_latest_log_entry_for_symbol, get_latest_log_entry
+import global_state
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
+
+    pos_result = global_state.POSITIONS_RESULT
+    print("🧠 Käytetään global_state.POSITIONS_RESULT:", pos_result)
 
     # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
     if symbol.endswith("USDC"):

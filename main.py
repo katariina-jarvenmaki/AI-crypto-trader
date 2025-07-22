@@ -12,6 +12,7 @@ from scripts.utils import load_symbol_modes
 from core.args_parser import parse_arguments
 from scripts.order_limiter import load_initiated_orders
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
+from global_state import POSITIONS_RESULT 
 
 def main():
 
@@ -44,7 +45,19 @@ def main():
         allowed_negative_margins = equity_result.get("allowed_negative_margins")
 
         # Position handler to update and analyse positions
-        run_position_handler(current_equity, allowed_negative_margins)
+        positions_result = run_position_handler(current_equity, allowed_negative_margins)
+        import global_state
+        global_state.POSITIONS_RESULT = positions_result
+
+        print(f"💰 Current equity: {current_equity}")
+        print(f"💰 Allowed negative margin threshold: {allowed_negative_margins}")
+
+        print(f"1. Equity checks...")
+        print(f"2. Position checks: Negative positions count & Available margin calculation")
+        print(f"3. Order limits: Negative positions count")
+        print(f"4. Order amount: min_inv_diff_percent")
+        print(f"5. After trailing stop loss: Rise leverage")
+        print(f"6. Negative margin setting to 25%")
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
         print("\n-----------------------------------------------------------------")

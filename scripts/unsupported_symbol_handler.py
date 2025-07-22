@@ -8,6 +8,7 @@ from trade.execute_bybit_short import execute_bybit_short
 from scripts.order_limiter import can_initiate, load_initiated_orders, normalize_symbol
 from scripts.trade_order_logger import log_trade, log_skipped_order
 from modules.datetime_analyzer.datetime_analyzer import analyze_datetime_preferences
+import global_state
 
 def get_latest_log_entry_for_symbol(log_path: str, symbol: str) -> dict:
     with open(log_path, "r") as f:
@@ -50,6 +51,9 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
+    pos_result = global_state.POSITIONS_RESULT
+    print("🧠 Käytetään global_state.POSITIONS_RESULT:", pos_result)
+
     selected_symbols = selected_symbols or [symbol]
     bybit_symbol = normalize_symbol(symbol)
     live_price = get_bybit_symbol_price(bybit_symbol)

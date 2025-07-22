@@ -474,13 +474,11 @@
   "KAVAUSDT": {
     "long": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     }
   },   
   "KDAUSDT": {
@@ -660,11 +658,11 @@
   "PORTALUSDT": {
     "long": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
       "_comment": "Value specified 22.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     }
   },  
   "PUNDIXUSDT": {
