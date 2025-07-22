@@ -39,16 +39,11 @@ def main():
         if equity_result.get("block_trades", False):
             time.sleep(300)
             continue
+        current_equity = equity_result.get("current_equity")
+        min_inv_diff_percent = equity_result.get("min_inv_diff_percent")
+        allowed_negative_margins = equity_result.get("allowed_negative_margins")
 
         # Position handler to update and analyse positions
-        print(f"\nEquity values to use:")
-        current_equity = equity_result.get("current_equity")
-        print(f"Current equity: {current_equity}")
-        min_inv_diff_percent = equity_result.get("min_inv_diff_percent")
-        print(f"Min inv diff percent: {min_inv_diff_percent}")
-        allowed_negative_margins = equity_result.get("allowed_negative_margins")
-        print(f"Allowed negative margins: {allowed_negative_margins}")
-
         run_position_handler(current_equity, allowed_negative_margins)
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
