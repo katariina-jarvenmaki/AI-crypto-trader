@@ -6,6 +6,8 @@ from datetime import datetime
 from integrations.bybit_api_client import client
 
 LOG_FILE = "../AI-crypto-trader-logs/master_balance_log.jsonl"
+MAX_TRADE_MARGIN_PERCENT = 50.0   # This should be at max. 50%
+MAX_EQUITY_MARGIN_PERCENT = 25.0  # This should be at max. 25%
 
 def fetch_master_equity_info():
     try:
@@ -46,34 +48,34 @@ def get_latest_logged_equity(log_path=LOG_FILE):
 
     return None, None
 
-def compare_equities(current_equity, last_equity):
+def compare_equities(current_equity, last_equity, verbose=True):
     if current_equity is None or last_equity is None:
-        print("⚠️ Cannot compare equity values — one or both are missing.")
+        if verbose:
+            print("⚠️ Cannot compare equity values — one or both are missing.")
         return None, None, None, None
 
     difference = current_equity - last_equity
     percent_change = (difference / last_equity * 100) if last_equity != 0 else 0.0
 
-    print("\n📊 Equity Comparison:")
-    print(f"A. Current Equity:        {current_equity:.2f} USDT")
-    print(f"B. Previous Equity:       {last_equity:.2f} USDT")
-    print(f"C. Difference:            {difference:+.2f} USDT")
-    print(f"D. Percent Change:        {percent_change:+.2f}%")
+    if verbose:
+        print("\n📊 Equity Comparison:")
+        print(f"A. Current Equity:        {current_equity:.2f} USDT")
+        print(f"B. Previous Equity:       {last_equity:.2f} USDT")
+        print(f"C. Difference:            {difference:+.2f} USDT")
+        print(f"D. Percent Change:        {percent_change:+.2f}%")
 
     return current_equity, last_equity, difference, percent_change
 
-def calculate_allowed_margin(last_equity, percent=None):
-    """
-    Laskee sallitun marginaalin tappiollisille long/short-treideille.
-    """
+def calculate_allowed_margin(last_equity, percent=None, verbose=True):
     if last_equity is None or last_equity <= 0:
-        print("⚠️ Invalid or missing previous equity.")
+        if verbose:
+            print("⚠️ Invalid or missing previous equity.")
         return None
 
     try:
         from modules.equity_manager.config_equity_manager import ALLOWED_TRADE_MARGIN_PERCENT
     except ImportError:
-        ALLOWED_TRADE_MARGIN_PERCENT = 25.0  # fallback
+        ALLOWED_TRADE_MARGIN_PERCENT = 25.0
 
     margin_percent = (
         percent if percent is not None
@@ -81,11 +83,18 @@ def calculate_allowed_margin(last_equity, percent=None):
         else 25.0
     )
 
+    # Enforce maximum
+    if margin_percent > MAX_TRADE_MARGIN_PERCENT:
+        if verbose:
+            print(f"⚠️ Trade margin percent {margin_percent}% exceeds max allowed ({MAX_TRADE_MARGIN_PERCENT}%) — using max.")
+        margin_percent = MAX_TRADE_MARGIN_PERCENT
+
     allowed_amount = (margin_percent / 100.0) * last_equity
 
-    print(f"\n🛡️ Allowed Margin for Negative Trades ({margin_percent:.1f}% of previous equity):")
-    print(f"• LONG max loss:  {allowed_amount:.2f} USDT")
-    print(f"• SHORT max loss: {allowed_amount:.2f} USDT")
+    if verbose:
+        print(f"\n🛡️ Allowed Margin for Negative Trades ({margin_percent:.1f}% of previous equity):")
+        print(f"• LONG max loss:  {allowed_amount:.2f} USDT")
+        print(f"• SHORT max loss: {allowed_amount:.2f} USDT")
 
     return {
         "long": allowed_amount,
@@ -126,11 +135,11 @@ def analyze_equity_status(diff_percent, limit=None):
         "reason": f"Equity drop {diff_percent:.2f}% is within safe limits (-{limit:.1f}%)"
     }
 
-def run_equity_manager():
+def run_equity_manager(verbose=False):
     current_equity = fetch_master_equity_info()
     last_equity, last_ts = get_latest_logged_equity()
-    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity)
-    allowed_negative_margins = calculate_allowed_margin(last_equity)
+    current_equity, last_equity, diff_amount, diff_percent = compare_equities(current_equity, last_equity, verbose=verbose)
+    allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=verbose)
     status = analyze_equity_status(diff_percent)
 
     return {

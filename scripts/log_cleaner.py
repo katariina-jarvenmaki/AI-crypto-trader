@@ -180,48 +180,38 @@ def remove_old_archives(months=2):
 
 def clean_skipped_orders_log(path=SKIPPED_ORDERS_PATH, max_age_hours=24):
     if not os.path.exists(path):
-        print(f"{path} not found.")
+        print(f"{os.path.basename(path)} not found.")
         return
 
     now = datetime.now()
     cutoff = now - timedelta(hours=max_age_hours)
 
+    entries = None 
+
     try:
         with open(path, "r") as f:
             entries = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"Error loading {os.path.basename(path)}: {e}")
+        try:
+            with open(path, "r") as f:
+                lines = f.readlines()
+                print("Last few lines for inspection:")
+                print("".join(lines[-5:]))
+        except Exception as e2:
+            print(f"Failed to read lines from {os.path.basename(path)}: {e2}")
+        return
     except Exception as e:
-        print(f"Error loading {path}: {e}")
+        print(f"Error loading {os.path.basename(path)}: {e}")
         return
 
     if not isinstance(entries, list):
-        print(f"Unexpected format in {path}, expected list.")
+        print(f"Unexpected format in {os.path.basename(path)}, expected list.")
         return
-
-    kept_entries = []
-    removed_count = 0
-    for entry in entries:
-        ts_str = entry.get("timestamp")
-        if ts_str:
-            try:
-                ts = datetime.fromisoformat(ts_str.split("+")[0])
-                if ts >= cutoff:
-                    kept_entries.append(entry)
-                else:
-                    removed_count += 1
-            except ValueError:
-                print(f"Invalid timestamp in entry: {ts_str}, keeping it.")
-                kept_entries.append(entry)
-        else:
-            kept_entries.append(entry)
-
-    with open(path, "w") as f:
-        json.dump(kept_entries, f, indent=4)
-
-    print(f"Cleaned {path}: removed {removed_count} old entries, kept {len(kept_entries)}.")
 
 def clean_symbol_data_log(file_path="../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl", days=30):
     if not os.path.exists(file_path):
-        print(f"{file_path} not found.")
+        print(f"{os.path.basename(file_path)} not found.")
         return
 
     cutoff = datetime.now() - timedelta(days=days)
@@ -264,11 +254,11 @@ def delete_temporary_logs(directories, prefix="temporary_", suffix=".jsonl"):
                     os.remove(fpath)
                     deleted_files.append(fpath)
                 except Exception as e:
-                    print(f"Failed to delete {fpath}: {e}")
+                    print(f"Failed to delete {os.path.basename(fpath)}: {e}")
     if deleted_files:
         print("Deleted temporary log files:")
         for f in deleted_files:
-            print(f" - {f}")
+            print(f" - {os.path.basename(f)}")
     else:
         print("No temporary log files found to delete.")
 

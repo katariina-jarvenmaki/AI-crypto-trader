@@ -11,6 +11,7 @@ from core.args_parser import parse_arguments
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
 from scripts.log_cleaner import run_log_cleanup
 from scripts.order_limiter import load_initiated_orders
+from modules.equity_manager.equity_manager import run_equity_manager
 
 def load_symbol_modes(symbols, long_only_flag, short_only_flag):
     
@@ -70,8 +71,16 @@ def main():
 
     global_is_first_run = True
     
-    # Start a turn
     while True:
+
+        equity_result = run_equity_manager()
+        if equity_result.get("block_trades", False):
+            print("\n⚠️  WARNING: Sudden equity drop detected – trades blocked for safety:")
+            print(f"🔒 {equity_result['reason']}")
+            print("⏳ Trading will remain blocked. Next equity check will be attempted in 5 minutes.")
+            print("🔧 If this is incorrect, update 'master_balance_log.jsonl'. Modify 'config_equity_manager.py' only with strong justification just to be safe.\n")
+            time.sleep(300)  # 5 minuutin odotus ennen seuraavaa yritystä
+            continue
 
         now = pd.Timestamp.utcnow().replace(tzinfo=pytz.utc).astimezone(TIMEZONE)
         print("\n-----------------------------------------------------------------")
@@ -118,5 +127,4 @@ def main():
         time.sleep(180)
 
 if __name__ == "__main__":
-
     main()
