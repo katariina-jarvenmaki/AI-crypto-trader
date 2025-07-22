@@ -35,9 +35,6 @@ import global_state
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
 
-    pos_result = global_state.POSITIONS_RESULT
-    print("🧠 Käytetään global_state.POSITIONS_RESULT:", pos_result)
-
     # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
     if symbol.endswith("USDC"):
         return
@@ -172,6 +169,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     # print(f"Add strategy logic here...")
 
+
     #***** LONGS *****#
 
     if final_signal == "buy":
@@ -179,6 +177,15 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         # Binance
         binance_result = execute_binance_long(symbol, risk_strength)
         if binance_result:
+            # Define real cost
+            real_cost = binance_result["cost"] / binance_result["leverage"]
+            # Globaalin muuttujan päivitys
+            pos_result = global_state.POSITIONS_RESULT
+            margins = pos_result.get("available_margins", {})
+            margins["available_long_margin"] -= real_cost 
+            margins["available_short_margin"] = margins["available_short_margin"]
+            pos_result["available_margins"] = margins
+            global_state.POSITIONS_RESULT = pos_result
             log_trade(
                 symbol=binance_result["symbol"],
                 platform="Binance",
@@ -206,6 +213,15 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         # Bybit
         bybit_result = execute_bybit_long(symbol, risk_strength)
         if bybit_result:
+            # Define real cost
+            real_cost = bybit_result["cost"] / bybit_result["leverage"]
+            # Globaalin muuttujan päivitys
+            pos_result = global_state.POSITIONS_RESULT
+            margins = pos_result.get("available_margins", {})
+            margins["available_long_margin"] -= real_cost 
+            margins["available_short_margin"] = margins["available_short_margin"]
+            pos_result["available_margins"] = margins
+            global_state.POSITIONS_RESULT = pos_result
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",
@@ -238,6 +254,15 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         # Bybit
         bybit_result = execute_bybit_short(symbol, risk_strength)
         if bybit_result:
+            # Define real cost
+            real_cost = bybit_result["cost"] / bybit_result["leverage"]
+            # Globaalin muuttujan päivitys
+            pos_result = global_state.POSITIONS_RESULT
+            margins = pos_result.get("available_margins", {})
+            margins["available_long_margin"] = margins["available_short_margin"]
+            margins["available_short_margin"] -= real_cost
+            pos_result["available_margins"] = margins
+            global_state.POSITIONS_RESULT = pos_result
             log_trade(
                 symbol=bybit_result["symbol"],
                 platform="ByBit",

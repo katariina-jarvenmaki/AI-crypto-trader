@@ -222,6 +222,15 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
         if result:
+            # Define real cost
+            real_cost = result["cost"] / result["leverage"]
+            # Globaalin muuttujan päivitys
+            pos_result = global_state.POSITIONS_RESULT
+            margins = pos_result.get("available_margins", {})
+            margins["available_long_margin"] = margins["available_short_margin"]
+            margins["available_short_margin"] -= real_cost
+            pos_result["available_margins"] = margins
+            global_state.POSITIONS_RESULT = pos_result
             log_trade(
                 symbol=result["symbol"],
                 platform="ByBit",
@@ -325,6 +334,15 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         if result:
             price_entry = get_latest_log_entry_for_symbol(
                 "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
+            # Globaalin muuttujan päivitys
+            real_cost = result["cost"] / result["leverage"]
+            pos_result = global_state.POSITIONS_RESULT
+            margins = pos_result.get("available_margins", {})
+            margins["available_long_margin"] -= real_cost
+            margins["available_short_margin"] = margins["available_short_margin"]
+            pos_result["available_margins"] = margins
+            global_state.POSITIONS_RESULT = pos_result
+            # Logging
             log_trade(
                 symbol=result["symbol"],
                 platform="ByBit",
