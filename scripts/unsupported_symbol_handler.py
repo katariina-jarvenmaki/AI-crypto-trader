@@ -51,8 +51,6 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
 
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
-    pos_result = global_state.POSITIONS_RESULT
-    print("🧠 Käytetään global_state.POSITIONS_RESULT:", pos_result)
 
     selected_symbols = selected_symbols or [symbol]
     bybit_symbol = normalize_symbol(symbol)
@@ -136,17 +134,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
         return
 
-    long_initiated, short_initiated = count_initiated_orders()
-    if short_only and short_initiated >= 18:
-        log_and_skip("Short-positioiden max määrä (18) saavutettu", "short", {"initiated_count": short_initiated})
-        print(f"⛔ Skipping SHORT: {short_initiated} initiated short orders already.")
-        return
-
-    if long_only and long_initiated >= 18:
-        log_and_skip("Long-positioiden max määrä (18) saavutettu", "long", {"initiated_count": long_initiated})
-        print(f"⛔ Skipping LONG: {long_initiated} initiated long orders already.")
-        return
-
     if short_only:
 
         tighten_short = tighten_short or should_tighten_conditions(sentiment_entry, "short")
@@ -180,8 +167,10 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         bb_upper = data_1h.get("bb_upper")
 
-        # 🔹 UUSI EHTO: BB-filtteri vain jos >=18% change
+        # 🔹>=18% price change erityisehdot
         if price_change_percent and price_change_percent >= 18:
+            if bb_upper == 0.0:
+                print(f"skip: BB-arvo puuttuu – ei shorttia")
             bb_upper_threshold = 1.06 if rsi_1h and rsi_1h > 80 else 1.03
             if last_price < bb_upper * bb_upper_threshold:
                 log_and_skip("Hinta ei tarpeeksi BB:n yläpuolella – ei overextensionia", "short", {
@@ -220,13 +209,18 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             print(f"⛔ Skipping {bybit_symbol} short: open limit order already exists.")
             return
 
+        # Globaalin lukeminen
+        pos_result = global_state.POSITIONS_RESULT
+        margins = pos_result.get("available_margins", {})
+        if margins['available_short_margin'] <= 0:
+            print(f"Skipping trade: No available short margin left")
+            return
+        # Trade
         result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
         if result:
             # Define real cost
             real_cost = result["cost"] / result["leverage"]
             # Globaalin muuttujan päivitys
-            pos_result = global_state.POSITIONS_RESULT
-            margins = pos_result.get("available_margins", {})
             margins["available_long_margin"] = margins["available_short_margin"]
             margins["available_short_margin"] -= real_cost
             pos_result["available_margins"] = margins
@@ -330,14 +324,19 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                     print(f"⛔ Skipping LONG: RSI 1m ({rsi_1m}) ja 5m ({rsi_5m}) molemmat > 80.")
                     return
 
+        # Globaalin lukeminen
+        pos_result = global_state.POSITIONS_RESULT
+        margins = pos_result.get("available_margins", {})
+        if margins['available_long_margin'] <= 0:
+            print(f"Skipping trade: No available long margin left")
+            return
+        # Trade
         result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if result:
             price_entry = get_latest_log_entry_for_symbol(
                 "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
             # Globaalin muuttujan päivitys
             real_cost = result["cost"] / result["leverage"]
-            pos_result = global_state.POSITIONS_RESULT
-            margins = pos_result.get("available_margins", {})
             margins["available_long_margin"] -= real_cost
             margins["available_short_margin"] = margins["available_short_margin"]
             pos_result["available_margins"] = margins

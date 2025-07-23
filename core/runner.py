@@ -174,14 +174,18 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     if final_signal == "buy":
 
+        # Globaalin lukeminen
+        pos_result = global_state.POSITIONS_RESULT
+        margins = pos_result.get("available_margins", {})
+        if margins['available_long_margin'] <= 0:
+            print(f"Skipping trade: No available long margin left")
+            return
         # Binance
         binance_result = execute_binance_long(symbol, risk_strength)
         if binance_result:
             # Define real cost
             real_cost = binance_result["cost"] / binance_result["leverage"]
             # Globaalin muuttujan päivitys
-            pos_result = global_state.POSITIONS_RESULT
-            margins = pos_result.get("available_margins", {})
             margins["available_long_margin"] -= real_cost 
             margins["available_short_margin"] = margins["available_short_margin"]
             pos_result["available_margins"] = margins
@@ -210,14 +214,17 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
                 history_sentiment=history_sentiment_entry
             )
 
+        # Globaalin lukeminen
+        pos_result = global_state.POSITIONS_RESULT
+        margins = pos_result.get("available_margins", {})
+        if margins['available_long_margin'] <= 0:
+            print(f"Skipping trade: No available long margin left")
+            return
         # Bybit
         bybit_result = execute_bybit_long(symbol, risk_strength)
         if bybit_result:
             # Define real cost
             real_cost = bybit_result["cost"] / bybit_result["leverage"]
-            # Globaalin muuttujan päivitys
-            pos_result = global_state.POSITIONS_RESULT
-            margins = pos_result.get("available_margins", {})
             margins["available_long_margin"] -= real_cost 
             margins["available_short_margin"] = margins["available_short_margin"]
             pos_result["available_margins"] = margins
@@ -251,14 +258,18 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     if final_signal == "sell":
 
+        # Globaalin lukeminen
+        pos_result = global_state.POSITIONS_RESULT
+        margins = pos_result.get("available_margins", {})
+        if margins['available_short_margin'] <= 0:
+            print(f"Skipping trade: No available short margin left")
+            return
         # Bybit
         bybit_result = execute_bybit_short(symbol, risk_strength)
         if bybit_result:
             # Define real cost
             real_cost = bybit_result["cost"] / bybit_result["leverage"]
             # Globaalin muuttujan päivitys
-            pos_result = global_state.POSITIONS_RESULT
-            margins = pos_result.get("available_margins", {})
             margins["available_long_margin"] = margins["available_short_margin"]
             margins["available_short_margin"] -= real_cost
             pos_result["available_margins"] = margins

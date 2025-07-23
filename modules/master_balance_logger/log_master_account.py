@@ -11,10 +11,16 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 from integrations.bybit_api_client import client
 
 def is_entry_logged_for_today(filepath):
-    today = datetime.utcnow().date()
+    now = datetime.utcnow().replace(tzinfo=timezone.utc)
+    today = now.date()
+
+    # Estetään kirjautuminen ennen klo 05:00 UTC
+    if now.hour < 5:
+        return True  # Aivan kuin merkintä olisi jo olemassa — ei tehdä vielä uutta
+
     try:
         with open(filepath, "r") as f:
-            for line in reversed(f.readlines()):  # Luetaan takaperin – nopeampi
+            for line in reversed(f.readlines()):
                 try:
                     entry = json.loads(line)
                     if "timestamp" in entry:
