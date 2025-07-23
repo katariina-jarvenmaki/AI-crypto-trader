@@ -52,6 +52,9 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
 def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
 
+    pos_result = global_state.POSITIONS_RESULT
+    print(f"Global function data: {pos_result}")
+
     selected_symbols = selected_symbols or [symbol]
     bybit_symbol = normalize_symbol(symbol)
     live_price = get_bybit_symbol_price(bybit_symbol)
@@ -169,8 +172,12 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         # 🔹>=18% price change erityisehdot
         if price_change_percent and price_change_percent >= 18:
+            if price_change_percent > 35:
+                print(f"skip: Way too bullish")
+                return
             if bb_upper == 0.0:
                 print(f"skip: BB-arvo puuttuu – ei shorttia")
+                return
             bb_upper_threshold = 1.06 if rsi_1h and rsi_1h > 80 else 1.03
             if last_price < bb_upper * bb_upper_threshold:
                 log_and_skip("Hinta ei tarpeeksi BB:n yläpuolella – ei overextensionia", "short", {
@@ -181,6 +188,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                     "price_change_percent": price_change_percent
                 })
                 print(f"⛔ Skipping SHORT: last_price ({last_price}) < BB * threshold.")
+                return
+            if macd_diff == 0.0:
+                print(f"skip: Macd_diff puuttuu – ei shorttia")
                 return
 
         # Vanha BB-check, toimii tilanteissa kun price_change_percent ≤ 19
@@ -215,6 +225,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         if margins['available_short_margin'] <= 0:
             print(f"Skipping trade: No available short margin left")
             return
+        print(f"available_margins: {margins}")
         # Trade
         result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
         if result:
@@ -265,6 +276,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         rsi_1h = data_1h.get("rsi")
         rsi_1h_previous = data_1h.get("rsi_prev")  # or whatever the key is for previous 1h RSI
         rsi_1h_delta = rsi_1h - rsi_1h_previous if rsi_1h is not None and rsi_1h_previous is not None else None
+        macd = data_1h.get("macd")
+        macd_signal = data_1h.get("macd_signal")
+        macd_diff = macd - macd_signal if macd is not None and macd_signal is not None else None
 
         if rsi_1h_delta is not None and rsi_1h_delta <= 0:
             log_and_skip("RSI-delta ≤ 0 – ei nousutrendiä", "long", {"rsi_1h_delta": rsi_1h_delta})
@@ -272,6 +286,16 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
 
         bb_lower = data_1h.get("bb_lower")
+
+        # 🔹>=18% price change erityisehdot
+        if price_change_percent and price_change_percent <= -6:
+            if bb_lower == 0.0:
+                print(f"skip: BB-arvo puuttuu – ei longia")
+                return
+            if macd_diff == 0.0:
+                print(f"skip: Macd_diff puuttuu – ei longia")
+                return
+
         if bb_lower and last_price > bb_lower * (1.01 if tighten_long else 1.02):
             log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",
                         {"last_price": last_price, "bb_lower_1h": bb_lower})
@@ -330,6 +354,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         if margins['available_long_margin'] <= 0:
             print(f"Skipping trade: No available long margin left")
             return
+        print(f"available_margins: {margins}")
         # Trade
         result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
         if result:

@@ -106,7 +106,17 @@
       "_comment": "Value specified 21.7.2025, may need further specification",
       "full_stoploss_percent": "0.18%"
     }
-  },   
+  },  
+  "ACEUSDT": {
+    "long": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },      
   "AEROUSDT": {
     "long": {
       "_comment": "Value specified 13.7.2025, may need further specification",
@@ -229,12 +239,12 @@
   },  
   "AUCTIONUSDT": {
     "long": {
-      "_comment": "Value specified 22.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
-      "_comment": "Value specified 22.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     }
   },   
   "AVLUSDT": {
@@ -579,6 +589,16 @@
       "full_stoploss_percent": "0.18%"
     }
   },  
+  "MEUSDT": {
+    "long": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },   
   "MILUSDT": {
     "long": {
       "_comment": "Value specified 18.7.2025, may need further specification",
@@ -601,12 +621,12 @@
   },  
   "MLNSDT": {
     "long": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.21%"
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.25%"
     },
     "short": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.21%"
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.25%"
     }
   },     
   "MTLUSDT": {
@@ -742,13 +762,11 @@
   "SAFEUSDT": {
     "long": {
       "_comment": "Value specified 23.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
       "_comment": "Value specified 23.7.2025, may need further specification",
-      "set_stoploss_percent": "0.18%",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     }
   },    
   "SCAUSDT": {
@@ -993,6 +1011,16 @@
       "_comment": "Value specified 21.7.2025, may need further specification",
       "full_stoploss_percent": "0.18%",
       "trailing_stoploss_percent": "0.008%"
+    }
+  },     
+  "WALUSDT": {
+    "long": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 23.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
     }
   },     
   "WAVEUSDT": {

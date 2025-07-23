@@ -1,7 +1,7 @@
 # modules/equity_manager/config_equity_manager.py
 
 # Allowed trade margin allocation
-ALLOWED_TRADE_MARGIN_PERCENT = 50.0  # Should target to under 25.0
+ALLOWED_TRADE_MARGIN_PERCENT = 25.0  # Should target to under 25.0
 
 # Stop trading on loss limit
 ALLOWED_EQUITY_MARGIN_PERCENT = 15.0 # Keep this under 25.0
