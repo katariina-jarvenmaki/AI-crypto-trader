@@ -29,13 +29,11 @@ def execute_bybit_long(symbol, risk_strength, min_inv_diff_percent):
 
     # Optionally increase qty if min_inv_diff_percent > 0
     qty = result["qty"]
-    print(f"Original qty: {qty}")
     if min_inv_diff_percent > 0:
         original_qty = result["qty"]
         increased_qty = original_qty * (1 + min_inv_diff_percent / 100)
         # Round up if needed or keep same precision
         qty = max(original_qty, increased_qty)
-        print(f"Modified qty: {qty}")
 
     # Check if there is enough available balance
     balance = get_available_balance("USDT")
@@ -61,6 +59,7 @@ def execute_bybit_long(symbol, risk_strength, min_inv_diff_percent):
         return {
             "symbol": bybit_symbol,
             "direction": "long",
+            "original_qty": result["qty"],
             "qty": qty,
             "price": result["price"],
             "cost": result["cost"],
