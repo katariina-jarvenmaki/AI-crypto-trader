@@ -896,11 +896,11 @@
   "SUNUSDT": {
     "long": {
       "_comment": "Value specified 24.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
       "_comment": "Value specified 24.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "full_stoploss_percent": "0.18%"
     }
   },  
   "SUPERUSDT": {

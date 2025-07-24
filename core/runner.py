@@ -573,7 +573,8 @@ def leverage_updater_for_positive_trades():
             current_leverage = int(leverage)
 
             if trailing_stop > 0 and current_leverage == 2:
-                new_leverage = current_leverage * 2
+                # new_leverage = current_leverage * 2
+                new_leverage = 25
                 print(f"⚙️  Updating leverage for {symbol} ({side}) from {current_leverage}x to {new_leverage}x")
 
                 set_leverage(symbol=symbol, leverage=new_leverage, category="linear")
