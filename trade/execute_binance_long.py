@@ -3,7 +3,7 @@
 from scripts.min_buy_calc import calculate_minimum_valid_purchase
 from scripts.spot_order_handler import place_spot_trade_with_tp_sl
 
-def execute_binance_long(symbol, risk_strength):
+def execute_binance_long(symbol, risk_strength, min_inv_diff_percent):
 
     # Only proceed if the risk level is strong
     if risk_strength != "strong":
@@ -14,9 +14,16 @@ def execute_binance_long(symbol, risk_strength):
         print(f"❌ Binance minimum purchase calculation failed for symbol {symbol}")
         return
 
-    quantity = "{:.8f}".format(result['qty'])
-    # print(f"✅ Binance minimum purchase: {symbol} {quantity} units @ {result['price']:.4f} → total {result['cost']:.2f} USD")
+    # Optionally increase qty if min_inv_diff_percent > 0
+    qty = result["qty"]
+    if min_inv_diff_percent > 0:
+        original_qty = result["qty"]
+        increased_qty = original_qty * (1 + min_inv_diff_percent / 100)
+        # Round up if needed or keep same precision
+        qty = max(original_qty, increased_qty)
 
+    quantity = "{:.8f}".format(qty)
+   
     # Place spot trade with take-profit and stop-loss
     order_result = place_spot_trade_with_tp_sl(
         symbol, 
@@ -29,7 +36,7 @@ def execute_binance_long(symbol, risk_strength):
         return {
             "symbol": symbol,
             "direction": "long",
-            "qty": result["qty"],
+            "qty": quantity,
             "price": result["price"],
             "leverage": 1 
         }

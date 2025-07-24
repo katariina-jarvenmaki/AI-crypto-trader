@@ -81,8 +81,6 @@ def main():
                 long_only=mode["long_only"],
                 short_only=mode["short_only"],
                 initiated_counts=initiated_counts,
-                current_equity = current_equity,
-                minimum_investment = minimum_investment,
                 min_inv_diff_percent = min_inv_diff_percent
             )
 

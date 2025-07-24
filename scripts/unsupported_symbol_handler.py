@@ -49,10 +49,9 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
         return True
     return False
 
-def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None, current_equity=None, minimum_investment=None, min_inv_diff_percent=None):
+def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None, min_inv_diff_percent=None):
 
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
-    # print(f"current_equity: {current_equity}, minimum_investment: {minimum_investment}, min_inv_diff_percent: {min_inv_diff_percent}")
 
     pos_result = global_state.POSITIONS_RESULT
     if not pos_result or not isinstance(pos_result, dict):
@@ -235,7 +234,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
         print(f"available_margins: {margins}")
         # Trade
-        result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong")
+        result = execute_bybit_short(symbol=bybit_symbol, risk_strength="strong", min_inv_diff_percent=min_inv_diff_percent)
         if result:
             # Define real cost
             real_cost = result["cost"] / result["leverage"]
@@ -367,7 +366,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
             return
         print(f"available_margins: {margins}")
         # Trade
-        result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong")
+        result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong", min_inv_diff_percent=min_inv_diff_percent)
         if result:
             price_entry = get_latest_log_entry_for_symbol(
                 "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)

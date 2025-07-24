@@ -33,7 +33,7 @@ from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_la
 import global_state
 
 # Symbol processing loop
-def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False, current_equity=False, minimum_investment=False, min_inv_diff_percent=False):
+def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False, min_inv_diff_percent=False):
 
     # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
     if symbol.endswith("USDC"):
@@ -44,7 +44,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     # ✅ Check if symbol is unsupported and handle it
     if symbol not in SUPPORTED_SYMBOLS:
-        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols, current_equity, minimum_investment, min_inv_diff_percent)
+        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols, min_inv_diff_percent)
         return
 
     # Get the signals for the symbols
@@ -184,7 +184,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             print(f"Skipping trade: No available long margin left")
             return
         # Binance
-        binance_result = execute_binance_long(symbol, risk_strength)
+        binance_result = execute_binance_long(symbol, risk_strength, min_inv_diff_percent)
         if binance_result:
             # Define real cost
             real_cost = binance_result["cost"] / binance_result["leverage"]
@@ -227,7 +227,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             print(f"Skipping trade: No available long margin left")
             return
         # Bybit
-        bybit_result = execute_bybit_long(symbol, risk_strength)
+        bybit_result = execute_bybit_long(symbol, risk_strength, min_inv_diff_percent)
         if bybit_result:
             # Define real cost
             real_cost = bybit_result["cost"] / bybit_result["leverage"]
@@ -274,7 +274,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
             print(f"Skipping trade: No available short margin left")
             return
         # Bybit
-        bybit_result = execute_bybit_short(symbol, risk_strength)
+        bybit_result = execute_bybit_short(symbol, risk_strength, min_inv_diff_percent)
         if bybit_result:
             # Define real cost
             real_cost = bybit_result["cost"] / bybit_result["leverage"]
