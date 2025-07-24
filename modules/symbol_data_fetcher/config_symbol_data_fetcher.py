@@ -552,4 +552,5 @@ BLOCKED_SYMBOLS =  [
     "SLFUSDT", # -> too volatile without momentum checks
     "SOLOUSDT", # -> too volatile without momentum checks
     "PENGUUSDT", # -> too volatile without momentum checks
+    "OBOLUSDT",  # -> too volatile without momentum checks
 ]

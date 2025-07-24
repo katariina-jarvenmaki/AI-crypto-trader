@@ -25,12 +25,13 @@ from trade.execute_bybit_long import execute_bybit_long
 from trade.execute_bybit_short import execute_bybit_short
 from scripts.trade_order_logger import log_trade
 from scripts.filter_initiated_orders import filter_initiated_orders
-from integrations.bybit_api_client import client as bybit_client, set_stop_loss_and_trailing_stop, parse_percent, get_bybit_symbol_info
+from integrations.bybit_api_client import client as bybit_client, set_stop_loss_and_trailing_stop, parse_percent, get_bybit_symbol_info, set_leverage
 import pandas as pd
 import json
 from configs.binance_config import SUPPORTED_SYMBOLS
 from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_latest_log_entry_for_symbol, get_latest_log_entry
 import global_state
+from modules.positions_data_fetcher import positions_data_fetcher
 
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False, min_inv_diff_percent=False):
@@ -543,3 +544,43 @@ def stop_loss_checker(positions):
 
     except Exception as e:
         print(f"[ERROR] Could not check open order prices: {e}")
+
+def leverage_updater_for_positive_trades():
+    from integrations.bybit_api_client import set_leverage
+
+    print("🔁 Checking for positions with trailing stop for leverage update...")
+
+    current_equity = 0
+    allowed_negative_margins = {"long": 0.0, "short": 0.0}
+
+    result = positions_data_fetcher.position_data_fetcher()
+
+    # Koska result on lista, ei dict
+    all_positions = [p for p in result if isinstance(p, dict) and "symbol" in p]
+
+    if not all_positions:
+        print("⚪ No valid positions found for leverage update.")
+        return
+
+    print(f"📋 Found {len(all_positions)} positions")
+
+    for pos in all_positions:
+        try:
+            symbol = pos.get("symbol")
+            trailing_stop = float(pos.get("trailingStop", "0") or 0)
+            leverage = float(pos.get("leverage", "1"))
+            side = pos.get("side", "Buy")
+            current_leverage = int(leverage)
+
+            if trailing_stop > 0 and current_leverage == 2:
+                new_leverage = current_leverage * 2
+                print(f"⚙️  Updating leverage for {symbol} ({side}) from {current_leverage}x to {new_leverage}x")
+
+                set_leverage(symbol=symbol, leverage=new_leverage, category="linear")
+
+                print(f"✅ Leverage updated for {symbol} to {new_leverage}x")
+            else:
+                print(f"⏭️  Skipping {symbol}: No trailing stop active.")
+
+        except Exception as e:
+            print(f"❌ Error processing position {pos.get('symbol', '?')}: {e}")

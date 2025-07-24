@@ -11,7 +11,7 @@ from core.position_handler import run_position_handler
 from scripts.utils import load_symbol_modes
 from core.args_parser import parse_arguments
 from scripts.order_limiter import load_initiated_orders
-from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker
+from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker, leverage_updater_for_positive_trades
 from global_state import POSITIONS_RESULT 
 
 def main():
@@ -100,6 +100,8 @@ def main():
             continue
 
         stop_loss_checker(positions)
+
+        leverage_updater_for_positive_trades()
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)
