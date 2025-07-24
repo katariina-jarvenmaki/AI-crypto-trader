@@ -97,10 +97,34 @@ def calculate_available_margins(calculated_margin, allowed_negative_margins, ver
     }
 
 def positions_analyzer(positions, allowed_negative_margins, verbose=True):
+
     if not positions:
         if verbose:
             print("No open positions.")
-        return
+        
+        # Palautetaan oletusanalyysi
+        default_summary = collect_analysis_summary(
+            position_counts={
+                "total_shorts": 0,
+                "total_longs": 0,
+                "shorts_without_trailing_stop": 0,
+                "longs_without_trailing_stop": 0
+            },
+            calculated_margins={
+                "shorts_margin": 0.0,
+                "longs_margin": 0.0
+            },
+            available_margins={
+                "available_short_margin": allowed_negative_margins.get("short", 0.0),
+                "available_long_margin": allowed_negative_margins.get("long", 0.0)
+            }
+        )
+
+        if verbose:
+            print("\n=== Default Analysis Summary (no positions) ===")
+            print(default_summary)
+
+        return default_summary
 
     if verbose:
         print("\nAnalyzing the positions...")

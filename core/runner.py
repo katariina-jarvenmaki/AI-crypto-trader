@@ -33,7 +33,7 @@ from scripts.unsupported_symbol_handler import handle_unsupported_symbol, get_la
 import global_state
 
 # Symbol processing loop
-def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False):
+def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False, current_equity=False, minimum_investment=False, min_inv_diff_percent=False):
 
     # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
     if symbol.endswith("USDC"):
@@ -44,7 +44,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     # ✅ Check if symbol is unsupported and handle it
     if symbol not in SUPPORTED_SYMBOLS:
-        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols)
+        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols, current_equity, minimum_investment, min_inv_diff_percent)
         return
 
     # Get the signals for the symbols
@@ -176,6 +176,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
+        if not pos_result or not isinstance(pos_result, dict):
+            print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+            return
         margins = pos_result.get("available_margins", {})
         if margins['available_long_margin'] <= 0:
             print(f"Skipping trade: No available long margin left")
@@ -216,6 +219,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
+        if not pos_result or not isinstance(pos_result, dict):
+            print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+            return
         margins = pos_result.get("available_margins", {})
         if margins['available_long_margin'] <= 0:
             print(f"Skipping trade: No available long margin left")
@@ -260,6 +266,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
+        if not pos_result or not isinstance(pos_result, dict):
+            print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+            return
         margins = pos_result.get("available_margins", {})
         if margins['available_short_margin'] <= 0:
             print(f"Skipping trade: No available short margin left")

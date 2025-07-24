@@ -49,10 +49,15 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
         return True
     return False
 
-def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None):
+def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None, current_equity=None, minimum_investment=None, min_inv_diff_percent=None):
+
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
+    # print(f"current_equity: {current_equity}, minimum_investment: {minimum_investment}, min_inv_diff_percent: {min_inv_diff_percent}")
 
     pos_result = global_state.POSITIONS_RESULT
+    if not pos_result or not isinstance(pos_result, dict):
+        print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+        return
     print(f"Global function data: {pos_result}")
 
     selected_symbols = selected_symbols or [symbol]
@@ -221,6 +226,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
+        if not pos_result or not isinstance(pos_result, dict):
+            print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+            return
         margins = pos_result.get("available_margins", {})
         if margins['available_short_margin'] <= 0:
             print(f"Skipping trade: No available short margin left")
@@ -350,6 +358,9 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
+        if not pos_result or not isinstance(pos_result, dict):
+            print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
+            return
         margins = pos_result.get("available_margins", {})
         if margins['available_long_margin'] <= 0:
             print(f"Skipping trade: No available long margin left")

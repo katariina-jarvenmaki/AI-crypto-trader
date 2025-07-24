@@ -237,6 +237,18 @@
       "full_stoploss_percent": "0.16%"
     }
   },  
+  "AUSDT": {
+    "long": {
+      "_comment": "Value specified 24.7.2025, may need further specification",
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.16%"
+    },
+    "short": {
+      "_comment": "Value specified 24.7.2025, may need further specification",
+      "set_stoploss_percent": "0.19%",
+      "full_stoploss_percent": "0.16%"
+    }
+  }, 
   "AUCTIONUSDT": {
     "long": {
       "_comment": "Value specified 23.7.2025, may need further specification",
@@ -1095,12 +1107,12 @@
   },  
   "ZECUSDT": {
     "long": {
-      "_comment": "Value specified 23.7.2025, may need further specification",
+      "_comment": "Value specified 24.7.2025, may need further specification",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     },
     "short": {
-      "_comment": "Value specified 23.7.2025, may need further specification",
+      "_comment": "Value specified 24.7.2025, may need further specification",
       "set_stoploss_percent": "0.18%",
       "full_stoploss_percent": "0.17%"
     }

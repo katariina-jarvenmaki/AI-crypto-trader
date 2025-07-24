@@ -41,6 +41,7 @@ def main():
             time.sleep(300)
             continue
         current_equity = equity_result.get("current_equity")
+        minimum_investment = equity_result.get("minimum_investment")
         min_inv_diff_percent = equity_result.get("min_inv_diff_percent")
         allowed_negative_margins = equity_result.get("allowed_negative_margins")
 
@@ -79,7 +80,10 @@ def main():
                 override_signal=current_override_signal,
                 long_only=mode["long_only"],
                 short_only=mode["short_only"],
-                initiated_counts=initiated_counts
+                initiated_counts=initiated_counts,
+                current_equity = current_equity,
+                minimum_investment = minimum_investment,
+                min_inv_diff_percent = min_inv_diff_percent
             )
 
         global_is_first_run = False 

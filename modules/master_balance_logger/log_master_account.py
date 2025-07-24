@@ -80,5 +80,16 @@ def get_master_account_data():
 
 def append_to_jsonl(data, filepath):
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    with open(filepath, "a") as f:
+    
+    needs_newline = False
+    if os.path.exists(filepath):
+        with open(filepath, "rb") as f:
+            f.seek(-1, os.SEEK_END)
+            last_char = f.read(1)
+            if last_char != b"\n":
+                needs_newline = True
+
+    with open(filepath, "a", encoding="utf-8") as f:
+        if needs_newline:
+            f.write("\n")
         f.write(json.dumps(data) + "\n")

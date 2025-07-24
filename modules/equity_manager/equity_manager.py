@@ -56,7 +56,7 @@ def compare_equities(current_equity, last_equity, previous_equity, verbose=True)
     if current_equity is None or last_equity is None:
         if verbose:
             print("⚠️ Cannot compare equity values — one or both are missing.")
-        return None, None, None, None
+            return None, None, None, None, None, None, None
 
     difference = current_equity - last_equity
     percent_change = (difference / last_equity * 100) if last_equity != 0 else 0.0
