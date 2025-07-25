@@ -4,8 +4,9 @@
 import json
 from datetime import datetime
 from integrations.bybit_api_client import client
+from modules.equity_manager.config_equity_manager import LOG_FILE
+from modules.equity_manager.equity_stoploss import equity_stoploss
 
-LOG_FILE = "../AI-crypto-trader-logs/master_balance_log.jsonl"
 MAX_TRADE_MARGIN_PERCENT = 50.0   # This should be at max. 50%
 MAX_EQUITY_MARGIN_PERCENT = 25.0  # This should be at max. 25%
 
@@ -194,6 +195,8 @@ def run_equity_manager():
     status = analyze_equity_status(percent_change, prev_percent_change)
     min_investment_diff = calculate_minimum_investment_diff(current_equity, verbose=False)
 
+    stoploss_info = equity_stoploss()  # haetaan stoploss-tiedot
+
     result = {
         "current_equity": current_equity,
         "last_equity": last_equity,
@@ -207,7 +210,10 @@ def run_equity_manager():
         "reason": status["reason"],
         "minimum_investment": min_investment_diff["minimum_investment"],
         "min_inv_diff_amount": min_investment_diff["diff_amount"],
-        "min_inv_diff_percent": min_investment_diff["diff_percent"]
+        "min_inv_diff_percent": min_investment_diff["diff_percent"],
+        "equity_stoploss": stoploss_info["equity_stoploss"],
+        "equity_stoploss_margin": stoploss_info["equity_stoploss_margin"],
+        "equity_stoploss_margin_type": stoploss_info["equity_stoploss_margin_type"]
     }
 
     if status["block_trades"]:
@@ -229,11 +235,13 @@ if __name__ == "__main__":
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 
     allowed_negative_margins = calculate_allowed_margin(last_equity)
-
     min_investment_diff = calculate_minimum_investment_diff(current_equity)
-
     status = analyze_equity_status(percent_change, prev_percent_change)
-    
+    stoploss_info = equity_stoploss()
+
     print("\n🔒 Trade Status Analysis:")
-    print(f"• Block trades: {status['block_trades']}")
-    print(f"• Reason:       {status['reason']}")
+    print(f"• Block trades:     {status['block_trades']}")
+    print(f"• Reason:           {status['reason']}")
+    print(f"• Equity Stop Loss: {stoploss_info['equity_stoploss']}%")
+    print(f"• Difference:       {stoploss_info['equity_stoploss_margin']}% ({stoploss_info['equity_stoploss_margin_type']})")
+    print("")
