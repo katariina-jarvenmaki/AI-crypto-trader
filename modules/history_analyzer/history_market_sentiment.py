@@ -1,6 +1,7 @@
 import os
 import json
 import pprint
+import pandas as pd
 from dateutil import parser
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
@@ -111,33 +112,82 @@ def compute_bias(logs: List[Dict], time_window_hours: float = 24.0) -> Dict:
 
     return result
 
-def log_sentiment_result(result: Dict) -> None:
-    """Tallenna analyysitulos lokitiedostoon."""
+def log_sentiment_result(result: Dict, trend_event: dict | tuple | None = None) -> None:
+    """Tallenna analyysitulos ja mahdollinen trendimuutos lokitiedostoon."""
     log_path = CONFIG["sentiment_log_path"]
-    
-    # Luo hakemisto tarvittaessa
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-    # Luo tyhjä tiedosto jos ei ole olemassa
-    if not os.path.exists(log_path):
-        with open(log_path, "w") as f:
-            pass
-
-    # Luo lokimerkintä
+    # Rakenna lokimerkintä
     result_entry = {
         "timestamp": datetime.now(LOCAL_TIMEZONE).isoformat(),
         "result": result
     }
 
-    # Kirjoita lokiin
+    if trend_event:
+        ts, direction, amount = trend_event
+        result_entry["trend_shift"] = {
+            "timestamp": ts,
+            "direction": direction,
+            "change": amount
+        }
+
+    # Kirjoita rivinä JSONL-lokiin
     with open(log_path, "a") as f:
         f.write(json.dumps(result_entry) + "\n")
+
+import json
+from datetime import datetime
+import pandas as pd
+
+def detect_trend_shifts(
+    metric: str = "broad_bias",
+    window: int = 3,
+    threshold: float = 0.02,
+    direction: str = "both"  # vaihtoehdot: "down", "up", "both"
+):
+    file_path = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
+
+    data = []
+    with open(file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                data.append(json.loads(line))
+
+    df = pd.DataFrame([
+        {
+            "timestamp": datetime.fromisoformat(item["timestamp"]),
+            metric: item["result"][metric]
+        }
+        for item in data
+        if metric in item["result"]
+    ])
+
+    df.sort_values("timestamp", inplace=True)
+    df.reset_index(drop=True, inplace=True)
+
+    last_event = None
+
+    for i in range(len(df) - window):
+        start_val = df[metric].iloc[i]
+        end_val = df[metric].iloc[i + window]
+        change = end_val - start_val
+
+        timestamp = df["timestamp"].iloc[i].isoformat()
+
+        if direction in ("down", "both") and -change >= threshold:
+            last_event = (timestamp, "drop", round(-change, 5))
+
+        elif direction in ("up", "both") and change >= threshold:
+            last_event = (timestamp, "rise", round(change, 5))
+
+    event_found = last_event is not None
+    return event_found, last_event
 
 def run_sentiment_analysis() -> Dict:
     """Lue analyysidata, laske sentimenttibias ja tallenna se lokiin."""
     log_path = CONFIG["analysis_log_path"]
 
-    # Lue olemassa oleva lokidata
+    # Lue olemassa oleva analyysidata
     if os.path.exists(log_path):
         with open(log_path, "r") as f:
             data = [json.loads(line) for line in f if line.strip()]
@@ -147,10 +197,15 @@ def run_sentiment_analysis() -> Dict:
     # Suorita analyysi
     result = compute_bias(data, time_window_hours=24.0)
 
-    # Tulosta (debug-mielessä, voi poistaa)
-    pprint.pprint(result)
+    # Tarkista, löytyykö trendimuutosta
+    found, event = detect_trend_shifts(
+        metric="broad_bias",
+        window=3,
+        threshold=0.02,
+        direction="both"
+    )
 
-    # Kirjaa tulos erilliseen sentimenttilokiin
-    log_sentiment_result(result)
+    # Kirjaa tulos sentimenttilokiin, mukaan lukien trendimuutostieto
+    log_sentiment_result(result, trend_event=event if found else None)
 
     return result
