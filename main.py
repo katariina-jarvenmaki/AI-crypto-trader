@@ -12,6 +12,7 @@ from scripts.utils import load_symbol_modes
 from core.args_parser import parse_arguments
 from scripts.order_limiter import load_initiated_orders
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker, leverage_updater_for_positive_trades
+from modules.equity_manager.equity_stoploss_updater import update_equity_stoploss
 from global_state import POSITIONS_RESULT 
 
 def main():
@@ -32,14 +33,25 @@ def main():
         return
 
     global_is_first_run = True
+    equity_stoploss_updated = False 
 
     while True:
 
         # Make a equity safety check
         equity_result = run_equity_manager()
         if equity_result.get("block_trades", False):
+            if not equity_stoploss_updated:
+                update_equity_stoploss(
+                    equity_stoploss_margin=equity_result.get("equity_stoploss_margin"),
+                )
+                equity_stoploss_updated = True
+            print(f"\n🕒 Waiting for next Equity check...\n")
             time.sleep(300)
             continue
+        else:
+            print(f"\n✅ Equity check passed! All fine!\n")
+            equity_stoploss_updated = False
+            
         current_equity = equity_result.get("current_equity")
         minimum_investment = equity_result.get("minimum_investment")
         min_inv_diff_percent = equity_result.get("min_inv_diff_percent")
