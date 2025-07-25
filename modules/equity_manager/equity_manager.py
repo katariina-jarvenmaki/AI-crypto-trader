@@ -6,6 +6,7 @@ from datetime import datetime
 from integrations.bybit_api_client import client
 from modules.equity_manager.config_equity_manager import LOG_FILE
 from modules.equity_manager.equity_stoploss import equity_stoploss
+from modules.equity_manager.log_equity_if_blocked import log_equity_if_blocked
 
 MAX_TRADE_MARGIN_PERCENT = 50.0   # This should be at max. 50%
 MAX_EQUITY_MARGIN_PERCENT = 25.0  # This should be at max. 25%
@@ -221,8 +222,9 @@ def run_equity_manager():
         print(f"🔒 {status['reason']}")
         print("⏳ Trading will remain blocked. Next equity check will be attempted in 5 minutes.")
         print("🔧 If this is incorrect, update 'master_balance_log.jsonl'. Modify 'config_equity_manager.py' only with strong justification just to be safe.\n")
+        log_equity_if_blocked(result, {"block_trades": result["block_trades"]})
 
-    return result
+    return result, status
 
 if __name__ == "__main__":
 

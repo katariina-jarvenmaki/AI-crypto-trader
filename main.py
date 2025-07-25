@@ -38,7 +38,7 @@ def main():
     while True:
 
         # Make a equity safety check
-        equity_result = run_equity_manager()
+        equity_result, status = run_equity_manager()
         if equity_result.get("block_trades", False):
             if not equity_stoploss_updated:
                 update_equity_stoploss(
