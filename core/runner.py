@@ -430,6 +430,7 @@ def check_positions_and_update_logs(symbols_to_check=None, platform="ByBit"):
                         log_trade(
                             symbol=pos_symbol,
                             direction=log_side_key,
+                            org_qty=position["size"],
                             qty=position["size"],
                             price=0.0,
                             cost=0.0,
