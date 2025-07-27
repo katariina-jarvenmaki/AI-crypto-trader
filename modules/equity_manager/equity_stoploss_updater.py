@@ -43,7 +43,19 @@ def update_equity_stoploss(equity_stoploss_margin):
 
                 print(f"📉 Calculated stop loss price for {symbol}: {stop_loss_price} (rounded to {decimal_places} decimals)")
 
-                # TODO: Kutsu Bybitin stop loss -asetusfunktiota
+                # 🔒 Tarkistetaan ettei nykyinen SL ole parempi
+                existing_sl_str = pos.get("stopLoss", "0")
+                existing_sl = float(existing_sl_str or 0)
+
+                if existing_sl > 0:
+                    if side.lower() == "buy" and existing_sl > stop_loss_price:
+                        print(f"❌ Existing SL {existing_sl} for {symbol} is tighter than proposed {stop_loss_price}, skipping update.")
+                        continue
+                    elif side.lower() == "sell" and existing_sl < stop_loss_price:
+                        print(f"❌ Existing SL {existing_sl} for {symbol} is tighter than proposed {stop_loss_price}, skipping update.")
+                        continue
+
+                # ✅ SL:n päivitys
                 print(f"⚙️  Setting stop loss for {symbol} at {stop_loss_price} ({side})")
 
                 position_idx = 1 if side.lower() == "buy" else 2
