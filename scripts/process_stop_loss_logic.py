@@ -1,7 +1,7 @@
 # scripts/process_stop_loss_logic.py
 import os
 import json
-from integrations.bybit_api_client import client, get_bybit_symbol_info
+from integrations.bybit_api_client import client, get_bybit_symbol_info, get_bybit_symbol_price
 
 # Lue JSON-konfiguraatio tiedostosta
 config_path = os.path.join(os.path.dirname(__file__), "..", "configs", "stoploss_config.json")
@@ -167,10 +167,10 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         print("⏳ Condition not yet met.")
 
         config = stop_loss_config["default"][direction]
-        excessive_sl_percent  = parsed(config.get("excessive_stop_loss_percent", "30%")) / leverage
+        excessive_sl_percent = parsed(config.get("excessive_stop_loss_percent", "30%")) / leverage
 
         excessive_sl = False
-        missing_sl = stop_loss <= 0  # SL puuttuu kokonaan
+        missing_sl = stop_loss <= 0
 
         if direction == "long":
             excessive_sl = stop_loss > 0 and stop_loss < (entry_price - entry_price * 2 * full_sl_percent)
@@ -178,29 +178,61 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             excessive_sl = stop_loss > 0 and stop_loss > (entry_price + entry_price * 2 * full_sl_percent)
 
         if excessive_sl or missing_sl:
-            print(f"⚠️  {'Missing' if missing_sl else 'Excessive'} SL detected, updating using 'excessive_stop_loss_percent' config.")
+            print(f"⚠️  {'Missing' if missing_sl else 'Excessive'} SL detected.")
 
+        # ⚠️ UUSI LOGIIKKA: Tiukka sentimenttipohjainen SL
         tight_sl_override = False
+        new_sl_price = None
         sentiment_direction = get_latest_sentiment_direction(sentiment_log_path)
+
         if sentiment_direction:
             print(f"📊 Latest sentiment direction: {sentiment_direction}")
-            if sentiment_direction == "drop" and side == "Buy":
-                new_sl_price = entry_price * (1 - tight_sl_percent_long / leverage)
+            if sentiment_direction == "drop" and direction == "long":
+                proposed_sl = entry_price * (1 - tight_sl_percent_long / leverage)
+                if proposed_sl >= last_price:
+                    print("⚠️ Sentiment SL (from entry) is above market price. Recalculating from market price.")
+                    new_sl_price = last_price * (1 - tight_sl_percent_long / leverage)
+                else:
+                    new_sl_price = proposed_sl
                 tight_sl_override = True
                 print(f"🔒 Tight SL (sentiment DROP) for LONG set to: {new_sl_price:.{decimals}f}")
-            elif sentiment_direction == "rise" and side == "Sell":
-                new_sl_price = entry_price * (1 + tight_sl_percent_short / leverage)
+
+            elif sentiment_direction == "rise" and direction == "short":
+                proposed_sl = entry_price * (1 + tight_sl_percent_short / leverage)
+                if proposed_sl <= last_price:
+                    print("⚠️ Sentiment SL (from entry) is below market price. Recalculating from market price.")
+                    new_sl_price = last_price * (1 + tight_sl_percent_short / leverage)
+                else:
+                    new_sl_price = proposed_sl
                 tight_sl_override = True
                 print(f"🔒 Tight SL (sentiment RISE) for SHORT set to: {new_sl_price:.{decimals}f}")
 
         # Jos ei sentimenttipohjaista overridea, käytetään normaalia SL-logiikkaa
-        if not tight_sl_override:
-            adjusted_sl = entry_price * (1 - excessive_sl_percent) if side == "Buy" else entry_price * (1 + excessive_sl_percent)
-            new_sl_price = adjusted_sl
+        if tight_sl_override:
+            print("✅ Using tight sentiment-based SL override.")
+        else:
             if excessive_sl:
-                print(f"⚠️  Existing SL is too far ({stop_loss}), updating using 'excessive_stop_loss_percent' config.")
+                print(f"⚠️ Existing SL is too far ({stop_loss}), using 'excessive_stop_loss_percent'.")
+                if direction == "long":
+                    new_sl_price = entry_price - (entry_price * excessive_sl_percent)
+                    if new_sl_price >= last_price:
+                        print(f"❌ New SL {new_sl_price:.{decimals}f} is above market price {last_price:.{decimals}f}, skipping update.")
+                        return []
+                else:
+                    new_sl_price = entry_price + (entry_price * excessive_sl_percent)
+                    if new_sl_price <= last_price:
+                        print(f"❌ New SL {new_sl_price:.{decimals}f} is below market price {last_price:.{decimals}f}, skipping update.")
+                        return []
+            elif missing_sl:
+                new_sl_price = excessive_sl
+                print("⚠️ SL missing, setting default excessive SL.")
 
-        # Varmistetaan, ettei uusi SL ole invalid (markkinahinnan väärällä puolella)
+        # 🔒 Jos SL edelleen puuttuu (esim. kaikki ehdot epäonnistuivat)
+        if new_sl_price is None:
+            print("❌ Could not determine new SL price, skipping update.")
+            return []
+
+        # ⚠️ Varmistetaan ettei SL ole väärällä puolella
         if direction == "long" and new_sl_price >= last_price:
             print(f"❌ New SL {new_sl_price:.{decimals}f} is above market price {last_price:.{decimals}f}, skipping update.")
             return []
@@ -208,6 +240,21 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
             print(f"❌ New SL {new_sl_price:.{decimals}f} is below market price {last_price:.{decimals}f}, skipping update.")
             return []
 
+        if abs(stop_loss - new_sl_price) < 10 ** -decimals and not tight_sl_override:
+            print(f"⏩ New SL {new_sl_price:.{decimals}f} is the same as existing SL {stop_loss:.{decimals}f}, skipping update.")
+            return []
+        elif abs(stop_loss - new_sl_price) < 10 ** -decimals and tight_sl_override:
+            print(f"🔁 Sentiment-based override even though SL is same. Proceeding with update.")
+
+        # ⛔ Estetään SL:n huononnus (isompi tappio)
+        if direction == "long" and stop_loss > 0 and new_sl_price < stop_loss:
+            print(f"❌ Existing SL {stop_loss:.{decimals}f} is tighter than proposed {new_sl_price:.{decimals}f}, skipping update.")
+            return []
+        elif direction == "short" and stop_loss > 0 and new_sl_price > stop_loss:
+            print(f"❌ Existing SL {stop_loss:.{decimals}f} is tighter than proposed {new_sl_price:.{decimals}f}, skipping update.")
+            return []
+
+        # ✅ SL päivitys
         new_sl_str = f"{new_sl_price:.{decimals}f}"
         body = {
             "category": "linear",
