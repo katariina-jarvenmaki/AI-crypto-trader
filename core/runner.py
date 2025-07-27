@@ -539,7 +539,9 @@ def stop_loss_checker(positions):
                         full_sl_percent=sl_values['full_stoploss_percent'],
                         trailing_percent=sl_values['trailing_stoploss_percent'],
                         threshold_percent=sl_values['min_stop_loss_diff_percent'],
-                        formatted=sl_values.get("formatted")
+                        formatted=sl_values.get("formatted"),
+                        tight_sl_percent_long=sl_values['tight_sl_percent_long'],
+                        tight_sl_percent_short=sl_values['tight_sl_percent_short']
                     )
 
                 except Exception as e:

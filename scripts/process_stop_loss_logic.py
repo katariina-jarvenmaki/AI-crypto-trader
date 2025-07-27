@@ -46,6 +46,8 @@ def get_stop_loss_values(symbol, side):
         "full_stoploss_percent": full_sl,
         "trailing_stoploss_percent": trailing_sl,
         "min_stop_loss_diff_percent": threshold,
+        "tight_sl_percent_long": get_val("tight_sl_percent_long"), 
+        "tight_sl_percent_short": get_val("tight_sl_percent_short"),
         "formatted": {
             "set": to_percent_str(set_sl),
             "full": to_percent_str(full_sl),
@@ -55,23 +57,10 @@ def get_stop_loss_values(symbol, side):
     }
 
 def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss, trailing_stop,
-                            set_sl_percent, full_sl_percent, trailing_percent, threshold_percent, formatted=None):
+                            set_sl_percent, full_sl_percent, trailing_percent, threshold_percent,
+                            tight_sl_percent_long, tight_sl_percent_short, formatted=None):
 
     sentiment_log_path = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
-
-    tight_sl_percent_long=0.015  # esim. 1.5 %
-    tight_sl_percent_short=0.015  # esim. 1.5 %
-
-    # 🔍 Tarkista viimeisin sentimenttisuunta
-    sentiment_direction = get_latest_sentiment_direction(sentiment_log_path)
-    if sentiment_direction:
-        print(f"📊 Latest sentiment direction: {sentiment_direction}")
-        if sentiment_direction == "drop" and side == "long":
-            print(f"🔒 Tightening SL for long due to drop sentiment")
-            full_sl_percent = tight_sl_percent_long
-        elif sentiment_direction == "rise" and side == "short":
-            print(f"🔒 Tightening SL for short due to rise sentiment")
-            full_sl_percent = tight_sl_percent_short
 
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
@@ -191,39 +180,50 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
         if excessive_sl or missing_sl:
             print(f"⚠️  {'Missing' if missing_sl else 'Excessive'} SL detected, updating using 'excessive_stop_loss_percent' config.")
 
-        adjusted_sl = entry_price * (1 - excessive_sl_percent) if side == "Buy" else entry_price * (1 + excessive_sl_percent)
+        tight_sl_override = False
+        sentiment_direction = get_latest_sentiment_direction(sentiment_log_path)
+        if sentiment_direction:
+            print(f"📊 Latest sentiment direction: {sentiment_direction}")
+            if sentiment_direction == "drop" and side == "Buy":
+                new_sl_price = entry_price * (1 - tight_sl_percent_long / leverage)
+                tight_sl_override = True
+                print(f"🔒 Tight SL (sentiment DROP) for LONG set to: {new_sl_price:.{decimals}f}")
+            elif sentiment_direction == "rise" and side == "Sell":
+                new_sl_price = entry_price * (1 + tight_sl_percent_short / leverage)
+                tight_sl_override = True
+                print(f"🔒 Tight SL (sentiment RISE) for SHORT set to: {new_sl_price:.{decimals}f}")
 
-        if excessive_sl:
-            print(f"⚠️  Existing SL is too far ({stop_loss}), updating using 'excessive_stop_loss_percent' config.")
+        # Jos ei sentimenttipohjaista overridea, käytetään normaalia SL-logiikkaa
+        if not tight_sl_override:
+            adjusted_sl = entry_price * (1 - excessive_sl_percent) if side == "Buy" else entry_price * (1 + excessive_sl_percent)
+            new_sl_price = adjusted_sl
+            if excessive_sl:
+                print(f"⚠️  Existing SL is too far ({stop_loss}), updating using 'excessive_stop_loss_percent' config.")
 
-            try:
-                if direction == "long":
-                    new_sl_price = entry_price - (entry_price * excessive_sl_percent)
-                    if new_sl_price >= last_price:
-                        print(f"❌ New SL {new_sl_price:.{decimals}f} is above market price {last_price:.{decimals}f}, skipping update.")
-                        return []
-                else:
-                    new_sl_price = entry_price + (entry_price * excessive_sl_percent)
-                    if new_sl_price <= last_price:
-                        print(f"❌ New SL {new_sl_price:.{decimals}f} is below market price {last_price:.{decimals}f}, skipping update.")
-                        return []
+        # Varmistetaan, ettei uusi SL ole invalid (markkinahinnan väärällä puolella)
+        if direction == "long" and new_sl_price >= last_price:
+            print(f"❌ New SL {new_sl_price:.{decimals}f} is above market price {last_price:.{decimals}f}, skipping update.")
+            return []
+        elif direction == "short" and new_sl_price <= last_price:
+            print(f"❌ New SL {new_sl_price:.{decimals}f} is below market price {last_price:.{decimals}f}, skipping update.")
+            return []
 
-                new_sl_str = f"{new_sl_price:.{decimals}f}"
-                body = {
-                    "category": "linear",
-                    "symbol": symbol,
-                    "stopLoss": new_sl_str,
-                    "slTriggerBy": "LastPrice",
-                    "tpslMode": "Full",
-                    "positionIdx": position_idx
-                }
+        new_sl_str = f"{new_sl_price:.{decimals}f}"
+        body = {
+            "category": "linear",
+            "symbol": symbol,
+            "stopLoss": new_sl_str,
+            "slTriggerBy": "LastPrice",
+            "tpslMode": "Full",
+            "positionIdx": position_idx
+        }
 
-                print(f"📤 Updating excessive SL to: {body}")
-                response = client.set_trading_stop(**body)
-                print(f"✅ SL updated using excessive_stop_loss_percent: {response}")
-
-            except Exception as e:
-                print(f"[ERROR] Failed to correct excessive SL: {e}")
+        try:
+            print(f"📤 Updating SL to: {body}")
+            response = client.set_trading_stop(**body)
+            print(f"✅ SL updated: {response}")
+        except Exception as e:
+            print(f"[ERROR] Failed to update SL: {e}")
 
 import json
 
