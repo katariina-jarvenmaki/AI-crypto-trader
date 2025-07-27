@@ -40,10 +40,12 @@
   "XRPUSDT": {
     "long": {
       "_comment": "Value specified 26.7.2025",
+      "full_stoploss_percent": "0.17%",
       "trailing_stoploss_percent": "0.0020%"
     },
     "short": {
       "_comment": "Value specified 26.7.2025",
+      "full_stoploss_percent": "0.17%",
       "trailing_stoploss_percent": "0.0020%"
     }
   },
@@ -269,6 +271,16 @@
       "full_stoploss_percent": "0.18%"
     }
   },   
+  "AXLUSDT": {
+    "long": {
+      "_comment": "Value specified 27.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 27.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },   
   "AXSUSDT": {
     "long": {
       "_comment": "Value specified 20.7.2025, may need further specification",
@@ -277,6 +289,16 @@
     "short": {
       "_comment": "Value specified 20.7.2025, may need further specification",
       "full_stoploss_percent": "0.19%"
+    }
+  },  
+  "BALUSDT": {
+    "long": {
+      "_comment": "Value specified 27.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 24.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
     }
   },  
   "BANDUSDT": {
@@ -1039,12 +1061,12 @@
   },     
   "TAOUSDT": {
     "long": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 27.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 27.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     }
   },    
   "THETAUSDT": {

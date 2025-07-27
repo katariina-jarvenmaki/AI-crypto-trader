@@ -56,6 +56,23 @@ def get_stop_loss_values(symbol, side):
 
 def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss, trailing_stop,
                             set_sl_percent, full_sl_percent, trailing_percent, threshold_percent, formatted=None):
+
+    sentiment_log_path = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
+
+    tight_sl_percent_long=0.015  # esim. 1.5 %
+    tight_sl_percent_short=0.015  # esim. 1.5 %
+
+    # 🔍 Tarkista viimeisin sentimenttisuunta
+    sentiment_direction = get_latest_sentiment_direction(sentiment_log_path)
+    if sentiment_direction:
+        print(f"📊 Latest sentiment direction: {sentiment_direction}")
+        if sentiment_direction == "drop" and side == "long":
+            print(f"🔒 Tightening SL for long due to drop sentiment")
+            full_sl_percent = tight_sl_percent_long
+        elif sentiment_direction == "rise" and side == "short":
+            print(f"🔒 Tightening SL for short due to rise sentiment")
+            full_sl_percent = tight_sl_percent_short
+
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:
         print(f"➡️  Size: {size}, Entry: {entry_price}, Leverage: {leverage}, Stop loss: {stop_loss}, Trailing: {trailing_stop}, "
@@ -207,3 +224,17 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
 
             except Exception as e:
                 print(f"[ERROR] Failed to correct excessive SL: {e}")
+
+import json
+
+def get_latest_sentiment_direction(log_path):
+    try:
+        with open(log_path, "r") as f:
+            lines = f.readlines()
+        if not lines:
+            return None
+        last_entry = json.loads(lines[-1])
+        return last_entry.get("trend_shift", {}).get("direction")
+    except Exception as e:
+        print(f"[ERROR] Failed to read sentiment log: {e}")
+        return None
