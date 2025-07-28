@@ -6,7 +6,7 @@ from modules.load_and_validate.load_and_validate import load_and_validate
 
 def path_selector(verbose=True, mid_folder=None):
 
-    allowed_mid_folders = {"cron", "analysis", "fetched", "order", "signal"}
+    allowed_mid_folders = {"cron", "analysis", "fetch", "order", "signal"}
 
     if verbose:
         print("Running Path Selector...")
