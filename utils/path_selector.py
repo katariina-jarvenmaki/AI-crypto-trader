@@ -1,4 +1,4 @@
-# modules/path_selector/path_selector.py
+# utils/path_selector.py
 # Use with prints:    configs_path, logs_path = path_selector()
 # Use without prints: configs_path, logs_path = path_selector(verbose=False)
 

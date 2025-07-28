@@ -25,10 +25,15 @@ Test Load and Validate manually:
 
 Test Path Selector manually:
 ```bash
-/usr/bin/python3 -m modules.path_selector.path_selector
+/usr/bin/python3 -m utils.path_selector
 ```
 
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
+```
+
+Test Get Filenames manually:
+```bash
+/usr/bin/python3 -m utils.get_filenames
 ```

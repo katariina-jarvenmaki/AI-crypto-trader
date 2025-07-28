@@ -1,6 +1,6 @@
 # main.py
 
-from modules.path_selector.path_selector import path_selector
+from utils.path_selector import path_selector
 
 def main():
 
