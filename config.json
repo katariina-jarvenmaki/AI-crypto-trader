@@ -1,5 +1,6 @@
 {
   "testing": true,
+  "timezone": "Europe/Helsinki",
   "paths": {
     "configs": {
       "live": "../AI-crypto-trader-confs/",

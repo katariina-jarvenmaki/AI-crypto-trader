@@ -2,6 +2,7 @@
   "type": "object",
   "properties": {
     "testing": { "type": "boolean" },
+    "timezone": { "type": "string" },
     "paths": {
       "type": "object",
       "properties": {
@@ -20,11 +21,19 @@
             "test": { "type": "string" }
           },
           "required": ["live", "test"]
+        },
+        "schemas": {
+          "type": "object",
+          "properties": {
+            "live": { "type": "string" },
+            "test": { "type": "string" }
+          },
+          "required": ["live", "test"]
         }
       },
-      "required": ["configs", "logs"]
+      "required": ["configs", "logs", "schemas"]
     }
   },
-  "required": ["testing", "paths"],
+  "required": ["testing", "timezone", "paths"],
   "additionalProperties": false
 }
