@@ -7,7 +7,24 @@ from jsonschema import validate, ValidationError
 DEFAULT_SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "default_schema.json")
 
 def load_and_validate(path="config.json", schema=None):
+
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"❌ Config file not found at: {path}")
+
     is_jsonl = path.endswith(".jsonl")
+
+    # Read file content first
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read().strip()
+
+    if not content:
+        raise ValueError(f"❌ Config file is empty: {path}")
+
+    # Parse content
+    if is_jsonl:
+        file_data = [json.loads(line) for line in content.splitlines() if line.strip()]
+    else:
+        file_data = json.loads(content)
 
     # Load JSON or JSONL file
     with open(path, "r", encoding="utf-8") as f:

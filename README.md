@@ -43,6 +43,11 @@ Test File Checker manually:
 /usr/bin/python3 -m utils.file_checker config.json
 ```
 
+Test Config reader manually:
+```bash
+/usr/bin/python3 -m utils.config_reader
+```
+
 Test multi ohlcv handler manually:
 ```bash
 python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
