@@ -1,13 +1,12 @@
-# utils/get_filenames.py
-
 from pathlib import Path
 
 def get_filenames(extension=".json", file_name=None):
     """
-    Returns three filenames based on the given file name or the name of the parent folder:
+    Returns four filenames based on the given file name or the name of the parent folder:
     - config name: <name>_config.json
     - log name: <name>_log.<extension>
     - temp log name: temp_log_<name>.<extension>
+    - schemas name: <name>_schemas.json
 
     Parameters:
     - extension (str): File extension (e.g. '.json' or '.jsonl')
@@ -22,22 +21,24 @@ def get_filenames(extension=".json", file_name=None):
     config_name = f"{file_name}_config.json"
     log_name = f"{file_name}_log{extension}"
     temp_log_name = f"temp_log_{file_name}{extension}"
+    schemas_name = f"{file_name}_schemas.json"
 
-    return config_name, log_name, temp_log_name
+    return config_name, log_name, temp_log_name, schemas_name
 
 # Example usage
 if __name__ == "__main__":
-    config, log, temp_log = get_filenames(extension=".jsonl")
+    config, log, temp_log, schemas = get_filenames(extension=".jsonl")
     print("\nWithout name override:")
     print("Config filename:", config)
     print("Log filename:", log)
     print("Temp log filename:", temp_log)
+    print("Schemas filename:", schemas)
 
-    # Example with override
     print("\nWith name override:")
-    config, log, temp_log = get_filenames(extension=".json", file_name="customproject")
+    config, log, temp_log, schemas = get_filenames(extension=".json", file_name="customproject")
     print("Config filename:", config)
     print("Log filename:", log)
     print("Temp log filename:", temp_log)
+    print("Schemas filename:", schemas)
 
     print("")

@@ -8,6 +8,10 @@
     "logs": {
       "live": "../AI-crypto-trader-logs/",
       "test": "../AI-crypto-trader-logs/_TEST/"
+    },
+    "schemas": {
+      "live": "../AI-crypto-trader-schemas/",
+      "test": "../AI-crypto-trader-schemas/_TEST/"
     }
   }
 }

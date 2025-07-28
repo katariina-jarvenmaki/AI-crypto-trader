@@ -37,3 +37,8 @@ Test Get Filenames manually:
 ```bash
 /usr/bin/python3 -m utils.get_filenames
 ```
+
+Test multi ohlcv handler manually:
+```bash
+python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+```
