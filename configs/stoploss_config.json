@@ -100,7 +100,17 @@
       "_comment": "Value specified 22.7.2025, may need further specification",
       "full_stoploss_percent": "0.17%"
     }
-  },          
+  },  
+  "A8USDT": {
+    "long": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },           
   "AAVEUSDT": {
     "long": {
       "_comment": "Value specified 21.7.2025, may need further specification",
@@ -265,12 +275,12 @@
   },   
   "AVLUSDT": {
     "long": {
-      "_comment": "Value specified 18.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.19%"
     },
     "short": {
-      "_comment": "Value specified 18.7.2025, may need further specification",
-      "full_stoploss_percent": "0.18%"
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.19%"
     }
   },   
   "AXLUSDT": {
@@ -293,6 +303,16 @@
       "full_stoploss_percent": "0.19%"
     }
   },  
+  "B3USDT": {
+    "long": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  }, 
   "BALUSDT": {
     "long": {
       "_comment": "Value specified 27.7.2025, may need further specification",
@@ -315,13 +335,13 @@
   },  
   "BEAMUSDT": {
     "long": {
-      "_comment": "Value specified 27.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.27%",
+      "_comment": "Value specified 28.7.2025, full_stoploss_percent seems fine ",
+      "full_stoploss_percent": "0.28%",
       "trailing_stoploss_percent": "0.007%"
     },
     "short": {
-      "_comment": "Value specified 27.7.2025, full_stoploss_percent seems fine ",
-      "full_stoploss_percent": "0.27%",
+      "_comment": "Value specified 28.7.2025, full_stoploss_percent seems fine ",
+      "full_stoploss_percent": "0.28%",
       "trailing_stoploss_percent": "0.007%"
     }
   },
@@ -386,7 +406,17 @@
       "_comment": "Value specified 22.7.2025, may need further specification",
       "full_stoploss_percent": "0.18%"
     }
-  },
+  },     
+  "COOKUSDT": {
+    "long": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },  
   "CTCUSDT": {
     "long": {
       "_comment": "Value specified 19.7.2025, may need further specification",
@@ -416,7 +446,17 @@
       "_comment": "Value specified 23.7.2025, may need further specification",
       "full_stoploss_percent": "0.20%"
     }
-  },   
+  },  
+  "DRIFTUSDT": {
+    "long": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    },
+    "short": {
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.17%"
+    }
+  },    
   "EDUUSDT": {
     "long": {
       "_comment": "Value specified 23.7.2025, may need further specification",
@@ -849,12 +889,12 @@
   },  
   "REDUSDT": {
     "long": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     },
     "short": {
-      "_comment": "Value specified 21.7.2025, may need further specification",
-      "full_stoploss_percent": "0.17%"
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.18%"
     }
   },  
   "RENDERUSDT": {
@@ -909,12 +949,12 @@
   },  
   "SERAPHUSDT": {
     "long": {
-      "_comment": "Value specified 27.7.2025, may need further specification",
-      "full_stoploss_percent": "0.19%"
+      "_comment": "Value specified 28.7.2025, may need further specification",
+      "full_stoploss_percent": "0.20%"
     },
     "short": {
       "_comment": "Value specified 27.7.2025, may need further specification",
-      "full_stoploss_percent": "0.19%"
+      "full_stoploss_percent": "0.20%"
     }
   },  
   "SFPUSDT": {
