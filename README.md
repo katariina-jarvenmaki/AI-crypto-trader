@@ -38,6 +38,11 @@ Test Get Filenames manually:
 /usr/bin/python3 -m utils.get_filenames
 ```
 
+Test File Checker manually:
+```bash
+/usr/bin/python3 -m utils.file_checker config.json
+```
+
 Test multi ohlcv handler manually:
 ```bash
 python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
