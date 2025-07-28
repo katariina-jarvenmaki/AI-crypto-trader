@@ -3,11 +3,11 @@
   "paths": {
     "configs": {
       "live": "../AI-crypto-trader-confs/",
-      "test": "../AI-crypto-trader-confs/_TEST"
+      "test": "../AI-crypto-trader-confs/_TEST/"
     },
     "logs": {
       "live": "../AI-crypto-trader-logs/",
-      "test": "../AI-crypto-trader-logs/_TEST"
+      "test": "../AI-crypto-trader-logs/_TEST/"
     }
   }
 }

@@ -11,6 +11,11 @@ pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplo
 
 **Testing**
 
+Test Load and Validate manually:
+```bash
+/usr/bin/python3 -m modules.load_and_validate.load_and_validate
+```
+
 Test Path Selector manually:
 ```bash
 /usr/bin/python3 -m modules.path_selector.path_selector
