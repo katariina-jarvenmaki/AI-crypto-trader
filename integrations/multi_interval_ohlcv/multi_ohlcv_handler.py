@@ -12,6 +12,46 @@ general_config = config_reader()
 paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
 config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_schema_path"])
 
+def fetch_ohlcv_fallback(symbol, intervals, limit):
+    print("TEST")
+    data="data"
+    source="source"
+
+    return data, source
+
+def analyze_ohlcv(df):
+    if df.empty or 'close' not in df.columns:
+        return {}
+
+    result = {}
+    close = df["close"]
+
+    # RSI
+    rsi = RSIIndicator(close=close, window=14).rsi()
+    last_rsi = rsi.iloc[-1] if not rsi.empty else None
+    result["rsi"] = round(last_rsi, 2) if last_rsi is not None and not np.isnan(last_rsi) else None
+
+    # EMA
+    ema = EMAIndicator(close=close, window=20).ema_indicator()
+    last_ema = ema.iloc[-1] if not ema.empty else None
+    result["ema"] = round(last_ema, 2) if last_ema is not None and not np.isnan(last_ema) else None
+
+    # MACD
+    macd_obj = MACD(close=close)
+    macd_val = macd_obj.macd().iloc[-1] if not macd_obj.macd().empty else None
+    signal_val = macd_obj.macd_signal().iloc[-1] if not macd_obj.macd_signal().empty else None
+    result["macd"] = round(macd_val, 2) if macd_val is not None and not np.isnan(macd_val) else None
+    result["macd_signal"] = round(signal_val, 2) if signal_val is not None and not np.isnan(signal_val) else None
+
+    # Bollinger Bands
+    bb = BollingerBands(close=close, window=20)
+    upper = bb.bollinger_hband().iloc[-1] if not bb.bollinger_hband().empty else None
+    lower = bb.bollinger_lband().iloc[-1] if not bb.bollinger_lband().empty else None
+    result["bb_upper"] = round(upper, 2) if upper is not None and not np.isnan(upper) else None
+    result["bb_lower"] = round(lower, 2) if lower is not None and not np.isnan(lower) else None
+
+    return result
+
 def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
     print(f"\n🔍 Testing OHLCV fetch from: {exchange} for symbol {symbol}")
 
@@ -47,10 +87,20 @@ def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
         print(f"❌ Exception while fetching from {exchange}: {e}")
 
 def run_multi_exchange_ohlcv_test():
-    test_symbol = "BTCUSDT"
-    test_intervals = ["1m", "5m", "1h"]
-    for exchange in config["exchange_priority"]:
-        test_single_exchange_ohlcv(test_symbol, exchange, config, intervals=test_intervals)
+
+    # Esimerkkitapa kutsua funktiota:
+    symbol = "BTCUSDT"
+    intervals = ["1h", "4h"]
+    limit = 500  # esim. 500 kynttilää per interval
+
+    data, source = fetch_ohlcv_fallback(symbol, intervals, limit)
+    print(f"data: {data}")
+    print(f"source: {source}")
+
+    # test_symbol = "BTCUSDT"
+    # test_intervals = ["1m", "5m", "1h"]
+    # for exchange in config["exchange_priority"]:
+    #     test_single_exchange_ohlcv(test_symbol, exchange, config, intervals=test_intervals)
 
 if __name__ == "__main__":
     run_multi_exchange_ohlcv_test()
