@@ -13,8 +13,8 @@ general_config = config_reader()
 paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
 config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_schema_path"])
 
-def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None):
-    log_path = paths["full_log_path"]
+def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
+
     intervals = intervals or config.get("intervals")
     limit = limit or config.get("ohlcv_limit")
     errors = {}
@@ -51,15 +51,18 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
             if any(not df.empty for df in data_by_interval.values()):
                 logging.info(f"✅ Fetch successful: {symbol} ({source_exchange})")
-                try:
-                    # Tallennuslogiikka
-                    print("Add saving here")
-                    print("data:", data_by_interval)
-                    print("source:", source_exchange)
-                except Exception as log_err:
-                    logging.warning(f"📝 Failed to save fetch log: {log_err}")
 
-                return data_by_interval, source_exchange
+                return {
+                    "symbol": symbol,
+                    "intervals": intervals,
+                    "limit": limit,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "source_exchange": source_exchange,
+                    "data_by_interval": data_by_interval,
+                    "log_path": log_path,
+                }
+
             else:
                 errors[exchange] = "Empty DataFrames"
 
@@ -69,7 +72,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
     print(f"\033[93m⚠️ This coin pair can't be found from any supported exchange: {symbol}\033[0m")
-    return None, None
+    return None
 
 def analyze_ohlcv(df):
     if df.empty or 'close' not in df.columns:
@@ -145,9 +148,8 @@ def run_multi_exchange_ohlcv_test():
     intervals = ["1h", "4h"]
     limit = 500
 
-    data, source = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=500)
-    print(f"data: {data}")
-    print(f"source: {source}")
+    result = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=500)
+    print(f"result: {result}")
 
     # test_symbol = "BTCUSDT"
     # test_intervals = ["1m", "5m", "1h"]
