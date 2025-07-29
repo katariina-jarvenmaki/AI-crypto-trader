@@ -11,13 +11,14 @@ def config_reader(extension=".json", file_name=None, mid_folder=None):
         configs_path, logs_path, schemas_path = path_selector(verbose=False, mid_folder=mid_folder)
         config, log, temp_log, schemas = get_filenames(extension=extension, file_name=file_name)
         filepath = configs_path + config
+        schemapath = schemas_path + schemas
 
         # Attempt to load and validate
-        result = load_and_validate(path=filepath)
+        result = load_and_validate(path=filepath, schema=schemapath)
         return result
 
     except (FileNotFoundError, ValueError, json.JSONDecodeError) as e:
-        print(str(e))
+        print("❌ " + str(e))
     except Exception as e:
         print(f"❌ Tuntematon virhe: {e}")
 

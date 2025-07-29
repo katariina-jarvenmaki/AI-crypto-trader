@@ -21,7 +21,7 @@ def get_filenames(extension=".json", file_name=None):
     config_name = f"{file_name}_config.json"
     log_name = f"{file_name}_log{extension}"
     temp_log_name = f"temp_log_{file_name}{extension}"
-    schemas_name = f"{file_name}_schemas.json"
+    schemas_name = f"{file_name}_schema.json"
 
     return config_name, log_name, temp_log_name, schemas_name
 
