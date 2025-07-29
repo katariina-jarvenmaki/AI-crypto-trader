@@ -1,8 +1,14 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI Crypto Trader Config Schema",
   "type": "object",
   "properties": {
-    "testing": { "type": "boolean" },
-    "timezone": { "type": "string" },
+    "testing": {
+      "type": "boolean"
+    },
+    "timezone": {
+      "type": "string"
+    },
     "paths": {
       "type": "object",
       "properties": {
@@ -32,8 +38,14 @@
         }
       },
       "required": ["configs", "logs", "schemas"]
+    },
+    "module_filenames": {
+      "type": "object",
+      "properties": {
+        "multi_interval_ohlcv": { "type": "string" }
+      },
+      "required": ["multi_interval_ohlcv"]
     }
   },
-  "required": ["testing", "timezone", "paths"],
-  "additionalProperties": false
+  "required": ["testing", "timezone", "paths", "module_filenames"]
 }

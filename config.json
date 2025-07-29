@@ -14,5 +14,8 @@
       "live": "../AI-crypto-trader-schemas/",
       "test": "../AI-crypto-trader-schemas/_TEST/"
     }
+  },
+  "module_filenames": {
+    "multi_interval_ohlcv": "multi_ohlcv_fetch"
   }
 }

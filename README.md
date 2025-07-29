@@ -25,17 +25,12 @@ Test Load and Validate manually:
 
 Test Path Selector manually:
 ```bash
-/usr/bin/python3 -m utils.path_selector
-```
-
-Test Cron Tasks Prosessor manually:
-```bash
-/usr/bin/python3 -m core.cron_tasks_processor
+/usr/bin/python3 -m modules.pathbuilder.path_selector
 ```
 
 Test Get Filenames manually:
 ```bash
-/usr/bin/python3 -m utils.get_filenames
+/usr/bin/python3 -m modules.pathbuilder.get_filenames
 ```
 
 Test File Checker manually:
@@ -48,7 +43,17 @@ Test Config reader manually:
 /usr/bin/python3 -m utils.config_reader
 ```
 
+Test Pathbuilder manually:
+```bash
+python3 -m modules.pathbuilder.pathbuilder
+```
+
 Test multi ohlcv handler manually:
 ```bash
 python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+```
+
+Test Cron Tasks Prosessor manually:
+```bash
+/usr/bin/python3 -m core.cron_tasks_processor
 ```

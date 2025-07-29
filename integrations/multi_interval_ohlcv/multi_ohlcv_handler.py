@@ -5,9 +5,12 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # CONFIG INIT
+from modules.pathbuilder.pathbuilder import pathbuilder
 from utils.config_reader import config_reader
 
-config = config_reader(extension=".json", file_name="multi_ohlcv_fetch", mid_folder="fetch")
+general_config = config_reader()
+paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_schema_path"])
 
 def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
     print(f"\n🔍 Testing OHLCV fetch from: {exchange} for symbol {symbol}")

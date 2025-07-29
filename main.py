@@ -1,12 +1,11 @@
 # main.py
 
-from utils.path_selector import path_selector
+from modules.pathbuilder.pathbuilder import pathbuilder
 
 def main():
 
-    configs_path, logs_path = path_selector(verbose=False)
-    print(f"configs_path: {configs_path}")
-    print(f"logs_path: {logs_path}")
+    result = pathbuilder(extension=".json", file_name="multi_ohlcv_fetch", mid_folder="fetch")
+    print(f"result: {result}")
 
 if __name__ == "__main__":
     main()
