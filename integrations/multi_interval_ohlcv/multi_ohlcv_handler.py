@@ -1,7 +1,15 @@
+from ta.momentum import RSIIndicator
+from ta.trend import EMAIndicator, MACD
+from ta.volatility import BollingerBands
+from shutil import copyfile
+
 import sys
 import logging
 import importlib
+import numpy as np 
+import pandas as pd
 from pathlib import Path
+from datetime import datetime
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
@@ -52,16 +60,20 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
             if any(not df.empty for df in data_by_interval.values()):
                 logging.info(f"✅ Fetch successful: {symbol} ({source_exchange})")
 
-                return {
+                summarized_data = summarize_data_for_logging(data_by_interval)
+                to_save = {
+                    "timestamp": datetime.now().isoformat(),
+                    "source_exchange": source_exchange,
                     "symbol": symbol,
                     "intervals": intervals,
+                    "data_preview": summarized_data,
                     "limit": limit,
                     "start_time": start_time,
                     "end_time": end_time,
-                    "source_exchange": source_exchange,
-                    "data_by_interval": data_by_interval,
-                    "log_path": log_path,
                 }
+
+                # "log_path": log_path  
+                return to_save 
 
             else:
                 errors[exchange] = "Empty DataFrames"
@@ -73,6 +85,39 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
     print(f"\033[93m⚠️ This coin pair can't be found from any supported exchange: {symbol}\033[0m")
     return None
+
+REQUIRED_ANALYSIS_KEYS = {"rsi", "macd", "ema", "close"}
+
+def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
+    """
+    Tiivistää OHLCV-dataa analyysia varten logimerkintään.
+    Tarkistaa että vaaditut analyysiarvot ovat mukana.
+    """
+    summary = {}
+
+    for interval, df in data_by_interval.items():
+        if df.empty:
+            print(f"⚠️ Interval {interval} has empty DataFrame")
+            continue
+        if 'close' not in df.columns or df['close'].isnull().all():
+            print(f"⚠️ Interval {interval} missing valid close prices")
+            continue
+
+        analysis = analyze_ohlcv(df)
+
+        try:
+            last_close = float(df["close"].iloc[-1])
+            analysis["close"] = round(last_close, 4)
+        except Exception:
+            analysis["close"] = None
+
+        missing_keys = REQUIRED_ANALYSIS_KEYS - analysis.keys()
+        if missing_keys:
+            print(f"⚠️ Interval {interval} missing keys from analysis: {missing_keys}")
+
+        summary[interval] = analysis
+
+    return summary
 
 def analyze_ohlcv(df):
     if df.empty or 'close' not in df.columns:
@@ -142,14 +187,16 @@ def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
         print(f"❌ Exception while fetching from {exchange}: {e}")
 
 def run_multi_exchange_ohlcv_test():
-
-    # Esimerkkitapa kutsua funktiota:
     symbol = "BTCUSDT"
     intervals = ["1h", "4h"]
     limit = 500
 
-    result = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=500)
-    print(f"result: {result}")
+    fetch_result = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=limit)
+
+    print(fetch_result)
+
+    # save_fetch(to_save, "multi_interval_results.jsonl")
+
 
     # test_symbol = "BTCUSDT"
     # test_intervals = ["1m", "5m", "1h"]
