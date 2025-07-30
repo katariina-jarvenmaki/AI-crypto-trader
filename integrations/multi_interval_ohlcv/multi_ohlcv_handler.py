@@ -4,14 +4,12 @@ from ta.volatility import BollingerBands
 from shutil import copyfile
 
 import sys
-import pytz
 import json
 import logging
 import importlib
 import numpy as np 
 import pandas as pd
 from pathlib import Path
-from datetime import datetime
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
@@ -19,6 +17,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.save_and_validate.save_and_validate import save_and_validate
 from modules.load_and_validate.load_and_validate import load_and_validate
+from utils.get_timestamp import get_timestamp 
 
 general_config = load_and_validate()
 paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
@@ -65,14 +64,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
                 summarized_data = summarize_data_for_logging(data_by_interval)
 
-                timezone_str = general_config.get("timezone", "UTC")
-                try:
-                    tz = pytz.timezone(timezone_str)
-                except Exception as e:
-                    logging.warning(f"⚠️ Invalid timezone in config: {timezone_str}, defaulting to UTC. Error: {e}")
-                    tz = pytz.UTC
-
-                timestamp = datetime.now(tz).isoformat()
+                timestamp = get_timestamp()
 
                 to_save = {
                     "timestamp": timestamp,

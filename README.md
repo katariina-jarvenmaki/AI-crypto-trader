@@ -51,9 +51,14 @@ Test Pathbuilder manually:
 /usr/bin/python3 -m modules.pathbuilder.pathbuilder
 ```
 
+Test Get Timestamp manually:
+```bash
+/usr/bin/python3 -m utils.get_timestamp
+```
+
 Test multi ohlcv handler manually:
 ```bash
-/usr/bin/python3 -m integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+/usr/bin/python3 -m integrations.multi_interval_ohlcv.multi_ohlcv_handler
 ```
 
 Test Save and Validate manually:
