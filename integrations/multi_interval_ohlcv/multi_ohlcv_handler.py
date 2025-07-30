@@ -18,11 +18,11 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 # CONFIG INIT
 from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.save_and_validate.save_and_validate import save_and_validate
-from utils.config_reader import config_reader
+from modules.load_and_validate.load_and_validate import load_and_validate
 
-general_config = config_reader()
+general_config = load_and_validate()
 paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
+config = load_and_validate(file_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
 
 def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
 

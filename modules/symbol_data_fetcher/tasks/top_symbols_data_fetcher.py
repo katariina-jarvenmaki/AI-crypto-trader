@@ -1,5 +1,5 @@
 from modules.pathbuilder.pathbuilder import pathbuilder
-from utils.config_reader import config_reader
+from modules.load_and_validate.load_and_validate import load_and_validate 
 
 def run_top_symbols_data_fetcher(general_config, module_config):
 
@@ -8,9 +8,9 @@ def run_top_symbols_data_fetcher(general_config, module_config):
 
 if __name__ == "__main__":
 
-    general_config = config_reader()
+    general_config = load_and_validate()
     paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
 
-    module_config = config_reader(config_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
+    module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
 
     run_top_symbols_data_fetcher(general_config, module_config)

@@ -42,13 +42,22 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
 
 if __name__ == "__main__":
 
-    import json
     from modules.pathbuilder.pathbuilder import pathbuilder
-    from utils.config_reader import config_reader
+    from modules.load_and_validate.load_and_validate import load_and_validate
 
-    general_config = config_reader()
-    paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+    # Lataa ja tarkista konfiguraatio
+    general_config = load_and_validate()
+    if general_config is None:
+        raise RuntimeError("❌ general_config is None — config loading or validation failed.")
 
+    # Rakenna polut
+    paths = pathbuilder(
+        extension=".jsonl",
+        file_name=general_config["module_filenames"]["multi_interval_ohlcv"],
+        mid_folder="fetch"
+    )
+
+    # Esimerkkidata
     jsonl = {
         "timestamp": "2025-07-30T10:46:31.708804",
         "source_exchange": "Okx",
@@ -71,13 +80,5 @@ if __name__ == "__main__":
         "end_time": None
     }
 
-    general_config = config_reader()
-    paths = pathbuilder(
-        extension=".jsonl",
-        file_name=general_config["module_filenames"]["multi_interval_ohlcv"],
-        mid_folder="fetch"
-    )
-
+    # Tallenna ja validoi
     save_and_validate(data=jsonl, path=paths["full_log_path"], schema=paths["full_log_schema_path"])
-
-

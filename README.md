@@ -43,22 +43,17 @@ Test Get Filenames manually:
 
 Test File Checker manually:
 ```bash
-/usr/bin/python3 -m utils.file_checker config.json
-```
-
-Test Config reader manually:
-```bash
-/usr/bin/python3 -m utils.config_reader
+/usr/bin/python3 -m modules.save_and_validate.file_checker config.json
 ```
 
 Test Pathbuilder manually:
 ```bash
-python3 -m modules.pathbuilder.pathbuilder
+/usr/bin/python3 -m modules.pathbuilder.pathbuilder
 ```
 
 Test multi ohlcv handler manually:
 ```bash
-python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+/usr/bin/python3 -m integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
 ```
 
 Test Save and Validate manually:
