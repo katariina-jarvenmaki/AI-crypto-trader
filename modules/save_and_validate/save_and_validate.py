@@ -4,7 +4,7 @@ from pathlib import Path
 from jsonschema import validate, ValidationError
 from modules.save_and_validate.file_checker import file_checker
 
-def save_and_validate(data=None, path: str = None, schema: dict = None):
+def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=True):
 
     if data is None:
         raise ValueError("❌ Data argument is missing.")
@@ -19,7 +19,7 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
             schema = json.load(f)
 
     # 🔁 Uusi korvaava validointilogiikka
-    file_checker(path)
+    file_checker(path, verbose=verbose)
 
     is_jsonl = path.endswith(".jsonl")
 
@@ -37,7 +37,8 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
             validate(instance=data, schema=schema)
             json.dump(data, f, indent=2)
 
-    print(f"📦 Data saved to: {path}")
+    if verbose:
+        print(f"📦 Data saved to: {path}")
 
 if __name__ == "__main__":
 

@@ -4,6 +4,8 @@ from ta.volatility import BollingerBands
 from shutil import copyfile
 
 import sys
+import pytz
+import json
 import logging
 import importlib
 import numpy as np 
@@ -15,10 +17,11 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # CONFIG INIT
 from modules.pathbuilder.pathbuilder import pathbuilder
+from modules.save_and_validate.save_and_validate import save_and_validate
 from utils.config_reader import config_reader
 
 general_config = config_reader()
-paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
 config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
 
 def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
@@ -61,8 +64,18 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                 logging.info(f"✅ Fetch successful: {symbol} ({source_exchange})")
 
                 summarized_data = summarize_data_for_logging(data_by_interval)
+
+                timezone_str = general_config.get("timezone", "UTC")
+                try:
+                    tz = pytz.timezone(timezone_str)
+                except Exception as e:
+                    logging.warning(f"⚠️ Invalid timezone in config: {timezone_str}, defaulting to UTC. Error: {e}")
+                    tz = pytz.UTC
+
+                timestamp = datetime.now(tz).isoformat()
+
                 to_save = {
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": timestamp,
                     "source_exchange": source_exchange,
                     "symbol": symbol,
                     "intervals": intervals,
@@ -72,9 +85,14 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                     "end_time": end_time,
                 }
 
-                # "log_path": log_path  
-                return to_save 
-
+                save_and_validate(
+                    data=to_save,
+                    path=paths["full_log_path"],
+                    schema=paths["full_log_schema_path"],
+                    verbose=False
+                )
+                return to_save
+                
             else:
                 errors[exchange] = "Empty DataFrames"
 
@@ -190,17 +208,10 @@ def run_multi_exchange_ohlcv_test():
     intervals = ["1h", "4h"]
     limit = 500
 
-    fetch_result = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=limit)
-
-    print(fetch_result)
-
-    # save_fetch(to_save, "multi_interval_results.jsonl")
-
-
-    # test_symbol = "BTCUSDT"
-    # test_intervals = ["1m", "5m", "1h"]
-    # for exchange in config["exchange_priority"]:
-    #     test_single_exchange_ohlcv(test_symbol, exchange, config, intervals=test_intervals)
+    result = fetch_ohlcv_fallback(symbol=symbol, intervals=intervals, limit=limit)
+    if(result):
+        print(result)
+        print(f"✅ Data successfully fetched and saved")
 
 if __name__ == "__main__":
     run_multi_exchange_ohlcv_test()

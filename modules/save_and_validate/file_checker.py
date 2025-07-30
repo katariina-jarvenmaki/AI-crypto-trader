@@ -3,21 +3,23 @@ import json
 from pathlib import Path
 from modules.save_and_validate.truncate_file_if_too_large import truncate_file_if_too_large
 
-def check_and_create_path(path):
+def check_and_create_path(path, verbose=True):
     directory = os.path.dirname(path)
     if directory and not os.path.exists(directory):
         try:
             os.makedirs(directory)
-            print(f"✅ Created directory: {directory}")
+            if verbose:
+                print(f"✅ Created directory: {directory}")
         except Exception as e:
             print(f"❌ Error creating directory: {e}")
 
-def create_file_if_missing(path):
+def create_file_if_missing(path,verbose=True):
     if not os.path.exists(path):
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write('')
-            print(f"✅ Created empty file: {path}")
+            if verbose:
+                print(f"✅ Created empty file: {path}")
         except Exception as e:
             print(f"❌ Error creating file: {e}")
 
@@ -50,12 +52,13 @@ def is_valid_jsonl(path):
         print(f"Error in JSONL file: {e}")
         return False
 
-def file_checker(path):
+def file_checker(path, verbose=True):
 
-    print(f"🔍 Checking file: {path}")
+    if verbose:
+        print(f"🔍 Checking file: {path}")
 
-    check_and_create_path(path)
-    create_file_if_missing(path)
+    check_and_create_path(path, verbose=verbose)
+    create_file_if_missing(path, verbose=verbose)
 
     truncate_file_if_too_large(Path(path))
 
@@ -73,7 +76,8 @@ def file_checker(path):
             print(f"❌ Error while clearing file: {e}")
         return False
 
-    print(f"✅ Existing file is valid: {path}")
+    if verbose:
+        print(f"✅ Existing file is valid: {path}")
     return True
 
 
