@@ -1,6 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "AI Crypto Trader Config Schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
     "testing": {
@@ -42,9 +41,19 @@
     "module_filenames": {
       "type": "object",
       "properties": {
-        "multi_interval_ohlcv": { "type": "string" }
+        "multi_interval_ohlcv": { "type": "string" },
+        "symbol_data_fetcher": { "type": "string" },
+        "potential_trades_checker": { "type": "string" },
+        "main_symbols_data_fetcher": { "type": "string" },
+        "top_symbols_data_fetcher": { "type": "string" }
       },
-      "required": ["multi_interval_ohlcv"]
+      "required": [
+        "multi_interval_ohlcv",
+        "symbol_data_fetcher",
+        "potential_trades_checker",
+        "main_symbols_data_fetcher",
+        "top_symbols_data_fetcher"
+      ]
     }
   },
   "required": ["testing", "timezone", "paths", "module_filenames"]

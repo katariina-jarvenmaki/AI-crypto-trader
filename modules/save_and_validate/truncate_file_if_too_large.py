@@ -6,7 +6,7 @@ from shutil import copyfile
 
 def truncate_file_if_too_large(
     file_path: Path,
-    max_size_mb: float = 20.0,
+    max_size_mb: float = 25.0,
     entries_to_keep: int = 500,
     backup_suffix: str = ".backup",
     log_action: bool = True
