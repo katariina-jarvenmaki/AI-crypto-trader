@@ -19,7 +19,9 @@ from utils.config_reader import config_reader
 
 general_config = config_reader()
 paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_schema_path"])
+print(f"full_config_schema_path: {paths['full_config_schema_path']}")
+config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
+print(f"config: {config}")
 
 def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
 
@@ -86,13 +88,12 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
     print(f"\033[93m⚠️ This coin pair can't be found from any supported exchange: {symbol}\033[0m")
     return None
 
-REQUIRED_ANALYSIS_KEYS = {"rsi", "macd", "ema", "close"}
-
 def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
     """
     Tiivistää OHLCV-dataa analyysia varten logimerkintään.
     Tarkistaa että vaaditut analyysiarvot ovat mukana.
     """
+    equired_analysis_keys = set(config.get("required_analysis_keys", []))
     summary = {}
 
     for interval, df in data_by_interval.items():
@@ -111,7 +112,7 @@ def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dic
         except Exception:
             analysis["close"] = None
 
-        missing_keys = REQUIRED_ANALYSIS_KEYS - analysis.keys()
+        missing_keys = equired_analysis_keys - analysis.keys()
         if missing_keys:
             print(f"⚠️ Interval {interval} missing keys from analysis: {missing_keys}")
 

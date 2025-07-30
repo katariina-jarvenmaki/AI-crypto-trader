@@ -21,24 +21,27 @@ def get_filenames(extension=".json", file_name=None):
     config_name = f"{file_name}_config.json"
     log_name = f"{file_name}_log{extension}"
     temp_log_name = f"temp_log_{file_name}{extension}"
-    schemas_name = f"{file_name}_schema.json"
+    config_schema_name = f"{file_name}_config_schema.json"
+    log_schema_name = f"{file_name}_log_schema.json"
 
-    return config_name, log_name, temp_log_name, schemas_name
+    return config_name, log_name, temp_log_name, config_schema_name, log_schema_name
 
 # Example usage
 if __name__ == "__main__":
-    config, log, temp_log, schemas = get_filenames(extension=".jsonl")
+    config, log, temp_log, config_schema, log_schema = get_filenames(extension=".jsonl")
     print("\nWithout name override:")
     print("Config filename:", config)
     print("Log filename:", log)
     print("Temp log filename:", temp_log)
-    print("Schemas filename:", schemas)
+    print("Config schemas filename:", config_schema)
+    print("Log schemas filename:", log_schema)
 
     print("\nWith name override:")
-    config, log, temp_log, schemas = get_filenames(extension=".json", file_name="customproject")
+    config, log, temp_log, config_schema, log_schema = get_filenames(extension=".json", file_name="customproject")
     print("Config filename:", config)
     print("Log filename:", log)
     print("Temp log filename:", temp_log)
-    print("Schemas filename:", schemas)
+    print("Config schemas filename:", config_schema)
+    print("Log schemas filename:", log_schema)
 
     print("")

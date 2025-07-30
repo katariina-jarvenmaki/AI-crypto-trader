@@ -15,7 +15,7 @@ from utils.format_symbol_for_okx import format_symbol_for_okx
 
 general_config = config_reader()
 paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_schema_path"])
+config = config_reader(config_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
 
 def fetch_ohlcv_okx(symbol, intervals=None, limit=None, start_time=None, end_time=None):
     symbol = format_symbol_for_okx(symbol)

@@ -53,6 +53,11 @@ Test multi ohlcv handler manually:
 python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
 ```
 
+Test Save and Validate manually:
+```bash
+/usr/bin/python3 -m modules.save_and_validate.save_and_validate
+```
+
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
