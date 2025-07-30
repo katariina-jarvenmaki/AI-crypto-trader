@@ -2,89 +2,42 @@ import os
 import json
 from pathlib import Path
 from jsonschema import validate, ValidationError
-from modules.save_and_validate.truncate_file_if_too_large import truncate_file_if_too_large
+from modules.save_and_validate.file_checker import file_checker
 
 def save_and_validate(data=None, path: str = None, schema: dict = None):
-    """
-    Tallentaa annetun datan JSON- tai JSONL-muotoon.
-    Tarkistaa, että data ja path on annettu.
-    Jos tiedosto on olemassa, validoi sen. Jos validointi epäonnistuu tai tiedostoa ei ole,
-    luo hakemisto tarvittaessa ja kirjoittaa uuden tiedoston.
-    Lopuksi tallentaa annetun datan tiedostoon.
-    """
 
     if data is None:
-        raise ValueError("❌ Data argument is missing or with no value.")
+        raise ValueError("❌ Data argument is missing.")
     if path is None:
-        raise ValueError("❌ Path argument is missing or with no value.")
+        raise ValueError("❌ Path argument is missing.")
     if schema is None:
-        raise ValueError("❌ Schema argument is missing or with no value.")
+        raise ValueError("❌ Schema argument is missing.")
 
+    # Jos skeema on tiedostopolku, ladataan se
     if isinstance(schema, str) and os.path.isfile(schema):
         with open(schema, "r", encoding="utf-8") as f:
             schema = json.load(f)
 
+    # 🔁 Uusi korvaava validointilogiikka
+    file_checker(path)
+
     is_jsonl = path.endswith(".jsonl")
-    dir_path = os.path.dirname(path)
 
-    file_exists = os.path.exists(path)
-    file_valid = False
-
-    # 🔍 1. Jos tiedosto on olemassa, yritetään validoida
-    if file_exists:
-        truncate_file_if_too_large(Path(path))
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                content = f.read().strip()
-
-            if not content:
-                print(f"📄 File is empty, skipping validation: {path}")
-                file_valid = True
-            else:
-                file_data = (
-                    [json.loads(line) for line in content.splitlines() if line.strip()]
-                    if is_jsonl else json.loads(content)
-                )
-
-                if schema:
-                    if is_jsonl:
-                        for i, item in enumerate(file_data):
-                            validate(instance=item, schema=schema)
-                    else:
-                        validate(instance=file_data, schema=schema)
-
-                file_valid = True
-                print(f"✅ Existing file is valid: {path}")
-
-        except (json.JSONDecodeError, ValidationError) as e:
-            print(f"⚠️ Existing file is invalid → will be overwritten:\n→ {e}")
-            file_valid = False
-
-    # 🛠 2. Jos tiedostoa ei ole tai se oli virheellinen → luodaan polku ja tyhjä tiedosto
-    if not file_exists or not file_valid:
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path, exist_ok=True)
-            print(f"📁 Created directory: {dir_path}")
-
-        with open(path, "w", encoding="utf-8") as f:
-            pass
-
-        print(f"💾 Created or replaced file at: {path}")
-
-    # ✍️ 3. Tallennetaan annettu data tiedostoon
+    # ✍️ Tallenna data tiedostoon
     with open(path, "a" if is_jsonl else "w", encoding="utf-8") as f:
         if is_jsonl:
             if isinstance(data, list):
                 for item in data:
+                    validate(instance=item, schema=schema)
                     f.write(json.dumps(item) + "\n")
             else:
+                validate(instance=data, schema=schema)
                 f.write(json.dumps(data) + "\n")
         else:
+            validate(instance=data, schema=schema)
             json.dump(data, f, indent=2)
 
     print(f"📦 Data saved to: {path}")
-
-    return True
 
 if __name__ == "__main__":
 
@@ -126,5 +79,4 @@ if __name__ == "__main__":
 
     save_and_validate(data=jsonl, path=paths["full_log_path"], schema=paths["full_log_schema_path"])
 
-    print("✅ Done")
 

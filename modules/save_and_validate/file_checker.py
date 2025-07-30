@@ -1,23 +1,25 @@
 import os
 import json
+from pathlib import Path
+from modules.save_and_validate.truncate_file_if_too_large import truncate_file_if_too_large
 
 def check_and_create_path(path):
     directory = os.path.dirname(path)
     if directory and not os.path.exists(directory):
         try:
             os.makedirs(directory)
-            print(f"Created directory: {directory}")
+            print(f"✅ Created directory: {directory}")
         except Exception as e:
-            print(f"Error creating directory: {e}")
+            print(f"❌ Error creating directory: {e}")
 
 def create_file_if_missing(path):
     if not os.path.exists(path):
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write('')
-            print(f"Created empty file: {path}")
+            print(f"✅ Created empty file: {path}")
         except Exception as e:
-            print(f"Error creating file: {e}")
+            print(f"❌ Error creating file: {e}")
 
 def is_valid_json(path):
     try:
@@ -49,10 +51,13 @@ def is_valid_jsonl(path):
         return False
 
 def file_checker(path):
-    print(f"Checking file: {path}")
+
+    print(f"🔍 Checking file: {path}")
 
     check_and_create_path(path)
     create_file_if_missing(path)
+
+    truncate_file_if_too_large(Path(path))
 
     if path.endswith('.jsonl'):
         valid = is_valid_jsonl(path)
@@ -60,17 +65,17 @@ def file_checker(path):
         valid = is_valid_json(path)
 
     if not valid:
-        print("File is not valid.")
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write('')
-            print("File has been emptied.")
+            print(f"⚠️ Existing file is invalid → will be overwritten:\n→ {e}")
         except Exception as e:
-            print(f"Error while clearing file: {e}")
+            print(f"❌ Error while clearing file: {e}")
         return False
 
-    print("File is ready and valid.")
+    print(f"✅ Existing file is valid: {path}")
     return True
+
 
 # Command-line use
 if __name__ == "__main__":
