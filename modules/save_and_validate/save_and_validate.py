@@ -1,12 +1,10 @@
-# modules/load_and_validate/load_and_validate.py
-
-# import json
-import os
-# from jsonschema import validate, ValidationError
+# modules/load_and_validate/save_and_validate.py
 
 import os
 import json
+from pathlib import Path
 from jsonschema import validate, ValidationError
+from modules.save_and_validate.truncate_file_if_too_large import truncate_file_if_too_large
 
 def save_and_validate(data=None, path: str = None, schema: dict = None):
     """
@@ -20,6 +18,8 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
         raise ValueError("❌ Data argument is missing or with no value.")
     if path is None:
         raise ValueError("❌ Path argument is missing or with no value.")
+    if schema is None:
+        raise ValueError("❌ Schema argument is missing or with no value.")
 
     is_jsonl = path.endswith(".jsonl")
     dir_path = os.path.dirname(path)
@@ -29,31 +29,36 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
 
     # 🔍 1. Jos tiedosto on olemassa, yritetään validoida
     if file_exists:
+
+        # 🔧 Truncate if too large
+        truncate_file_if_too_large(Path(path))
+
         try:
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
 
             if not content:
-                raise ValueError(f"❌ File is empty: {path}")
+                print(f"📄 File is empty, skipping validation: {path}")
+                file_valid = True
+            else:
+                file_data = (
+                    [json.loads(line) for line in content.splitlines() if line.strip()]
+                    if is_jsonl
+                    else json.loads(content)
+                )
 
-            file_data = (
-                [json.loads(line) for line in content.splitlines() if line.strip()]
-                if is_jsonl
-                else json.loads(content)
-            )
+                # Validoidaan, jos schema on annettu
+                if schema:
+                    if is_jsonl:
+                        for i, item in enumerate(file_data):
+                            validate(instance=item, schema=schema)
+                    else:
+                        validate(instance=file_data, schema=schema)
 
-            # Validoidaan, jos schema on annettu
-            if schema:
-                if is_jsonl:
-                    for i, item in enumerate(file_data):
-                        validate(instance=item, schema=schema)
-                else:
-                    validate(instance=file_data, schema=schema)
+                file_valid = True
+                print(f"✅ Existing file is valid: {path}")
 
-            file_valid = True
-            print(f"✅ Existing file is valid: {path}")
-
-        except (json.JSONDecodeError, ValidationError, ValueError) as e:
+        except (json.JSONDecodeError, ValidationError) as e:
             print(f"⚠️ Existing file is invalid → will be overwritten:\n→ {e}")
             file_valid = False
 
@@ -65,12 +70,13 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
 
         with open(path, "w", encoding="utf-8") as f:
             if is_jsonl:
-                json.dump(data, f)
-                f.write("\n")
+                pass
             else:
-                json.dump(data, f, indent=2)
+                json.dump([], f, indent=2)
 
         print(f"💾 Created or replaced file at: {path}")
+
+
 
 
 
@@ -125,6 +131,9 @@ if __name__ == "__main__":
     from modules.pathbuilder.pathbuilder import pathbuilder
     from utils.config_reader import config_reader
 
+    general_config = config_reader()
+    paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+
     jsonl = {
         "timestamp": "2025-07-30T10:46:31.708804",
         "source_exchange": "Okx",
@@ -154,7 +163,7 @@ if __name__ == "__main__":
         mid_folder="fetch"
     )
 
-    save_and_validate(data=jsonl, path=paths["full_log_path"], schema=schema)
+    save_and_validate(data=jsonl, path=paths["full_log_path"], schema=paths["full_log_schema_path"])
 
     print("✅ Done")
 
