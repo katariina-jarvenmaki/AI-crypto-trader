@@ -1,5 +1,3 @@
-# modules/load_and_validate/save_and_validate.py
-
 import os
 import json
 from pathlib import Path
@@ -12,6 +10,7 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
     Tarkistaa, että data ja path on annettu.
     Jos tiedosto on olemassa, validoi sen. Jos validointi epäonnistuu tai tiedostoa ei ole,
     luo hakemisto tarvittaessa ja kirjoittaa uuden tiedoston.
+    Lopuksi tallentaa annetun datan tiedostoon.
     """
 
     if data is None:
@@ -21,6 +20,10 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
     if schema is None:
         raise ValueError("❌ Schema argument is missing or with no value.")
 
+    if isinstance(schema, str) and os.path.isfile(schema):
+        with open(schema, "r", encoding="utf-8") as f:
+            schema = json.load(f)
+
     is_jsonl = path.endswith(".jsonl")
     dir_path = os.path.dirname(path)
 
@@ -29,10 +32,7 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
 
     # 🔍 1. Jos tiedosto on olemassa, yritetään validoida
     if file_exists:
-
-        # 🔧 Truncate if too large
         truncate_file_if_too_large(Path(path))
-
         try:
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
@@ -43,11 +43,9 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
             else:
                 file_data = (
                     [json.loads(line) for line in content.splitlines() if line.strip()]
-                    if is_jsonl
-                    else json.loads(content)
+                    if is_jsonl else json.loads(content)
                 )
 
-                # Validoidaan, jos schema on annettu
                 if schema:
                     if is_jsonl:
                         for i, item in enumerate(file_data):
@@ -62,68 +60,31 @@ def save_and_validate(data=None, path: str = None, schema: dict = None):
             print(f"⚠️ Existing file is invalid → will be overwritten:\n→ {e}")
             file_valid = False
 
-    # 🛠 2. Jos tiedostoa ei ole tai se oli virheellinen → luodaan polku ja kirjoitetaan uusi tiedosto
+    # 🛠 2. Jos tiedostoa ei ole tai se oli virheellinen → luodaan polku ja tyhjä tiedosto
     if not file_exists or not file_valid:
         if not os.path.exists(dir_path):
             os.makedirs(dir_path, exist_ok=True)
             print(f"📁 Created directory: {dir_path}")
 
         with open(path, "w", encoding="utf-8") as f:
-            if is_jsonl:
-                pass
-            else:
-                json.dump([], f, indent=2)
+            pass
 
         print(f"💾 Created or replaced file at: {path}")
 
+    # ✍️ 3. Tallennetaan annettu data tiedostoon
+    with open(path, "a" if is_jsonl else "w", encoding="utf-8") as f:
+        if is_jsonl:
+            if isinstance(data, list):
+                for item in data:
+                    f.write(json.dumps(item) + "\n")
+            else:
+                f.write(json.dumps(data) + "\n")
+        else:
+            json.dump(data, f, indent=2)
 
+    print(f"📦 Data saved to: {path}")
 
-
-
-    # Parse content
-    # if is_jsonl:
-    #     file_data = [json.loads(line) for line in content.splitlines() if line.strip()]
-    # else:
-    #     file_data = json.loads(content)
-
-    # Load JSON or JSONL file
-    # with open(path, "r", encoding="utf-8") as f:
-    #     if is_jsonl:
-    #         file_data = [json.loads(line) for line in f if line.strip()]
-    #     else:
-    #         file_data = json.load(f)
-
-    # Determine which schema to use
-    # if schema is None:
-    #     if os.path.exists(DEFAULT_SCHEMA_PATH):
-    #         with open(DEFAULT_SCHEMA_PATH, "r", encoding="utf-8") as f:
-    #             schema = json.load(f)
-    #     else:
-    #         raise FileNotFoundError(
-    #             f"Default schema not found at: {DEFAULT_SCHEMA_PATH}. "
-    #             f"Provide schema explicitly as a parameter."
-    #         )
-    # elif isinstance(schema, str) and schema.endswith(".json") and os.path.exists(schema):
-    #     with open(schema, "r", encoding="utf-8") as f:
-    #         schema = json.load(f)
-    # else:
-    #     raise ValueError("Invalid schema parameter: must be a path to a .json file")
-
-    # Validation
-    # try:
-    #     if is_jsonl:
-    #         for i, item in enumerate(file_data):
-    #             try:
-    #                 validate(instance=item, schema=schema)
-    #             except ValidationError as e:
-    #                 print(f"❌ JSONL validation failed on line {i+1}:\n→ {e.message}")
-    #                 raise
-    #     else:
-    #         validate(instance=file_data, schema=schema)
-    # except ValidationError:
-    #     raise
-
-    # return file_data
+    return True
 
 if __name__ == "__main__":
 
