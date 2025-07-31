@@ -198,7 +198,7 @@ def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
         print(f"❌ Exception while fetching from {exchange}: {e}")
 
 def run_multi_exchange_ohlcv_test():
-    symbol = "BTCUSDT"
+    symbol = "DIAUSDT"
     intervals = ["1h", "4h"]
     limit = 500
 

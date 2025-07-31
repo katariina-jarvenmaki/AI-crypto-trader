@@ -3,18 +3,20 @@
 import os
 import json
 from typing import List, Dict, Optional
+from dateutil import parser as date_parser
 
 def load_latest_log_entries(
     file_path: str,
     limit: int = 10,
     use_timestamp: bool = False,
-    timestamp_key: str = "timestamp",
     symbol: Optional[str] = None,
     symbols: Optional[List[str]] = None,
     start_time: Optional[str] = None,
     end_time: Optional[str] = None
 ) -> List[Dict]:
 
+    file_path = str(file_path)
+    
     if not os.path.isfile(file_path):
         raise FileNotFoundError(f"❌ Log file not found: {file_path}")
 
@@ -55,6 +57,7 @@ def load_latest_log_entries(
         entries = [e for e in entries if e.get(symbol_key) in symbols]
 
     # Filter by time range
+    timestamp_key = "timestamp"
     if start_dt or end_dt:
         def is_within_time_range(entry):
             try:
@@ -97,10 +100,6 @@ def load_latest_log_entries(
     return entries[-limit:] if not use_timestamp else entries[:limit]
 
 if __name__ == "__main__":
-
-    from datetime import datetime, timedelta
-    from dateutil import parser as date_parser
-    from utils.get_timestamp import get_timestamp 
 
     file_path = "../AI-crypto-trader-logs/_TEST/fetch_logs/multi_ohlcv_fetch_log.jsonl"
     limit = 1
