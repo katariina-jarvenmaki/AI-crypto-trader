@@ -26,7 +26,13 @@ def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
         if entries:
             latest_by_symbol[sym] = entries[0]
 
-    return latest_by_symbol
+    latest_entries = {
+        entry["symbol"]: entry
+        for entry in latest_by_symbol.values()
+        if isinstance(entry, dict) and "symbol" in entry
+    }
+
+    return latest_entries
 
 if __name__ == "__main__":
     file_path = "../AI-crypto-trader-logs/_TEST/analysis_logs/temporary_log_potential_trades.jsonl"
