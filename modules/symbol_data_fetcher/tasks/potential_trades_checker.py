@@ -4,9 +4,9 @@ from datetime import datetime, timedelta
 from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
 from modules.pathbuilder.pathbuilder import pathbuilder
-from modules.symbol_data_fetcher.utils import get_latest_entry
 from modules.load_and_validate.load_and_validate import load_and_validate
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
+from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
 def print_and_save_recommendations(latest_entries, module_config, module_log_path, module_scheme_path):
@@ -50,10 +50,10 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
     
     print(f"🔍 Scanning {len(symbols_to_process)} symbols at {timestamp}")
 
+    latest_entries = load_latest_entries_per_symbol(symbols_to_process, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
+
     for symbol in symbols_to_process:
         print(f"\n🔁 Checking symbol: {symbol}")
-
-        latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
 
         if needs_update(symbol, latest_entries, max_age_minutes=module_config["ohlcv_max_age_minutes"]):
             print(f"🚀 Fetching new OHLCV data: {symbol}")
@@ -69,7 +69,7 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
             age_str = f"{hours}h {minutes}min" if hours else f"{minutes}min"
             print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
 
-    latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
+    #latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
 
     print_and_save_recommendations(latest_entries, module_config, module_log_path, module_scheme_path)
 

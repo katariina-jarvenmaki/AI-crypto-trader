@@ -38,7 +38,7 @@ Test Path Selector manually:
 
 Test Get Filenames manually:
 ```bash
-/usr/bin/python3 -m modules.pathbuilder.get_filenames
+/usr/bin/python3 -m modules.pathbuilder.path_selector
 ```
 
 Test File Checker manually:
@@ -66,9 +66,14 @@ Test Save and Validate manually:
 /usr/bin/python3 -m modules.save_and_validate.save_and_validate
 ```
 
-Test Load Latest Log Entries manually:
+Test Load Latest Entry manually:
 ```bash
 /usr/bin/python3 -m utils.load_latest_entry
+```
+
+Test Load Latest Entries per Symbol manually:
+```bash
+/usr/bin/python3 -m utils.load_latest_entries_per_symbol
 ```
 
 Test Cron Tasks Prosessor manually:

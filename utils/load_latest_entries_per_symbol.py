@@ -16,7 +16,7 @@ def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
     for sym in symbols:
         entries = load_latest_entry(
             file_path=file_path,
-            limit=1000,
+            limit=1,
             use_timestamp=True,
             symbol=sym,
             start_time=start_time,
@@ -24,9 +24,9 @@ def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
         )
 
         if entries:
-            latest_by_symbol[sym] = entries[0]  # Oletetaan että entries on sortattu uusin ensin
+            latest_by_symbol[sym] = entries[0]
 
-    return list(latest_by_symbol.values())
+    return latest_by_symbol
 
 if __name__ == "__main__":
     file_path = "../AI-crypto-trader-logs/_TEST/analysis_logs/temporary_log_potential_trades.jsonl"
