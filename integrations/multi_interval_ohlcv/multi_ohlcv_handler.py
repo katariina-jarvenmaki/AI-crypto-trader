@@ -81,7 +81,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
                 save_and_validate(
                     data=to_save,
-                    path=paths["full_log_path"],
+                    path=log_path,
                     schema=paths["full_log_schema_path"],
                     verbose=False
                 )
