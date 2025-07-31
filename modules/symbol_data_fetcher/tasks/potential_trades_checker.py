@@ -8,17 +8,17 @@ from utils.load_latest_log_entries import load_latest_log_entries
 from modules.load_and_validate.load_and_validate import load_and_validate 
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
-def needs_update(symbol: str, latest_entries, max_age_minutes: int = 60) -> bool:
+def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> bool:
 
     try:
-        if not isinstance(latest_entries, dict):
-            raise TypeError("latest_entries is not a dict")
+        if not isinstance(latest_entry, dict):
+            raise TypeError("latest_entry is not a dict")
 
-        if symbol not in latest_entries or 'timestamp' not in latest_entries[symbol]:
+        if latest_entry.get("symbol") != symbol or "timestamp" not in latest_entry:
             return True
 
         current_ts = date_parser.isoparse(get_timestamp())
-        latest_ts = date_parser.isoparse(latest_entries[symbol]['timestamp'])
+        latest_ts = date_parser.isoparse(latest_entry["timestamp"])
         age = current_ts - latest_ts
         return age > timedelta(minutes=max_age_minutes)
 
@@ -40,17 +40,13 @@ def get_latest_entry(symbol, file_path, max_age_minutes=60):
             end_time=end_time,
         )
 
-        if not entries or 'timestamp' not in entries[0]:
+        if not entries:
             return {}
 
-        return {
-            symbol: {
-                'timestamp': entries[0]['timestamp']
-            }
-        }
+        return entries[0]  # 🔁 Palautetaan koko tietue
 
     except Exception as e:
-        print(f"⚠️ Error while retrieving latest entry for {symbol}: {e}")
+        print(f"Error in get_latest_entry: {e}")
         return {}
 
 def get_symbols_to_scan():
@@ -87,6 +83,7 @@ def run_potential_trades_checker(general_config, module_config, ohlcv_log_path):
             minutes = module_config["ohlcv_max_age_minutes"] % 60
             age_str = f"{hours}h {minutes}min" if hours else f"{minutes}min"
             print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
+
 
 
 
