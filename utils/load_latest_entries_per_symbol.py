@@ -8,6 +8,7 @@ from datetime import timedelta
 from utils.load_latest_entry import load_latest_entry
 
 def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
+    
     end_time = get_timestamp()
     start_time = (date_parser.isoparse(end_time) - timedelta(minutes=max_age_minutes)).isoformat()
 

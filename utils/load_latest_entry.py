@@ -7,7 +7,7 @@ from dateutil import parser as date_parser
 from datetime import datetime, timedelta
 
 def load_latest_entry(
-    file_path: str,
+    file_path,
     limit: int = 10,
     use_timestamp: bool = False,
     symbol: Optional[str] = None,
@@ -15,10 +15,11 @@ def load_latest_entry(
     end_time: Optional[str] = None
 ) -> List[Dict]:
 
-    file_path = str(file_path)
-    
+    if not isinstance(file_path, str):
+        file_path = str(file_path)
+
     if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"❌ Log file not found: {file_path}")
+        return []
 
     entries: List[Dict] = []
 
