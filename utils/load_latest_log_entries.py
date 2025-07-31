@@ -1,41 +1,30 @@
 # utils/load_latest_log_entries.py
-# logs = load_latest_log_entries("mylog.jsonl", limit=5, use_timestamp=True)
 
-
-
-
-
-import json
 import os
-from typing import List, Dict
-from datetime import datetime
-from dateutil import parser as date_parser  # Requires python-dateutil
+import json
+from typing import List, Dict, Optional
 
 def load_latest_log_entries(
     file_path: str,
     limit: int = 10,
     use_timestamp: bool = False,
-    timestamp_key: str = "timestamp"
+    timestamp_key: str = "timestamp",
+    symbol: Optional[str] = None,
+    symbols: Optional[List[str]] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None
 ) -> List[Dict]:
-    """
-    Load the latest entries from a JSON or JSONL log file.
-
-    Parameters:
-        file_path (str): Path to the log file (.json or .jsonl).
-        limit (int): Number of latest entries to return.
-        use_timestamp (bool): Whether to sort entries by ISO 8601 timestamp.
-        timestamp_key (str): Key to use for timestamp sorting (used only if use_timestamp is True).
-
-    Returns:
-        List[dict]: List of log entries (each as a dictionary).
-    """
 
     if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"Log file not found: {file_path}")
+        raise FileNotFoundError(f"❌ Log file not found: {file_path}")
 
     entries: List[Dict] = []
 
-    # Read entries from JSON or JSONL
+    # Parse time filters
+    start_dt = date_parser.isoparse(start_time) if start_time else None
+    end_dt = date_parser.isoparse(end_time) if end_time else None
+
+    # Read entries from file
     try:
         if file_path.endswith(".jsonl"):
             with open(file_path, "r", encoding="utf-8") as f:
@@ -51,21 +40,80 @@ def load_latest_log_entries(
                 if isinstance(data, list):
                     entries = data
                 else:
-                    raise ValueError("JSON file must contain a list of entries.")
+                    raise ValueError("❌ JSON file must contain a list of entries.")
         else:
-            raise ValueError("Unsupported file type. Only .json and .jsonl are supported.")
+            raise ValueError("❌ Unsupported file type. Only .json and .jsonl are supported.")
     except Exception as e:
-        raise RuntimeError(f"Failed to read log file: {e}")
+        raise RuntimeError(f"❌ Failed to read log file: {e}")
 
-    # Sort by timestamp if requested
+    if symbols is not None:
+        if isinstance(symbols, str):
+            symbols = [symbols]
+        symbol_key = "symbol"
+        if symbol_key not in entries[0]:
+            raise ValueError(f"Expected key '{symbol_key}' not found in log entries.")
+        entries = [e for e in entries if e.get(symbol_key) in symbols]
+
+    # Filter by time range
+    if start_dt or end_dt:
+        def is_within_time_range(entry):
+            try:
+                ts = date_parser.isoparse(entry[timestamp_key])
+                if start_dt and ts < start_dt:
+                    return False
+                if end_dt and ts > end_dt:
+                    return False
+                return True
+            except Exception:
+                return False
+
+        entries = [e for e in entries if timestamp_key in e and is_within_time_range(e)]
+
+    # Optional: Filter by time range
+    if start_dt or end_dt:
+        def is_within_time_range(entry):
+            try:
+                ts = date_parser.isoparse(entry[timestamp_key])
+                if start_dt and ts < start_dt:
+                    return False
+                if end_dt and ts > end_dt:
+                    return False
+                return True
+            except Exception:
+                return False
+
+        entries = [e for e in entries if timestamp_key in e and is_within_time_range(e)]
+
+    # Optional: Sort by timestamp
     if use_timestamp:
         def parse_ts(entry):
             try:
                 return date_parser.isoparse(entry[timestamp_key])
             except Exception:
-                return datetime.min  # fallback to sortable minimal value if timestamp is invalid
+                return datetime.min
 
-        entries = [e for e in entries if timestamp_key in e]
         entries.sort(key=parse_ts, reverse=True)
 
     return entries[-limit:] if not use_timestamp else entries[:limit]
+
+if __name__ == "__main__":
+
+    from datetime import datetime, timedelta
+    from dateutil import parser as date_parser
+    from utils.get_timestamp import get_timestamp 
+
+    file_path = "../AI-crypto-trader-logs/_TEST/fetch_logs/multi_ohlcv_fetch_log.jsonl"
+    limit = 1
+    use_timestamp=True
+    symbols = ["BTCUSDT", "ETHUSDT"]
+    end_time = get_timestamp()
+    start_time = (date_parser.isoparse(end_time) - timedelta(hours=48)).isoformat()
+    logs = load_latest_log_entries(
+        file_path=file_path,
+        limit=limit,
+        use_timestamp=use_timestamp,
+        symbols=symbols,
+        start_time=start_time,
+        end_time=end_time
+    )
+    print(logs)

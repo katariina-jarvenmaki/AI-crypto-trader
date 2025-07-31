@@ -66,6 +66,11 @@ Test Save and Validate manually:
 /usr/bin/python3 -m modules.save_and_validate.save_and_validate
 ```
 
+Test Load Latest Log Entries manually:
+```bash
+/usr/bin/python3 -m utils.load_latest_log_entries
+```
+
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
