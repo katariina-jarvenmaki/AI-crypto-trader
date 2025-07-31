@@ -4,10 +4,17 @@ from datetime import datetime, timedelta
 from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
 from modules.pathbuilder.pathbuilder import pathbuilder
-from utils.load_latest_log_entries import load_latest_log_entries
-from modules.load_and_validate.load_and_validate import load_and_validate 
+from modules.symbol_data_fetcher.utils import get_latest_entry
+from modules.load_and_validate.load_and_validate import load_and_validate
+from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
-from utils.append_file_to_target_until_success import append_file_to_target_until_success
+
+def print_and_save_recommendations(latest_entries, module_config, module_log_path, module_scheme_path):
+    long_syms, short_syms, scores = analyze_all_symbols(latest_entries, module_config)
+    
+    print(f"latest_entries: {latest_entries}")
+    print(f"module_log_path: {module_log_path}")
+    print(f"module_scheme_path: {module_scheme_path}")
 
 def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> bool:
 
@@ -24,31 +31,8 @@ def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> 
         return age > timedelta(minutes=max_age_minutes)
 
     except Exception as e:
-        print(f"⚠️ Error while checking update need for {symbol}: {e}")
+        print(f"⚠️  Error while checking update need for {symbol}: {e}")
         return True
-
-def get_latest_entry(symbol, file_path, max_age_minutes=60):
-    try:
-        end_time = get_timestamp()
-        start_time = (date_parser.isoparse(end_time) - timedelta(minutes=max_age_minutes)).isoformat()
-
-        entries = load_latest_log_entries(
-            file_path=file_path,
-            limit=1,
-            use_timestamp=True,
-            symbols=[symbol],
-            start_time=start_time,
-            end_time=end_time,
-        )
-
-        if not entries:
-            return {}
-
-        return entries[0]  # 🔁 Palautetaan koko tietue
-
-    except Exception as e:
-        print(f"Error in get_latest_entry: {e}")
-        return {}
 
 def get_symbols_to_scan():
     return [
@@ -87,7 +71,7 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
 
     latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
 
-    # print_and_save_recommendations()
+    print_and_save_recommendations(latest_entries, module_config, module_log_path, module_scheme_path)
 
     # empty temp file
 
