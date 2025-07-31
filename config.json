@@ -17,9 +17,6 @@
   },
   "module_filenames": {
     "multi_interval_ohlcv": "multi_ohlcv_fetch",
-    "symbol_data_fetcher": "symbol_data_fetcher",
-    "potential_trades_checker": "potential_trades",
-    "main_symbols_data_fetcher": "main_symbols",
-    "top_symbols_data_fetcher": "top_symbols"
+    "symbol_data_fetcher": "symbol_data_fetcher"
   }
 }

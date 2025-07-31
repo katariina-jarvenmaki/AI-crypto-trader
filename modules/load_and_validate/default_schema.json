@@ -42,17 +42,11 @@
       "type": "object",
       "properties": {
         "multi_interval_ohlcv": { "type": "string" },
-        "symbol_data_fetcher": { "type": "string" },
-        "potential_trades_checker": { "type": "string" },
-        "main_symbols_data_fetcher": { "type": "string" },
-        "top_symbols_data_fetcher": { "type": "string" }
+        "symbol_data_fetcher": { "type": "string" }
       },
       "required": [
         "multi_interval_ohlcv",
-        "symbol_data_fetcher",
-        "potential_trades_checker",
-        "main_symbols_data_fetcher",
-        "top_symbols_data_fetcher"
+        "symbol_data_fetcher"
       ]
     }
   },
