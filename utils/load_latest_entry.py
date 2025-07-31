@@ -1,4 +1,4 @@
-# utils/load_latest_log_entries.py
+# utils/load_latest_entry.py
 
 import os
 import json
@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 from dateutil import parser as date_parser
 from datetime import datetime, timedelta
 
-def load_latest_log_entries(
+def load_latest_entry(
     file_path: str,
     limit: int = 10,
     use_timestamp: bool = False,
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     end_time = get_timestamp()
     start_time = (date_parser.isoparse(end_time) - timedelta(hours=48)).isoformat()
     
-    logs = load_latest_log_entries(
+    logs = load_latest_entry(
         file_path=file_path,
         limit=limit,
         use_timestamp=use_timestamp,

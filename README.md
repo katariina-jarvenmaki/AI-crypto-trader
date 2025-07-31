@@ -68,7 +68,7 @@ Test Save and Validate manually:
 
 Test Load Latest Log Entries manually:
 ```bash
-/usr/bin/python3 -m utils.load_latest_log_entries
+/usr/bin/python3 -m utils.load_latest_entry
 ```
 
 Test Cron Tasks Prosessor manually:

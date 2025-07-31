@@ -5,7 +5,7 @@ from dateutil import parser as date_parser
 from collections import defaultdict
 from utils.get_timestamp import get_timestamp 
 from datetime import timedelta
-from utils.load_latest_log_entries import load_latest_log_entries
+from utils.load_latest_entry import load_latest_entry
 
 def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
     end_time = get_timestamp()
@@ -14,7 +14,7 @@ def load_latest_entries_per_symbol(symbols, file_path, max_age_minutes=60):
     latest_by_symbol = {}
 
     for sym in symbols:
-        entries = load_latest_log_entries(
+        entries = load_latest_entry(
             file_path=file_path,
             limit=1000,
             use_timestamp=True,
