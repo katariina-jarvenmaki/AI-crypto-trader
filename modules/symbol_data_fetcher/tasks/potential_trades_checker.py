@@ -56,12 +56,11 @@ def get_symbols_to_scan():
         if s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]
     ]
 
-def run_potential_trades_checker(general_config, module_config, ohlcv_log_path):
+def run_potential_trades_checker(general_config, module_config, module_log_path, module_scheme_path):
 
     symbols_to_process = get_symbols_to_scan()
     log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
     temporary_path = Path(log_paths["logs_path"]) / module_config['task_config']['potential']['temp_log']
-    ohlcv_log_path = Path(ohlcv_log_path)
     schema_path = paths["schemas_path"]
     timestamp = get_timestamp()
     
@@ -70,9 +69,9 @@ def run_potential_trades_checker(general_config, module_config, ohlcv_log_path):
     for symbol in symbols_to_process:
         print(f"\n🔁 Checking symbol: {symbol}")
 
-        latest_ohlcv_entries = get_latest_entry(symbol, ohlcv_log_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
+        latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
 
-        if needs_update(symbol, latest_ohlcv_entries, max_age_minutes=module_config["ohlcv_max_age_minutes"]):
+        if needs_update(symbol, latest_entries, max_age_minutes=module_config["ohlcv_max_age_minutes"]):
             print(f"🚀 Fetching new OHLCV data: {symbol}")
             fetch_ohlcv_fallback(
                 symbol=symbol,
@@ -86,38 +85,22 @@ def run_potential_trades_checker(general_config, module_config, ohlcv_log_path):
             age_str = f"{hours}h {minutes}min" if hours else f"{minutes}min"
             print(f"✅ Fresh data already exists (less than {age_str} old): {symbol}")
 
-        if latest_ohlcv_entries:
-            data_preview = latest_ohlcv_entries.get("data_preview")
-            if not data_preview:
-                print("⚠️  No data_preview found, skipping analysis.")
-                continue
-            for interval in module_config["intervals"]:
-                analysis = data_preview.get(interval)
-                if analysis:
-                    print(f"📊 Interval: {interval}")
-                    for key, value in analysis.items():
-                        print(f"  {key.upper():<12}: {value}")
-                    print()
-        else:
-            print(f"⚠️  No log entry found for analysis: {symbol}")
-
-    append_file_to_target_until_success(
-        temp_path=temporary_path,
-        target_path=ohlcv_log_path,
-        max_retries=module_config["max_append_retries"],
-        retry_delay=module_config['task_config']['potential']['retry_delay']        
-        )
+    latest_entries = get_latest_entry(symbol, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
 
     # print_and_save_recommendations()
+
+    # empty temp file
 
 if __name__ == "__main__":
 
     general_config = load_and_validate()
     paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
+    module_log_path = paths["full_log_path"]
+    module_scheme_path = paths["full_log_schema_path"]
 
     module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
     
     log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-    ohlcv_log_path = log_paths["full_log_path"]
+    # ohlcv_log_path = log_paths["full_log_path"]
 
-    run_potential_trades_checker(general_config, module_config, ohlcv_log_path)
+    run_potential_trades_checker(general_config, module_config, module_log_path, module_scheme_path)
