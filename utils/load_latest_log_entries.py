@@ -4,13 +4,13 @@ import os
 import json
 from typing import List, Dict, Optional
 from dateutil import parser as date_parser
+from datetime import datetime, timedelta
 
 def load_latest_log_entries(
     file_path: str,
     limit: int = 10,
     use_timestamp: bool = False,
     symbol: Optional[str] = None,
-    symbols: Optional[List[str]] = None,
     start_time: Optional[str] = None,
     end_time: Optional[str] = None
 ) -> List[Dict]:
@@ -48,31 +48,15 @@ def load_latest_log_entries(
     except Exception as e:
         raise RuntimeError(f"❌ Failed to read log file: {e}")
 
-    if symbols is not None:
-        if isinstance(symbols, str):
-            symbols = [symbols]
+    # Filter by symbol
+    if symbol is not None:
         symbol_key = "symbol"
         if symbol_key not in entries[0]:
             raise ValueError(f"Expected key '{symbol_key}' not found in log entries.")
-        entries = [e for e in entries if e.get(symbol_key) in symbols]
+        entries = [e for e in entries if e.get(symbol_key) == symbol]
 
     # Filter by time range
     timestamp_key = "timestamp"
-    if start_dt or end_dt:
-        def is_within_time_range(entry):
-            try:
-                ts = date_parser.isoparse(entry[timestamp_key])
-                if start_dt and ts < start_dt:
-                    return False
-                if end_dt and ts > end_dt:
-                    return False
-                return True
-            except Exception:
-                return False
-
-        entries = [e for e in entries if timestamp_key in e and is_within_time_range(e)]
-
-    # Optional: Filter by time range
     if start_dt or end_dt:
         def is_within_time_range(entry):
             try:
@@ -99,19 +83,23 @@ def load_latest_log_entries(
 
     return entries[-limit:] if not use_timestamp else entries[:limit]
 
+# Example usage
 if __name__ == "__main__":
+    def get_timestamp():
+        return datetime.utcnow().isoformat()
 
     file_path = "../AI-crypto-trader-logs/_TEST/fetch_logs/multi_ohlcv_fetch_log.jsonl"
-    limit = 1
-    use_timestamp=True
-    symbols = ["BTCUSDT", "ETHUSDT"]
+    limit = 2
+    use_timestamp = True
+    symbol = "BTCUSDT"
     end_time = get_timestamp()
     start_time = (date_parser.isoparse(end_time) - timedelta(hours=48)).isoformat()
+    
     logs = load_latest_log_entries(
         file_path=file_path,
         limit=limit,
         use_timestamp=use_timestamp,
-        symbols=symbols,
+        symbol=symbol,
         start_time=start_time,
         end_time=end_time
     )
