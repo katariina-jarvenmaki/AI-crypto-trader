@@ -1,3 +1,5 @@
+# modules/symbol_data_fetcher/tasks/potential_trades_checker.py
+# version 2.0, aug 2025
 
 import os
 import dateutil.parser
@@ -124,7 +126,7 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
 
     symbols_to_process = get_symbols_to_scan()
     log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
-    temporary_path = Path(log_paths["logs_path"]) / module_config['task_config']['potential']['temp_log']
+    temporary_path = Path(log_paths["logs_path"]) / module_config['task_config']['temp_log']
     timestamp = get_timestamp()
     
     print(f"🔍 Scanning {len(symbols_to_process)} symbols at {timestamp}")
@@ -155,8 +157,8 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
 
     save_result = print_and_save_recommendations(latest_entries, module_config, module_log_path, module_schema_path)
 
-    # if save_result == True:
-        # empty_the_file(temporary_path)
+    if save_result == True:
+        empty_the_file(temporary_path)
 
 if __name__ == "__main__":
 
@@ -168,6 +170,5 @@ if __name__ == "__main__":
     module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
     
     log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-    # ohlcv_log_path = log_paths["full_log_path"]
 
     run_potential_trades_checker(general_config, module_config, module_log_path, module_schema_path)

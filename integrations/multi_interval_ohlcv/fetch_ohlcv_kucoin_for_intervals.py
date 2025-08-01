@@ -1,4 +1,5 @@
 # integrations/multi_interval_ohlcv/fetch_ohlcv_kucoin_for_intervals.py
+# version 2.0, aug 2025
 
 import sys
 import requests

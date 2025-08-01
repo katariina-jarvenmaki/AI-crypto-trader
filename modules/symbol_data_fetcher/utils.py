@@ -1,3 +1,6 @@
+# modules/symbol_data_fetcher/utils.py
+# version 2.0, aug 2025
+
 import math
 from datetime import datetime, timedelta
 from dateutil import parser as date_parser

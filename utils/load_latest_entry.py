@@ -1,4 +1,5 @@
 # utils/load_latest_entry.py
+# version 2.0, aug 2025
 
 import os
 import json

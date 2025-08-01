@@ -1,4 +1,5 @@
 # modules/pathbuilder/get_filenames.py
+# version 2.0, aug 2025
 
 from pathlib import Path
 

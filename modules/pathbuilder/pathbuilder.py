@@ -1,4 +1,5 @@
 # modules/pathbuilder/pathbuilder.py
+# version 2.0, aug 2025
 
 from modules.pathbuilder.path_selector import path_selector
 from modules.pathbuilder.get_filenames import get_filenames

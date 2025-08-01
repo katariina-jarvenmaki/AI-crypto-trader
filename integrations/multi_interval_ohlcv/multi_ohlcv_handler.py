@@ -1,4 +1,5 @@
 # integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
+# version 2.0, aug 2025
 
 from ta.momentum import RSIIndicator
 from ta.trend import EMAIndicator, MACD

@@ -1,3 +1,6 @@
+# modules/symbol_data_fetcher/tasks/fetch_symbols_data.py
+# version 2.0, aug 2025
+
 from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp 
 from utils.load_latest_entry import load_latest_entry
@@ -10,7 +13,7 @@ def fetch_symbols_data(general_config, module_config, module_log_path, module_sc
     timestamp = get_timestamp()
     print(f"🕒 Running fetch at: {timestamp}")
 
-    symbol_keys = module_config['task_config']['potential']['symbol_keys']
+    symbol_keys = module_config['task_config']['symbol_keys']
 
     latest_entry = load_latest_entry(
         file_path=module_log_path,

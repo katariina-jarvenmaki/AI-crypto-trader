@@ -9,6 +9,21 @@ Just a multiplatform AI crypto trader
 pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil jsonschema 
 ```
 
+**3. Setup the crons**
+
+**Check and update crons**
+```bash
+crontab -e
+```
+
+**Add these lines to the cron (keep them separate)**
+```bash
+TZ=Europe/Helsinki
+0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/potential_trades_checker.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1" || echo "$(date) potential_trades_checker skipped (already running)" >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/fetch_symbols_data.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log 2>&1" || echo "$(date) fetch_symbols_data skipped (already running)" >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log
+```
+
 **Usage guide**
 
 Run the app

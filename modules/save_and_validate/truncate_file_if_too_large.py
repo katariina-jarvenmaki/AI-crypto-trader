@@ -1,4 +1,5 @@
 # modules/save_and_validate/truncate_file_if_too_large.py
+# version 2.0, aug 2025
 
 import os
 import time

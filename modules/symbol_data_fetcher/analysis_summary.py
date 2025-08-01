@@ -1,4 +1,6 @@
 # modules/symbol_data_fetcher/analysis_summary.py
+# version 2.0, aug 2025
+
 from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp 
 from modules.symbol_data_fetcher.utils import score_asset
