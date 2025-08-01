@@ -19,6 +19,7 @@ crontab -e
 **Add these lines to the cron (keep them separate)**
 ```bash
 TZ=Europe/Helsinki
+
 0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/potential_trades_checker.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1" || echo "$(date) potential_trades_checker skipped (already running)" >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/fetch_symbols_data.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log 2>&1" || echo "$(date) fetch_symbols_data skipped (already running)" >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log
@@ -31,11 +32,16 @@ Run the app
 python3 main.py
 ```
 
-To run Symbol data fetchers manually (supposted to be ran by cron):
+To run Symbol data fetchers manually:
 ```bash
-cd /opt/kjc/int/AI-crypto-trader
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data
+# 1. Ajaa vain potential_trades_checker
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher potential_trades_checker
+
+# 2. Ajaa vain fetch_symbols_data
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher fetch_symbols_data
+
+# 3. Ajaa molemmat oikeassa järjestyksessä (ensin potential_trades_checker, sitten fetch_symbols_data)
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher
 ```
 
 **Testing**
@@ -93,4 +99,3 @@ Test Load Latest Entries per Symbol manually:
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
-```

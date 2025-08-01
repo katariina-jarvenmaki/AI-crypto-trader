@@ -113,7 +113,7 @@ def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int) -> bool:
         print(f"⚠️  Exception while checking update for {symbol}: {e}")
         return True
 
-def get_symbols_to_scan():
+def get_symbols_to_scan(module_config):
     return [
         s for s in module_config["supported_symbols"]
         if s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]
@@ -124,7 +124,7 @@ def dict_in_list(d, lst):
 
 def run_potential_trades_checker(general_config, module_config, module_log_path, module_schema_path):
 
-    symbols_to_process = get_symbols_to_scan()
+    symbols_to_process = get_symbols_to_scan(module_config)
     log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
     temporary_path = Path(log_paths["logs_path"]) / module_config['task_config']['temp_log']
     timestamp = get_timestamp()

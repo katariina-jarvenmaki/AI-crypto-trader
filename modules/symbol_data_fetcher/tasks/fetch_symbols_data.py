@@ -8,7 +8,7 @@ from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.load_and_validate.load_and_validate import load_and_validate
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
-def fetch_symbols_data(general_config, module_config, module_log_path, module_schema_path, ohlcv_log_path, ohlcv_schema_path):
+def run_fetch_symbols_data(general_config, module_config, module_log_path, module_schema_path, ohlcv_log_path, ohlcv_schema_path):
 
     timestamp = get_timestamp()
     print(f"🕒 Running fetch at: {timestamp}")
@@ -62,6 +62,6 @@ if __name__ == "__main__":
     ohlcv_log_path = log_paths["full_log_path"]
     ohlcv_schema_path = log_paths["full_log_path"]
 
-    fetch_symbols_data(general_config, module_config, module_log_path, module_schema_path, ohlcv_log_path, ohlcv_schema_path)
+    run_fetch_symbols_data(general_config, module_config, module_log_path, module_schema_path, ohlcv_log_path, ohlcv_schema_path)
 
     
