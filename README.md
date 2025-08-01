@@ -20,8 +20,7 @@ To run Symbol data fetchers manually (supposted to be ran by cron):
 ```bash
 cd /opt/kjc/int/AI-crypto-trader
 /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
+/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data
 ```
 
 **Testing**
