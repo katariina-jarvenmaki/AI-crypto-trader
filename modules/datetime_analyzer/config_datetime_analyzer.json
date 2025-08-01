@@ -5,13 +5,14 @@
   "Monday": {
     "preference": "long",
     "default": [
-      { "time": "00:00-01:15", "trend": "short" },
-      { "time": "01:15-03:00", "trend": "long" },
-      { "time": "03:00-03:30", "trend": "short" },
-      { "time": "03:30-11:30", "trend": "long" },
-      { "time": "11:30-13:00", "trend": "short" },
+      { "time": "00:00-08:45", "trend": "long" },
+      { "time": "08:45-13:00", "trend": "short" },
       { "time": "13:00-15:00", "trend": "long" },
       { "time": "15:00-23:59", "trend": "short" }
+    ],
+    "neutral": [
+      { "time": "00:00-08:45", "trend": "long" },
+      { "time": "08:45-23:59", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-01:15", "trend": "short" },
@@ -27,11 +28,16 @@
     "preference": "long",
     "default": [
       { "time": "00:00-07:00", "trend": "short" },
-      { "time": "07:00-08:00", "trend": "long" },
-      { "time": "08:00-11:30", "trend": "short" },
-      { "time": "11:30-14:00", "trend": "long" },
-      { "time": "14:00-18:00", "trend": "short" },
+      { "time": "07:00-11:30", "trend": "long" },
+      { "time": "11:30-18:00", "trend": "short" },
       { "time": "18:00-21:30", "trend": "long" },
+      { "time": "21:30-23:59", "trend": "short" }
+    ],
+    "neutral": [
+      { "time": "00:00-03:30", "trend": "short" },
+      { "time": "03:30-11:30", "trend": "long" },
+      { "time": "11:30-19:30", "trend": "short" },
+      { "time": "19:30-21:30", "trend": "long" },
       { "time": "21:30-23:59", "trend": "short" }
     ],
     "bullish": [
@@ -49,7 +55,18 @@
     "default": [
       { "time": "00:00-04:00", "trend": "long" },
       { "time": "04:00-06:00", "trend": "short" },
-      { "time": "06:00-23:59", "trend": "long" }
+      { "time": "06:00-19:30", "trend": "long" },
+      { "time": "19:30-22:00", "trend": "short" },
+      { "time": "22:00-23:00", "trend": "long" },
+      { "time": "23:00-23:59", "trend": "short" }
+    ],
+    "neutral": [
+      { "time": "00:00-07:00", "trend": "long" },
+      { "time": "07:00-15:30", "trend": "short" },
+      { "time": "15:30-19:30", "trend": "long" },
+      { "time": "19:30-22:00", "trend": "short" },
+      { "time": "22:00-23:00", "trend": "long" },
+      { "time": "23:00-23:59", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-04:00", "trend": "long" },
@@ -61,14 +78,16 @@
     "preference": "long",
     "default": [
       { "time": "00:00-05:30", "trend": "neutral" },
-      { "time": "05:30-10:00", "trend": "long" },
-      { "time": "10:00-11:00", "trend": "neutral" },
-      { "time": "11:00-12:00", "trend": "long" },
-      { "time": "12:00-15:00", "trend": "neutral" },
-      { "time": "15:00-18:00", "trend": "short" },
-      { "time": "18:00-22:30", "trend": "long" },
-      { "time": "22:30-23:00", "trend": "short" },
-      { "time": "23:00-23:59", "trend": "long" }
+      { "time": "05:30-14:00", "trend": "long" },
+      { "time": "14:00-18:00", "trend": "short" },
+      { "time": "18:00-19:45", "trend": "long" },
+      { "time": "19:45-23:59", "trend": "short" }
+    ],
+    "neutral": [
+      { "time": "00:00-14:00", "trend": "long" },
+      { "time": "14:00-18:00", "trend": "short" },
+      { "time": "18:00-19:45", "trend": "long" },
+      { "time": "19:45-23:59", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-05:30", "trend": "neutral" },
@@ -92,6 +111,11 @@
       { "time": "18:30-22:30", "trend": "long" },
       { "time": "22:30-23:30", "trend": "short" },
       { "time": "23:30-23:59", "trend": "long" }
+    ],
+    "neutral": [
+      { "time": "00:00-04:00", "trend": "short" },
+      { "time": "04:00-05:45", "trend": "long" },
+      { "time": "05:45-09:30", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-03:30", "trend": "long" },
