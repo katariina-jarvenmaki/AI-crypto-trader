@@ -52,8 +52,13 @@ def load_latest_entry(
     # Filter by symbol
     if symbol is not None:
         symbol_key = "symbol"
+
+        if not entries:
+            return []
+
         if symbol_key not in entries[0]:
             raise ValueError(f"Expected key '{symbol_key}' not found in log entries.")
+
         entries = [e for e in entries if e.get(symbol_key) == symbol]
 
     # Filter by time range

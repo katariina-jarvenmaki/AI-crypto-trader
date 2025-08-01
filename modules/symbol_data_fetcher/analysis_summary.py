@@ -10,9 +10,12 @@ def prepare_analysis_results(symbol_scores, module_config):
     # 🧮 Lajitellaan skoret
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0 and s not in module_config["main_symbols"]]
+    min_score_long = module_config.get("score_filter_threshold_long", 0)
+    min_score_short = module_config.get("score_filter_threshold_short", 0)
+
+    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > min_score_long and s not in module_config["main_symbols"]]
     short_syms = sorted(
-        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0 and s not in module_config["main_symbols"]],
+        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < min_score_short and s not in module_config["main_symbols"]],
         key=lambda x: x[1]
     )
 
@@ -66,7 +69,10 @@ def analyze_all_symbols(latest_entries, module_config):
             except ValueError:
                 continue
 
-            if timestamp.date() not in (today, yesterday):
+            include_days_back = module_config.get("analysis_include_days_back", 1)
+            valid_dates = {today - timedelta(days=i) for i in range(include_days_back + 1)}
+
+            if timestamp.date() not in valid_dates:
                 continue
 
             symbol = entry.get("symbol", "").upper()
