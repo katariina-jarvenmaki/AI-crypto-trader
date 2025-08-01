@@ -42,7 +42,7 @@ def prepare_analysis_results(symbol_scores, module_config):
         "potential_to_short": [s for s, _ in top_short],
     }
 
-    return result
+    return [result]
 
 def analyze_all_symbols(latest_entries, module_config):
     """

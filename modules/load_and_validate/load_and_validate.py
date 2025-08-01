@@ -19,6 +19,9 @@ def load_and_validate(file_path="config.json", schema_path=None):
             schema_path = default_schema_path
 
         schema = load_schema(schema_path)
+        if not isinstance(schema, (dict, bool)):
+            raise TypeError(f"❌ Invalid schema type: {type(schema)}. Expected dict or bool.")
+
         validate_data(data, schema, is_jsonl=is_jsonl)
         return data
 

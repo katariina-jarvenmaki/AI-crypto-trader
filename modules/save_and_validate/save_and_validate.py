@@ -18,7 +18,13 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
     # Jos skeema on tiedostopolku, ladataan se
     if isinstance(schema, str) and os.path.isfile(schema):
         with open(schema, "r", encoding="utf-8") as f:
-            schema = json.load(f)
+            try:
+                schema = json.load(f)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"❌ Failed to parse schema at {schema_path}: {e}")
+            
+            if not isinstance(schema, (dict, bool)):
+                raise TypeError(f"❌ Invalid schema type: {type(schema)}. Expected dict or bool.")
 
     # 🔁 Uusi korvaava validointilogiikka
     file_checker(path, verbose=verbose)

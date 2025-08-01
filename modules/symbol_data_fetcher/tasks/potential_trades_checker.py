@@ -1,10 +1,12 @@
 
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
 from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
 from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.load_and_validate.load_and_validate import load_and_validate
+from modules.save_and_validate.save_and_validate import save_and_validate
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols, prepare_analysis_results
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
@@ -34,15 +36,40 @@ def print_and_save_recommendations(latest_entries, module_config, module_log_pat
         print("\n📉 ❤️  SHORT RECOMMENDATIONS (most potential first):")
         print(" ".join(short_syms))
 
-    # Save analysis log if implemented elsewhere
+    # Save analysis log, if implemented elsewhere
     analysis_results = prepare_analysis_results(scores, module_config)
 
-    print(f"analysis_results: {analysis_results}")
-    print(f"\nSaving...")
-    # print(f"scores: {scores}")
-    # print(f"module_log_path: {module_log_path}")
-    # print(f"module_scheme_path: {module_scheme_path}")
-    # save_analysis_log(scores, module_log_path, module_scheme_path)
+    print(f"\n💾 Saving new results if not already in config...")
+
+    # Check if it's already on log
+    if os.path.exists(module_log_path):
+        existing_data = load_and_validate(
+            file_path = module_log_path,
+            schema_path = module_scheme_path
+        )
+        if existing_data is None:
+            print("⚠️  Warning: Log exists but failed to load properly, initializing empty list.")
+            existing_data = []
+    else:
+        print(f"❗ Log file not found: {module_log_path}. Initializing empty log.")
+        existing_data = []
+
+    # Saving...
+    for result in analysis_results:
+        print(f"🔍 Result type: {type(result)}, value: {result}")
+        
+        if not dict_in_list(result, existing_data):
+            symbol = result.get('symbol') if isinstance(result, dict) else str(result)
+            print(f"❇️  New result found, saving: {symbol}")
+            save_and_validate(
+                data=result,
+                path=module_log_path,
+                schema=module_scheme_path,
+                verbose=False
+            )
+        else:
+            symbol = result.get('symbol') if isinstance(result, dict) else str(result)
+            print(f"💠 Already exists: {symbol}")
 
 def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> bool:
 
@@ -72,6 +99,9 @@ def get_symbols_to_scan():
         s for s in module_config["supported_symbols"]
         if s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]
     ]
+
+def dict_in_list(d, lst):
+    return any(d == item for item in lst)
 
 def run_potential_trades_checker(general_config, module_config, module_log_path, module_scheme_path):
 
@@ -114,7 +144,7 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
 if __name__ == "__main__":
 
     general_config = load_and_validate()
-    paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
+    paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
     module_log_path = paths["full_log_path"]
     module_scheme_path = paths["full_log_schema_path"]
 
