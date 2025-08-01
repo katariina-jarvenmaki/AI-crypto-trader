@@ -115,7 +115,7 @@
     "neutral": [
       { "time": "00:00-04:00", "trend": "short" },
       { "time": "04:00-05:45", "trend": "long" },
-      { "time": "05:45-09:30", "trend": "short" }
+      { "time": "05:45-09:45", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-03:30", "trend": "long" },

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from configs.config import LOCAL_TIMEZONE
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config_datetime_analyzer.json")
-SENTIMENT_LOG_FILE = os.path.join(os.path.dirname(__file__), "../history_analyzer/logs/history_sentiment_log.jsonl")
+SENTIMENT_LOG_FILE = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
 
 def load_config():
     with open(CONFIG_FILE, "r", encoding="utf-8") as file:
@@ -15,6 +15,9 @@ def load_config():
         return full_config, settings
 
 def get_latest_sentiment_state():
+    if not os.path.exists(SENTIMENT_LOG_FILE):
+        print(f"⚠️ File not found: {SENTIMENT_LOG_FILE}")
+        return None
     try:
         with open(SENTIMENT_LOG_FILE, "r", encoding="utf-8") as f:
             last_line = None
@@ -26,17 +29,17 @@ def get_latest_sentiment_state():
 
             data = json.loads(last_line)
             result = data.get("result", {})
+            print(f"✅ Found sentiment result: {result}")
             return {
                 "broad_state": result.get("broad_state"),
                 "last_hour_state": result.get("last_hour_state")
             }
-    except FileNotFoundError:
-        print("⚠️ Sentiment log file not found.")
     except json.JSONDecodeError:
         print("⚠️ Invalid JSON in sentiment log.")
     return None
 
 def determine_mode(state):
+
     if not state:
         return "default"
 
@@ -47,7 +50,11 @@ def determine_mode(state):
         return "bullish"
     elif broad == "bear" and last_hour == "bear":
         return "bearish"
-    elif broad in ("bull", "bear") or last_hour in ("bull", "bear"):
+    elif (
+        ("neutral" in (broad, last_hour))
+        and (broad in ("bull", "bear", "neutral"))
+        and (last_hour in ("bull", "bear", "neutral"))
+    ):
         return "neutral"
     else:
         return "default"
@@ -80,6 +87,7 @@ def get_current_trend_for_now(config_data, weekday, mode, now, lookahead_minutes
 def get_preferences(config_data, weekday, now, sentiment_state, settings):
     mode = determine_mode(sentiment_state)
     day_data = config_data.get(weekday, {})
+    print(f"☀️  Daytime mode: {mode}")
 
     week_pref = day_data.get("preference", "unknown")
     lookahead_minutes = settings.get("lookahead_minutes", 30)

@@ -16,7 +16,14 @@ def load_json(path):
     if not os.path.exists(path):
         return {}
     with open(path, 'r') as f:
-        return json.load(f)
+        try:
+            content = f.read().strip()
+            if not content:
+                return {}
+            return json.loads(content)
+        except json.JSONDecodeError as e:
+            print(f"Warning: Failed to parse {path}: {e}")
+            return {}
 
 def save_json(path, data, allow_empty_overwrite=False):
     if os.path.exists(path):

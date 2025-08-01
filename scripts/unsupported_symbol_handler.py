@@ -74,7 +74,6 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
 
     try:
         preferences = analyze_datetime_preferences()
-        print(f"Datetime-preferences: {preferences}")
         week_pref = preferences.get("week_preference")
         time_pref = preferences.get("time_preference")
 
