@@ -10,7 +10,7 @@ def truncate_file_if_too_large(
     file_path: Path,
     max_size_mb: float = 25.0,
     entries_to_keep: int = 500,
-    backup_suffix: str = ".backup",
+    backup_prefix: str = "temporary_log_",
     log_action: bool = True
 ):
     """Truncate a text-based file if it exceeds a maximum size.
@@ -19,7 +19,7 @@ def truncate_file_if_too_large(
         file_path (Path): Path to the file to be monitored.
         max_size_mb (float): Maximum allowed size in megabytes.
         entries_to_keep (int): Number of last lines to keep.
-        backup_suffix (str): Suffix to use in backup filename.
+        backup_prefix (str): Prefix to use in backup filename.
         log_action (bool): Whether to log the action using logging.info.
     """
     if not file_path.exists():
@@ -44,7 +44,7 @@ def truncate_file_if_too_large(
 
     # Create backup
     timestamp = int(time.time())
-    archive_name = file_path.with_name(f"{file_path.stem}_{timestamp}{backup_suffix}{file_path.suffix}")
+    archive_name = file_path.with_name(f"{backup_prefix}{file_path.stem}_{timestamp}{file_path.suffix}")
     try:
         copyfile(file_path, archive_name)
     except Exception as e:

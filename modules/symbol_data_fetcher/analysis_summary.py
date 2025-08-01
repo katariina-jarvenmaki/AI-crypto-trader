@@ -13,8 +13,8 @@ def analyze_all_symbols(latest_entries, module_config):
 
     symbol_scores = {}
 
-    print(f"latest_entries: {latest_entries}")
-    for entry in latest_entries:
+    for entry in latest_entries.values():
+
         print(f"entry: {entry}")
         try:
             ts_str = entry.get("timestamp", "")
