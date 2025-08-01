@@ -1,6 +1,7 @@
 # modules/symbol_data_fetcher/analysis_summary.py
 from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp 
+from modules.symbol_data_fetcher.utils import score_asset
 
 def analyze_all_symbols(latest_entries, module_config):
     """
@@ -14,8 +15,6 @@ def analyze_all_symbols(latest_entries, module_config):
     symbol_scores = {}
 
     for entry in latest_entries.values():
-
-        print(f"entry: {entry}")
         try:
             ts_str = entry.get("timestamp", "")
             try:
@@ -30,14 +29,11 @@ def analyze_all_symbols(latest_entries, module_config):
                 continue
 
             symbol = entry.get("symbol", "").upper()
-            print(f"symbol: {symbol}")
             if symbol in module_config["blocked_symbols"] or symbol in module_config["main_symbols"]:
                 continue
 
             data_preview = entry.get("data_preview")
-            print(f"data_preview: {data_preview}")
             timestamp_str = entry.get("timestamp")
-            print(f"timestamp_str: {timestamp_str}")
             if not (symbol and data_preview and timestamp_str):
                 continue
             try:
@@ -45,13 +41,12 @@ def analyze_all_symbols(latest_entries, module_config):
                 if timestamp.tzinfo is None:
                     timestamp = timestamp.replace(tzinfo=now.tzinfo)
                 timestamp = timestamp.astimezone(now.tzinfo)
-                print(f"timestamp: {timestamp}")
             except ValueError:
                 continue
 
             existing = symbol_scores.get(symbol)
             if existing is None or timestamp > existing["timestamp"]:
-                score = score_asset(data_preview)
+                score = score_asset(data_preview, module_config)
                 symbol_scores[symbol] = {
                     "score": score,
                     "timestamp": timestamp,
