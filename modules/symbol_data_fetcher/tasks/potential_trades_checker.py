@@ -5,7 +5,7 @@ from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
 from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.load_and_validate.load_and_validate import load_and_validate
-from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols
+from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols, prepare_analysis_results
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
 
@@ -35,7 +35,14 @@ def print_and_save_recommendations(latest_entries, module_config, module_log_pat
         print(" ".join(short_syms))
 
     # Save analysis log if implemented elsewhere
-    save_analysis_log(scores, module_log_path, module_scheme_path)
+    analysis_results = prepare_analysis_results(scores, module_config)
+
+    print(f"analysis_results: {analysis_results}")
+    print(f"\nSaving...")
+    # print(f"scores: {scores}")
+    # print(f"module_log_path: {module_log_path}")
+    # print(f"module_scheme_path: {module_scheme_path}")
+    # save_analysis_log(scores, module_log_path, module_scheme_path)
 
 def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> bool:
 
@@ -65,9 +72,6 @@ def get_symbols_to_scan():
         s for s in module_config["supported_symbols"]
         if s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]
     ]
-
-def save_analysis_log(scores, module_log_path, module_scheme_path):
-    print(f"\nSaving...")
 
 def run_potential_trades_checker(general_config, module_config, module_log_path, module_scheme_path):
 

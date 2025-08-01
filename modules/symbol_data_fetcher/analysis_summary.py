@@ -3,6 +3,47 @@ from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp 
 from modules.symbol_data_fetcher.utils import score_asset
 
+def prepare_analysis_results(symbol_scores, module_config):
+
+    now = datetime.fromisoformat(get_timestamp())
+
+    # 🧮 Lajitellaan skoret
+    sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
+
+    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0 and s not in module_config["main_symbols"]]
+    short_syms = sorted(
+        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0 and s not in module_config["main_symbols"]],
+        key=lambda x: x[1]
+    )
+
+    # 🥇 Top-N long
+    top_long = []
+    if module_config["top_n_long"]> 0:
+        top_long = long_syms[:module_config["top_n_long"]]
+        if module_config["top_n_extra_ties"] and len(long_syms) > module_config["top_n_long"]:
+            cutoff_score = long_syms[module_config["top_n_long"]- 1][1]
+            extra = [x for x in long_syms[module_config["top_n_long"]:] if x[1] == cutoff_score]
+            top_long += extra
+
+    # 🥇 Top-N short
+    top_short = []
+    if module_config["top_n_short"] > 0:
+        top_short = short_syms[:module_config["top_n_short"]]
+        if module_config["top_n_extra_ties"] and len(short_syms) > module_config["top_n_short"]:
+            cutoff_score = short_syms[module_config["top_n_short"] - 1][1]
+            extra = [x for x in short_syms[module_config["top_n_short"]:] if x[1] == cutoff_score]
+            top_short += extra
+
+    # 📦 Lopullinen tulos
+    result = {
+        "timestamp": now.isoformat(),
+        "potential_both_ways": module_config["main_symbols"],
+        "potential_to_long": [s for s, _ in top_long],
+        "potential_to_short": [s for s, _ in top_short],
+    }
+
+    return result
+
 def analyze_all_symbols(latest_entries, module_config):
     """
     Analyzes given OHLCV entries.
