@@ -3,7 +3,7 @@
     "lookahead_minutes": 30
   },
   "Monday": {
-    "preference": "long",
+    "weekday_preference": "long",
     "default": [
       { "time": "00:00-08:45", "trend": "long" },
       { "time": "08:45-13:00", "trend": "short" },
@@ -25,7 +25,7 @@
     ]
   },
   "Tuesday": {
-    "preference": "long",
+    "weekday_preference": "long",
     "default": [
       { "time": "00:00-07:00", "trend": "short" },
       { "time": "07:00-11:30", "trend": "long" },
@@ -51,7 +51,7 @@
     ]
   },
   "Wednesday": {
-    "preference": "long",
+    "weekday_preference": "long",
     "default": [
       { "time": "00:00-04:00", "trend": "long" },
       { "time": "04:00-06:00", "trend": "short" },
@@ -75,7 +75,7 @@
     ]
   },
   "Thursday": {
-    "preference": "long",
+    "weekday_preference": "long",
     "default": [
       { "time": "00:00-05:30", "trend": "neutral" },
       { "time": "05:30-14:00", "trend": "long" },
@@ -102,20 +102,26 @@
     ]
   },
   "Friday": {
-    "preference": "short",
+    "weekday_preference": "short",
     "default": [
-      { "time": "00:00-03:30", "trend": "long" },
-      { "time": "04:00-12:00", "trend": "short" },
-      { "time": "12:00-17:00", "trend": "long" },
-      { "time": "17:00-18:30", "trend": "short" },
-      { "time": "18:30-22:30", "trend": "long" },
-      { "time": "22:30-23:30", "trend": "short" },
+      { "time": "00:00-04:00", "trend": "short" },
+      { "time": "04:00-05:45", "trend": "long" },
+      { "time": "05:45-12:00", "trend": "short" },
+      { "time": "12:00-16:15", "trend": "long" },
+      { "time": "16:15-18:30", "trend": "short" },
+      { "time": "18:30-21:30", "trend": "long" },
+      { "time": "21:30-23:30", "trend": "short" },
       { "time": "23:30-23:59", "trend": "long" }
     ],
     "neutral": [
       { "time": "00:00-04:00", "trend": "short" },
       { "time": "04:00-05:45", "trend": "long" },
-      { "time": "05:45-09:45", "trend": "short" }
+      { "time": "05:45-11:00", "trend": "short" },
+      { "time": "11:00-16:15", "trend": "long" },
+      { "time": "16:15-17:00", "trend": "short" },
+      { "time": "17:00-18:00", "trend": "long" },
+      { "time": "18:00-23:45", "trend": "short" },
+      { "time": "23:45-23:59", "trend": "long" }
     ],
     "bullish": [
       { "time": "00:00-03:30", "trend": "long" },
@@ -128,7 +134,7 @@
     ]
   },
   "Saturday": {
-    "preference": "short",
+    "weekday_preference": "short",
     "default": [
       { "time": "00:00-02:00", "trend": "short" },
       { "time": "02:00-03:30", "trend": "long" },
@@ -151,7 +157,7 @@
     ]
   },
   "Sunday": {
-    "preference": "short",
+    "weekday_preference": "short",
     "default": [
       { "time": "00:00-00:30", "trend": "short" },
       { "time": "00:30-04:30", "trend": "long" },
@@ -174,5 +180,52 @@
       { "time": "20:00-22:30", "trend": "long" },
       { "time": "22:30-23:59", "trend": "short" }
     ]
-  }
+  },
+  "days_of_the_month": [
+    { "1": "short" },
+    { "2": "" },
+    { "3": "" },
+    { "4": "" },
+    { "5": "" },
+    { "6": "" },
+    { "7": "" },
+    { "8": "" },
+    { "9": "" },
+    { "10": "" },
+    { "11": "" },
+    { "12": "" },
+    { "13": "" },
+    { "14": "" },
+    { "15": "" },
+    { "16": "" },
+    { "17": "" },
+    { "18": "" },
+    { "19": "" },
+    { "20": "" },
+    { "21": "" },
+    { "22": "" },
+    { "23": "" },
+    { "24": "" },
+    { "25": "" },
+    { "26": "" },
+    { "27": "" },
+    { "28": "" },
+    { "29": "" },
+    { "30": "" },
+    { "31": "" }
+  ],
+  "months_of_the_year": [
+    { "1": "" },
+    { "2": "" },
+    { "3": "" },
+    { "4": "" },
+    { "5": "" },
+    { "6": "" },
+    { "7": "" },
+    { "8": "short" },
+    { "9": "" },
+    { "10": "" },
+    { "11": "" },
+    { "12": "" }
+  ]
 }

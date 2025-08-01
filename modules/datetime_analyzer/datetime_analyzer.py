@@ -89,7 +89,7 @@ def get_preferences(config_data, weekday, now, sentiment_state, settings):
     day_data = config_data.get(weekday, {})
     print(f"☀️  Daytime mode: {mode}")
 
-    week_pref = day_data.get("preference", "unknown")
+    weekday_pref = day_data.get("weekday_preference", "unknown")
     lookahead_minutes = settings.get("lookahead_minutes", 30)
 
     time_pref = get_current_trend_for_now(config_data, weekday, mode, now, lookahead_minutes)
@@ -99,19 +99,19 @@ def get_preferences(config_data, weekday, now, sentiment_state, settings):
 
     return {
         "weekday": weekday,
-        "week_preference": week_pref,
+        "weekday_preference": weekday_pref,
         "time_preference": time_pref,
         "sentiment_mode": mode
     }
 
 def analyze_datetime_preferences(current_time=None):
     """
-    Palauttaa week_preference ja time_preference nykyhetken tai annetun ajan perusteella.
+    Palauttaa weekday_preference ja time_preference nykyhetken tai annetun ajan perusteella.
     
     :param current_time: datetime, oletuksena nykyhetki LOCAL_TIMEZONE:ssa
     :return: dict {
         "weekday": str,
-        "week_preference": str,
+        "weekday_preference": str,
         "time_preference": str,
         "sentiment_mode": str
     }
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         prefs = analyze_datetime_preferences()
 
         print(f"\n📅 Weekday: {prefs['weekday']}")
-        print(f"📌 Week preference: {prefs['week_preference'].upper()}")
+        print(f"📌 Weekday preference: {prefs['weekday_preference'].upper()}")
         print(f"🧠 Sentiment mode: {prefs['sentiment_mode'].upper()}")
         print(f"🕰️  Time-based preference: {prefs['time_preference'].upper()}")
 
