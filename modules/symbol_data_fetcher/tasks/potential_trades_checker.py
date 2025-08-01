@@ -12,9 +12,30 @@ from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fa
 def print_and_save_recommendations(latest_entries, module_config, module_log_path, module_scheme_path):
     long_syms, short_syms, scores = analyze_all_symbols(latest_entries, module_config)
     
-    # print(f"latest_entries: {latest_entries}")
-    # print(f"module_log_path: {module_log_path}")
-    # print(f"module_scheme_path: {module_scheme_path}")
+    if not long_syms and not short_syms:
+        print("😕 No analyzable data for today.")
+        return
+
+    print("\n🧠 Verbal interpretation:")
+
+    for sym in long_syms:
+        score = scores[sym]["score"]
+        print(f" - {sym}: LONG bias (score: {score:.2f})")
+
+    for sym in short_syms:
+        score = scores[sym]["score"]
+        print(f" - {sym}: SHORT bias (score: {score:.2f})")
+
+    if long_syms:
+        print("\n📈 💚 LONG RECOMMENDATIONS (most potential first):")
+        print(" ".join(long_syms))
+
+    if short_syms:
+        print("\n📉 ❤️  SHORT RECOMMENDATIONS (most potential first):")
+        print(" ".join(short_syms))
+
+    # Save analysis log if implemented elsewhere
+    save_analysis_log(scores, module_log_path, module_scheme_path)
 
 def needs_update(symbol: str, latest_entry: dict, max_age_minutes: int = 60) -> bool:
 
@@ -44,6 +65,9 @@ def get_symbols_to_scan():
         s for s in module_config["supported_symbols"]
         if s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]
     ]
+
+def save_analysis_log(scores, module_log_path, module_scheme_path):
+    print(f"\nSaving...")
 
 def run_potential_trades_checker(general_config, module_config, module_log_path, module_scheme_path):
 

@@ -63,7 +63,7 @@ def analyze_all_symbols(latest_entries, module_config):
         key=lambda s: symbol_scores[s]["score"]
     )
 
-    print(f"Long symbols: {long_symbols}")
-    print(f"Short symbols: {short_symbols}")
+    print(f"\nLong symbols: {long_symbols}")
+    print(f"\nShort symbols: {short_symbols}")
 
     return long_symbols, short_symbols, symbol_scores

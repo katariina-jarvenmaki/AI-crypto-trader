@@ -92,10 +92,10 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
         except Exception as e:
             errors[exchange] = str(e)
-            logging.warning(f"⚠️ Error fetching {symbol} ({exchange}): {e}")
+            logging.warning(f"⚠️  Error fetching {symbol} ({exchange}): {e}")
 
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
-    print(f"\033[93m⚠️ This coin pair can't be found from any supported exchange: {symbol}\033[0m")
+    print(f"\033[93m⚠️  This coin pair can't be found from any supported exchange: {symbol}\033[0m")
     return None
 
 def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
@@ -108,10 +108,10 @@ def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dic
 
     for interval, df in data_by_interval.items():
         if df.empty:
-            print(f"⚠️ Interval {interval} has empty DataFrame")
+            print(f"⚠️  Interval {interval} has empty DataFrame")
             continue
         if 'close' not in df.columns or df['close'].isnull().all():
-            print(f"⚠️ Interval {interval} missing valid close prices")
+            print(f"⚠️  Interval {interval} missing valid close prices")
             continue
 
         analysis = analyze_ohlcv(df)
@@ -124,7 +124,7 @@ def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dic
 
         missing_keys = equired_analysis_keys - analysis.keys()
         if missing_keys:
-            print(f"⚠️ Interval {interval} missing keys from analysis: {missing_keys}")
+            print(f"⚠️  Interval {interval} missing keys from analysis: {missing_keys}")
 
         summary[interval] = analysis
 
