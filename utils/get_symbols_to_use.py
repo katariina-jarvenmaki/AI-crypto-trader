@@ -49,7 +49,7 @@ def get_symbols_to_use(module_config_path, module_log_path, mode=None):
         elif mode == "no_trade":
             message = "⏸️  No-trade mode: not using any symbols."
         else:
-            message = "✅ No mode: No current manual limits on trade."
+            message = "✅ No mode: No current manualgi limits on trade."
 
     if not all_symbols:
         fallback_symbols = module_config.get("main_symbols", [])
