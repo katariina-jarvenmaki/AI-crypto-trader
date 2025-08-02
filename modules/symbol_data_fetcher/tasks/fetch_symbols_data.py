@@ -3,7 +3,7 @@
 
 from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp 
-from utils.load_latest_entry import load_latest_entry
+from utils.get_symbols_to_use import get_symbols_to_use
 from modules.pathbuilder.pathbuilder import pathbuilder
 from modules.load_and_validate.load_and_validate import load_and_validate
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
@@ -13,33 +13,15 @@ def run_fetch_symbols_data(general_config, module_config, module_log_path, modul
     timestamp = get_timestamp()
     print(f"🕒 Running fetch at: {timestamp}")
 
-    symbol_keys = module_config['task_config']['symbol_keys']
+    result = get_symbols_to_use(module_config, module_log_path)
+    symbols_to_use = result["symbols_to_use"]
+    message = result["message"]
 
-    latest_entry = load_latest_entry(
-        file_path=module_log_path,
-        limit=1,
-        use_timestamp=True
-    )
+    if message:
+        print(message)
 
-    all_symbols = set()
-
-    # Tarkista löytyikö logista mitään
-    if latest_entry and isinstance(latest_entry, list) and isinstance(latest_entry[0], dict):
-        entry = latest_entry[0]
-        for key in symbol_keys:
-            symbols = entry.get(key, [])
-            if symbols:
-                print(f"🔍 {key}: {symbols[:5]}... ({len(symbols)} total)")
-            all_symbols.update(symbols)
-
-    # Jos ei saatu symboleita logista → fallback main_symbols
-    if not all_symbols:
-        print("⚠️  No valid symbol data found in log. Falling back to module config's main_symbols")
-        fallback_symbols = module_config.get("main_symbols", [])
-        all_symbols.update(fallback_symbols)
-
-    print(f"🧮 Total unique symbols to process: {len(all_symbols)}")
-    for symbol in sorted(all_symbols):
+    print(f"🧮 Total unique symbols to process: {len(symbols_to_use)}")
+    for symbol in sorted(symbols_to_use):
         print(f"➡️  Fetching {symbol}")
         fetch_ohlcv_fallback(
             symbol=symbol,
