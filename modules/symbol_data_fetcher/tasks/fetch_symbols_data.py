@@ -14,14 +14,14 @@ def run_fetch_symbols_data(general_config, module_config, module_log_path, modul
     print(f"🕒 Running fetch at: {timestamp}")
 
     result = get_symbols_to_use(module_config, module_log_path)
-    symbols_to_use = result["symbols_to_use"]
+    all_symbols = result["all_symbols"]
     message = result["message"]
 
     if message:
         print(message)
 
-    print(f"🧮 Total unique symbols to process: {len(symbols_to_use)}")
-    for symbol in sorted(symbols_to_use):
+    print(f"🧮 Total unique symbols to process: {len(all_symbols)}")
+    for symbol in sorted(all_symbols):
         print(f"➡️  Fetching {symbol}")
         fetch_ohlcv_fallback(
             symbol=symbol,
