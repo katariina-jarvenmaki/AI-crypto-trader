@@ -19,6 +19,7 @@ def get_symbols_to_use(module_config_path, module_log_path, mode=None):
     - "long_only": removes symbols from 'potential_to_short'
     - "short_only": removes symbols from 'potential_to_long'
     - "no_trade": returns an empty set of symbols_to_trade
+    - None: returns all the symbols without limits 
     """
 
     symbol_keys = module_config['task_config']['symbol_keys']
@@ -49,7 +50,7 @@ def get_symbols_to_use(module_config_path, module_log_path, mode=None):
         elif mode == "no_trade":
             message = "⏸️  No-trade mode: not using any symbols."
         else:
-            message = "✅ No mode: No current manualgi limits on trade."
+            message = "✅ No mode: No current manual limits on trade."
 
     if not all_symbols:
         fallback_symbols = module_config.get("main_symbols", [])
