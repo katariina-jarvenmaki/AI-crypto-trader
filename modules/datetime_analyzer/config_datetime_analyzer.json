@@ -149,7 +149,9 @@
       { "time": "08:00-09:45", "trend": "short" },
       { "time": "09:45-11:30", "trend": "long" },
       { "time": "11:30-19:30", "trend": "short" },
-      { "time": "19:30-23:59", "trend": "long" }
+      { "time": "19:30-20:15", "trend": "long" },
+      { "time": "20:15-22:00", "trend": "short" },
+      { "time": "22:00-23:59", "trend": "long" }
     ],
     "bullish": [
       { "time": "00:00-02:00", "trend": "short" },
