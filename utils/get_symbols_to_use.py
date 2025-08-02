@@ -3,7 +3,7 @@
 
 from utils.load_latest_entry import load_latest_entry
 
-def get_symbols_to_use(module_config, module_log_path, mode=None):
+def get_symbols_to_use(module_config_path, module_log_path, mode=None):
 
     """
     Returns the set of symbols that should be used in the current context.
@@ -11,14 +11,14 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
     Returns:
         {
             "message": str,              # A message describing what was done
-            "symbols_to_use": set[str],  # The final set of symbols to be used
+            "symbols_to_trade": set[str],  # The final set of symbols to be used
             "all_symbols": set[str]      # All discovered symbols (before any mode-based filtering)
         }
 
     mode (optional):
     - "long_only": removes symbols from 'potential_to_short'
     - "short_only": removes symbols from 'potential_to_long'
-    - "no_trade": returns an empty set of symbols_to_use
+    - "no_trade": returns an empty set of symbols_to_trade
     """
 
     symbol_keys = module_config['task_config']['symbol_keys']
@@ -47,7 +47,9 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
             exclude_symbols = set(entry.get("potential_to_long", []))
             message = f"🔴 Short-only mode: excluded {len(exclude_symbols)} long candidates."
         elif mode == "no_trade":
-            message = "⏸️ No-trade mode: not using any symbols."
+            message = "⏸️  No-trade mode: not using any symbols."
+        else:
+            message = "✅ No mode: No current manual limits on trade."
 
     if not all_symbols:
         fallback_symbols = module_config.get("main_symbols", [])
@@ -55,12 +57,30 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
         message = "⚠️ No valid symbols found in log. Falling back to main_symbols."
 
     if mode == "no_trade":
-        symbols_to_use = set()
+        symbols_to_trade = set()
     else:
-        symbols_to_use = all_symbols - exclude_symbols
+        symbols_to_trade = all_symbols - exclude_symbols
 
     return {
         "message": message,
-        "symbols_to_use": symbols_to_use,
+        "symbols_to_trade": symbols_to_trade,
         "all_symbols": all_symbols
     }
+
+if __name__ == "__main__":
+
+    from modules.load_and_validate.load_and_validate import load_and_validate
+    from modules.pathbuilder.pathbuilder import pathbuilder
+
+    general_config = load_and_validate()
+    paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
+    module_log_path = paths["full_log_path"]
+    module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
+
+    mode = None
+    # mode = "long_only"
+    # mode = "short_only"
+    # mode = "no_trade"
+
+    result = get_symbols_to_use(module_config, module_log_path, mode=mode)
+    print(f"Result:\n{result}")

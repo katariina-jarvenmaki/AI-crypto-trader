@@ -96,6 +96,11 @@ Test Load Latest Entries per Symbol manually:
 /usr/bin/python3 -m utils.load_latest_entries_per_symbol
 ```
 
+Test Get Symbols to Use manually:
+```bash
+/usr/bin/python3 -m utils.get_symbols_to_use
+```
+
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
