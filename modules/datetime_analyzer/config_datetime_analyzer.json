@@ -151,7 +151,8 @@
       { "time": "11:30-19:30", "trend": "short" },
       { "time": "19:30-20:15", "trend": "long" },
       { "time": "20:15-22:00", "trend": "short" },
-      { "time": "22:00-23:59", "trend": "long" }
+      { "time": "22:00-22:30", "trend": "long" },
+      { "time": "22:30-23:59", "trend": "neutral" }
     ],
     "bullish": [
       { "time": "00:00-02:00", "trend": "short" },
@@ -177,6 +178,11 @@
       { "time": "20:00-22:30", "trend": "long" },
       { "time": "22:30-23:59", "trend": "short" }
     ],
+    "neutral": [
+      { "time": "00:00-01:45", "trend": "neutral" },
+      { "time": "01:45-02:30", "trend": "short" },
+      { "time": "02:30-23:59", "trend": "long" }
+    ],
     "bullish": [
       { "time": "00:00-00:30", "trend": "short" },
       { "time": "00:30-04:30", "trend": "long" },
@@ -192,8 +198,8 @@
   "days_of_the_month": [
     { "1": "short" },
     { "2": "long" },
-    { "3": "" },
-    { "4": "" },
+    { "3": "long" },
+    { "4": "long" },
     { "5": "" },
     { "6": "" },
     { "7": "" },
