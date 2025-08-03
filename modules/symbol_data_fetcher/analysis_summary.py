@@ -1,147 +1,118 @@
 # modules/symbol_data_fetcher/analysis_summary.py
+# version 2.0, aug 2025
 
-import json
 from datetime import datetime, timedelta
-from pathlib import Path
-
-from modules.symbol_data_fetcher.config_symbol_data_fetcher import (
-    SYMBOL_LOG_PATH,
-    OHLCV_LOG_PATH,
-    MAIN_SYMBOLS,
-    TOP_N_LONG,
-    TOP_N_SHORT,
-    LOCAL_TIMEZONE,
-    ANALYSIS_MIN_INTERVAL_HOURS,
-    TOP_N_EXTRA_TIES,
-    BLOCKED_SYMBOLS
-)
+from utils.get_timestamp import get_timestamp 
 from modules.symbol_data_fetcher.utils import score_asset
 
-def save_analysis_log(symbol_scores):
-    now = datetime.now(LOCAL_TIMEZONE)
-    logs_dir = Path("logs")
-    logs_dir.mkdir(exist_ok=True)
+def prepare_analysis_results(symbol_scores, module_config):
 
-    # ⚠️ Skip if log already exists within the last ANALYSIS_MIN_INTERVAL_HOURS
-    if SYMBOL_LOG_PATH.exists():
-        try:
-            with open(SYMBOL_LOG_PATH, "r") as f:
-                for line in reversed(list(f)):
-                    try:
-                        existing = json.loads(line)
-                        timestamp_str = existing.get("timestamp")
-                        if timestamp_str:
-                            existing_time = datetime.fromisoformat(timestamp_str).astimezone(LOCAL_TIMEZONE)
-                            if now - existing_time < timedelta(hours=ANALYSIS_MIN_INTERVAL_HOURS):
-                                print(f"\n⚠️  Analysis log already exists within {ANALYSIS_MIN_INTERVAL_HOURS} hours, skipping save.")
-                                return
-                            else:
-                                break
-                    except (json.JSONDecodeError, ValueError):
-                        continue
-        except OSError:
-            print("\n⚠️  Failed to read log file. Writing a new line.")
+    now = datetime.fromisoformat(get_timestamp())
 
-    # 🧮 Sort and score
+    # 🧮 Lajitellaan skoret
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > 0 and s not in MAIN_SYMBOLS]
+    min_score_long = module_config.get("score_filter_threshold_long", 0)
+    min_score_short = module_config.get("score_filter_threshold_short", 0)
+
+    long_syms = [(s, sc["score"]) for s, sc in sorted_symbols if sc["score"] > min_score_long and s not in module_config["main_symbols"]]
     short_syms = sorted(
-        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < 0 and s not in MAIN_SYMBOLS],
+        [(s, sc["score"]) for s, sc in symbol_scores.items() if sc["score"] < min_score_short and s not in module_config["main_symbols"]],
         key=lambda x: x[1]
     )
 
     # 🥇 Top-N long
     top_long = []
-    if TOP_N_LONG > 0:
-        top_long = long_syms[:TOP_N_LONG]
-        if TOP_N_EXTRA_TIES and len(long_syms) > TOP_N_LONG:
-            cutoff_score = long_syms[TOP_N_LONG - 1][1]
-            extra = [x for x in long_syms[TOP_N_LONG:] if x[1] == cutoff_score]
+    if module_config["top_n_long"]> 0:
+        top_long = long_syms[:module_config["top_n_long"]]
+        if module_config["top_n_extra_ties"] and len(long_syms) > module_config["top_n_long"]:
+            cutoff_score = long_syms[module_config["top_n_long"]- 1][1]
+            extra = [x for x in long_syms[module_config["top_n_long"]:] if x[1] == cutoff_score]
             top_long += extra
 
     # 🥇 Top-N short
     top_short = []
-    if TOP_N_SHORT > 0:
-        top_short = short_syms[:TOP_N_SHORT]
-        if TOP_N_EXTRA_TIES and len(short_syms) > TOP_N_SHORT:
-            cutoff_score = short_syms[TOP_N_SHORT - 1][1]
-            extra = [x for x in short_syms[TOP_N_SHORT:] if x[1] == cutoff_score]
+    if module_config["top_n_short"] > 0:
+        top_short = short_syms[:module_config["top_n_short"]]
+        if module_config["top_n_extra_ties"] and len(short_syms) > module_config["top_n_short"]:
+            cutoff_score = short_syms[module_config["top_n_short"] - 1][1]
+            extra = [x for x in short_syms[module_config["top_n_short"]:] if x[1] == cutoff_score]
             top_short += extra
 
+    # 📦 Lopullinen tulos
     result = {
         "timestamp": now.isoformat(),
-        "potential_both_ways": MAIN_SYMBOLS,
+        "potential_both_ways": module_config["main_symbols"],
         "potential_to_long": [s for s, _ in top_long],
         "potential_to_short": [s for s, _ in top_short],
     }
 
-    with open(SYMBOL_LOG_PATH, "a") as f:
-        json.dump(result, f)
-        f.write("\n")
+    return [result]
 
-    print(f"\n📝 Analysis log saved: {SYMBOL_LOG_PATH}")
-
-
-def analyze_all_symbols():
+def analyze_all_symbols(latest_entries, module_config):
     """
-    Reads logs and analyzes them.
+    Analyzes given OHLCV entries.
     Returns sorted long and short lists along with explanations.
     """
-    if not OHLCV_LOG_PATH.exists():
-        print("❌ OHLCV_LOG_PATH not found.")
-        return
-
-    today = datetime.now(LOCAL_TIMEZONE).date()
+    now = datetime.fromisoformat(get_timestamp())
+    today = now.date()
     yesterday = today - timedelta(days=1)
+
     symbol_scores = {}
 
-    with open(OHLCV_LOG_PATH, "r") as f:
-        for line in f:
+    for entry in latest_entries.values():
+        try:
+            ts_str = entry.get("timestamp", "")
             try:
-                entry = json.loads(line)
-                ts_str = entry.get("timestamp", "")
-                if not (ts_str.startswith(today.isoformat()) or ts_str.startswith(yesterday.isoformat())):
-                    continue
-
-                symbol = entry.get("symbol", "").upper()
-                if symbol in BLOCKED_SYMBOLS or symbol in MAIN_SYMBOLS:
-                    continue
-
-                data_preview = entry.get("data_preview")
-                timestamp_str = entry.get("timestamp")
-
-                if not (symbol and data_preview and timestamp_str):
-                    continue
-
-                try:
-                    timestamp = datetime.fromisoformat(timestamp_str)
-                    if timestamp.tzinfo is None:
-                        timestamp = timestamp.replace(tzinfo=LOCAL_TIMEZONE)
-                    timestamp = timestamp.astimezone(LOCAL_TIMEZONE)
-                except ValueError:
-                    continue
-
-                existing = symbol_scores.get(symbol)
-                if existing is None or timestamp > existing["timestamp"]:
-                    score = score_asset(data_preview)
-                    symbol_scores[symbol] = {
-                        "score": score,
-                        "timestamp": timestamp,
-                    }
-
-            except json.JSONDecodeError:
+                timestamp = datetime.fromisoformat(ts_str)
+                if timestamp.tzinfo is None:
+                    timestamp = timestamp.replace(tzinfo=now.tzinfo)
+                timestamp = timestamp.astimezone(now.tzinfo)
+            except ValueError:
                 continue
+
+            include_days_back = module_config.get("analysis_include_days_back", 1)
+            valid_dates = {today - timedelta(days=i) for i in range(include_days_back + 1)}
+
+            if timestamp.date() not in valid_dates:
+                continue
+
+            symbol = entry.get("symbol", "").upper()
+            if symbol in module_config["blocked_symbols"] or symbol in module_config["main_symbols"]:
+                continue
+
+            data_preview = entry.get("data_preview")
+            timestamp_str = entry.get("timestamp")
+            if not (symbol and data_preview and timestamp_str):
+                continue
+            try:
+                timestamp = datetime.fromisoformat(timestamp_str)
+                if timestamp.tzinfo is None:
+                    timestamp = timestamp.replace(tzinfo=now.tzinfo)
+                timestamp = timestamp.astimezone(now.tzinfo)
+            except ValueError:
+                continue
+
+            existing = symbol_scores.get(symbol)
+            if existing is None or timestamp > existing["timestamp"]:
+                score = score_asset(data_preview, module_config)
+                symbol_scores[symbol] = {
+                    "score": score,
+                    "timestamp": timestamp,
+                }
+
+        except Exception:
+            continue
 
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0 and s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS]
+    long_symbols = [s for s, data in sorted_symbols if data["score"] > 0 and s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]]
     short_symbols = sorted(
-        [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in MAIN_SYMBOLS and s not in BLOCKED_SYMBOLS],
+        [s for s, data in symbol_scores.items() if data["score"] < 0 and s not in module_config["main_symbols"] and s not in module_config["blocked_symbols"]],
         key=lambda s: symbol_scores[s]["score"]
     )
 
-    print(f"Long symbols: {long_symbols}")
-    print(f"Short symbols: {short_symbols}")
+    print(f"\nLong symbols: {long_symbols}")
+    print(f"\nShort symbols: {short_symbols}")
 
     return long_symbols, short_symbols, symbol_scores

@@ -1,4 +1,5 @@
 # modules/symbol_data_fetcher/symbol_data_fetcher.py
+# version 2.0, aug 2025
 
 import argparse
 import logging
@@ -8,39 +9,101 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from modules.symbol_data_fetcher.tasks.potential_trades_checker import run_potential_trades_checker
-from modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher import run_top_symbols_data_fetcher
-from modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher import run_main_symbols_data_fetcher
+from modules.symbol_data_fetcher.tasks.fetch_symbols_data import run_fetch_symbols_data
 
-sys.path.append(str(Path(__file__).resolve().parents[2]))
+from utils.load_latest_entry import load_latest_entry
+from modules.pathbuilder.pathbuilder import pathbuilder
+from modules.load_and_validate.load_and_validate import load_and_validate
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def main():
+def conf_and_paths():
+    general_config = load_and_validate()
+    
+    symbol_paths = pathbuilder(
+        extension=".jsonl", 
+        file_name=general_config["module_filenames"]["symbol_data_fetcher"], 
+        mid_folder="analysis"
+    )
+    ohlcv_paths = pathbuilder(
+        extension=".jsonl", 
+        file_name=general_config["module_filenames"]["multi_interval_ohlcv"], 
+        mid_folder="fetch"
+    )
 
+    module_log_path = symbol_paths["full_log_path"]
+    module_schema_path = symbol_paths["full_log_schema_path"]
+    module_config = load_and_validate(
+        file_path=symbol_paths["full_config_path"],
+        schema_path=symbol_paths["full_config_schema_path"]
+    )
+
+    ohlcv_log_path = ohlcv_paths["full_log_path"]
+    ohlcv_schema_path = ohlcv_paths["full_log_path"]
+
+    return {
+        "general_config": general_config,
+        "module_config": module_config,
+        "module_log_path": module_log_path,
+        "module_schema_path": module_schema_path,
+        "ohlcv_log_path": ohlcv_log_path,
+        "ohlcv_schema_path": ohlcv_schema_path,
+    }
+
+def symbol_data_fetcher():
     parser = argparse.ArgumentParser(
         description="Symbol Data Fetcher - executes various background tasks for market data analysis."
     )
-    subparsers = parser.add_subparsers(dest="command", help="Commands")
+    subparsers = parser.add_subparsers(
+        dest="command",
+        help="Available tasks"
+    )
 
-    # Potential traders (every 2 days)
-    parser_potential = subparsers.add_parser("potential_trades_checker", help="Run potential traders check")
-    parser_potential.set_defaults(func=run_potential_trades_checker)
-
-    # Supported symbols (every 30 minutes)
-    parser_supported = subparsers.add_parser("top_symbols_data_fetcher", help="Fetch supported symbols data")
-    parser_supported.set_defaults(func=run_top_symbols_data_fetcher)
-
-    # Main symbols data (every 5 minutes)
-    parser_main = subparsers.add_parser("main_symbols_data_fetcher", help="Fetch main symbols data")
-    parser_main.set_defaults(func=run_main_symbols_data_fetcher)
+    # Lisää alikomennot
+    subparsers.add_parser("potential_trades_checker", help="Run potential traders check")
+    subparsers.add_parser("fetch_symbols_data", help="Fetch symbols data")
 
     args = parser.parse_args()
+    conf = conf_and_paths()
 
-    if not args.command:
+    if args.command == "potential_trades_checker":
+        run_potential_trades_checker(
+            conf["general_config"],
+            conf["module_config"],
+            conf["module_log_path"],
+            conf["module_schema_path"]
+        )
+
+    elif args.command == "fetch_symbols_data":
+        run_fetch_symbols_data(
+            conf["general_config"],
+            conf["module_config"],
+            conf["module_log_path"],
+            conf["module_schema_path"],
+            conf["ohlcv_log_path"],
+            conf["ohlcv_schema_path"]
+        )
+
+    elif args.command is None:
+        logging.info("No command given. Running both: potential_trades_checker -> fetch_symbols_data")
+        run_potential_trades_checker(
+            conf["general_config"],
+            conf["module_config"],
+            conf["module_log_path"],
+            conf["module_schema_path"]
+        )
+        run_fetch_symbols_data(
+            conf["general_config"],
+            conf["module_config"],
+            conf["module_log_path"],
+            conf["module_schema_path"],
+            conf["ohlcv_log_path"],
+            conf["ohlcv_schema_path"]
+        )
+
+    else:
         parser.print_help()
         sys.exit(1)
 
-    args.func()
-
 if __name__ == "__main__":
-    main()
+    symbol_data_fetcher()

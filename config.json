@@ -1,0 +1,22 @@
+{
+  "testing": true,
+  "timezone": "Europe/Helsinki",
+  "paths": {
+    "configs": {
+      "live": "../AI-crypto-trader-confs/",
+      "test": "../AI-crypto-trader-confs/_TEST/"
+    },
+    "logs": {
+      "live": "../AI-crypto-trader-logs/",
+      "test": "../AI-crypto-trader-logs/_TEST/"
+    },
+    "schemas": {
+      "live": "../AI-crypto-trader-schemas/",
+      "test": "../AI-crypto-trader-schemas/_TEST/"
+    }
+  },
+  "module_filenames": {
+    "multi_interval_ohlcv": "multi_ohlcv_fetch",
+    "symbol_data_fetcher": "symbol_data_fetcher"
+  }
+}

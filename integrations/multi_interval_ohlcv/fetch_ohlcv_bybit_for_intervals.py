@@ -1,27 +1,34 @@
 # integrations/multi_interval_ohlcv/fetch_ohlcv_bybit_for_intervals.py
+# version 2.0, aug 2025
 
+import sys
 import requests
 import pandas as pd
-from configs.config import DEFAULT_INTERVALS, DEFAULT_OHLCV_LIMIT
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+# CONFIG INIT
+from modules.pathbuilder.pathbuilder import pathbuilder
+from modules.load_and_validate.load_and_validate import load_and_validate 
+
+general_config = load_and_validate()
+paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+config = load_and_validate(file_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
 
 def fetch_ohlcv_bybit(symbol, intervals=None, limit=None, start_time=None, end_time=None):
-    intervals = intervals or DEFAULT_INTERVALS
-    limit = limit or DEFAULT_OHLCV_LIMIT
-    interval_map = {
-        '1m': '1', '3m': '3', '5m': '5', '15m': '15', '30m': '30',
-        '1h': '60', '2h': '120', '4h': '240', '1d': 'D', '1w': 'W'
-    }
-
-    base_url = "https://api.bybit.com/v5/market/kline"
+    intervals = intervals or config.get("interval_map_bybit")
+    limit = limit or config.get("ohlcv_limit")
+    interval_map = config.get("interval_map_bybit")
+    base_url = config.get("bybit_base_url", "https://api.bybit.com/v5/market/kline")
     result = {}
 
     for interval in intervals:
         try:
-            mapped = interval_map[interval]
             params = {
                 "category": "spot",
                 "symbol": symbol,
-                "interval": mapped,
+                "interval": interval_map[interval],
                 "limit": limit
             }
 

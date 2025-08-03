@@ -1,27 +1,33 @@
 # integrations/multi_interval_ohlcv/fetch_ohlcv_kucoin_for_intervals.py
+# version 2.0, aug 2025
 
+import sys
 import requests
 import pandas as pd
-from configs.config import DEFAULT_INTERVALS, DEFAULT_OHLCV_LIMIT
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+# CONFIG INIT
+from modules.pathbuilder.pathbuilder import pathbuilder
+from modules.load_and_validate.load_and_validate import load_and_validate 
+
+general_config = load_and_validate()
+paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
+config = load_and_validate(file_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
 
 def fetch_ohlcv_kucoin(symbol, intervals=None, limit=None, start_time=None, end_time=None):
-    intervals = intervals or DEFAULT_INTERVALS
-    limit = limit or DEFAULT_OHLCV_LIMIT
-    interval_map = {
-        '1m': '1min', '3m': '3min', '5m': '5min', '15m': '15min',
-        '30m': '30min', '1h': '1hour', '2h': '2hour', '4h': '4hour',
-        '1d': '1day', '1w': '1week'
-    }
-
     symbol = symbol.replace("USDT", "-USDT")
-    base_url = "https://api.kucoin.com/api/v1/market/candles"
+    intervals = intervals or config.get("interval_map_kucoin")
+    limit = limit or config.get("ohlcv_limit")
+    interval_map = config.get("interval_map_kucoin")
+    base_url = config.get("kucoin_base_url", "https://api.kucoin.com/api/v1/market/candles")
     result = {}
 
     for interval in intervals:
         try:
-            mapped = interval_map[interval]
             params = {
-                "type": mapped,
+                "type": interval_map[interval],
                 "symbol": symbol
             }
 
@@ -46,4 +52,3 @@ def fetch_ohlcv_kucoin(symbol, intervals=None, limit=None, start_time=None, end_
             result[interval] = pd.DataFrame()
 
     return result, "Kucoin"
-
