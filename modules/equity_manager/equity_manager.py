@@ -31,6 +31,7 @@ def fetch_master_equity_info():
     return None
 
 def get_latest_logged_equities(log_path=LOG_FILE):
+
     try:
         with open(log_path, "r") as f:
             lines = f.readlines()
@@ -190,8 +191,16 @@ def calculate_minimum_investment_diff(current_equity, verbose=True):
 
 def run_equity_manager():
     current_equity = fetch_master_equity_info()
-    last_equity, previous_equity, last_ts = get_latest_logged_equities()
-    current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity, verbose=False)
+    last_equity, previous_equity, last_ts = get_latest_logged_equities("../AI-crypto-trader-logs/analysis-data/equity_manager_log.jsonl")
+
+    if current_equity is None or last_equity is None or previous_equity is None:
+        print("❌ Cannot continue — missing one or more equity values.")
+        return {}, {"block_trades": True, "reason": "Missing equity data — cannot evaluate risk."}
+
+    # Continue only if all values are valid
+    current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(
+        current_equity, last_equity, previous_equity, verbose=False
+    )
     allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=False)
     status = analyze_equity_status(percent_change, prev_percent_change)
     min_investment_diff = calculate_minimum_investment_diff(current_equity, verbose=False)
@@ -232,7 +241,7 @@ if __name__ == "__main__":
     current_equity = fetch_master_equity_info()
 
     print("\nGetting the previous Equity from the Logs...")
-    last_equity, previous_equity, last_ts = get_latest_logged_equities()
+    last_equity, previous_equity, last_ts = get_latest_logged_equities("../AI-crypto-trader-logs/analysis-data/equity_manager_log.jsonl")
 
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 

@@ -3,7 +3,7 @@
 
 from utils.load_latest_entry import load_latest_entry
 
-def get_symbols_to_use(module_config_path, module_log_path, mode=None):
+def get_symbols_to_use(module_config, module_log_path, mode=None):
 
     """
     Returns the set of symbols that should be used in the current context.

@@ -168,20 +168,17 @@
   "Sunday": {
     "weekday_preference": "short",
     "default": [
-      { "time": "00:00-00:30", "trend": "short" },
-      { "time": "00:30-04:30", "trend": "long" },
+      { "time": "00:00-03:00", "trend": "short" },
+      { "time": "03:00-04:30", "trend": "long" },
       { "time": "04:30-05:45", "trend": "short" },
-      { "time": "05:45-12:00", "trend": "long" },
-      { "time": "12:00-16:00", "trend": "short" },
-      { "time": "16:00-17:30", "trend": "long" },
-      { "time": "17:30-20:00", "trend": "short" },
-      { "time": "20:00-22:30", "trend": "long" },
-      { "time": "22:30-23:59", "trend": "short" }
+      { "time": "05:45-20:15", "trend": "long" },
+      { "time": "20:15-23:59", "trend": "short" }
     ],
     "neutral": [
       { "time": "00:00-01:45", "trend": "neutral" },
-      { "time": "01:45-02:30", "trend": "short" },
-      { "time": "02:30-23:59", "trend": "long" }
+      { "time": "01:45-03:30", "trend": "short" },
+      { "time": "03:30-20:15", "trend": "long" },
+      { "time": "20:15-23:59", "trend": "short" }
     ],
     "bullish": [
       { "time": "00:00-00:30", "trend": "short" },

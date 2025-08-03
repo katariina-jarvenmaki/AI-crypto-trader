@@ -1,10 +1,10 @@
 # scripts/spot_order_handler.py
 
-from integrations.binance_api_client import get_current_price
+from integrations.get_symbols_to_use import get_current_price
 import math
-from integrations import binance_api_client
+from integrations import get_symbols_to_use
 
-binance_api_client.init_client()
+get_symbols_to_use.init_client()
 
 def round_price(price, tick_size):
     precision = int(round(-math.log10(tick_size), 0))

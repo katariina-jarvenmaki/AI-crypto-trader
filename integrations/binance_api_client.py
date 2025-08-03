@@ -8,11 +8,22 @@ import sys
 import os
 
 # Paths, confs and credentials
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configs.credentials import BINANCE_API_KEY, BINANCE_API_SECRET
 from configs.binance_config import BINANCE_INTERVALS
 
-client = Client(api_key=BINANCE_API_KEY, api_secret=BINANCE_API_SECRET)
+client = None
+
+def init_client():
+    global client
+    try:
+        client = Client(api_key=BINANCE_API_KEY, api_secret=BINANCE_API_SECRET)
+        client.ping()  # Optional, can be removed
+        print("✅ Binance client initialized successfully.")
+    except Exception as e:
+        print(f"❌ Failed to initialize Binance client: {e}")
+        client = None
 
 ### --- OHLCV for multible symbols and intervals ---
 def fetch_ohlcv_for_intervals(symbol: str, intervals: list, limit: int = 100):

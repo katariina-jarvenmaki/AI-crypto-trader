@@ -6,9 +6,9 @@ from dateutil import parser
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from typing import List, Dict
-
 from modules.history_analyzer.config_history_analyzer import CONFIG
-from modules.symbol_data_fetcher.config_symbol_data_fetcher import LOCAL_TIMEZONE
+from zoneinfo import ZoneInfo
+LOCAL_TIMEZONE = ZoneInfo("Europe/Helsinki")
 
 def parse_log_entry(entry: Dict) -> Dict:
     dt = parser.isoparse(entry["timestamp"])

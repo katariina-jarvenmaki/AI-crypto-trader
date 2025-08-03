@@ -8,7 +8,7 @@ CONFIG = {
     "price_log_path": "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl",
     "analysis_daily_logs_path": "../AI-crypto-trader-logs/analysis-data/daily/",
     "analysis_weekly_logs_path": "../AI-crypto-trader-logs/analysis-data/weekly/",
-    "analysis_monthly_logs_path": "../AI-crypto-trader-logs/analysis-data/mothly/",
+    "analysis_monthly_logs_path": "../AI-crypto-trader-logs/analysis-data/monthly/",
     "intervals_to_use": ["1h", "4h", "1d", "1w"],
     "min_prev_entry_age_minutes": 60, # prev-data aikaraja minuutteinan, minimi 60 min
     "ema_alpha": 0.2,
