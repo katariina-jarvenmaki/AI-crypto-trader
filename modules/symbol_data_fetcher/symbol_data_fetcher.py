@@ -1,5 +1,5 @@
 # modules/symbol_data_fetcher/symbol_data_fetcher.py
-# version 2.1, aug 2025
+# version 2.0, aug 2025
 
 import argparse
 import logging
