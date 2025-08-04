@@ -5,20 +5,19 @@ import pytz
 import pandas as pd
 
 from configs.config import TIMEZONE
-from scripts.log_cleaner import run_log_cleanup
-from modules.equity_manager.equity_manager import run_equity_manager
-from core.position_handler import run_position_handler
-from utils.get_symbols_to_use import get_symbols_to_use
 from core.args_parser import parse_arguments
+from scripts.log_cleaner import run_log_cleanup
+from core.position_handler import run_position_handler
 from scripts.order_limiter import load_initiated_orders
+from utils.get_symbols_to_use import get_symbols_to_use
+from modules.pathbuilder.pathbuilder import pathbuilder
+from modules.equity_manager.equity_manager import run_equity_manager
+from modules.load_and_validate.load_and_validate import load_and_validate
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker, leverage_updater_for_positive_trades
 from modules.equity_manager.equity_stoploss_updater import update_equity_stoploss
 from global_state import POSITIONS_RESULT 
 
 def main():
-
-    # Clean the logs
-    run_log_cleanup()
 
     try:
         selected_platform, selected_symbols, override_signal, trade_mode = parse_arguments()
@@ -26,11 +25,47 @@ def main():
         print(f"[ERROR] {e}")
         return
 
-    try:
-        symbol_modes = get_symbols_to_use(symbols, long_only_flag, short_only_flag)
-    except Exception as e:
-        print(f"[ERROR] Failed to load symbol modes: {e}")
-        return
+    # Set default flags based on trade_mode
+    if trade_mode == "long-only":
+        long_only_flag = True
+        short_only_flag = False
+    elif trade_mode == "short-only":
+        long_only_flag = False
+        short_only_flag = True
+    elif trade_mode == "no-trade":
+        long_only_flag = False
+        short_only_flag = False
+    else:
+        long_only_flag = False
+        short_only_flag = False
+
+    general_config = load_and_validate()
+    paths = pathbuilder(
+        extension=".jsonl",
+        file_name=general_config["module_filenames"]["symbol_data_fetcher"],
+        mid_folder="analysis"
+    )
+
+    module_config = load_and_validate(
+        file_path=paths["full_config_path"],
+        schema_path=paths["full_config_schema_path"]
+    )
+
+    # ✅ Define module_log_path here
+    module_log_path = paths["full_log_path"]
+
+    # Then use it
+    if(long_only_flag == True):
+        symbol_mode = "long-only"
+    elif(short_only_flag == True):
+        symbol_mode = "short-only"
+    else:
+        symbol_mode = None
+    result = get_symbols_to_use(module_config, module_log_path, symbol_mode)
+    selected_symbols = list(result["symbols_to_trade"])
+    
+    # Clean the logs
+    run_log_cleanup()
 
     global_is_first_run = True
     equity_stoploss_updated = False 

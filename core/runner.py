@@ -153,7 +153,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         and reverse_strength != "strong"
     ):
         if no_trade:
-            print(f"Skipping LONG trade for {symbol} due to no_trade mode.")
+            print(f"Skipping LONG trade for {symbol} due to no-trade mode.")
             return
         if short_only:
             print(f"Skipping LONG trade for {symbol} due to short_only mode.")
@@ -184,7 +184,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     if final_signal == "buy":
         if no_trade:
-            print(f"Skipping SHORT trade for {symbol} due to no_trade mode.")
+            print(f"Skipping SHORT trade for {symbol} due to no-trade mode.")
             return
         if long_only:
             print(f"Skipping SHORT trade for {symbol} due to long_only mode.")
@@ -281,7 +281,7 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     if final_signal == "sell":
         if no_trade:
-            print(f"Skipping SHORT trade for {symbol} due to no_trade mode.")
+            print(f"Skipping SHORT trade for {symbol} due to no-trade mode.")
             return
         if long_only:
             print(f"Skipping SHORT trade for {symbol} due to long_only mode.")

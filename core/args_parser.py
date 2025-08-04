@@ -45,7 +45,7 @@ def parse_arguments():
 
     # Extract trade_mode if specified
     trade_mode = None
-    for mode in ["long_only", "short_only", "no_trade"]:
+    for mode in ["long-only", "short-only", "no-trade"]:
         if mode in args:
             trade_mode = mode
             args.remove(mode)

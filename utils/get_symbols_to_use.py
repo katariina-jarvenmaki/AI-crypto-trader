@@ -16,9 +16,9 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
         }
 
     mode (optional):
-    - "long_only": removes symbols from 'potential_to_short'
-    - "short_only": removes symbols from 'potential_to_long'
-    - "no_trade": returns an empty set of symbols_to_trade
+    - "long-only": removes symbols from 'potential_to_short'
+    - "short-only": removes symbols from 'potential_to_long'
+    - "no-trade": returns an empty set of symbols_to_trade
     - None: returns all the symbols without limits 
     """
 
@@ -41,13 +41,13 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
                 print(f"🔍 {key}: {symbols[:5]}... ({len(symbols)} total)")
             all_symbols.update(symbols)
 
-        if mode == "long_only":
+        if mode == "long-only":
             exclude_symbols = set(entry.get("potential_to_short", []))
             message = f"🟢 Long-only mode: excluded {len(exclude_symbols)} short candidates."
-        elif mode == "short_only":
+        elif mode == "short-only":
             exclude_symbols = set(entry.get("potential_to_long", []))
             message = f"🔴 Short-only mode: excluded {len(exclude_symbols)} long candidates."
-        elif mode == "no_trade":
+        elif mode == "no-trade":
             message = "⏸️  No-trade mode: not using any symbols."
         else:
             message = "✅ No mode: No current manual limits on trade."
