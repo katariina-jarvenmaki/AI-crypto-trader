@@ -51,3 +51,7 @@ def run_master_balance_logger():
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Error while executing Balance Logger: {e}")
+
+if __name__ == "__main__":
+    
+    cron_tasks_processor()
