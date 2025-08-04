@@ -12,6 +12,7 @@ MAX_TRADE_MARGIN_PERCENT = 50.0   # This should be at max. 50%
 MAX_EQUITY_MARGIN_PERCENT = 25.0  # This should be at max. 25%
 
 def fetch_master_equity_info():
+
     try:
         response = client.get_wallet_balance(accountType="UNIFIED")
         coins = response["result"]["list"][0]["coin"]
@@ -21,9 +22,9 @@ def fetch_master_equity_info():
         if usdt_info:
             total_equity = float(usdt_info.get("equity", 0.0))
             return total_equity
-
         else:
-            print("⚠️ USDT balance not found.")
+            print("⚠️ USDT balance not found in wallet response.")
+            print("🔍 Raw response:", json.dumps(response, indent=2))
 
     except Exception as e:
         print(f"❌ Error fetching master balance: {e}")
@@ -31,7 +32,7 @@ def fetch_master_equity_info():
     return None
 
 def get_latest_logged_equities(log_path=LOG_FILE):
-
+    
     try:
         with open(log_path, "r") as f:
             lines = f.readlines()
@@ -42,8 +43,8 @@ def get_latest_logged_equities(log_path=LOG_FILE):
             last_entry = json.loads(lines[-1])
             previous_entry = json.loads(lines[-2])
 
-            last_equity = float(last_entry["equity"])
-            previous_equity = float(previous_entry["equity"])
+            last_equity = float(last_entry["last_equity"])
+            previous_equity = float(last_entry["previous_equity"])
             last_timestamp = last_entry["timestamp"]
 
             return last_equity, previous_equity, last_timestamp
@@ -190,8 +191,18 @@ def calculate_minimum_investment_diff(current_equity, verbose=True):
     }
 
 def run_equity_manager():
+
+    print("\nFetching the current Master Equity...")
     current_equity = fetch_master_equity_info()
+    if current_equity is None:
+        print("❌ Current equity could not be fetched. Exiting...")
+        exit(1)
+
+    print("\nGetting the previous Equity from the Logs...")
     last_equity, previous_equity, last_ts = get_latest_logged_equities("../AI-crypto-trader-logs/analysis-data/equity_manager_log.jsonl")
+    if last_equity is None or previous_equity is None:
+        print("❌ Cannot continue due to missing log data.")
+        exit(1)
 
     if current_equity is None or last_equity is None or previous_equity is None:
         print("❌ Cannot continue — missing one or more equity values.")
@@ -239,9 +250,15 @@ if __name__ == "__main__":
 
     print("\nFetching the current Master Equity...")
     current_equity = fetch_master_equity_info()
+    if current_equity is None:
+        print("❌ Current equity could not be fetched. Exiting...")
+        exit(1)
 
     print("\nGetting the previous Equity from the Logs...")
     last_equity, previous_equity, last_ts = get_latest_logged_equities("../AI-crypto-trader-logs/analysis-data/equity_manager_log.jsonl")
+    if last_equity is None or previous_equity is None:
+        print("❌ Cannot continue due to missing log data.")
+        exit(1)
 
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 

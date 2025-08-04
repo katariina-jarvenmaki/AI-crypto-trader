@@ -74,6 +74,10 @@ def main():
 
         # Make a equity safety check
         equity_result, status = run_equity_manager()
+        if not equity_result or equity_result.get("allowed_negative_margins") is None:
+            print("❌ Missing critical equity data. Skipping this loop.\n")
+            time.sleep(300)
+            continue
         if equity_result.get("block_trades", False):
             if not equity_stoploss_updated:
                 update_equity_stoploss(
