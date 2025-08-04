@@ -58,7 +58,7 @@ Test Path Selector manually:
 
 Test Get Filenames manually:
 ```bash
-/usr/bin/python3 -m modules.pathbuilder.path_selector
+/usr/bin/python3 -m modules.pathbuilder.get_filenames
 ```
 
 Test File Checker manually:
@@ -99,6 +99,11 @@ Test Load Latest Entries per Symbol manually:
 Test Get Symbols to Use manually:
 ```bash
 /usr/bin/python3 -m utils.get_symbols_to_use
+```
+
+Test Price Data Fetcher manually:
+```bash
+/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
 ```
 
 Test Cron Tasks Prosessor manually:

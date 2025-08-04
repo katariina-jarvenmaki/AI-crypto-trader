@@ -42,10 +42,12 @@
       "type": "object",
       "properties": {
         "multi_interval_ohlcv": { "type": "string" },
+        "price_data_fetcher": { "type": "string" },
         "symbol_data_fetcher": { "type": "string" }
       },
       "required": [
         "multi_interval_ohlcv",
+        "price_data_fetcher",
         "symbol_data_fetcher"
       ]
     }

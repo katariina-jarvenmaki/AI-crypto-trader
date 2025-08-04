@@ -17,6 +17,7 @@
   },
   "module_filenames": {
     "multi_interval_ohlcv": "multi_ohlcv_fetch",
+    "price_data_fetcher": "price_data_fetcher",
     "symbol_data_fetcher": "symbol_data_fetcher"
   }
 }
