@@ -43,10 +43,15 @@ def parse_arguments():
     if not args:
         raise ValueError("No arguments provided")
 
-    long_only = "long-only" in args
-    short_only = "short-only" in args
-    args = [arg for arg in args if arg not in ["long-only", "short-only"]]
+    # Extract trade_mode if specified
+    trade_mode = None
+    for mode in ["long_only", "short_only", "no_trade"]:
+        if mode in args:
+            trade_mode = mode
+            args.remove(mode)
+            break
 
+    # Extract override_signal if last arg is 'buy' or 'sell'
     override_signal = args[-1].lower() if args and args[-1].lower() in ["buy", "sell"] else None
     if override_signal:
         args = args[:-1]
@@ -54,15 +59,13 @@ def parse_arguments():
     if not args:
         raise ValueError("No platform provided")
 
-    selected_platform = get_selected_platform(args)
-    platform_name = selected_platform.lower()
+    selected_platform = args[0].lower()
+    symbol_args = args[1:]
 
-    # Jos käyttäjä ei ole antanut symboleja, haetaan ne logista
-    symbol_args = args[1:] if platform_name == args[0].lower() else args
     if not symbol_args:
         log_path = Path("../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl")
         selected_symbols = load_latest_symbols_from_log(log_path)
     else:
         selected_symbols = get_selected_symbols(selected_platform, symbol_args)
 
-    return selected_platform, selected_symbols, override_signal, long_only, short_only
+    return selected_platform, selected_symbols, override_signal, trade_mode

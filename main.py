@@ -8,7 +8,7 @@ from configs.config import TIMEZONE
 from scripts.log_cleaner import run_log_cleanup
 from modules.equity_manager.equity_manager import run_equity_manager
 from core.position_handler import run_position_handler
-from scripts.utils import load_symbol_modes
+from utils.get_symbols_to_use import get_symbols_to_use
 from core.args_parser import parse_arguments
 from scripts.order_limiter import load_initiated_orders
 from core.runner import run_analysis_for_symbol, check_positions_and_update_logs, stop_loss_checker, leverage_updater_for_positive_trades
@@ -21,13 +21,13 @@ def main():
     run_log_cleanup()
 
     try:
-        selected_platform, selected_symbols, override_signal, long_only_flag, short_only_flag = parse_arguments()
+        selected_platform, selected_symbols, override_signal, trade_mode = parse_arguments()
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
 
     try:
-        symbol_modes = load_symbol_modes(selected_symbols, long_only_flag, short_only_flag)
+        symbol_modes = get_symbols_to_use(symbols, long_only_flag, short_only_flag)
     except Exception as e:
         print(f"[ERROR] Failed to load symbol modes: {e}")
         return
@@ -80,20 +80,38 @@ def main():
         print("-----------------------------------------------------------------")
 
         for i, symbol in enumerate(selected_symbols):
+
             current_override_signal = override_signal if global_is_first_run and i == 0 else None
             initiated_counts = load_initiated_orders()
 
             mode = symbol_modes.get(symbol, {"long_only": False, "short_only": False})
+
+            long_only_flag = False
+            short_only_flag = False
+
+            if trade_mode == "long_only":
+                long_only_flag = True
+                short_only_flag = False
+            elif trade_mode == "short_only":
+                long_only_flag = False
+                short_only_flag = True
+            elif trade_mode == "no_trade":
+                long_only_flag = False
+                short_only_flag = False
+            else:
+                long_only_flag = mode.get("long_only", False)
+                short_only_flag = mode.get("short_only", False)
 
             run_analysis_for_symbol(
                 selected_symbols=selected_symbols,
                 symbol=symbol,
                 is_first_run=global_is_first_run,
                 override_signal=current_override_signal,
-                long_only=mode["long_only"],
-                short_only=mode["short_only"],
+                long_only=long_only_flag,
+                short_only=short_only_flag,
                 initiated_counts=initiated_counts,
-                min_inv_diff_percent = min_inv_diff_percent
+                min_inv_diff_percent = min_inv_diff_percent,
+                no_trade = (trade_mode == "no_trade")
             )
 
         global_is_first_run = False 

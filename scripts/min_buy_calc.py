@@ -1,11 +1,11 @@
 # scripts/min_buy_calc.py
 
 import math
-from integrations.binance_api_client import client
+from integrations.binance_api_client import client, init_client
 from integrations.bybit_api_client import get_bybit_price, get_bybit_symbol_info, round_bybit_quantity
 from configs import config
 
-binance_api_client.init_client()
+init_client()
 
 def round_step_size(quantity, step_size):
     precision = int(round(-math.log10(step_size), 0))

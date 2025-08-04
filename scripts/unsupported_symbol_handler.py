@@ -49,8 +49,11 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
         return True
     return False
 
-def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=None, min_inv_diff_percent=None):
+def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trade=False, selected_symbols=None, min_inv_diff_percent=None):
 
+    if no_trade:
+        print(f"🚫 No trading allowed currently, skipping {symbol}.")
+        return
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
 
     pos_result = global_state.POSITIONS_RESULT
@@ -140,7 +143,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
         print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
         return
 
-    if short_only:
+    if short_only and not long_only:
 
         tighten_short = tighten_short or should_tighten_conditions(sentiment_entry, "short")
         if tighten_short:
@@ -259,7 +262,7 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 history_sentiment=sentiment_entry
             )
 
-    elif long_only:
+    elif long_only and not short_only:
 
         tighten_long = tighten_long or should_tighten_conditions(sentiment_entry, "long")
         if tighten_long:
@@ -394,7 +397,8 @@ def handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols=No
                 history_sentiment= sentiment_entry
             )
     else:
-        print(f"⚠️  Skipping: No direction specified.")
+        print(f"⚠️ No direction specified or both long_only and short_only are False, skipping trades for {symbol}.")
+        return
 
 import json
 
