@@ -86,7 +86,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                     schema=paths["full_log_schema_path"],
                     verbose=False
                 )
-                return to_save
+                return to_save, source_exchange
                 
             else:
                 errors[exchange] = "Empty DataFrames"
@@ -97,7 +97,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
     print(f"\033[93m⚠️  This coin pair can't be found from any supported exchange: {symbol}\033[0m")
-    return None
+    return {}, None
 
 def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
     """

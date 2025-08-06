@@ -62,6 +62,7 @@ def main():
     else:
         symbol_mode = None
     result = get_symbols_to_use(module_config, module_log_path, symbol_mode)
+    print(f"get_symbols_to_use: {result}")
     selected_symbols = list(result["symbols_to_trade"])
     
     # Clean the logs
@@ -123,23 +124,20 @@ def main():
             current_override_signal = override_signal if global_is_first_run and i == 0 else None
             initiated_counts = load_initiated_orders()
 
-            mode = symbol_modes.get(symbol, {"long_only": False, "short_only": False})
-
-            long_only_flag = False
-            short_only_flag = False
-
-            if trade_mode == "long_only":
+            # Aseta flagit suoraan komentorivin mukaan
+            if trade_mode == "long-only":
                 long_only_flag = True
                 short_only_flag = False
-            elif trade_mode == "short_only":
+            elif trade_mode == "short-only":
                 long_only_flag = False
                 short_only_flag = True
-            elif trade_mode == "no_trade":
+            elif trade_mode == "no-trade":
                 long_only_flag = False
                 short_only_flag = False
             else:
-                long_only_flag = mode.get("long_only", False)
-                short_only_flag = mode.get("short_only", False)
+                # oletus fallback jos jotain outoa
+                long_only_flag = False
+                short_only_flag = False
 
             run_analysis_for_symbol(
                 selected_symbols=selected_symbols,
