@@ -33,8 +33,6 @@ def fetch_master_equity_info():
 
 from datetime import datetime, timedelta, timezone
 
-from datetime import datetime, timezone
-
 def get_latest_logged_equities(log_path=LOG_FILE):
 
     try:
@@ -158,12 +156,12 @@ def analyze_equity_status(diff_percent, prev_percent_change, limit=None):
     """
     Tarkistaa, ylittääkö tappio diff_percent TAI prev_percent_change osalta
     sallitun prosenttirajan (konfiguroitava kummallekin).
-    
+
     Args:
         diff_percent (float): Erotus edelliseen equityyn prosentteina (voi olla negatiivinen).
         prev_percent_change (float): Erotus toissimpaan equityyn prosentteina.
         limit (float, optional): Yleinen fallback-prosenttiraja, jos konfiguraatio puuttuu.
-    
+
     Returns:
         dict: Sisältää tiedon onko kaupankäynti estetty ja syy.
     """
@@ -187,21 +185,32 @@ def analyze_equity_status(diff_percent, prev_percent_change, limit=None):
     reasons = []
 
     if diff_percent is not None and diff_percent <= -diff_limit:
-        reasons.append(f"Equity drop {diff_percent:.2f}% (latest) exceeds allowed loss (-{diff_limit:.1f}%)")
+        reasons.append(
+            f"Equity drop {abs(diff_percent):.2f}% (latest) exceeds allowed loss (-{diff_limit:.1f}%)"
+        )
 
     if prev_percent_change is not None and prev_percent_change <= -prev_limit:
-        reasons.append(f"Equity drop {prev_percent_change:.2f}% (previous) exceeds allowed loss (-{prev_limit:.1f}%)")
+        reasons.append(
+            f"Equity drop {abs(prev_percent_change):.2f}% (previous) exceeds allowed loss (-{prev_limit:.1f}%)"
+        )
+
+    def label(change):
+        return (
+            f"equity increase {abs(change):.2f}%"
+            if change is not None and change > 0
+            else (f"equity drop {abs(change):.2f}%" if change is not None else "N/A")
+        )
 
     if reasons:
         return {
             "block_trades": True,
-            "reason": " OR ".join(reasons)
+            "reason": " AND ".join(reasons)
         }
 
     return {
         "block_trades": False,
         "reason": (
-            f"Equity drop {diff_percent:.2f}% (latest) and {prev_percent_change:.2f}% (previous) "
+            f"{label(diff_percent)} (latest) and {label(prev_percent_change)} (previous) "
             f"are within safe limits (-{diff_limit:.1f}% / -{prev_limit:.1f}%)"
         )
     }
@@ -299,9 +308,6 @@ if __name__ == "__main__":
     if last_equity is None or previous_equity is None:
         print("❌ Cannot continue due to missing log data.")
         exit(1)
-    print(f"last_equity: {last_equity}")
-    print(f"previous_equity: {previous_equity}")
-    print(f"last_ts: {last_ts}")
 
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 
