@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import pytz
 
-def log_equity_if_blocked(result: dict, status: dict):
+def log_equity_result(result: dict, status: dict):
     
     if not status.get("block_trades"):
         return

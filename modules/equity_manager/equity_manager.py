@@ -6,7 +6,7 @@ from datetime import datetime
 from integrations.bybit_api_client import client
 from modules.equity_manager.config_equity_manager import LOG_FILE
 from modules.equity_manager.equity_stoploss import equity_stoploss
-from modules.equity_manager.log_equity_if_blocked import log_equity_if_blocked
+from modules.equity_manager.log_equity_result import log_equity_result
 
 MAX_TRADE_MARGIN_PERCENT = 50.0   # This should be at max. 50%
 MAX_EQUITY_MARGIN_PERCENT = 25.0  # This should be at max. 25%
@@ -31,8 +31,12 @@ def fetch_master_equity_info():
 
     return None
 
+from datetime import datetime, timedelta, timezone
+
+from datetime import datetime, timezone
+
 def get_latest_logged_equities(log_path=LOG_FILE):
-    
+
     try:
         with open(log_path, "r") as f:
             lines = f.readlines()
@@ -40,14 +44,49 @@ def get_latest_logged_equities(log_path=LOG_FILE):
                 print("⚠️ Not enough log entries to compare.")
                 return None, None, None
 
-            last_entry = json.loads(lines[-1])
-            previous_entry = json.loads(lines[-2])
+            entries = []
+            for line in lines:
+                try:
+                    data = json.loads(line)
+                    ts = datetime.fromisoformat(data["timestamp"])
+                    entries.append((ts, data))
+                except Exception as e:
+                    print(f"⚠️ Skipping invalid log line: {e}")
+                    continue
 
-            last_equity = float(last_entry["last_equity"])
-            previous_equity = float(last_entry["previous_equity"])
-            last_timestamp = last_entry["timestamp"]
+            if len(entries) < 2:
+                print("⚠️ Not enough valid log entries.")
+                return None, None, None
 
-            return last_equity, previous_equity, last_timestamp
+            # Otetaan viimeisin merkintä ja sen timestamp
+            latest_ts = entries[-1][0]
+
+            # Etsitään viimeisin merkintä, joka on vähintään 24h vanha latest_ts:stä
+            last_equity = None
+            last_ts_24h = None
+            for ts, entry in reversed(entries):
+                if (latest_ts - ts).total_seconds() >= 24 * 3600:
+                    last_equity = entry["current_equity"]
+                    last_ts_24h = entry["timestamp"]
+                    break
+
+            if last_equity is None:
+                print("⚠️ Could not find a log entry at least 24h older than latest entry.")
+                # Voidaan halutessa palauttaa viimeisin merkintä ilman ikärajaa:
+                last_equity = entries[-1][1]["current_equity"]
+                last_ts_24h = entries[-1][1]["timestamp"]
+
+            # Etsitään viimeisin merkintä, joka on vähintään 48h vanha latest_ts:stä
+            previous_equity = None
+            for ts, entry in reversed(entries):
+                if (latest_ts - ts).total_seconds() >= 48 * 3600:
+                    previous_equity = entry["current_equity"]
+                    break
+
+            if previous_equity is None:
+                print("⚠️ Could not find a log entry at least 48h older than latest entry.")
+
+            return last_equity, previous_equity, last_ts_24h
 
     except FileNotFoundError:
         print(f"⚠️ Log file not found at {log_path}")
@@ -242,7 +281,8 @@ def run_equity_manager():
         print(f"🔒 {status['reason']}")
         print("⏳ Trading will remain blocked. Next equity check will be attempted in 5 minutes.")
         print("🔧 If this is incorrect, update 'master_balance_log.jsonl'. Modify 'config_equity_manager.py' only with strong justification just to be safe.\n")
-        log_equity_if_blocked(result, {"block_trades": result["block_trades"]})
+
+    log_equity_result(result, {"block_trades": result["block_trades"]})
 
     return result, status
 
@@ -259,6 +299,9 @@ if __name__ == "__main__":
     if last_equity is None or previous_equity is None:
         print("❌ Cannot continue due to missing log data.")
         exit(1)
+    print(f"last_equity: {last_equity}")
+    print(f"previous_equity: {previous_equity}")
+    print(f"last_ts: {last_ts}")
 
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 
