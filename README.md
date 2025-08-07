@@ -87,10 +87,15 @@ python3 main.py buy
 python3 main.py sell
 ```
 
-Restrict to long-only or short-only (Doesn't affect force the buy / sell or meme trades):
+Mode restrictions:
 ```bash
-python3 main.py long-only
-python3 main.py short-only
+python3 main.py binance long-only
+python3 main.py binance short-only
+python3 main.py binance no-trade
+python3 main.py binance no-stoploss
+python3 main.py binance long-only no-stoploss
+python3 main.py binance short-only no-stoploss
+python3 main.py binance no-trade no-stoploss
 ```
 
 To run Symbol data fetchers manually (supposted to be ran by cron):

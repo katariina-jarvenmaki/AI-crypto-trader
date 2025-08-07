@@ -39,17 +39,24 @@ def load_latest_symbols_from_log(log_path: Path):
     return selected_symbols
 
 def parse_arguments():
+    
     args = sys.argv[1:]
     if not args:
         raise ValueError("No arguments provided")
 
-    # Extract trade_mode if specified
-    trade_mode = None
-    for mode in ["long-only", "short-only", "no-trade", "no-stoploss"]:
-        if mode in args:
-            trade_mode = mode
-            args.remove(mode)
-            break
+    # Extract trade modes if any specified
+    valid_modes = {"long-only", "short-only", "no-trade", "no-stoploss"}
+    trade_modes = set()
+
+    # Go through args and collect all valid trade modes
+    remaining_args = []
+    for arg in args:
+        if arg in valid_modes:
+            trade_modes.add(arg)
+        else:
+            remaining_args.append(arg)
+
+    args = remaining_args
 
     # Extract override_signal if last arg is 'buy' or 'sell'
     override_signal = args[-1].lower() if args and args[-1].lower() in ["buy", "sell"] else None
@@ -68,4 +75,4 @@ def parse_arguments():
     else:
         selected_symbols = get_selected_symbols(selected_platform, symbol_args)
 
-    return selected_platform, selected_symbols, override_signal, trade_mode
+    return selected_platform, selected_symbols, override_signal, trade_modes

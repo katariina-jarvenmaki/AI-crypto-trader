@@ -18,27 +18,30 @@ from modules.equity_manager.equity_stoploss_updater import update_equity_stoplos
 from global_state import POSITIONS_RESULT 
 
 def main():
-
+    
     try:
-        selected_platform, selected_symbols, override_signal, trade_mode = parse_arguments()
+        selected_platform, selected_symbols, override_signal, trade_modes = parse_arguments()
     except ValueError as e:
         print(f"[ERROR] {e}")
         return
 
-    # Set flags based on trade_mode
-    long_only_flag = False
-    short_only_flag = False
-    no_trade_flag = False
-    no_stoploss_flag = False
+    # Set flags based on trade_modes
+    long_only_flag = "long-only" in trade_modes
+    short_only_flag = "short-only" in trade_modes
+    no_trade_flag = "no-trade" in trade_modes
+    no_stoploss_flag = "no-stoploss" in trade_modes
 
-    if trade_mode == "long-only":
-        long_only_flag = True
-    elif trade_mode == "short-only":
-        short_only_flag = True
-    elif trade_mode == "no-trade":
-        no_trade_flag = True
-    elif trade_mode == "no-stoploss":
-        no_stoploss_flag = True
+    symbol_mode = None
+    if long_only_flag and not short_only_flag:
+        symbol_mode = "long-only"
+    elif short_only_flag and not long_only_flag:
+        symbol_mode = "short-only"
+    elif long_only_flag and short_only_flag:
+        raise ValueError("Cannot use both 'long-only' and 'short-only' at the same time")
+
+    if "long-only" in trade_modes and "short-only" in trade_modes:
+        print("[ERROR] Cannot use both 'long-only' and 'short-only' modes simultaneously.")
+        return
 
     general_config = load_and_validate()
     paths = pathbuilder(
@@ -152,7 +155,6 @@ def main():
             time.sleep(180)
             continue
 
-        print(f"no_stoploss_flag: {no_stoploss_flag}")
         if no_stoploss_flag:
             print(f"\n🚫 Skipping Stop Loss -updates for trades due to no-stoploss mode.")
             return
