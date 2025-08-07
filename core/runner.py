@@ -36,6 +36,7 @@ from modules.positions_data_fetcher import positions_data_fetcher
 # Symbol processing loop
 def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_counts, override_signal=None, volume_mode=None, long_only=False, short_only=False, no_trade=False, min_inv_diff_percent=False):
 
+
     # ⛔ Estä USDC-symbolit heti alkuun (jos niitä ei ole tarkoitus käsitellä suoraan)
     if symbol.endswith("USDC"):
         return
@@ -43,12 +44,9 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     print(f"\n🔍 Processing symbol: {symbol}")
     symbol = symbol.replace("USDT", "USDC")
 
-    if no_trade:
-        print(f"🚫 no_trade mode active, skip trading for {symbol} but continue position checks.")
-
     # ✅ Check if symbol is unsupported and handle it
     if symbol not in SUPPORTED_SYMBOLS:
-        handle_unsupported_symbol(symbol, long_only, short_only, selected_symbols, min_inv_diff_percent)
+        handle_unsupported_symbol(symbol, long_only, short_only, no_trade, selected_symbols, min_inv_diff_percent)
         return
 
     # Get the signals for the symbols
@@ -153,10 +151,10 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
         and reverse_strength != "strong"
     ):
         if no_trade:
-            print(f"Skipping LONG trade for {symbol} due to no-trade mode.")
+            print(f"🚫 Skipping LONG trade for {symbol} due to no-trade mode.")
             return
         if short_only:
-            print(f"Skipping LONG trade for {symbol} due to short_only mode.")
+            print(f"🚫 Skipping LONG trade for {symbol} due to short_only mode.")
             return
         print("✅ BUY allowed in neutral_sideways due to weak reverse signal.")
     else:
@@ -181,13 +179,12 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
 
     #***** LONGS *****#
-
     if final_signal == "buy":
         if no_trade:
-            print(f"Skipping SHORT trade for {symbol} due to no-trade mode.")
+            print(f"🚫 Skipping LONG trade for {symbol} due to no-trade mode.")
             return
-        if long_only:
-            print(f"Skipping SHORT trade for {symbol} due to long_only mode.")
+        if short_only:
+            print(f"🚫 Skipping LONG trade for {symbol} due to long_only mode.")
             return
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
@@ -281,10 +278,10 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
 
     if final_signal == "sell":
         if no_trade:
-            print(f"Skipping SHORT trade for {symbol} due to no-trade mode.")
+            print(f"🚫 Skipping SHORT trade for {symbol} due to no-trade mode.")
             return
         if long_only:
-            print(f"Skipping SHORT trade for {symbol} due to long_only mode.")
+            print(f"🚫 Skipping SHORT trade for {symbol} due to long_only mode.")
             return
         # Globaalin lukeminen
         pos_result = global_state.POSITIONS_RESULT
@@ -342,6 +339,7 @@ from scripts.trade_order_logger import (
 )
 
 def fetch_all_positions_bybit():
+    print(f"\n🔍 Fetch and check the ByBit positions...")
     """Hakee kaikki lineaariset USDT-positiot Bybitistä käyttäen sivutusta."""
     all_positions = []
     cursor = None

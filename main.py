@@ -25,19 +25,20 @@ def main():
         print(f"[ERROR] {e}")
         return
 
-    # Set default flags based on trade_mode
+    # Set flags based on trade_mode
+    long_only_flag = False
+    short_only_flag = False
+    no_trade_flag = False
+    no_stoploss_flag = False
+
     if trade_mode == "long-only":
         long_only_flag = True
-        short_only_flag = False
     elif trade_mode == "short-only":
-        long_only_flag = False
         short_only_flag = True
     elif trade_mode == "no-trade":
-        long_only_flag = False
-        short_only_flag = False
-    else:
-        long_only_flag = False
-        short_only_flag = False
+        no_trade_flag = True
+    elif trade_mode == "no-stoploss":
+        no_stoploss_flag = True
 
     general_config = load_and_validate()
     paths = pathbuilder(
@@ -124,21 +125,6 @@ def main():
             current_override_signal = override_signal if global_is_first_run and i == 0 else None
             initiated_counts = load_initiated_orders()
 
-            # Aseta flagit suoraan komentorivin mukaan
-            if trade_mode == "long-only":
-                long_only_flag = True
-                short_only_flag = False
-            elif trade_mode == "short-only":
-                long_only_flag = False
-                short_only_flag = True
-            elif trade_mode == "no-trade":
-                long_only_flag = False
-                short_only_flag = False
-            else:
-                # oletus fallback jos jotain outoa
-                long_only_flag = False
-                short_only_flag = False
-
             run_analysis_for_symbol(
                 selected_symbols=selected_symbols,
                 symbol=symbol,
@@ -146,9 +132,9 @@ def main():
                 override_signal=current_override_signal,
                 long_only=long_only_flag,
                 short_only=short_only_flag,
+                no_trade=no_trade_flag,
                 initiated_counts=initiated_counts,
-                min_inv_diff_percent = min_inv_diff_percent,
-                no_trade = (trade_mode == "no_trade")
+                min_inv_diff_percent = min_inv_diff_percent
             )
 
         global_is_first_run = False 
@@ -165,6 +151,11 @@ def main():
             print("⚪ No open positions found.")
             time.sleep(180)
             continue
+
+        print(f"no_stoploss_flag: {no_stoploss_flag}")
+        if no_stoploss_flag:
+            print(f"\n🚫 Skipping Stop Loss -updates for trades due to no-stoploss mode.")
+            return
 
         stop_loss_checker(positions)
 

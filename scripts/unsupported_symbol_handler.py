@@ -52,7 +52,7 @@ def should_tighten_conditions(sentiment_entry: dict, direction: str) -> bool:
 def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trade=False, selected_symbols=None, min_inv_diff_percent=None):
 
     if no_trade:
-        print(f"🚫 No trading allowed currently, skipping {symbol}.")
+        print(f"🚫 Skipping trade for {symbol} due to no-trade mode.")
         return
     print(f"⚠️  Symbol {symbol} is not in SUPPORTED_SYMBOLS. Handling accordingly.")
 
