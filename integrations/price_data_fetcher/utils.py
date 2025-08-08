@@ -1,4 +1,5 @@
 # integrations/price_data_fetcher/utils.py
+# version 2.0, aug 2025
 
 from integrations.price_data_fetcher.fetchers.PriceDataFetcher import PriceDataFetcher
 from modules.load_and_validate.load_and_validate import load_and_validate

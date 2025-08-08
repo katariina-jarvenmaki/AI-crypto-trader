@@ -1,4 +1,5 @@
 # integrations/price_data_fetcher/price_data_fetcher.py
+# version 2.0, aug 2025
 
 from utils.get_timestamp import get_timestamp 
 from utils.get_symbols_to_use import get_symbols_to_use
