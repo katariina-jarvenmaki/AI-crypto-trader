@@ -102,7 +102,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
         return
 
     ohlcv_entry = get_latest_log_entry_for_symbol(
-        "../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl", bybit_symbol)
+        "../AI-crypto-trader-logs/fetch_logs/multi_ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol(
         "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
     sentiment_entry = get_latest_log_entry(

@@ -4,7 +4,7 @@ CONFIG = {
     "analysis_log_path": "../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl",
     "sentiment_log_path": "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl", 
     "symbol_log_path": "../AI-crypto-trader-logs/analysis-data/symbol_data_log.jsonl",
-    "ohlcv_log_path": "../AI-crypto-trader-logs/fetched-data/ohlcv_fetch_log.jsonl",
+    "ohlcv_log_path": "../AI-crypto-trader-logs/fetch_logs/multi_ohlcv_fetch_log.jsonl",
     "price_log_path": "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl",
     "analysis_daily_logs_path": "../AI-crypto-trader-logs/analysis-data/daily/",
     "analysis_weekly_logs_path": "../AI-crypto-trader-logs/analysis-data/weekly/",
