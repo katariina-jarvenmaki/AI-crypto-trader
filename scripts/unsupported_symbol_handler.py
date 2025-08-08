@@ -143,7 +143,10 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
         print(f"❌ Failed to parse timestamp for {bybit_symbol}: {e}")
         return
 
-    if short_only and not long_only:
+    should_try_short = short_only or (not short_only and not long_only)
+    should_try_long = long_only or (not short_only and not long_only)
+
+    if should_try_short:
 
         tighten_short = tighten_short or should_tighten_conditions(sentiment_entry, "short")
         if tighten_short:
@@ -262,7 +265,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 history_sentiment=sentiment_entry
             )
 
-    elif long_only and not short_only:
+    if should_try_long:
 
         tighten_long = tighten_long or should_tighten_conditions(sentiment_entry, "long")
         if tighten_long:
