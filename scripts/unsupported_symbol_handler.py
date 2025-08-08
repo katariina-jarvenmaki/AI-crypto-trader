@@ -203,11 +203,14 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 return
 
         # Vanha BB-check, toimii tilanteissa kun price_change_percent ≤ 19
-        if bb_upper and last_price < bb_upper * (1.035 if tighten_short else 1.03):
-            log_and_skip("BB-suodatin: hinta ei selvästi ylä-BB:n yläpuolella", "short",
-                         {"last_price": last_price, "bb_upper_1h": bb_upper})
-            print(f"⛔ Skipping SHORT: last_price ({last_price}) ei selvästi ylä-BB:n ({bb_upper}) yläpuolella.")
-            return
+        if bb_upper is not None and last_price is not None:
+            if bb_upper and last_price < bb_upper * (1.035 if tighten_short else 1.03):
+                log_and_skip("BB-suodatin: hinta ei selvästi ylä-BB:n yläpuolella", "short",
+                            {"last_price": last_price, "bb_upper_1h": bb_upper})
+                print(f"⛔ Skipping SHORT: last_price ({last_price}) ei selvästi ylä-BB:n ({bb_upper}) yläpuolella.")
+                return
+        else:
+            print(f"⚠️ Skipping BB check: bb_upper or last_price is None for {symbol}")
 
         try:
             avg_price = turnover / volume if turnover and volume else None
@@ -309,11 +312,14 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 print(f"skip: Macd_diff puuttuu – ei longia")
                 return
 
-        if bb_lower and last_price > bb_lower * (1.01 if tighten_long else 1.02):
-            log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",
-                        {"last_price": last_price, "bb_lower_1h": bb_lower})
-            print(f"⛔ Skipping LONG: last_price ({last_price}) ei selvästi ala-BB:n ({bb_lower}) alapuolella.")
-            return
+        if bb_lower is not None and last_price is not None:
+            if bb_lower and last_price > bb_lower * (1.01 if tighten_long else 1.02):
+                log_and_skip("BB-suodatin: hinta ei selvästi ala-BB:n alapuolella", "long",
+                            {"last_price": last_price, "bb_lower_1h": bb_lower})
+                print(f"⛔ Skipping LONG: last_price ({last_price}) ei selvästi ala-BB:n ({bb_lower}) alapuolella.")
+                return
+        else:
+            print(f"⚠️ Skipping BB check: bb_lower or last_price is None for {symbol}")
 
         try:
             avg_price = turnover / volume if turnover and volume else None
