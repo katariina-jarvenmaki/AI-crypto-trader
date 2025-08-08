@@ -157,11 +157,9 @@ def main():
 
         if no_stoploss_flag:
             print(f"\n🚫 Skipping Stop Loss -updates for trades due to no-stoploss mode.")
-            return
-
-        stop_loss_checker(positions)
-
-        leverage_updater_for_positive_trades()
+        else:
+            stop_loss_checker(positions)
+            leverage_updater_for_positive_trades()
 
         print("\n🕒 Sleeping to next round...")
         time.sleep(180)
