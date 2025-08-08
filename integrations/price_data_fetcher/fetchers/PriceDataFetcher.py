@@ -7,9 +7,10 @@ from integrations.price_data_fetcher.fetchers.fetch_from_bybit import fetch_from
 
 class PriceDataFetcher:
 
-    def __init__(self, symbol="BTCUSDT", order=None):
+    def __init__(self, symbol="BTCUSDT", config=None, order=None):
         self.symbol = symbol
-        self.exchanges = order or CONFIG.get("exchange_priority", ["okx", "kucoin", "binance", "bybit"])
+        self.config = config
+        self.exchanges = order or config.get("exchange_priority", ["okx", "kucoin", "binance", "bybit"])
 
     def fetch(self):
         for exchange in self.exchanges:
