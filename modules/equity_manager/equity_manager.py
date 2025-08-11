@@ -116,8 +116,8 @@ def compare_equities(current_equity, last_equity, previous_equity, verbose=True)
 
     return current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change
 
-def calculate_allowed_margin(last_equity, percent=None, verbose=True):
-    if last_equity is None or last_equity <= 0:
+def calculate_allowed_margin(current_equity, percent=None, verbose=True):
+    if current_equity is None or current_equity <= 0:
         if verbose:
             print("⚠️ Invalid or missing previous equity.")
         return None
@@ -139,7 +139,7 @@ def calculate_allowed_margin(last_equity, percent=None, verbose=True):
             print(f"⚠️ Trade margin percent {margin_percent}% exceeds max allowed ({MAX_TRADE_MARGIN_PERCENT}%) — using max.")
         margin_percent = MAX_TRADE_MARGIN_PERCENT
 
-    allowed_amount = (margin_percent / 100.0) * last_equity
+    allowed_amount = (margin_percent / 100.0) * current_equity
 
     if verbose:
         print(f"\n🛡️ Allowed Margin for Negative Trades ({margin_percent:.1f}% of previous equity):")
@@ -260,7 +260,7 @@ def run_equity_manager():
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(
         current_equity, last_equity, previous_equity, verbose=False
     )
-    allowed_negative_margins = calculate_allowed_margin(last_equity, verbose=False)
+    allowed_negative_margins = calculate_allowed_margin(current_equity, verbose=False)
     status = analyze_equity_status(percent_change, prev_percent_change)
     min_investment_diff = calculate_minimum_investment_diff(current_equity, verbose=False)
 
@@ -311,7 +311,7 @@ if __name__ == "__main__":
 
     current_equity, last_equity, difference, percent_change, previous_equity, prev_difference, prev_percent_change = compare_equities(current_equity, last_equity, previous_equity)
 
-    allowed_negative_margins = calculate_allowed_margin(last_equity)
+    allowed_negative_margins = calculate_allowed_margin(current_equity)
     min_investment_diff = calculate_minimum_investment_diff(current_equity)
     status = analyze_equity_status(percent_change, prev_percent_change)
     stoploss_info = equity_stoploss()
