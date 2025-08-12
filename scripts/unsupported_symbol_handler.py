@@ -77,15 +77,15 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
 
     try:
         preferences = analyze_datetime_preferences()
-        week_pref = preferences.get("week_preference")
+        weekday_pref = preferences.get("weekday_preference")
         time_pref = preferences.get("time_preference")
 
-        if week_pref == "short" or time_pref == "short":
+        if weekday_pref == "short" or time_pref == "short":
             tighten_long = True
-        elif week_pref == "long" or time_pref == "long":
+        elif weekday_pref == "long" or time_pref == "long":
             tighten_short = True
 
-        print(f"🕒 Datetime preferences: week={week_pref}, time={time_pref}")
+        print(f"🕒 Datetime preferences: weekday={weekday_pref}, time={time_pref}")
         if tighten_long:
             print("⚠️ Tiukennetaan *long* ehtoja ajan perusteella.")
         if tighten_short:
