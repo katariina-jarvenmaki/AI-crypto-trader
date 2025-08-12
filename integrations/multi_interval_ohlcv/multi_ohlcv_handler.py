@@ -17,14 +17,26 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # CONFIG INIT
-from modules.pathbuilder.pathbuilder import pathbuilder
+from utils.load_configs_and_logs import load_configs_and_logs
 from modules.save_and_validate.save_and_validate import save_and_validate
-from modules.load_and_validate.load_and_validate import load_and_validate
 from utils.get_timestamp import get_timestamp 
 
-general_config = load_and_validate()
-paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-config = load_and_validate(file_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
+configs_and_logs = load_configs_and_logs([
+    {
+        "name": "multi_interval_ohlcv",
+        "mid_folder": "fetch",
+        "module_key": "multi_interval_ohlcv",
+        "extension": ".jsonl",
+        "return": ["config", "full_log_path", "full_log_schema_path"]
+    }
+])
+
+general_config = configs_and_logs["general_config"]
+config = configs_and_logs["multi_interval_ohlcv_config"]
+paths = {
+    "full_log_path": configs_and_logs["multi_interval_ohlcv_full_log_path"],
+    "full_log_schema_path": configs_and_logs["multi_interval_ohlcv_full_log_schema_path"]
+}
 
 def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
 
@@ -86,7 +98,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                     schema=paths["full_log_schema_path"],
                     verbose=False
                 )
-                return to_save, source_exchange
+                return to_save
                 
             else:
                 errors[exchange] = "Empty DataFrames"
@@ -97,7 +109,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
     logging.error(f"❌ Failed to fetch OHLCV data from all exchanges. Errors: {errors}")
     print(f"\033[93m⚠️  This coin pair can't be found from any supported exchange: {symbol}\033[0m")
-    return {}, None
+    return None
 
 def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
     """

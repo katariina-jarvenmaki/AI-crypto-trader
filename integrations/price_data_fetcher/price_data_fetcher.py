@@ -1,79 +1,66 @@
 # integrations/price_data_fetcher/price_data_fetcher.py
+# version 2.0, aug 2025
 
-from integrations.price_data_fetcher.config_price_data_fetcher import CONFIG
-from integrations.price_data_fetcher.price_data_from_okx import fetch_from_okx
-from integrations.price_data_fetcher.price_data_from_kucoin import fetch_from_kucoin
-from integrations.price_data_fetcher.price_data_from_binance import fetch_from_binance
-from integrations.price_data_fetcher.price_data_from_bybit import fetch_from_bybit
-from integrations.price_data_fetcher.utils import ensure_log_file_exists, append_to_log, trim_log_file, get_latest_symbols_from_log, test_single_exchange
+from datetime import datetime, timezone, timedelta
+from utils.get_symbols_to_use import get_symbols_to_use
+from modules.save_and_validate.save_and_validate import save_and_validate
+from integrations.price_data_fetcher.fetchers.PriceDataFetcher import PriceDataFetcher
+from integrations.price_data_fetcher.utils import test_single_exchange, config_and_log_loader
 
-class PriceDataFetcher:
+def price_data_fetcher():
 
-    def __init__(self, symbol="BTCUSDT", order=None):
-        self.symbol = symbol
-        self.exchanges = order or CONFIG.get("exchange_priority", ["okx", "kucoin", "binance", "bybit"])
+    print("\nRunning a Price Data Fetcher...\n")
 
-    def fetch(self):
-        for exchange in self.exchanges:
-            try:
-                method = getattr(self, f"fetch_from_{exchange}")
-                data = method()
-                if data:
-                    # Tarkista että data ei ole tyhjää
-                    price = data.get("lastPrice", 0)
-                    volume = data.get("volume", 0)
-                    high = data.get("highPrice", 0)
-                    low = data.get("lowPrice", 0)
+    module_log_path, module_log_schema_path, module_config, symbol_config, symbol_log_path = config_and_log_loader()
+    result = get_symbols_to_use(symbol_config, symbol_log_path, None)
+    all_symbols = result["all_symbols"]
 
-                    if any([price, volume, high, low]):
-                        data['source'] = exchange
-                        return data
-
-            except Exception as e:
-                print(f"❌ Error fetching from {exchange}: {e}")
-                continue
-        return None
-
-    # WRAPPER-METODIT
-    def fetch_from_okx(self):
-        return fetch_from_okx(self.symbol)
-
-    def fetch_from_kucoin(self):
-        return fetch_from_kucoin(self.symbol)
-
-    def fetch_from_binance(self):
-        return fetch_from_binance(self.symbol)
-
-    def fetch_from_bybit(self):
-        return fetch_from_bybit(self.symbol)
-
-def main():
-
-    print("Running a Price Data Fetcher...")
-
-    log_path = CONFIG["price_data_log_path"]
-    ensure_log_file_exists(log_path)
-
-    symbols = get_latest_symbols_from_log(CONFIG["symbol_log_path"])
-
-    if not symbols:
-        print("No symbols found in latest symbol log.")
+    if not all_symbols:
+        print("\nNo symbols found in latest symbol log.\n")
         return
-    print(f"Found {len(symbols)} symbols to process...")
+    print(f"\nFound {len(all_symbols)} symbols to process...\n")
 
-    for symbol in symbols:
-        fetcher = PriceDataFetcher(symbol=symbol)
-        data = fetcher.fetch()
-        # print(data)
+    tz_offset = timezone(timedelta(hours=3))  # +03:00
+    entries = []
 
-        if data:
-            append_to_log(log_path, symbol, data.get("source"), data)
+    print("Getting results for symbols:\n")
 
-    trim_log_file(log_path, CONFIG.get("max_log_lines", 10000))
+    for symbol in all_symbols:
+
+        fetcher = PriceDataFetcher(symbol=symbol, config=module_config)
+        raw_data = fetcher.fetch()
+
+        if not raw_data:
+            print(f"⚠️ No data for {symbol}")
+            continue
+
+        entry = {
+            "timestamp": datetime.now(tz_offset).isoformat(),
+            "source_exchange": raw_data.get("source", "").capitalize(),
+            "symbol": symbol,
+            "last_price": raw_data.get("lastPrice"),
+            "price_change_percent": raw_data.get("priceChangePercent"),
+            "high_price": raw_data.get("highPrice"),
+            "low_price": raw_data.get("lowPrice"),
+            "volume": raw_data.get("volume"),
+            "turnover": raw_data.get("turnover")
+        }
+        print(entry)
+        entries.append(entry)
+
+    if entries:
+        save_and_validate(
+            data=entries,
+            path=module_log_path,
+            schema=module_log_schema_path,
+            verbose=False
+        )
+        print(f"\n✅ Logged {len(entries)} price data entries to {module_log_path}\n")
 
 if __name__ == "__main__":
 
-    main()
+    price_data_fetcher()
+
     # test_single_exchange("BTCUSDT", "okx")
     # test_single_exchange("BTCUSDT", "kucoin")
     # test_single_exchange("BTCUSDT", "binance")

@@ -7,9 +7,9 @@ from datetime import datetime
 
 from modules.load_and_validate.load_and_validate import load_and_validate
 
-general_config = load_and_validate()
-
 def get_timestamp():
+
+    general_config = load_and_validate()
 
     timezone_str = general_config.get("timezone", "UTC")
 

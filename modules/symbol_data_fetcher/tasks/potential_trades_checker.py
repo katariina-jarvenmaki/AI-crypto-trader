@@ -7,8 +7,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
-from modules.pathbuilder.pathbuilder import pathbuilder
-from modules.load_and_validate.load_and_validate import load_and_validate
+from utils.load_configs_and_logs import load_configs_and_logs
 from modules.save_and_validate.save_and_validate import save_and_validate
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols, prepare_analysis_results
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
@@ -122,13 +121,13 @@ def get_symbols_to_scan(module_config):
 def dict_in_list(d, lst):
     return any(d == item for item in lst)
 
-def run_potential_trades_checker(general_config, module_config, module_log_path, module_schema_path):
+def run_potential_trades_checker(general_config, module_config, logs_path, module_log_path, module_schema_path):
 
     symbols_to_process = get_symbols_to_scan(module_config)
-    log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
-    temporary_path = Path(log_paths["logs_path"]) / module_config['task_config']['temp_log']
+    temporary_path = Path(logs_path) / module_config['task_config']['temp_log']
+
     timestamp = get_timestamp()
-    
+
     print(f"🔍 Scanning {len(symbols_to_process)} symbols at {timestamp}")
 
     latest_entries = load_latest_entries_per_symbol(symbols_to_process, temporary_path, max_age_minutes=module_config["ohlcv_max_age_minutes"])
@@ -162,13 +161,19 @@ def run_potential_trades_checker(general_config, module_config, module_log_path,
 
 if __name__ == "__main__":
 
-    general_config = load_and_validate()
-    paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
-    module_log_path = paths["full_log_path"]
-    module_schema_path = paths["full_log_schema_path"]
+    configs_and_logs = load_configs_and_logs([
+        {
+            "name": "symbol",
+            "mid_folder": "analysis",
+            "module_key": "symbol_data_fetcher",
+            "extension": ".jsonl",
+            "return": ["config", "logs_path", "full_log_path", "full_log_schema_path"]
+        }
+    ])
+    general_config = configs_and_logs.get("general_config")
+    symbol_config = configs_and_logs.get("symbol_config")
+    symbol_logs_path = configs_and_logs.get("symbol_logs_path")
+    symbol_full_log_path = configs_and_logs.get("symbol_full_log_path")
+    symbol_full_log_schema_path = configs_and_logs.get("symbol_full_log_schema_path")
 
-    module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
-    
-    log_paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-
-    run_potential_trades_checker(general_config, module_config, module_log_path, module_schema_path)
+    run_potential_trades_checker(general_config, symbol_config, symbol_logs_path, symbol_full_log_path, symbol_full_log_schema_path)

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from jsonschema import validate, ValidationError
 from modules.save_and_validate.file_checker import file_checker
+from utils.load_configs_and_logs import load_configs_and_logs
 
 def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=True):
 
@@ -35,12 +36,15 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
     # ✍️ Tallenna data tiedostoon
     with open(path, "a" if is_jsonl else "w", encoding="utf-8") as f:
         if is_jsonl:
+            # If schema is array schema, use its 'items' schema for each item validation
+            item_schema = schema.get("items") if isinstance(schema, dict) and "items" in schema else schema
+
             if isinstance(data, list):
                 for item in data:
-                    validate(instance=item, schema=schema)
+                    validate(instance=item, schema=item_schema)
                     f.write(json.dumps(item) + "\n")
             else:
-                validate(instance=data, schema=schema)
+                validate(instance=data, schema=item_schema)
                 f.write(json.dumps(data) + "\n")
         else:
             validate(instance=data, schema=schema)
@@ -51,20 +55,22 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
 
 if __name__ == "__main__":
 
-    from modules.pathbuilder.pathbuilder import pathbuilder
-    from modules.load_and_validate.load_and_validate import load_and_validate
-
     # Lataa ja tarkista konfiguraatio
-    general_config = load_and_validate()
-    if general_config is None:
-        raise RuntimeError("❌ general_config is None — config loading or validation failed.")
+    configs_and_logs = load_configs_and_logs([
+        {
+            "name": "multi_interval_ohlcv",
+            "mid_folder": "fetch",
+            "module_key": "multi_interval_ohlcv",
+            "extension": ".jsonl",
+            "return": ["full_log_path", "full_log_schema_path"]
+        }
+    ])
 
-    # Rakenna polut
-    paths = pathbuilder(
-        extension=".jsonl",
-        file_name=general_config["module_filenames"]["multi_interval_ohlcv"],
-        mid_folder="fetch"
-    )
+    paths = {
+        "full_log_path": configs_and_logs["multi_interval_ohlcv_full_log_path"],
+        "full_log_schema_path": configs_and_logs["multi_interval_ohlcv_full_log_schema_path"]
+    }
+    general_config = configs_and_logs["general_config"]
 
     # Esimerkkidata
     jsonl = {

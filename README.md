@@ -39,12 +39,15 @@ Input your own data...
 crontab -e
 ```
 
-**Add these Symbol data fetching lines to the cron**
+**Add these lines to the cron (keep them separate)**
 ```bash
 TZ=Europe/Helsinki
-0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher >> ../AI-crypto-trader-logs/cron/temporary_log_top_symbols_data_fetcher_cron.log 2>&1
-*/5 * * * * cd /opt/kjc/int/AI-crypto-trader && /usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher >> ../AI-crypto-trader-logs/cron/temporary_log_main_symbols_data_fetcher_cron.log 2>&1
+
+0 1,5,9,13,17,21 * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/potential_trades_checker.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log 2>&1" || echo "$(date) potential_trades_checker skipped (already running)" >> ../AI-crypto-trader-logs/cron/temporary_log_potential_trades_checker_cron.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/fetch_symbols_data.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log 2>&1" || echo "$(date) fetch_symbols_data skipped (already running)" >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/price_data_fetcher.lock -c "/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log 2>&1" || echo \"$(date) price_data_fetcher skipped (already running)\" >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log
 ```
 
 **Check cron log**
@@ -54,15 +57,26 @@ tail -n 100 /opt/kjc/int/AI-crypto-trader-logs/cron/cron.log
 
 **4. Run the datacollectors and analyzers or wait crons to run them**
 
-If no time to wait crons to run, run these manually, in this order:
+To run Symbol data fetchers manually:
 ```bash
-cd /opt/kjc/int/AI-crypto-trader
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
+# 1. Run only potential_trades_checker
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher potential_trades_checker
+
+# 2. Run only fetch_symbols_data
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher fetch_symbols_data
+
+# 3. Run both in the correct order (first potential_trades_checker, then fetch_symbols_data)
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher
+```
+
+To run price data fetchers and history analyzer manually:
+```bash
+cd /opt/kjc/int/AI-crypto-traderr
 /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
+/usr/bin/python3 -m modules.master_balance_logger.master_balance_logger
 ```
+
 **5. Start trading**
 
 ```bash
@@ -126,7 +140,89 @@ To run dublicate history log entry remover:
 /usr/bin/python3 -m modules.history_analyzer.remove_duplicates_from_jsonl
 ```
 
-**4. Testing**
+**6. Testing**
+
+Test Load and Validate manually:
+```bash
+/usr/bin/python3 -m modules.load_and_validate.load_and_validate
+```
+
+Test Path Selector manually:
+```bash
+/usr/bin/python3 -m modules.pathbuilder.path_selector
+```
+
+Test Get Filenames manually:
+```bash
+/usr/bin/python3 -m modules.pathbuilder.get_filenames
+```
+
+Test File Checker manually:
+```bash
+/usr/bin/python3 -m modules.save_and_validate.file_checker config.json
+```
+
+Test Pathbuilder manually:
+```bash
+/usr/bin/python3 -m modules.pathbuilder.pathbuilder
+```
+
+Test Get Timestamp manually:
+```bash
+/usr/bin/python3 -m utils.get_timestamp
+```
+
+Test Multi Ohlcv Handler manually:
+```bash
+/usr/bin/python3 -m integrations.multi_interval_ohlcv.multi_ohlcv_handler
+```
+
+Test Save and Validate manually:
+```bash
+/usr/bin/python3 -m modules.save_and_validate.save_and_validate
+```
+
+Test Load Latest Entry manually:
+```bash
+/usr/bin/python3 -m utils.load_latest_entry
+```
+
+Test Load Latest Entries per Symbol manually:
+```bash
+/usr/bin/python3 -m utils.load_latest_entries_per_symbol
+```
+
+Test Get Symbols to Use manually:
+```bash
+/usr/bin/python3 -m utils.get_symbols_to_use
+```
+
+Test Price Data Fetcher manually:
+```bash
+/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
+```
+
+Test History Data Collector manually:
+```bash
+/usr/bin/python3 -m modules.history_data_collector.history_data_collector
+```
+
+Test Load Configs and Logs manually:
+```bash
+/usr/bin/python3 -m utils.load_configs_and_logs
+```
+
+Test Symbol Data Fetchers manually:
+```bash
+python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
+python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher
+```
+
+Test Cron Tasks Prosessor manually:
+```bash
+/usr/bin/python3 -m core.cron_tasks_processor
+```
 
 Test Binance-integration status
 ```bash
@@ -151,11 +247,6 @@ python3 -m tests.price_change_backtest
 Test log momentum signal limits
 ```bash
 python3 -m tests.test_rsi_deviation_signal
-```
-
-Test multi ohlcv handler manually:
-```bash
-python3 integrations/multi_interval_ohlcv/multi_ohlcv_handler.py
 ```
 
 Test Equity Manager manually:

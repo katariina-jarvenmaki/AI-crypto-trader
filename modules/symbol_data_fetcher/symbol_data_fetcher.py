@@ -12,42 +12,45 @@ from modules.symbol_data_fetcher.tasks.potential_trades_checker import run_poten
 from modules.symbol_data_fetcher.tasks.fetch_symbols_data import run_fetch_symbols_data
 
 from utils.load_latest_entry import load_latest_entry
-from modules.pathbuilder.pathbuilder import pathbuilder
-from modules.load_and_validate.load_and_validate import load_and_validate
+from utils.load_configs_and_logs import load_configs_and_logs
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def conf_and_paths():
-    general_config = load_and_validate()
+
+    configs_and_logs = load_configs_and_logs([
+        {
+            "name": "symbol",
+            "mid_folder": "analysis",
+            "module_key": "symbol_data_fetcher",
+            "extension": ".jsonl",
+            "return": ["config", "logs_path", "full_log_path", "full_log_schema_path"]
+        },
+        {
+            "name": "ohlcv",
+            "mid_folder": "fetch",
+            "module_key": "multi_interval_ohlcv",
+            "extension": ".jsonl",
+            "return": ["full_log_path", "full_log_schema_path"]
+        }
+    ])
+
+    general_config = configs_and_logs.get("general_config")
+    symbol_config = configs_and_logs.get("symbol_config")
+    symbol_logs_path = configs_and_logs.get("symbol_logs_path")
+    symbol_full_log_path = configs_and_logs.get("symbol_full_log_path")
+    symbol_full_log_schema_path = configs_and_logs.get("symbol_full_log_schema_path")
+    ohlcv_full_log_path = configs_and_logs.get("ohlcv_full_log_path")
+    ohlcv_full_log_schema_path = configs_and_logs.get("ohlcv_full_log_schema_path")
     
-    symbol_paths = pathbuilder(
-        extension=".jsonl", 
-        file_name=general_config["module_filenames"]["symbol_data_fetcher"], 
-        mid_folder="analysis"
-    )
-    ohlcv_paths = pathbuilder(
-        extension=".jsonl", 
-        file_name=general_config["module_filenames"]["multi_interval_ohlcv"], 
-        mid_folder="fetch"
-    )
-
-    module_log_path = symbol_paths["full_log_path"]
-    module_schema_path = symbol_paths["full_log_schema_path"]
-    module_config = load_and_validate(
-        file_path=symbol_paths["full_config_path"],
-        schema_path=symbol_paths["full_config_schema_path"]
-    )
-
-    ohlcv_log_path = ohlcv_paths["full_log_path"]
-    ohlcv_schema_path = ohlcv_paths["full_log_path"]
-
     return {
         "general_config": general_config,
-        "module_config": module_config,
-        "module_log_path": module_log_path,
-        "module_schema_path": module_schema_path,
-        "ohlcv_log_path": ohlcv_log_path,
-        "ohlcv_schema_path": ohlcv_schema_path,
+        "module_config": symbol_config,
+        "module_logs_path": symbol_logs_path,
+        "module_log_path": symbol_full_log_path,
+        "module_schema_path": symbol_full_log_schema_path,
+        "ohlcv_log_path": ohlcv_full_log_path,
+        "ohlcv_schema_path": ohlcv_full_log_schema_path,
     }
 
 def symbol_data_fetcher():
@@ -78,7 +81,7 @@ def symbol_data_fetcher():
         run_fetch_symbols_data(
             conf["general_config"],
             conf["module_config"],
-            conf["module_log_path"],
+            conf["module_logs_path"],
             conf["module_schema_path"],
             conf["ohlcv_log_path"],
             conf["ohlcv_schema_path"]
@@ -89,6 +92,7 @@ def symbol_data_fetcher():
         run_potential_trades_checker(
             conf["general_config"],
             conf["module_config"],
+            conf["module_logs_path"],
             conf["module_log_path"],
             conf["module_schema_path"]
         )

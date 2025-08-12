@@ -16,9 +16,9 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
         }
 
     mode (optional):
-    - "long-only": removes symbols from 'potential_to_short'
-    - "short-only": removes symbols from 'potential_to_long'
-    - "no-trade": returns an empty set of symbols_to_trade
+    - "long_only": removes symbols from 'potential_to_short'
+    - "short_only": removes symbols from 'potential_to_long'
+    - "no_trade": returns an empty set of symbols_to_trade
     - None: returns all the symbols without limits 
     """
 
@@ -41,13 +41,13 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
                 print(f"🔍 {key}: {symbols[:5]}... ({len(symbols)} total)")
             all_symbols.update(symbols)
 
-        if mode == "long-only":
+        if mode == "long_only":
             exclude_symbols = set(entry.get("potential_to_short", []))
             message = f"🟢 Long-only mode: excluded {len(exclude_symbols)} short candidates."
-        elif mode == "short-only":
+        elif mode == "short_only":
             exclude_symbols = set(entry.get("potential_to_long", []))
             message = f"🔴 Short-only mode: excluded {len(exclude_symbols)} long candidates."
-        elif mode == "no-trade":
+        elif mode == "no_trade":
             message = "⏸️  No-trade mode: not using any symbols."
         else:
             message = "✅ No mode: No current manual limits on trade."
@@ -70,13 +70,22 @@ def get_symbols_to_use(module_config, module_log_path, mode=None):
 
 if __name__ == "__main__":
 
-    from modules.load_and_validate.load_and_validate import load_and_validate
-    from modules.pathbuilder.pathbuilder import pathbuilder
+    from utils.load_configs_and_logs import load_configs_and_logs
 
-    general_config = load_and_validate()
-    paths = pathbuilder(extension=".jsonl", file_name=general_config["module_filenames"]["symbol_data_fetcher"], mid_folder="analysis")
-    module_log_path = paths["full_log_path"]
-    module_config = load_and_validate(file_path=paths["full_config_path"], schema_path=paths["full_config_schema_path"])
+    configs_and_logs = load_configs_and_logs([
+        {
+            "name": "symbol",
+            "mid_folder": "analysis",
+            "module_key": "symbol_data_fetcher",
+            "extension": ".jsonl",
+            "return": ["config", "full_log_path", "full_temp_log_path"]
+        }
+    ])
+
+    # Asetetaan tarvittavat muuttujat aiemmista arvoista
+    module_config = configs_and_logs["symbol_config"]
+    module_log_path = configs_and_logs["symbol_full_log_path"]
+    general_config = configs_and_logs["general_config"]
 
     mode = None
     # mode = "long_only"

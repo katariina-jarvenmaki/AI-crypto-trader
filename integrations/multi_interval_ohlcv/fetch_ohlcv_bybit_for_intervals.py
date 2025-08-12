@@ -9,12 +9,24 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # CONFIG INIT
-from modules.pathbuilder.pathbuilder import pathbuilder
-from modules.load_and_validate.load_and_validate import load_and_validate 
+from utils.load_configs_and_logs import load_configs_and_logs 
 
-general_config = load_and_validate()
-paths = pathbuilder(extension=".json", file_name=general_config["module_filenames"]["multi_interval_ohlcv"], mid_folder="fetch")
-config = load_and_validate(file_path = paths["full_config_path"], schema_path = paths["full_config_schema_path"])
+configs_and_logs = load_configs_and_logs([
+    {
+        "name": "multi_interval_ohlcv",
+        "mid_folder": "fetch",
+        "module_key": "multi_interval_ohlcv",
+        "extension": ".jsonl",
+        "return": ["config", "full_log_path", "full_log_schema_path"]
+    }
+])
+
+general_config = configs_and_logs["general_config"]
+config = configs_and_logs["multi_interval_ohlcv_config"]
+paths = {
+    "full_log_path": configs_and_logs["multi_interval_ohlcv_full_log_path"],
+    "full_log_schema_path": configs_and_logs["multi_interval_ohlcv_full_log_schema_path"]
+}
 
 def fetch_ohlcv_bybit(symbol, intervals=None, limit=None, start_time=None, end_time=None):
     intervals = intervals or config.get("interval_map_bybit")
