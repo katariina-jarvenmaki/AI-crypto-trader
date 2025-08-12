@@ -86,9 +86,10 @@ def calculate_price_changes(symbol: str, current_time: datetime) -> dict:
         current_time = pytz.timezone(TIMEZONE.zone).localize(current_time)
     current_time = current_time.astimezone(pytz.UTC)
 
-    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=300)
+    result = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=300)
+    ohlcv_data = result.get("data_by_interval", {}) if result else {}
 
-    if ohlcv_data is None or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
+    if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print(f"⚠️ No OHLCV data available for symbol {symbol}")
         return {}
 

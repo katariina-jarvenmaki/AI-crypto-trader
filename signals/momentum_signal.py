@@ -12,7 +12,7 @@ from configs.config import (
 import pandas as pd
 
 def get_momentum_signal(symbol: str):
-    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m", "1h"], limit=100)
+    ohlcv_data = fetch_ohlcv_fallback(symbol, intervals=["5m", "1h"], limit=100)
     if not ohlcv_data or "5m" not in ohlcv_data or "1h" not in ohlcv_data:
         return None, None
 

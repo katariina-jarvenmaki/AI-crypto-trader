@@ -65,7 +65,7 @@ RSI_THRESHOLDS = {
 
 # SIGNAL LIMITER SETTINGS
 # scripts/signal_limiter.py
-LOG_FILE = "../AI-crypto-trader-logs/signals-data/signals_log.json"
+LOG_FILE = "../AI-crypto-trader-logs/signal-data/signals_log.json"
 SIGNAL_TIMEOUT = timedelta(hours=1)
 
 # SIGNAL LOGGER SETTINGS

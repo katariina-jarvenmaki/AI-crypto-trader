@@ -37,7 +37,10 @@ def get_signal(symbol: str, interval: str, rsi: str, is_first_run: bool = False,
         disallowed = None
 
     # 2. Divergence check
-    data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=["1h"], limit=100)
+    result = fetch_ohlcv_fallback(symbol=symbol, intervals=["1h"], limit=100)
+    if not result:
+        return {}
+    data_by_interval = result.get("data_by_interval")    
     df = data_by_interval.get("1h")
     if df is None or df.empty:
         print(f"Skipping signal analysis for {symbol.upper()} on {interval}: No data available.")
@@ -76,7 +79,8 @@ def get_signal(symbol: str, interval: str, rsi: str, is_first_run: bool = False,
         }
 
     # 4. Logipohjainen signaali (ennen momentumia)
-    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=100)
+    result = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=100)
+    ohlcv_data = result.get("data_by_interval", {}) if result else {}
     df_5m = ohlcv_data.get("5m")
 
     if df_5m is None or df_5m.empty:

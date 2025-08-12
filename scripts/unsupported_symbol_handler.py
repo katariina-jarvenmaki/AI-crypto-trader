@@ -87,9 +87,9 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
 
         print(f"🕒 Datetime preferences: weekday={weekday_pref}, time={time_pref}")
         if tighten_long:
-            print("⚠️ Tiukennetaan *long* ehtoja ajan perusteella.")
+            print("⚠️  Tiukennetaan *long* ehtoja ajan perusteella.")
         if tighten_short:
-            print("⚠️ Tiukennetaan *short* ehtoja ajan perusteella.")
+            print("⚠️  Tiukennetaan *short* ehtoja ajan perusteella.")
 
     except Exception as e:
         print(f"❌ Failed to analyze datetime preferences: {e}")
@@ -150,7 +150,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
 
         tighten_short = tighten_short or should_tighten_conditions(sentiment_entry, "short")
         if tighten_short:
-            print("⚠️ Sentimentti bullish tai viikonpäivä ma-to → → tiukennetaan shorttaus-ehtoja.")
+            print("⚠️  Sentimentti bullish tai viikonpäivä ma-to → → tiukennetaan shorttaus-ehtoja.")
 
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bullish":
@@ -210,7 +210,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 print(f"⛔ Skipping SHORT: last_price ({last_price}) ei selvästi ylä-BB:n ({bb_upper}) yläpuolella.")
                 return
         else:
-            print(f"⚠️ Skipping BB check: bb_upper or last_price is None for {symbol}")
+            print(f"⚠️  Skipping BB check: bb_upper or last_price is None for {symbol}")
 
         try:
             avg_price = turnover / volume if turnover and volume else None
@@ -221,7 +221,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 print(f"📉 Skipping SHORT: last_price ({last_price}) < 95% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}%")
                 return
         except Exception as e:
-            print(f"⚠️ Failed turnover/volume filter for {bybit_symbol}: {e}")
+            print(f"⚠️  Failed turnover/volume filter for {bybit_symbol}: {e}")
 
         if not can_initiate(bybit_symbol, "short", load_initiated_orders(), selected_symbols):
             print(f"⛔ Skipping {bybit_symbol} short: too many initiations compared to others.")
@@ -272,7 +272,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
 
         tighten_long = tighten_long or should_tighten_conditions(sentiment_entry, "long")
         if tighten_long:
-            print("⚠️ Sentimentti bearish tai viikonpäivä pe-su → tiukennetaan longaus-ehtoja.")
+            print("⚠️  Sentimentti bearish tai viikonpäivä pe-su → tiukennetaan longaus-ehtoja.")
 
         macd_trend = latest_entry.get("macd_trend")
         if macd_trend == "bearish":
@@ -319,7 +319,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 print(f"⛔ Skipping LONG: last_price ({last_price}) ei selvästi ala-BB:n ({bb_lower}) alapuolella.")
                 return
         else:
-            print(f"⚠️ Skipping BB check: bb_lower or last_price is None for {symbol}")
+            print(f"⚠️  Skipping BB check: bb_lower or last_price is None for {symbol}")
 
         try:
             avg_price = turnover / volume if turnover and volume else None
@@ -330,7 +330,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 print(f"📈 Skipping LONG: last_price ({last_price}) > 108% of avg_price ({avg_price:.6f}) and price_change_percent {price_change_percent:.2f}%")
                 return
         except Exception as e:
-            print(f"⚠️ Failed turnover/volume filter for {bybit_symbol}: {e}")
+            print(f"⚠️  Failed turnover/volume filter for {bybit_symbol}: {e}")
 
         if not can_initiate(bybit_symbol, "long", load_initiated_orders(), selected_symbols):
             print(f"⛔ Skipping {bybit_symbol} long: too many initiations compared to others.")
@@ -406,7 +406,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 history_sentiment= sentiment_entry
             )
     else:
-        print(f"⚠️ No direction specified or both long_only and short_only are False, skipping trades for {symbol}.")
+        print(f"⚠️  No direction specified or both long_only and short_only are False, skipping trades for {symbol}.")
         return
 
 import json

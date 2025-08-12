@@ -19,8 +19,16 @@ def calculate_rsi(close_prices, period=RSI_PERIOD):
 # Run RSI analyzer
 def rsi_analyzer(symbol):
 
-    data_by_interval, _ = fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200)
+    result = fetch_ohlcv_fallback(symbol=symbol, intervals=INTERVALS, limit=200)
+    if not result:
+        return {
+            "signal": "none",
+            "interval": None,
+            "rsi": None,
+            "mode": "rsi"
+        }
 
+    data_by_interval = result.get("data_by_interval", {})
     previous_rsi = None
     last_checked_rsi = None
     last_checked_interval = None

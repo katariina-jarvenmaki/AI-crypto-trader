@@ -40,7 +40,9 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
         intervals = [5]
 
     # Fetch OHLCV for timestamp reference
-    ohlcv_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
+    result = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
+    ohlcv_data = result.get("data_by_interval", {}) if result else {}
+
     if not ohlcv_data or "5m" not in ohlcv_data or ohlcv_data["5m"].empty:
         print("⚠️  Riskmanagement: No OHLCV data available.")
         return "none", {}, 1.0, {}
@@ -64,8 +66,9 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
     reverse_results = {}
 
     # 5min reverse
-    ohlcv_5m_data, _ = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
-    if ohlcv_5m_data and "5m" in ohlcv_5m_data and not ohlcv_5m_data["5m"].empty:
+    result_5m = fetch_ohlcv_fallback(symbol, intervals=["5m"], limit=30)
+    ohlcv_5m_data = result_5m.get("data_by_interval", {}) if result_5m else {}
+    if "5m" in ohlcv_5m_data and not ohlcv_5m_data["5m"].empty:
         df_5m = ohlcv_5m_data["5m"]
         reverse_5m = verify_signal_with_momentum_and_volume(df_5m, reverse_signal, symbol, intervals=[5], market_state=market_state)
         reverse_results["5min"] = reverse_5m
@@ -73,8 +76,9 @@ def check_riskmanagement(symbol: str, signal: str, market_state: str, override_s
         reverse_results["5min"] = {"momentum_strength": "n/a", "interpretation": "No 5m OHLCV"}
 
     # 15min reverse
-    ohlcv_15m_data, _ = fetch_ohlcv_fallback(symbol, intervals=["15m"], limit=30)
-    if ohlcv_15m_data and "15m" in ohlcv_15m_data and not ohlcv_15m_data["15m"].empty:
+    result_15m = fetch_ohlcv_fallback(symbol, intervals=["15m"], limit=30)
+    ohlcv_15m_data = result_15m.get("data_by_interval", {}) if result_15m else {}
+    if "15m" in ohlcv_15m_data and not ohlcv_15m_data["15m"].empty:
         df_15m = ohlcv_15m_data["15m"]
         reverse_15m = verify_signal_with_momentum_and_volume(df_15m, reverse_signal, symbol, intervals=[15], market_state=market_state)
         reverse_results["15min"] = reverse_15m
