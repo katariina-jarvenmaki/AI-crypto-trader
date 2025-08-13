@@ -73,6 +73,7 @@ def symbol_data_fetcher():
         run_potential_trades_checker(
             conf["general_config"],
             conf["module_config"],
+            conf["module_logs_path"],
             conf["module_log_path"],
             conf["module_schema_path"]
         )
