@@ -27,9 +27,15 @@ def history_data_collector(symbols: List[str]):
         ohlcv_ts = ohlcv_entry.get("timestamp") if ohlcv_entry else None
         price_ts = price_entry.get("timestamp") if price_entry else None
 
-        if col_ts is None or (col_ts != ohlcv_ts and col_ts != price_ts):
+        if (
+            (col_ts is None or (col_ts != ohlcv_ts and col_ts != price_ts))
+            and ohlcv_ts is not None
+            and price_ts is not None
+        ):
             print(f"💹 Continuing the process for the symbol {symbol}")
             collector_data_processor(symbol, ohlcv_entry, price_entry)
+        else:
+            print(f"⏭ Skipping {symbol} — data is up-to-date or missing required OHLCV/price timestamps")
 
 if __name__ == "__main__":
 
