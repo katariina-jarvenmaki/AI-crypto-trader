@@ -5,6 +5,28 @@ from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
+def history_data_collector(symbols: List[str]):
+
+    print(f"\n💡 Found {len(symbols)} symbols to process...")
+
+    collector_logs, ohlcv_logs, price_logs = data_from_logs(symbols)
+    print(ohlcv_logs)
+
+    for symbol in symbols:
+
+        print(f"\n⚙️  Symbol: {symbol}")
+
+        collector_entries = collector_logs.get(symbol, [])
+        ohlcv_entries = ohlcv_logs.get(symbol, [])
+        price_entries = price_logs.get(symbol, [])
+
+        col_ts = collector_entries.get("timestamp") if collector_entries else None
+        ohlcv_ts = ohlcv_entries.get("timestamp") if ohlcv_entries else None
+        price_ts = price_entries.get("timestamp") if price_entries else None
+
+        if col_ts is None or (col_ts != ohlcv_ts and col_ts != price_ts):
+            print(f"💹 Continuing the process for the symbol {symbol}")
+
 def data_from_logs(symbols: List[str]):
 
     configs_and_logs = load_configs_and_logs([
@@ -51,16 +73,10 @@ def data_from_logs(symbols: List[str]):
 
     return latest_collection, latest_ohlcv, latest_price
 
-def history_data_collector(symbols: List[str]):
-
-    collector_logs, ohlcv_logs, price_logs = data_from_logs(symbols)
-
-    print("Collector logs:", collector_logs)
-    # print("OHLCV logs:", ohlcv_logs)
-    # print("Price logs:", price_logs)
-
 if __name__ == "__main__":
-    
+
+    print(f"\nRunning History Data Collector...\n")
+ 
     configs_and_logs = load_configs_and_logs([
         {
             "name": "symbol",
