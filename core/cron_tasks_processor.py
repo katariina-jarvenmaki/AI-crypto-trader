@@ -7,24 +7,9 @@ def cron_tasks_processor():
     """
     print("Starting the Cron Tasks Processor...")
 
-    run_price_data_fetcher()
-
     run_history_analyzer()
 
     run_master_balance_logger()
-
-def run_price_data_fetcher():
-    
-    try:
-        print("Calling Price Data Fetcher module...")
-        subprocess.run(
-            ["/usr/bin/python3", "-m", "integrations.price_data_fetcher.price_data_fetcher"],
-            check=True
-        )
-        print("✅ Price Data Fetcher executed successfully.")
-
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Error while executing Price Data Fetcher: {e}")
 
 def run_history_analyzer():
     

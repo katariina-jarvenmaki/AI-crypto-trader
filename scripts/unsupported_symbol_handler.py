@@ -104,7 +104,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
     ohlcv_entry = get_latest_log_entry_for_symbol(
         "../AI-crypto-trader-logs/fetch_logs/multi_ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol(
-        "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
+        "../AI-crypto-trader-logs/fetch_logs/price_data_fetcher_log.jsonl", bybit_symbol)
     sentiment_entry = get_latest_log_entry(
         "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl")
  
@@ -381,7 +381,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
         result = execute_bybit_long(symbol=bybit_symbol, risk_strength="strong", min_inv_diff_percent=min_inv_diff_percent)
         if result:
             price_entry = get_latest_log_entry_for_symbol(
-                "../AI-crypto-trader-logs/fetched-data/price_data_log.jsonl", bybit_symbol)
+                "../AI-crypto-trader-logs/fetch_logs/price_data_fetcher_log.jsonl", bybit_symbol)
             # Globaalin muuttujan päivitys
             real_cost = result["cost"] / result["leverage"]
             margins["available_long_margin"] -= real_cost
