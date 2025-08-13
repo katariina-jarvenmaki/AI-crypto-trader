@@ -1,77 +1,35 @@
+# modules/history_data_collector/history_data_collector.py
+# version 2.0, aug 2025
+
 import json
 from typing import List
 from utils.get_timestamp import get_timestamp
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
-from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
+from modules.history_data_collector.utils import get_data_from_logs
+from modules.history_data_collector.collector_data_processor import collector_data_processor
 
 def history_data_collector(symbols: List[str]):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    collector_logs, ohlcv_logs, price_logs = data_from_logs(symbols)
-    print(ohlcv_logs)
+    collector_logs, ohlcv_logs, price_logs = get_data_from_logs(symbols)
 
     for symbol in symbols:
 
         print(f"\n⚙️  Symbol: {symbol}")
 
-        collector_entries = collector_logs.get(symbol, [])
-        ohlcv_entries = ohlcv_logs.get(symbol, [])
-        price_entries = price_logs.get(symbol, [])
+        collector_entry = collector_logs.get(symbol, [])
+        ohlcv_entry = ohlcv_logs.get(symbol, [])
+        price_entry = price_logs.get(symbol, [])
 
-        col_ts = collector_entries.get("timestamp") if collector_entries else None
-        ohlcv_ts = ohlcv_entries.get("timestamp") if ohlcv_entries else None
-        price_ts = price_entries.get("timestamp") if price_entries else None
+        col_ts = collector_entry.get("timestamp") if collector_entry else None
+        ohlcv_ts = ohlcv_entry.get("timestamp") if ohlcv_entry else None
+        price_ts = price_entry.get("timestamp") if price_entry else None
 
         if col_ts is None or (col_ts != ohlcv_ts and col_ts != price_ts):
             print(f"💹 Continuing the process for the symbol {symbol}")
-
-def data_from_logs(symbols: List[str]):
-
-    configs_and_logs = load_configs_and_logs([
-        {
-            "name": "collector",
-            "mid_folder": "analysis",
-            "module_key": "history_data_collector",
-            "extension": ".jsonl",
-            "return": ["full_temp_log_path"]
-        },
-        {
-            "name": "ohlcv",
-            "mid_folder": "fetch",
-            "module_key": "multi_interval_ohlcv",
-            "extension": ".jsonl",
-            "return": ["full_log_path"]
-        },
-        {
-            "name": "price",
-            "mid_folder": "fetch",
-            "module_key": "price_data_fetcher",
-            "extension": ".jsonl",
-            "return": ["full_log_path"]
-        }
-    ])
-
-    latest_collection = load_latest_entries_per_symbol(
-        symbols=symbols,
-        file_path=configs_and_logs["collector_full_temp_log_path"],
-        max_age_minutes=1440  # esim. 24 tuntia
-    )
-
-    latest_ohlcv = load_latest_entries_per_symbol(
-        symbols=symbols,
-        file_path=configs_and_logs["ohlcv_full_log_path"],
-        max_age_minutes=1440
-    )
-
-    latest_price = load_latest_entries_per_symbol(
-        symbols=symbols,
-        file_path=configs_and_logs["price_full_log_path"],
-        max_age_minutes=1440
-    )
-
-    return latest_collection, latest_ohlcv, latest_price
+            collector_data_processor(symbol, ohlcv_entry, price_entry)
 
 if __name__ == "__main__":
 
