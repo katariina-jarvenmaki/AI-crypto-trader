@@ -9,6 +9,7 @@ from dateutil import parser as date_parser
 from utils.get_timestamp import get_timestamp 
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.save_and_validate.save_and_validate import save_and_validate
+from modules.load_and_validate.load_and_validate import load_and_validate
 from modules.symbol_data_fetcher.analysis_summary import analyze_all_symbols, prepare_analysis_results
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 from integrations.multi_interval_ohlcv.multi_ohlcv_handler import fetch_ohlcv_fallback
