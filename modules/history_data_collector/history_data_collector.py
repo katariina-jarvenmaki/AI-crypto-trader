@@ -9,7 +9,7 @@ from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_data_collector.utils import get_data_from_logs
 from modules.history_data_collector.collector_data_processor import collector_data_processor
 
-def history_data_collector(symbols: List[str]):
+def history_data_collector(symbols: List[str], history_config):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
@@ -39,7 +39,7 @@ def history_data_collector(symbols: List[str]):
             )
         ):
             print(f"💹 Continuing the process for the symbol {symbol}")
-            collector_data_processor(symbol, ohlcv_entry, price_entry, log_path)
+            collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, log_path)
         else:
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required OHLCV/price timestamps")
 
@@ -54,14 +54,22 @@ if __name__ == "__main__":
             "module_key": "symbol_data_fetcher",
             "extension": ".jsonl",
             "return": ["config", "full_log_path", "full_log_schema_path"]
+        },
+        {
+            "name": "history",
+            "mid_folder": "analysis",
+            "module_key": "history_analyzer",
+            "extension": ".json",
+            "return": ["config"]
         }
     ])
 
     # Vastaa alkuperäisen koodin muuttujia
-    module_log_path = configs_and_logs["symbol_full_log_path"]
-    module_config = configs_and_logs["symbol_config"]
+    symbol_log_path = configs_and_logs["symbol_full_log_path"]
+    symbol_config = configs_and_logs["symbol_config"]
+    history_config = configs_and_logs["history_config"]
 
-    result = get_symbols_to_use(module_config, module_log_path)
+    result = get_symbols_to_use(symbol_config, symbol_log_path)
     all_symbols = result["all_symbols"]
 
-    history_data_collector(all_symbols)
+    history_data_collector(all_symbols, history_config)

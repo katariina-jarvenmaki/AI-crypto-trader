@@ -3,7 +3,7 @@
 
 from utils.get_timestamp import get_timestamp
 
-def collector_data_processor(symbol, ohlcv_entry, price_entry, log_path):
+def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, log_path):
 
     timestamp = get_timestamp()
 
@@ -30,6 +30,7 @@ def collector_data_processor(symbol, ohlcv_entry, price_entry, log_path):
     print(f"price_entry: {price_entry}")
     print(f"log_path: {log_path}")
     print(f"price_data: {price_data}")
+    print(f"history_config: {history_config}")
 
     # Kerätään indikaattoridatat kaikille intervalleille
     # rsi = {i: ohlcv_entry["data_preview"].get(i, {}).get("rsi") for i in CONFIG["intervals_to_use"]}
