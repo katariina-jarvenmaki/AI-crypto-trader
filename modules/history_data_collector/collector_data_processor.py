@@ -20,87 +20,48 @@ def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, l
     intervals = ohlcv_entry.get("intervals")
     interval_data = ohlcv_entry.get("data_preview", {})
 
-    # Collect the indicator data
+    # Get indicator data based on history_config intervals
+    rsi_data = {
+        interval: interval_data.get(interval, {}).get("rsi")
+        for interval in history_config.get("intervals_to_use", [])
+    }
+    ema_data = {
+        interval: interval_data.get(interval, {}).get("ema")
+        for interval in history_config.get("intervals_to_use", [])
+    }
+    macd_data = {
+        interval: interval_data.get(interval, {}).get("macd")
+        for interval in history_config.get("intervals_to_use", [])
+    }
+    macd_signal_data = {
+        interval: interval_data.get(interval, {}).get("macd_signal")
+        for interval in history_config.get("intervals_to_use", [])
+    }
+    bb_upper = {
+        interval: interval_data.get(interval, {}).get("bb_upper")
+        for interval in history_config.get("intervals_to_use", [])
+    }
+    bb_lower = {
+        interval: interval_data.get(interval, {}).get("bb_lower")
+        for interval in history_config.get("intervals_to_use", [])
+    }
 
-
-    # Print results
-    print(f"timestamp: {timestamp}")
-    print(f"symbol: {symbol}")
-    print(f"== Price data ==")
-    print(f"price: {price}")
-    print(f"change_24h: {change_24h}")
-    print(f"high_price: {high_price}")
-    print(f"low_price: {low_price}")
-    print(f"volume: {volume}")
-    print(f"turnover: {turnover}")
-    print(f"== Ohlcv data ==")
-    print(f"intervals: {intervals}")
-    print(f"interval_data: {interval_data}")
-
-    # Kerätään indikaattoridatat kaikille intervalleille
-    # rsi = {i: ohlcv_entry["data_preview"].get(i, {}).get("rsi") for i in CONFIG["intervals_to_use"]}
-    # ema = {i: ohlcv_entry["data_preview"].get(i, {}).get("ema") for i in CONFIG["intervals_to_use"]}
-    # macd = {i: ohlcv_entry["data_preview"].get(i, {}).get("macd") for i in CONFIG["intervals_to_use"]}
-    # macd_signal = {i: ohlcv_entry["data_preview"].get(i, {}).get("macd_signal") for i in CONFIG["intervals_to_use"]}
-    # bb_upper = {i: ohlcv_entry["data_preview"].get(i, {}).get("bb_upper") for i in CONFIG["intervals_to_use"]}
-    # bb_lower = {i: ohlcv_entry["data_preview"].get(i, {}).get("bb_lower") for i in CONFIG["intervals_to_use"]}
-
-    # Keskiarvofunktio (jättää pois None-arvot)
-    # def avg(values):
-    #     vals = [v for v in values if v is not None]
-    #     return sum(vals) / len(vals) if vals else None
-
-    # Lasketaan kaikki keskiarvot
-    # avg_rsi_all = avg(rsi.values())
-    # avg_rsi_1h_4h = avg([rsi.get("1h"), rsi.get("4h")])
-    # avg_rsi_1d_1w = avg([rsi.get("1d"), rsi.get("1w")])
-
-    # avg_macd_all = avg(macd.values())
-    # avg_macd_1h_4h = avg([macd.get("1h"), macd.get("4h")])
-    # avg_macd_1d_1w = avg([macd.get("1d"), macd.get("1w")])
-
-    # avg_macd_signal_all = avg(macd_signal.values())
-    # avg_macd_signal_1h_4h = avg([macd_signal.get("1h"), macd_signal.get("4h")])
-    # avg_macd_signal_1d_1w = avg([macd_signal.get("1d"), macd_signal.get("1w")])
-
-    # EMA-arvot keskiarvoina
-    # ema_rsi = avg_rsi_all  # oletuksena sama kuin avg_rsi_all, muuta jos laskenta erilainen
-    # ema_macd = avg_macd_all
-    # ema_macd_signal = avg_macd_signal_all
-
-    # MACD diff
-    # macd_diff = (avg_macd_all - avg_macd_signal_all) if avg_macd_all is not None and avg_macd_signal_all is not None else None
-
-    # Lopullinen dict vanhan formaatin mukaisesti
-    # parsed = {
-    #     "timestamp": timestamp,
-    #     "symbol": symbol,
-    #     "price": price_data.get("last_price"),
-    #     "high_price": price_data.get("high_price"),
-    #     "low_price": price_data.get("low_price"),
-    #     "volume": price_data.get("volume"),
-    #     "turnover": price_data.get("turnover"),
-    #     "change_24h": price_data.get("price_change_percent"),
-    #     "rsi": rsi,
-    #     "ema": ema,
-    #     "macd": macd,
-    #     "macd_signal": macd_signal,
-    #     "bb_upper": bb_upper,
-    #     "bb_lower": bb_lower,
-    #     "avg_rsi_all": avg_rsi_all,
-    #     "avg_rsi_1h_4h": avg_rsi_1h_4h,
-    #     "avg_rsi_1d_1w": avg_rsi_1d_1w,
-    #     "avg_macd_all": avg_macd_all,
-    #     "avg_macd_1h_4h": avg_macd_1h_4h,
-    #     "avg_macd_1d_1w": avg_macd_1d_1w,
-    #     "avg_macd_signal_all": avg_macd_signal_all,
-    #     "avg_macd_signal_1h_4h": avg_macd_signal_1h_4h,
-    #     "avg_macd_signal_1d_1w": avg_macd_signal_1d_1w,
-    #     "ema_rsi": ema_rsi,
-    #     "ema_macd": ema_macd,
-    #     "ema_macd_signal": ema_macd_signal,
-    #     "macd_diff": macd_diff,
-    # }
-
-    # print(f"Parsed: {parsed}")
-    # return parsed
+    # Return all collected data as dict
+    return {
+        "timestamp": timestamp,
+        "symbol": symbol,
+        "rsi": rsi_data,
+        "ema": ema_data,
+        "macd": macd_data,
+        "macd_signal": macd_signal_data,
+        "bb_upper": bb_upper,
+        "bb_lower": bb_lower,
+        "price": price,
+        "change_24h": change_24h,
+        "high_price": high_price,
+        "low_price": low_price,
+        "volume": volume,
+        "turnover": turnover,
+        "intervals": intervals,
+        "interval_data": interval_data
+    }
