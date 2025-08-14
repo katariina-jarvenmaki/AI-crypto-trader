@@ -49,4 +49,6 @@ def get_data_from_logs(symbols: List[str]):
         max_age_minutes=1440
     )
 
-    return latest_collection, latest_ohlcv, latest_price
+    log_path=configs_and_logs["collector_full_temp_log_path"]
+
+    return latest_collection, latest_ohlcv, latest_price, log_path

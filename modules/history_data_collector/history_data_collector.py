@@ -13,7 +13,7 @@ def history_data_collector(symbols: List[str]):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    collector_logs, ohlcv_logs, price_logs = get_data_from_logs(symbols)
+    collector_logs, ohlcv_logs, price_logs, log_path = get_data_from_logs(symbols)
 
     for symbol in symbols:
 
@@ -28,12 +28,18 @@ def history_data_collector(symbols: List[str]):
         price_ts = price_entry.get("timestamp") if price_entry else None
 
         if (
-            (col_ts is None or (col_ts != ohlcv_ts and col_ts != price_ts))
-            and ohlcv_ts is not None
+            ohlcv_ts is not None
             and price_ts is not None
+            and (
+                col_ts is None
+                or (
+                    col_ts < ohlcv_ts
+                    and col_ts < price_ts
+                )
+            )
         ):
             print(f"💹 Continuing the process for the symbol {symbol}")
-            collector_data_processor(symbol, ohlcv_entry, price_entry)
+            collector_data_processor(symbol, ohlcv_entry, price_entry, log_path)
         else:
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required OHLCV/price timestamps")
 
