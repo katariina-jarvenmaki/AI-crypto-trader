@@ -16,8 +16,16 @@ def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, l
     volume = price_data.get("volume")
     turnover = price_data.get("turnover")
 
-    print(f"symbol: {symbol}")
+    # Get the ohlcv data
+    intervals = ohlcv_entry.get("intervals")
+    interval_data = ohlcv_entry.get("data_preview", {})
+
+    # Collect the indicator data
+
+
+    # Print results
     print(f"timestamp: {timestamp}")
+    print(f"symbol: {symbol}")
     print(f"== Price data ==")
     print(f"price: {price}")
     print(f"change_24h: {change_24h}")
@@ -25,12 +33,9 @@ def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, l
     print(f"low_price: {low_price}")
     print(f"volume: {volume}")
     print(f"turnover: {turnover}")
-    print(f"== Raw ==")
-    print(f"ohlcv_entry: {ohlcv_entry}")
-    print(f"price_entry: {price_entry}")
-    print(f"log_path: {log_path}")
-    print(f"price_data: {price_data}")
-    print(f"history_config: {history_config}")
+    print(f"== Ohlcv data ==")
+    print(f"intervals: {intervals}")
+    print(f"interval_data: {interval_data}")
 
     # Kerätään indikaattoridatat kaikille intervalleille
     # rsi = {i: ohlcv_entry["data_preview"].get(i, {}).get("rsi") for i in CONFIG["intervals_to_use"]}
