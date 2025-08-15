@@ -50,22 +50,6 @@ def load_latest_entry(
     except Exception as e:
         raise RuntimeError(f"❌ Failed to read log file: {e}")
 
-    # --- NEW: Flatten {"BTCUSDT": {...}} -> {"symbol": "BTCUSDT", ...}
-    if entries and "symbol" not in entries[0]:
-        flattened = []
-        for e in entries:
-            if isinstance(e, dict) and len(e) == 1:
-                key, value = next(iter(e.items()))
-                if isinstance(value, dict):
-                    value = dict(value)  # copy
-                    value["symbol"] = key
-                    flattened.append(value)
-                else:
-                    flattened.append({"symbol": key, "value": value})
-            else:
-                flattened.append(e)
-        entries = flattened
-
     # Filter by symbol
     if symbol is not None:
         symbol_key = "symbol"

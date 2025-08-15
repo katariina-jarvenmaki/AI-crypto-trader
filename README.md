@@ -6,7 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil jsonschema 
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil jsonschema pytest
 ```
 
 **3. Setup the crons**
@@ -128,3 +128,11 @@ python3 -m modules.symbol_data_fetcher.symbol_data_fetcher
 Test Cron Tasks Prosessor manually:
 ```bash
 /usr/bin/python3 -m core.cron_tasks_processor
+```
+
+**Running the tests**
+
+Test Save and Validate:
+```bash
+/usr/bin/python3 -m pytest -v tests/test_save_and_validate.py
+```
