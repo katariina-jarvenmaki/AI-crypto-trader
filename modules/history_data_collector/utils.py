@@ -13,7 +13,7 @@ def get_data_from_logs(symbols: List[str]):
             "mid_folder": "analysis",
             "module_key": "history_data_collector",
             "extension": ".jsonl",
-            "return": ["full_temp_log_path"]
+            "return": ["full_temp_log_path", "full_log_schema_path"]
         },
         {
             "name": "ohlcv",
@@ -50,5 +50,6 @@ def get_data_from_logs(symbols: List[str]):
     )
 
     log_path=configs_and_logs["collector_full_temp_log_path"]
+    log_schema_path=configs_and_logs["collector_full_log_schema_path"]
 
-    return latest_collection, latest_ohlcv, latest_price, log_path
+    return latest_collection, latest_ohlcv, latest_price, log_path, log_schema_path

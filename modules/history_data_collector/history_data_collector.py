@@ -7,13 +7,14 @@ from utils.get_timestamp import get_timestamp
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_data_collector.utils import get_data_from_logs
+from modules.save_and_validate.save_and_validate import save_and_validate
 from modules.history_data_collector.collector_data_processor import collector_data_processor
 
 def history_data_collector(symbols: List[str], history_config):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    collector_logs, ohlcv_logs, price_logs, log_path = get_data_from_logs(symbols)
+    collector_logs, ohlcv_logs, price_logs, log_path, log_schema_path = get_data_from_logs(symbols)
     all_collected_data = {}
 
     for symbol in symbols:
@@ -42,7 +43,7 @@ def history_data_collector(symbols: List[str], history_config):
             print(f"💹 Continuing the process for the symbol {symbol}")
 
             collected_data = collector_data_processor(
-                symbol, history_config, ohlcv_entry, price_entry, log_path
+                symbol, history_config, ohlcv_entry, price_entry
             )
             print(f"collected_data: {collected_data}")
             all_collected_data[symbol] = collected_data
@@ -51,6 +52,16 @@ def history_data_collector(symbols: List[str], history_config):
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required OHLCV/price timestamps")
 
     print("\n")
+
+    # Save results to log
+    print(f"❇️  Saving new result to {log_path}\n")
+    save_and_validate(
+        data=all_collected_data,
+        path=log_path,
+        schema=log_schema_path,
+        verbose=False
+    )
+
     return all_collected_data
 
 if __name__ == "__main__":
@@ -82,5 +93,5 @@ if __name__ == "__main__":
     result = get_symbols_to_use(symbol_config, symbol_log_path)
     all_symbols = result["all_symbols"]
 
-    history_data_collector(all_symbols, history_config)
-    
+    collected_data = history_data_collector(all_symbols, history_config)
+    # print(f"\ncollected_data: {collected_data}")

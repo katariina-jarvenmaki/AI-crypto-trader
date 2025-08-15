@@ -3,7 +3,7 @@
 
 from utils.get_timestamp import get_timestamp
 
-def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry, log_path):
+def collector_data_processor(symbol, history_config, ohlcv_entry, price_entry):
 
     timestamp = get_timestamp()
 
