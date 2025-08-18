@@ -10,19 +10,37 @@ def history_analyzer(symbols, history_config, data_collection):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    if not data_collection:
-        latest_entries, log_path, log_schema_path = get_data_from_logs(symbols, history_config)
-        print("⚡ data_collection was empty, fetched latest_entries from logs")
-    else:
-        _, log_path, log_schema_path = get_data_from_logs(symbols)
-        latest_entries = data_collection
-        print("✅ Using provided data_collection")
+    analysis_data, log_path, log_schema_path = get_data_from_logs(symbols)
 
-    # print(f"all_symbols: {symbols}")
-    # print(f"history_config: {history_config}")
-    # print(f"latest_entries: {latest_entries}")
-    # print(f"log_path: {log_path}")
-    # print(f"log_schema_path: {log_schema_path}")
+    for symbol in symbols:
+
+        print(f"\n⚙️  Symbol: {symbol}")
+
+        collection_entry = data_collection.get(symbol, [])
+        analysis_entry = analysis_data.get(symbol, [])
+
+        col_ts = collection_entry.get("timestamp") if collection_entry else None
+        anl_ts = analysis_entry.get("timestamp") if analysis_entry else None
+
+        if (
+            col_ts is not None
+            and (
+                anl_ts is None
+                or col_ts > anl_ts
+            )
+        ):
+            print(f"💹 Continuing the process for the symbol {symbol}")
+            print(f"col_ts: {col_ts}")
+            print(f"anl_ts: {anl_ts}")
+            print(f"collection_entry: {collection_entry}")
+            print(f"analysis_entry: {analysis_entry}")
+            # print(f"all_symbols: {symbols}")
+            # print(f"history_config: {history_config}")
+            # print(f"latest_entries: {latest_entries}")
+            # print(f"log_path: {log_path}")
+            # print(f"log_schema_path: {log_schema_path}")
+        else:
+            print(f"⏭ Skipping {symbol} — data is up-to-date or missing required collection timestamps")
 
 if __name__ == "__main__":
 
