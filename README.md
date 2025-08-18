@@ -6,7 +6,7 @@ Just a multiplatform AI crypto trader
 **1. Install libraries**
 
 ```bash
-pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil
+pip3 install python-binance pandas pandas_ta ta scipy pybit numpy==1.26.4 matplotlib requests python-dateutil jsonschema pytest
 ```
 
 **2. Make a credentials.py to configs-folder**
@@ -48,6 +48,8 @@ TZ=Europe/Helsinki
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/fetch_symbols_data.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log 2>&1" || echo "$(date) fetch_symbols_data skipped (already running)" >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/price_data_fetcher.lock -c "/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log 2>&1" || echo \"$(date) price_data_fetcher skipped (already running)\" >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_data_collector.lock -c "/usr/bin/python3 -m modules.history_data_collector.history_data_collector >> ../AI-crypto-trader-logs/cron/history_data_collector.log 2>&1" || echo "$(date) history_data_collector skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_data_collector.log
 ```
 
 **Check cron log**
@@ -73,6 +75,7 @@ To run price data fetchers and history analyzer manually:
 ```bash
 cd /opt/kjc/int/AI-crypto-traderr
 /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
+/usr/bin/python3 -m modules.history_data_collector.history_data_collector
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 /usr/bin/python3 -m modules.master_balance_logger.master_balance_logger
 ```
@@ -112,12 +115,16 @@ python3 main.py binance short-only no-stoploss
 python3 main.py binance no-trade no-stoploss
 ```
 
-To run Symbol data fetchers manually (supposted to be ran by cron):
+To run Symbol data fetchers manually:
 ```bash
-cd /opt/kjc/int/AI-crypto-trader
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.potential_trades_checker
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.main_symbols_data_fetcher
-/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.top_symbols_data_fetcher
+# 1. Run only potential_trades_checker
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher potential_trades_checker
+
+# 2. Run only fetch_symbols_data
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher fetch_symbols_data
+
+# 3. Run both in the correct order (first potential_trades_checker, then fetch_symbols_data)
+python3 -m modules.symbol_data_fetcher.symbol_data_fetcher
 ```
 
 To run Price Data Fetcher manually (supposted to be ran through cron_tasks_processor.py):
@@ -127,6 +134,7 @@ To run Price Data Fetcher manually (supposted to be ran through cron_tasks_proce
 
 To run History analyzer manually  (supposted to be ran through cron_tasks_processor.py):
 ```bash
+/usr/bin/python3 -m modules.history_data_collector.history_data_collector
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
 ```
 
@@ -257,6 +265,13 @@ Test Equity Manager manually:
 Test Positions Analyzer manually:
 ```bash
 /usr/bin/python3 -m modules.positions_analyzer.positions_analyzer
+```
+
+**Running the tests**
+
+Test Save and Validate:
+```bash
+/usr/bin/python3 -m pytest -v tests/test_save_and_validate.py
 ```
 
 ##  Tested with
