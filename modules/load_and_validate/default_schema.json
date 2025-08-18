@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "testing": {
+      "type": "boolean"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "paths": {
+      "type": "object",
+      "properties": {
+        "configs": {
+          "type": "object",
+          "properties": {
+            "live": { "type": "string" },
+            "test": { "type": "string" }
+          },
+          "required": ["live", "test"]
+        },
+        "logs": {
+          "type": "object",
+          "properties": {
+            "live": { "type": "string" },
+            "test": { "type": "string" }
+          },
+          "required": ["live", "test"]
+        },
+        "schemas": {
+          "type": "object",
+          "properties": {
+            "live": { "type": "string" },
+            "test": { "type": "string" }
+          },
+          "required": ["live", "test"]
+        }
+      },
+      "required": ["configs", "logs", "schemas"]
+    },
+    "module_filenames": {
+      "type": "object",
+      "properties": {
+        "multi_interval_ohlcv": { "type": "string" },
+        "price_data_fetcher": { "type": "string" },
+        "symbol_data_fetcher": { "type": "string" },
+        "history_data_collector": { "type": "string" },
+        "history_analyzer": { "type": "string" }
+      },
+      "required": [
+        "multi_interval_ohlcv",
+        "price_data_fetcher",
+        "symbol_data_fetcher"
+      ]
+    }
+  },
+  "required": ["testing", "timezone", "paths", "module_filenames"]
+}
