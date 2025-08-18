@@ -4,20 +4,22 @@
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_analyzer.utils import get_data_from_logs
+from modules.history_analyzer.analysis_processor import analysis_processor
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
 def history_analyzer(symbols, history_config, data_collection):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    analysis_data, log_path, log_schema_path = get_data_from_logs(symbols)
+    all_analysis_data = []
+    analysis_data, log_path, log_schema_path = get_data_from_logs(symbols) or ({}, None, None)
 
     for symbol in symbols:
 
         print(f"\n⚙️  Symbol: {symbol}")
 
-        collection_entry = data_collection.get(symbol, [])
-        analysis_entry = analysis_data.get(symbol, [])
+        collection_entry = data_collection.get(symbol, {})
+        analysis_entry = analysis_data.get(symbol, {})
 
         col_ts = collection_entry.get("timestamp") if collection_entry else None
         anl_ts = analysis_entry.get("timestamp") if analysis_entry else None
@@ -30,17 +32,18 @@ def history_analyzer(symbols, history_config, data_collection):
             )
         ):
             print(f"💹 Continuing the process for the symbol {symbol}")
-            print(f"col_ts: {col_ts}")
-            print(f"anl_ts: {anl_ts}")
-            print(f"collection_entry: {collection_entry}")
-            print(f"analysis_entry: {analysis_entry}")
-            # print(f"all_symbols: {symbols}")
-            # print(f"history_config: {history_config}")
-            # print(f"latest_entries: {latest_entries}")
-            # print(f"log_path: {log_path}")
-            # print(f"log_schema_path: {log_schema_path}")
+
+            result = analysis_processor(
+                symbol, history_config, collection_entry, analysis_entry
+            )
+            all_analysis_data.append(result)
+
         else:
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required collection timestamps")
+
+    print("\n")
+    # print(f"log_path: {log_path}")
+    # print(f"log_schema_path: {log_schema_path}")
 
 if __name__ == "__main__":
 
