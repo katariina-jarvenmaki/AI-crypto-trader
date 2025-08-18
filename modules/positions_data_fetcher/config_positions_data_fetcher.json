@@ -1,8 +1,0 @@
-{
-  "log_file_path": "../AI-crypto-trader-logs/positions_log.json",
-  "bybit": {
-    "category": "linear",
-    "settle_coin": "USDT",
-    "limit": 50
-  }
-}
