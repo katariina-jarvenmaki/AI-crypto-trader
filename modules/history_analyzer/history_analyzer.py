@@ -3,14 +3,26 @@
 
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
+from modules.history_analyzer.utils import get_data_from_logs
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
 def history_analyzer(symbols, history_config, data_collection):
 
-    print("Test")
+    print(f"\n💡 Found {len(symbols)} symbols to process...")
+
+    if not data_collection:
+        latest_entries, log_path, log_schema_path = get_data_from_logs(symbols, history_config)
+        print("⚡ data_collection was empty, fetched latest_entries from logs")
+    else:
+        _, log_path, log_schema_path = get_data_from_logs(symbols)
+        latest_entries = data_collection
+        print("✅ Using provided data_collection")
+
     # print(f"all_symbols: {symbols}")
     # print(f"history_config: {history_config}")
-    # print(f"latest_entries: {data_collection}")
+    # print(f"latest_entries: {latest_entries}")
+    # print(f"log_path: {log_path}")
+    # print(f"log_schema_path: {log_schema_path}")
 
 if __name__ == "__main__":
 
