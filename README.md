@@ -115,6 +115,11 @@ Test History Data Collector manually:
 /usr/bin/python3 -m modules.history_data_collector.history_data_collector
 ```
 
+Test History Analyzer manually:
+```bash
+/usr/bin/python3 -m modules.history_analyzer.history_analyzer
+```
+
 Test Load Configs and Logs manually:
 ```bash
 /usr/bin/python3 -m utils.load_configs_and_logs

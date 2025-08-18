@@ -93,4 +93,4 @@ if __name__ == "__main__":
     all_symbols = result["all_symbols"]
 
     collected_data = history_data_collector(all_symbols, history_config)
-    # print(f"\nCollected_data: {collected_data}")
+    print(f"\nCollected_data: {collected_data}")
