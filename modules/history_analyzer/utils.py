@@ -1,4 +1,4 @@
-# modules/history_analyzer/history_analyzer.py
+# modules/history_analyzer/utils.py
 # version 2.0, aug 2025
 
 from utils.load_configs_and_logs import load_configs_and_logs
