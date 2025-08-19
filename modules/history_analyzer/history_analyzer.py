@@ -12,7 +12,7 @@ def history_analyzer(symbols, history_config, data_collection):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    analysis_data, log_path, log_schema_path = get_data_from_logs(symbols) or ({}, None, None)
+    analysis_data, latest_analysis_timestamp, log_path, log_schema_path = get_data_from_logs(symbols) or ({}, None, None)
     all_analysis_data = []
 
     for symbol in symbols:
@@ -23,7 +23,7 @@ def history_analyzer(symbols, history_config, data_collection):
         analysis_entry = analysis_data.get(symbol, {})
 
         col_ts = collection_entry.get("timestamp") if collection_entry else None
-        anl_ts = analysis_entry.get("timestamp") if analysis_entry else None
+        anl_ts = latest_analysis_timestamp
 
         if (
             col_ts is not None
