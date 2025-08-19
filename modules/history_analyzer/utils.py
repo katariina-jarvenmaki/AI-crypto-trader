@@ -20,6 +20,5 @@ def get_data_from_logs(symbols):
     log_schema_path = configs_and_logs.get("history_full_log_schema_path")
 
     latest_entries = load_latest_entries_per_symbol(symbols, log_path, limit=1, max_age_minutes=1440)
-    print(f"Latest and previouses: {latest_entries}")
 
     return latest_entries, log_path, log_schema_path
