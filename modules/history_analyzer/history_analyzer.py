@@ -5,14 +5,15 @@ from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_analyzer.utils import get_data_from_logs
 from modules.history_analyzer.analysis_engine import analysis_engine
+from modules.save_and_validate.save_and_validate import save_and_validate
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
 def history_analyzer(symbols, history_config, data_collection):
 
     print(f"\n💡 Found {len(symbols)} symbols to process...")
 
-    all_analysis_data = []
     analysis_data, log_path, log_schema_path = get_data_from_logs(symbols) or ({}, None, None)
+    all_analysis_data = []
 
     for symbol in symbols:
 
@@ -42,9 +43,17 @@ def history_analyzer(symbols, history_config, data_collection):
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required collection timestamps")
 
     print("\n")
-    # print(all_analysis_data)
-    # print(f"log_path: {log_path}")
-    # print(f"log_schema_path: {log_schema_path}")
+
+    # Save results to log
+    print(f"❇️  Saving new result to {log_path}\n")
+    save_and_validate(
+        data=all_analysis_data,
+        path=log_path,
+        schema=log_schema_path,
+        verbose=False
+    )
+
+    return all_analysis_data
 
 if __name__ == "__main__":
 
