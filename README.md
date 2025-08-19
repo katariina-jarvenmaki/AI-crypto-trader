@@ -27,6 +27,8 @@ TZ=Europe/Helsinki
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/price_data_fetcher.lock -c "/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log 2>&1" || echo "$(date) price_data_fetcher skipped (already running)" >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_data_collector.lock -c "/usr/bin/python3 -m modules.history_data_collector.history_data_collector >> ../AI-crypto-trader-logs/cron/history_data_collector.log 2>&1" || echo "$(date) history_data_collector skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_data_collector.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_analyzer.lock -c "/usr/bin/python3 -m modules.history_analyzer.history_analyzer >> ../AI-crypto-trader-logs/cron/history_analyzer.log 2>&1" || echo "$(date) history_analyzer skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_analyzer.log
 ```
 
 **Usage guide**
