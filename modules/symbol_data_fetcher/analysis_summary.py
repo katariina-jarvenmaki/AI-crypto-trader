@@ -9,7 +9,6 @@ def prepare_analysis_results(symbol_scores, module_config):
 
     now = datetime.fromisoformat(get_timestamp())
 
-    # 🧮 Lajitellaan skoret
     sorted_symbols = sorted(symbol_scores.items(), key=lambda x: x[1]["score"], reverse=True)
 
     min_score_long = module_config.get("score_filter_threshold_long", 0)
@@ -39,7 +38,6 @@ def prepare_analysis_results(symbol_scores, module_config):
             extra = [x for x in short_syms[module_config["top_n_short"]:] if x[1] == cutoff_score]
             top_short += extra
 
-    # 📦 Lopullinen tulos
     result = {
         "timestamp": now.isoformat(),
         "potential_both_ways": module_config["main_symbols"],

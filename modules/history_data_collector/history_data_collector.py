@@ -84,7 +84,6 @@ if __name__ == "__main__":
         }
     ])
 
-    # Vastaa alkuperäisen koodin muuttujia
     symbol_log_path = configs_and_logs["symbol_full_log_path"]
     symbol_config = configs_and_logs["symbol_config"]
     history_config = configs_and_logs["history_config"]

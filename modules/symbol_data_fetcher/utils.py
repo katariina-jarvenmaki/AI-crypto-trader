@@ -44,7 +44,6 @@ def score_asset(data_preview, module_config):
                     elif macd < macd_signal:
                         score -= macd_weight * interval_weight
 
-        # --- Esimerkki: STOCH (laajennus) ---
         if scoring_params.get("stoch", {}).get("enabled", False):
             stoch = d.get("stoch")
             stoch_cfg = scoring_params["stoch"]

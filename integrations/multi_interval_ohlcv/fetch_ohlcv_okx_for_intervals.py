@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
-# CONFIG INIT
+# Config init
 from utils.format_symbol_for_okx import format_symbol_for_okx
 from utils.load_configs_and_logs import load_configs_and_logs 
 

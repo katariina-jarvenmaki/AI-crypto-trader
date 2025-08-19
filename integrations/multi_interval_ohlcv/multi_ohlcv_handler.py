@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
-# CONFIG INIT
+# Config init
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.save_and_validate.save_and_validate import save_and_validate
 from utils.get_timestamp import get_timestamp 
@@ -56,12 +56,10 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
         try:
             logging.info(f"🔍 Trying to fetch OHLCV data for {symbol} ({intervals}) from exchange {exchange}")
 
-            # Dynaaminen modulin ja funktion haku
             module_path = f"integrations.multi_interval_ohlcv.fetch_ohlcv_{exchange}_for_intervals"
             fetch_module = importlib.import_module(module_path)
             fetch_fn = getattr(fetch_module, fn_name)
 
-            # Rakennetaan kutsuparametrit joustavasti
             fetch_kwargs = {
                 "symbol": symbol,
                 "intervals": intervals,
@@ -71,7 +69,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                 fetch_kwargs["start_time"] = start_time
                 fetch_kwargs["end_time"] = end_time
 
-            # Suorita haku
+            # Do the fetch
             data_by_interval, source_exchange = fetch_fn(**fetch_kwargs)
 
             if any(not df.empty for df in data_by_interval.values()):
@@ -113,8 +111,7 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
 
 def summarize_data_for_logging(data_by_interval: dict[str, pd.DataFrame]) -> dict[str, dict]:
     """
-    Tiivistää OHLCV-dataa analyysia varten logimerkintään.
-    Tarkistaa että vaaditut analyysiarvot ovat mukana.
+    Summarizes OHLCV-data for analysis 
     """
     equired_analysis_keys = set(config.get("required_analysis_keys", []))
     summary = {}
@@ -179,24 +176,19 @@ def analyze_ohlcv(df):
 def test_single_exchange_ohlcv(symbol, exchange, config, intervals=None):
     print(f"\n🔍 Testing OHLCV fetch from: {exchange} for symbol {symbol}")
 
-    # Hakee funktion nimen konfiguraatiosta
     fn_name = config["fetch_functions"].get(exchange)
     if not fn_name:
         print(f"❌ Fetch function for {exchange} not defined in config.")
         return
 
     try:
-        # Rakennetaan moduulin nimi tiedostojen mukaan
         module_path = f"integrations.multi_interval_ohlcv.fetch_ohlcv_{exchange}_for_intervals"
         fetch_module = importlib.import_module(module_path)
 
-        # Haetaan itse funktio moduulista
         fetch_fn = getattr(fetch_module, fn_name)
 
-        # Suoritetaan haku
         data_by_interval, source = fetch_fn(symbol, intervals=intervals)
 
-        # Tulostetaan tulokset
         if not any(not df.empty for df in data_by_interval.values()):
             print(f"⚠️  No data fetched from {exchange} for {symbol}")
         else:

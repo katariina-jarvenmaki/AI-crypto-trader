@@ -128,10 +128,10 @@ def analyze_log_data(symbol, latest, previous):
 
 def analyze_latest_only(symbol, latest: dict) -> dict:
     """
-    Analysoi symbolin tiedot vain viimeisimmän entryn perusteella (ilman previous-dataa).
-    Palauttaa saman rakenteen kuin analyze_log_data, mutta vertailukentät = None.
+    Analyzes only symbol data for last entry (without previous-data).
+    Returns same structure as analyze_log_data, but missing the fields are = None.
     """
-    print(f"\n🔍 Analysoidaan symbolia (vain latest): {symbol}")
+    print(f"\n🔍 Analyzing (only latest): {symbol}")
 
     def to_float(value):
         try:
