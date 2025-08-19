@@ -4,19 +4,74 @@
 from typing import List, Dict
 from utils.get_timestamp import get_timestamp
 
-def analysis_engine(symbol, history_config, collection_entry, analysis_entry):
+def analyze_log_data(symbol, latest, previous):
+    print(f"\n🔍 Analysoidaan symbolia: {symbol}")
 
-    print(f"Analysis engine starting...")
+def analyze_latest_only(symbol, latest: dict) -> dict:
+    """
+    Analysoi symbolin tiedot vain viimeisimmän entryn perusteella (ilman previous-dataa).
+    Palauttaa saman rakenteen kuin analyze_log_data, mutta vertailukentät = None.
+    """
+    print(f"\n🔍 Analysoidaan symbolia (vain latest): {symbol}")
 
-    timestamp = get_timestamp()
+    price = float(latest["fetched"]["price"])
+    avg_rsi = sum(v for v in latest["rsi"].values() if v is not None) / max(
+        1, len([v for v in latest["rsi"].values() if v is not None])
+    )
+    ema_rsi = sum(v for v in latest["ema"].values() if v is not None) / max(
+        1, len([v for v in latest["ema"].values() if v is not None])
+    )
 
-    print(f"timestamp: {timestamp}")
-    print(f"symbol: {symbol}")
-    print(f"history_config: {history_config}")
-    print(f"collection_entry: {collection_entry}")
-    print(f"analysis_entry: {analysis_entry}")
+    macd_pairs = [
+        (latest["macd"].get(k), latest["macd_signal"].get(k))
+        for k in latest["macd"]
+    ]
+    valid_diffs = [
+        macd - signal for macd, signal in macd_pairs if macd is not None and signal is not None
+    ]
+    macd_diff = sum(valid_diffs) / len(valid_diffs) if valid_diffs else None
 
-# --- Apufunktiot ---
+    bollinger_status = analyze_bollinger(price, latest["bb_upper"]["1d"], latest["bb_lower"]["1d"])
+    ema_trend = detect_ema_trend(price, latest["ema"]["1d"])
+    macd_trend = detect_macd_trend(macd_diff)
+
+    return {
+        "symbol": symbol,
+        "timestamp": latest["timestamp"],
+
+        # Price
+        "price": price,
+        "price_change": None,
+        "price_change_percent": None,
+
+        # RSI
+        "avg_rsi_all": avg_rsi,
+        "rsi_change": None,
+        "rsi_change_percent": None,
+        "rsi_delta": None,
+
+        # EMA RSI
+        "ema_rsi": ema_rsi,
+        "ema_rsi_change": None,
+        "ema_rsi_change_percent": None,
+
+        # MACD
+        "macd_diff": macd_diff,
+        "macd_diff_change": None,
+        "macd_diff_change_percent": None,
+
+        # Trends and statuses
+        "macd_trend": macd_trend,
+        "bollinger_status": bollinger_status,
+        "ema_trend": ema_trend,
+        "signal_strength": None,
+        "flag": None,
+
+        # Analyses
+        "turnover_status": None,
+        "rsi_divergence": None,
+    }
+
 def analyze_bollinger(price, bb_upper, bb_lower):
     if price is None or bb_upper is None or bb_lower is None:
         return "unknown"
@@ -83,3 +138,16 @@ def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
         return "bullish-divergence"
 
     return "none"
+
+def analysis_engine(symbol: str, history_config: Dict, collection_entry: Dict, analysis_entry: Dict):
+
+    print("Analysis engine starting...")
+
+    timestamp = get_timestamp()
+    latest = collection_entry
+    previous = analysis_entry if analysis_entry else None
+
+    if previous:
+        return analyze_log_data(symbol, latest, previous)
+    else:
+        return analyze_latest_only(symbol, latest)

@@ -42,6 +42,7 @@ def history_analyzer(symbols, history_config, data_collection):
             print(f"⏭ Skipping {symbol} — data is up-to-date or missing required collection timestamps")
 
     print("\n")
+    # print(all_analysis_data)
     # print(f"log_path: {log_path}")
     # print(f"log_schema_path: {log_schema_path}")
 
