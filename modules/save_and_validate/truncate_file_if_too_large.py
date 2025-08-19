@@ -11,7 +11,7 @@ def truncate_file_if_too_large(
     file_path: Path,
     max_size_mb: float = 25.0,
     entries_to_keep: int = 500,
-    backup_prefix: str = "temporary_log_",
+    backup_prefix: str = "backup_",
     log_action: bool = True
 ):
     """Truncate a text-based file if it exceeds a maximum size.

@@ -19,17 +19,17 @@ def get_data_from_logs(symbols: List[str], history_config):
         for conf in configs_and_logs_config
     ]
     configs_and_logs = load_configs_and_logs(load_params)
+    max_age_minutes = history_config.get("history_data_collector", {}).get("max_age_minutes", {})
 
     latest_entries = {}
     for conf in configs_and_logs_config:
         key = conf.get("key")
         file_path_key = f"{key}_{'full_temp_log_path' if key == 'collector' else 'full_log_path'}"
-        max_age = conf.get("max_age_minutes", 1440)
 
         latest_entries[key] = load_latest_entries_per_symbol(
             symbols=symbols,
             file_path=configs_and_logs[file_path_key],
-            max_age_minutes=max_age
+            max_age_minutes=max_age_minutes
         )
 
     latest_collection = latest_entries.get("collector")

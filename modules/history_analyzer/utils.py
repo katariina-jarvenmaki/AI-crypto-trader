@@ -7,7 +7,7 @@ from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
 MIN_AGE_MINUTES = 5
 
-def get_data_from_logs(symbols):
+def get_data_from_logs(symbols, history_config):
 
     configs_and_logs = load_configs_and_logs([
         {
