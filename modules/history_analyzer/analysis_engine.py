@@ -6,8 +6,8 @@ from utils.get_timestamp import get_timestamp
 
 def analyze_log_data(symbol, latest, previous):
 
-    print(f"\n🔍 Analyzing symbol: {symbol}")
-    print(f"⏱ Time: {latest['timestamp']}  vs.  {previous['timestamp']}")
+    print(f"🔍 Analyzing symbol: {symbol}")
+    print(f"⏱  Time: {latest['timestamp']}  vs.  {previous['timestamp']}")
     timestamp = get_timestamp()
     fetched = latest["fetched"]
 
@@ -87,6 +87,8 @@ def analyze_log_data(symbol, latest, previous):
     history = [{"avg_rsi": prev_rsi},{"avg_rsi": avg_rsi},]
     rsi_divergence = detect_rsi_divergence(history, avg_rsi)
 
+    print(f"✅ Analysis complete")
+
     # --- Palautettavat analysoidut arvot ---
     return {
         "symbol": symbol,
@@ -113,9 +115,9 @@ def analyze_log_data(symbol, latest, previous):
         "macd_change_percent": macd_change_percent,
 
         # Trends and statuses
+        "ema_trend": ema_trend,
         "macd_trend": macd_trend,
         "bollinger_status": bollinger_status,
-        "ema_trend": ema_trend,
         "signal_strength": signal_strength,
         "flag": flag,
 
@@ -150,7 +152,9 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
 
     bollinger_status = analyze_bollinger(price, latest["bb_upper"]["1d"], latest["bb_lower"]["1d"])
     ema_trend = detect_ema_trend(price, latest["ema"]["1d"])
-    macd_trend = detect_macd_trend(avg_macd)
+    macd_trend = detect_macd_trend(price, latest["macd"]["1d"])
+
+    print(f"✅ Analysis complete")
 
     return {
         "symbol": symbol,
@@ -177,9 +181,9 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
         "macd_change_percent": None,
 
         # Trends and statuses
+        "ema_trend": ema_trend,
         "macd_trend": macd_trend,
         "bollinger_status": bollinger_status,
-        "ema_trend": ema_trend,
         "signal_strength": None,
         "flag": None,
 
@@ -261,8 +265,6 @@ def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
     return "none"
 
 def analysis_engine(symbol: str, history_config: Dict, collection_entry: Dict, analysis_entry: Dict):
-
-    print("Analysis engine starting...")
 
     timestamp = get_timestamp()
     latest = collection_entry
