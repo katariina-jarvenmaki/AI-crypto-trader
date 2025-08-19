@@ -40,12 +40,10 @@ def history_analyzer(symbols, history_config, data_collection):
             all_analysis_data.append(result)
 
         else:
-            print(f"⏭ Skipping {symbol} — data is up-to-date or missing required collection timestamps")
-
-    print("\n")
+            print(f"⏭  Skipping {symbol} — data is up-to-date or missing required collection timestamps")
 
     # Save results to log
-    print(f"❇️  Saving new result to {log_path}\n")
+    print(f"\n❇️  Saving new result to {log_path}\n")
     save_and_validate(
         data=all_analysis_data,
         path=log_path,

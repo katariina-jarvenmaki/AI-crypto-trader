@@ -36,8 +36,10 @@ def analyze_log_data(symbol, latest, previous):
             return None
 
     # Price Data
-    price = fetched["price"]
-    prev_price = previous["price"]
+    price_raw = fetched["price"]
+    prev_price_raw = previous["price"]
+    price = to_float(price_raw)
+    prev_price = to_float(prev_price_raw)
     price_change, price_change_percent = calc_change_and_percent(price, prev_price)
 
     # RSI Data
@@ -56,16 +58,15 @@ def analyze_log_data(symbol, latest, previous):
     macd_change, macd_change_percent = calc_change_and_percent(avg_macd, prev_macd) if avg_macd is not None and prev_macd is not None else (None, None)
 
     # Bollinger Status
-    price_float = to_float(price)
     bb_upper_float = to_float(latest["bb_upper"]["1d"])
     bb_lower_float = to_float(latest["bb_lower"]["1d"])
-    bollinger_status = analyze_bollinger(price_float, bb_upper_float, bb_lower_float)
+    bollinger_status = analyze_bollinger(price, bb_upper_float, bb_lower_float)
 
     # Trends
     ema_1d_float = to_float(latest["ema"]["1d"])
     macd_1d_float = to_float(latest["macd"]["1d"])
-    ema_trend = detect_ema_trend(price_float, ema_1d_float)
-    macd_trend = detect_macd_trend(price_float, macd_1d_float)
+    ema_trend = detect_ema_trend(price, ema_1d_float)
+    macd_trend = detect_macd_trend(price, macd_1d_float)
 
     # Flag
     flag = detect_flag(avg_rsi, prev_rsi)
@@ -81,40 +82,39 @@ def analyze_log_data(symbol, latest, previous):
     # Turnover status
     turnover_float = to_float(fetched["turnover"])
     volume_float = to_float(fetched["volume"])
-    turnover_status = detect_turnover_anomaly(turnover_float, volume_float, price_float)
+    turnover_status = detect_turnover_anomaly(turnover_float, volume_float, price)
 
     # RSI Divergence
-    history = [{"avg_rsi": prev_rsi},{"avg_rsi": avg_rsi},]
+    history = [{"avg_rsi": prev_rsi},{"avg_rsi": avg_rsi}]
     rsi_divergence = detect_rsi_divergence(history, avg_rsi)
 
     print(f"✅ Analysis complete")
 
-    # --- Palautettavat analysoidut arvot ---
     return {
         "symbol": symbol,
         "timestamp": timestamp,
-        
-        # Hinta
-        "price": price,
-        "price_change": price_change,
-        "price_change_percent": price_change_percent,
+
+        # Price
+        "price": str(price_raw),
+        "price_change": str(price_change) if price_change is not None else None,
+        "price_change_percent": str(price_change_percent) if price_change_percent is not None else None,
 
         # RSI (avg)
-        "avg_rsi": avg_rsi,
-        "rsi_change": rsi_change,
-        "rsi_change_percent": rsi_change_percent,
+        "avg_rsi": str(avg_rsi) if avg_rsi is not None else None,
+        "rsi_change": str(rsi_change) if rsi_change is not None else None,
+        "rsi_change_percent": str(rsi_change_percent) if rsi_change_percent is not None else None,
 
-        # EMA RSI
-        "avg_ema": avg_ema,
-        "ema_change": ema_change,
-        "ema_change_percent": ema_change_percent,
+        # EMA
+        "avg_ema": str(avg_ema) if avg_ema is not None else None,
+        "ema_change": str(ema_change) if ema_change is not None else None,
+        "ema_change_percent": str(ema_change_percent) if ema_change_percent is not None else None,
 
         # MACD
-        "avg_macd": avg_macd,
-        "macd_change": macd_change,
-        "macd_change_percent": macd_change_percent,
+        "avg_macd": str(avg_macd) if avg_macd is not None else None,
+        "macd_change": str(macd_change) if macd_change is not None else None,
+        "macd_change_percent": str(macd_change_percent) if macd_change_percent is not None else None,
 
-        # Trends and statuses
+        # Trends and statuses (nämä voi jäädä normaaliksi, koska eivät ole tarkkoja lukuja)
         "ema_trend": ema_trend,
         "macd_trend": macd_trend,
         "bollinger_status": bollinger_status,
@@ -133,7 +133,15 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
     """
     print(f"\n🔍 Analysoidaan symbolia (vain latest): {symbol}")
 
-    price = float(latest["fetched"]["price"])
+    def to_float(value):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    price_raw = latest["fetched"]["price"]   # säilytetään stringinä lokia varten
+    price = to_float(price_raw)
+
     avg_rsi = sum(v for v in latest["rsi"].values() if v is not None) / max(
         1, len([v for v in latest["rsi"].values() if v is not None])
     )
@@ -160,34 +168,28 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
         "symbol": symbol,
         "timestamp": latest["timestamp"],
 
-        # Price
-        "price": price,
+        "price": str(price_raw),
         "price_change": None,
         "price_change_percent": None,
 
-        # RSI
-        "avg_rsi": avg_rsi,
+        "avg_rsi": str(avg_rsi) if avg_rsi is not None else None,
         "rsi_change": None,
         "rsi_change_percent": None,
 
-        # EMA
-        "avg_ema": avg_ema,
+        "avg_ema": str(avg_ema) if avg_ema is not None else None,
         "ema_change": None,
         "ema_change_percent": None,
 
-        # MACD
-        "avg_macd": avg_macd,
+        "avg_macd": str(avg_macd) if avg_macd is not None else None,
         "macd_change": None,
         "macd_change_percent": None,
 
-        # Trends and statuses
         "ema_trend": ema_trend,
         "macd_trend": macd_trend,
         "bollinger_status": bollinger_status,
         "signal_strength": None,
         "flag": None,
 
-        # Analyses
         "turnover_status": None,
         "rsi_divergence": None,
     }

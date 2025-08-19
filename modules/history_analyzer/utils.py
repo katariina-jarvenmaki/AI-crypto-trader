@@ -19,7 +19,6 @@ def get_data_from_logs(symbols):
         }
     ])
 
-
     log_path = configs_and_logs.get("history_full_log_path")
     log_schema_path = configs_and_logs.get("history_full_log_schema_path")
 
@@ -28,8 +27,15 @@ def get_data_from_logs(symbols):
         limit=1,
         use_timestamp=True,
     )
-    latest_analysis_timestamp = latest_entry[0]["timestamp"]
 
-    analysis_data = load_latest_entries_per_symbol(symbols, log_path, limit=1, min_age_minutes=MIN_AGE_MINUTES, max_age_minutes=1440)
+    latest_analysis_timestamp = latest_entry[0]["timestamp"] if latest_entry else None
+
+    analysis_data = load_latest_entries_per_symbol(
+        symbols,
+        log_path,
+        limit=1,
+        min_age_minutes=MIN_AGE_MINUTES,
+        max_age_minutes=1440
+    )
 
     return analysis_data, latest_analysis_timestamp, log_path, log_schema_path
