@@ -4,7 +4,7 @@
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_analyzer.utils import get_data_from_logs
-from modules.history_analyzer.analysis_processor import analysis_processor
+from modules.history_analyzer.analysis_engine import analysis_engine
 from utils.load_latest_entries_per_symbol import load_latest_entries_per_symbol
 
 def history_analyzer(symbols, history_config, data_collection):
@@ -33,7 +33,7 @@ def history_analyzer(symbols, history_config, data_collection):
         ):
             print(f"💹 Continuing the process for the symbol {symbol}")
 
-            result = analysis_processor(
+            result = analysis_engine(
                 symbol, history_config, collection_entry, analysis_entry
             )
             all_analysis_data.append(result)
