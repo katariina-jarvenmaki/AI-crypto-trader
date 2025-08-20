@@ -20,7 +20,7 @@ def trend_reversal_analyzer(bias_24h, bias_1h, entries):
         lookback_minutes=15
     )
 
-    if combined_bias is None or found is None or event is None:
+    if combined_bias is not None or found is not None or event is not None:
         print(f"✅ Trend Reversal Analysis complete")
     else:
         print(f"❌ Trend Reversal Analysis failed")

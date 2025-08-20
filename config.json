@@ -20,6 +20,7 @@
     "price_data_fetcher": "price_data_fetcher",
     "symbol_data_fetcher": "symbol_data_fetcher",
     "history_data_collector": "history_data_collector",
-    "history_analyzer": "history_analyzer"
+    "history_analyzer": "history_analyzer",
+    "history_sentiment": "history_sentiment"
   }
 }
