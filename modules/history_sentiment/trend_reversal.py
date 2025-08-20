@@ -45,7 +45,7 @@ def trend_reversal_analyzer(bias_results: dict, entries: list, config: dict):
     elif metric == "hour_bias":
         metric = "hour-sentiment.bias"
 
-    found, event = detect_trend_shifts(
+    found, direction, change = detect_trend_shifts(
         entries=entries,
         metric=metric,
         threshold=shift_cfg.get("threshold", 0.02),
@@ -53,17 +53,16 @@ def trend_reversal_analyzer(bias_results: dict, entries: list, config: dict):
         lookback_minutes=shift_cfg.get("lookback_minutes", 15)
     )
 
-    if combined_bias is not None or found is not None or event is not None:
+    if combined_bias is not None:
         print(f"✅ Trend Reversal Analysis complete")
     else:
         print(f"❌ Trend Reversal Analysis failed")
 
     return {
         "combined_bias": combined_bias,
-        "found": found,
-        "event": event,
+        "direction": direction,
+        "change": change
     }
-
 
 def detect_trend_shifts(
     entries: list,
@@ -94,13 +93,23 @@ def detect_trend_shifts(
     if not parsed_entries:
         return False, None
 
+    def get_nested_value(d, path: str):
+        """Fetch nested dict value using dot notation (e.g. 'broad-sentiment.bias')."""
+        keys = path.split(".")
+        for k in keys:
+            if isinstance(d, dict) and k in d:
+                d = d[k]
+            else:
+                return None
+        return d
+
     df = pd.DataFrame([
         {
             "timestamp": datetime.fromisoformat(item["timestamp"]),
-            metric: item.get("result", {}).get(metric)
+            metric: get_nested_value(item, metric)
         }
         for item in parsed_entries
-        if "result" in item and metric in item["result"]
+        if get_nested_value(item, metric) is not None
     ])
 
     if df.empty:
@@ -121,8 +130,8 @@ def detect_trend_shifts(
     timestamp = df_recent["timestamp"].iloc[0].isoformat()
 
     if direction in ("down", "both") and -change >= threshold:
-        return True, (timestamp, "drop", round(-change, 5))
+        return True, "drop", round(-change, 5)
     elif direction in ("up", "both") and change >= threshold:
-        return True, (timestamp, "rise", round(change, 5))
+        return True, "rise", round(change, 5)
     else:
-        return False, None
+        return False, None, None

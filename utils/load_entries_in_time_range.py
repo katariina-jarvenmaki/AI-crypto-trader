@@ -50,9 +50,14 @@ def load_entries_in_time_range(
             end_time=end_time,
             limit=999999
         )
-        for entry in entries:
-            sym = entry.get("symbol", "UNKNOWN")
-            results.setdefault(sym, []).append(entry)
+
+        # Jos entryissä EI ole "symbol"-kenttää → palauta suora lista
+        if entries and "symbol" not in entries[0]:
+            results = entries
+        else:
+            for entry in entries:
+                sym = entry.get("symbol", "UNKNOWN")
+                results.setdefault(sym, []).append(entry)
 
     return results
 
