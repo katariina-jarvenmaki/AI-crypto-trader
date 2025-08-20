@@ -1,5 +1,5 @@
 # modules/history_sentiment/trend_reversal.py
-# version 2.1, aug 2025
+# version 2.0, aug 2025
 
 import json
 import pandas as pd
@@ -73,7 +73,7 @@ def detect_trend_shifts(
 ):
 
     if not entries:
-        return False, None
+        return False, None, None
 
     parsed_entries = []
     for item in entries:
@@ -91,10 +91,9 @@ def detect_trend_shifts(
             continue
 
     if not parsed_entries:
-        return False, None
+        return False, None, None
 
     def get_nested_value(d, path: str):
-        """Fetch nested dict value using dot notation (e.g. 'broad-sentiment.bias')."""
         keys = path.split(".")
         for k in keys:
             if isinstance(d, dict) and k in d:
@@ -113,7 +112,7 @@ def detect_trend_shifts(
     ])
 
     if df.empty:
-        return False, None
+        return False, None, None
 
     df.sort_values("timestamp", inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -122,12 +121,11 @@ def detect_trend_shifts(
     df_recent = df[df["timestamp"] >= cutoff_time]
 
     if len(df_recent) < 2:
-        return False, None
+        return False, None, None
 
     start_val = df_recent[metric].iloc[0]
     end_val = df_recent[metric].iloc[-1]
     change = end_val - start_val
-    timestamp = df_recent["timestamp"].iloc[0].isoformat()
 
     if direction in ("down", "both") and -change >= threshold:
         return True, "drop", round(-change, 5)

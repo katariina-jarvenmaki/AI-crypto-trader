@@ -31,6 +31,8 @@ TZ=Europe/Helsinki
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_analyzer.lock -c "/usr/bin/python3 -m modules.history_analyzer.history_analyzer >> ../AI-crypto-trader-logs/cron/history_analyzer.log 2>&1" || echo "$(date) history_analyzer skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_analyzer.log
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_sentiment.lock -c "/usr/bin/python3 -m modules.history_sentiment.history_sentiment >> ../AI-crypto-trader-logs/cron/history_sentiment.log 2>&1" || echo "$(date) history_sentiment skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_sentiment.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_archiver.lock -c "/usr/bin/python3 -m modules.history_archiver.history_archiver >> ../AI-crypto-trader-logs/cron/history_archiver.log 2>&1" || echo "$(date) history_archiver skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_archiver.log
 ```
 
 **Usage guide**
@@ -127,6 +129,11 @@ Test History Analyzer manually:
 Test History Sentiment manually:
 ```bash
 /usr/bin/python3 -m modules.history_sentiment.history_sentiment
+```
+
+Test History Archiver manually:
+```bash
+/usr/bin/python3 -m modules.history_archiver.history_archiver
 ```
 
 Test Load Configs and Logs manually:
