@@ -81,6 +81,7 @@ def compute_bias(values: Dict[str, Dict], time_window_hours: float = 24.0) -> Di
             return None
 
         symbol_scores = {}
+        symbol_movements = {}
         total_entries = len(filtered_values)
         
         for log in filtered_values:
@@ -92,9 +93,18 @@ def compute_bias(values: Dict[str, Dict], time_window_hours: float = 24.0) -> Di
         all_avg_score = sum(avg_scores_per_symbol.values()) / len(avg_scores_per_symbol)
         bias = max(-1.0, min(1.0, all_avg_score / 3.0))
 
+        for symbol, scores in symbol_scores.items():
+            if len(scores) < 2:
+                continue
+            deltas = [abs(scores[i] - scores[i-1]) for i in range(1, len(scores))]
+            symbol_movements[symbol] = sum(deltas)/len(deltas)
+        
+        volatility = sum(symbol_movements.values()) / len(symbol_movements) if symbol_movements else 0.0
+
         return {
             "avg_score": all_avg_score,
             "bias": bias,
+            "volatility": volatility,
             "coins_counted": len(avg_scores_per_symbol),
             "enties_counted": total_entries,
         }
@@ -105,6 +115,7 @@ def compute_bias(values: Dict[str, Dict], time_window_hours: float = 24.0) -> Di
         result["state"] = determine_market_state(biases["avg_score"])
         result["bias"] = round(biases['bias'], 3)
         result["avg_score"] = round(biases['avg_score'], 3)
+        result["volatility"] = round(biases['volatility'], 3)
         result["coins_counted"] = biases['coins_counted']
         result["enties_counted"] = biases['enties_counted']
 
