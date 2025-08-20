@@ -1,26 +1,51 @@
 # modules/history_sentiment/history_sentiment.py
 # version 2.0, aug 2025
 
-# from itertools import chain
+from itertools import chain
 from dateutil.parser import isoparse
 from datetime import datetime, timedelta
 from utils.get_timestamp import get_timestamp
 from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
-# from modules.history_sentiment.compute_bias import compute_bias
+from modules.history_sentiment.compute_bias import compute_bias
 from utils.load_entries_in_time_range import load_entries_in_time_range
 # from modules.save_and_validate.save_and_validate import save_and_validate
 # from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
 
-# def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_config, sentiment_entries, sentiment_log_path, sentiment_log_schema_path):
+def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_entries, sentiment_log_path, sentiment_log_schema_path):
 
-#     print(f"\n💹 Running Sentiment Analyzer...")
+    print(f"\n💹 Running Sentiment Analyzer...")
 
-#     if isinstance(history_entries, dict):
-#         latest_values = list(chain.from_iterable(history_entries.values()))
-#     else:
-#         latest_values = history_entries
+    sentiment_config = history_config['history_sentiment']
 
+    if isinstance(history_entries, dict):
+        latest_values = list(chain.from_iterable(history_entries.values()))
+    else:
+        latest_values = history_entries
+
+    bias_results = {}
+    bias_time_windows_hours = sentiment_config['main']['bias_time_windows_hours']
+    result_keys = sentiment_config['main']['result_keys']
+    for window in bias_time_windows_hours:
+        result = compute_bias(latest_values, sentiment_config, time_window_hours=window)
+        key_name = result_keys.get(str(window), f"bias_{window}h")
+        bias_results[key_name] = result
+
+    if any(v is not None for v in bias_results.values()):
+        print(f"\n✅ Bias Analysis complete")
+    else:
+        print(f"\n❌ Bias Analysis failed")
+
+
+    # print(f"latest_values: {latest_values}")
+    # max_age_hours = sentiment_config['main']['max_age_hours']
+
+
+    # print(f"sentiment_config: {sentiment_config}")
+    # print(f"bias_time_windows_hours: {bias_time_windows_hours}")
+    # print(f"result_keys: {result_keys}")
+    # print(f"max_age_hours: {max_age_hours}")
+    # print(f"result: {result}")
 #     bias_analysis_24h = compute_bias(latest_values, time_window_hours=24.0)
 #     bias_analysis_1h = compute_bias(latest_values, time_window_hours=1.0)
 #     if bias_analysis_24h is not None or bias_analysis_1h is not None:
@@ -97,7 +122,6 @@ if __name__ == "__main__":
         end_time=newest_allowed
     )
 
-    sentiment_config = configs_and_logs["sentiment_config"]
     sentiment_log_path = configs_and_logs.get("sentiment_full_log_path")
     sentiment_log_schema_path = configs_and_logs.get("sentiment_full_log_schema_path")
     now = isoparse(get_timestamp())
@@ -110,6 +134,6 @@ if __name__ == "__main__":
         end_time=newest_allowed
     )
 
-    sentiment_data = sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_config, sentiment_entries, sentiment_log_path, sentiment_log_schema_path)
+    sentiment_data = sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_entries, sentiment_log_path, sentiment_log_schema_path)
     # print(f"\nSentiment_data: {sentiment_data}")
         
