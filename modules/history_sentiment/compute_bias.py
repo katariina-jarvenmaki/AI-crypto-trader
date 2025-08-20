@@ -3,7 +3,7 @@
 
 from dateutil import parser
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from utils.get_timestamp import get_timestamp
 
 def parse_log_entry(entry: Dict) -> Dict:

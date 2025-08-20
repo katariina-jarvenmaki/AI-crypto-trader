@@ -9,8 +9,8 @@ from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_sentiment.compute_bias import compute_bias
 from utils.load_entries_in_time_range import load_entries_in_time_range
-# from modules.save_and_validate.save_and_validate import save_and_validate
-# from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
+from modules.save_and_validate.save_and_validate import save_and_validate
+from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
 
 def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_entries, sentiment_log_path, sentiment_log_schema_path):
 
@@ -36,43 +36,28 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
     else:
         print(f"\n❌ Bias Analysis failed")
 
+    trend_reversal_config = sentiment_config['trend_reversal']
+    trend_analysis = trend_reversal_analyzer(
+        bias_results,
+        sentiment_entries,
+        trend_reversal_config
+    )
+    bias_results[result_keys.get("trend", "trend-reversal")] = trend_analysis
 
-    # print(f"latest_values: {latest_values}")
-    # max_age_hours = sentiment_config['main']['max_age_hours']
-
-
-    # print(f"sentiment_config: {sentiment_config}")
-    # print(f"bias_time_windows_hours: {bias_time_windows_hours}")
-    # print(f"result_keys: {result_keys}")
-    # print(f"max_age_hours: {max_age_hours}")
-    # print(f"result: {result}")
-#     bias_analysis_24h = compute_bias(latest_values, time_window_hours=24.0)
-#     bias_analysis_1h = compute_bias(latest_values, time_window_hours=1.0)
-#     if bias_analysis_24h is not None or bias_analysis_1h is not None:
-#         print(f"\n✅ Bias Analysis complete")
-#     else:
-#         print(f"\n❌ Bias Analysis failed")
-
-#     trend_analysis = trend_reversal_analyzer(bias_analysis_24h, bias_analysis_1h, sentiment_entries)
-
-#     combined_results = {
-#         "timestamp": get_timestamp(),
-#         "broad-sentiment": bias_analysis_24h,
-#         "hour-sentiment": bias_analysis_1h,
-#         "trend-reversal": trend_analysis
-#     }
+    combined_results = {"timestamp": get_timestamp(), **bias_results}
 
     # Save results to log
-#     print(f"⏭  Result: {combined_results}")
-#     print(f"\n❇️  Saving new result to {sentiment_log_path}")
-#     save_and_validate(
-#         data=combined_results,
-#         path=sentiment_log_path,
-#         schema=sentiment_log_schema_path,
-#         verbose=False
-#     )
+    print(f"⏭  Result: {combined_results}")
+    print(f"\n❇️  Saving new result to {sentiment_log_path}")
+    save_and_validate(
+        data=combined_results,
+        path=sentiment_log_path,
+        schema=sentiment_log_schema_path,
+        verbose=False
+    )
 
-#     print(f"✅ History Sentiment Analysis complete\n")
+    print(f"✅ History Sentiment Analysis complete\n")
+    return combined_results
 
 if __name__ == "__main__":
 
@@ -98,7 +83,7 @@ if __name__ == "__main__":
             "mid_folder": "analysis",
             "module_key": "history_sentiment",
             "extension": ".jsonl",
-            "return": ["config", "full_log_path", "full_log_schema_path"]
+            "return": ["full_log_path", "full_log_schema_path"]
         }
     ])
 
@@ -111,8 +96,10 @@ if __name__ == "__main__":
     history_config = configs_and_logs["history_config"]
     history_log_path = configs_and_logs.get("history_full_log_path")
 
+    max_age_hours = history_config["history_sentiment"]["main"]["max_age_hours"]
+
     now = isoparse(get_timestamp())
-    oldest_allowed = (now - timedelta(hours=24)).isoformat()
+    oldest_allowed = (now - timedelta(hours=max_age_hours)).isoformat()
     newest_allowed = now.isoformat()
 
     history_entries = load_entries_in_time_range(
@@ -124,8 +111,9 @@ if __name__ == "__main__":
 
     sentiment_log_path = configs_and_logs.get("sentiment_full_log_path")
     sentiment_log_schema_path = configs_and_logs.get("sentiment_full_log_schema_path")
+
     now = isoparse(get_timestamp())
-    oldest_allowed = (now - timedelta(hours=24)).isoformat()
+    oldest_allowed = (now - timedelta(hours=max_age_hours)).isoformat()
     newest_allowed = now.isoformat()
 
     sentiment_entries = load_entries_in_time_range(
