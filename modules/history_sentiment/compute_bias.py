@@ -106,7 +106,7 @@ def compute_bias(values: Dict[str, Dict], time_window_hours: float = 24.0) -> Di
             "bias": bias,
             "volatility": volatility,
             "coins_counted": len(avg_scores_per_symbol),
-            "enties_counted": total_entries,
+            "entries_counted": total_entries,
         }
 
     result = {}
@@ -117,6 +117,6 @@ def compute_bias(values: Dict[str, Dict], time_window_hours: float = 24.0) -> Di
         result["avg_score"] = round(biases['avg_score'], 3)
         result["volatility"] = round(biases['volatility'], 3)
         result["coins_counted"] = biases['coins_counted']
-        result["enties_counted"] = biases['enties_counted']
+        result["entries_counted"] = biases['entries_counted']
 
     return result
