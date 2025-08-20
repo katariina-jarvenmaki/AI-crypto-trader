@@ -91,4 +91,5 @@ if __name__ == "__main__":
     temporary_path = configs_and_logs.get("collector_full_temp_log_path")
     latest_entries = load_latest_entries_per_symbol(all_symbols, temporary_path, max_age_minutes=1440)
 
-    history_analyzer(all_symbols, history_config, latest_entries)
+    analysis_data = history_analyzer(all_symbols, history_config, latest_entries)
+    # print(f"\nAnalysis_data: {analysis_data}")
