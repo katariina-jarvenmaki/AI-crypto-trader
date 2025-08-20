@@ -1,5 +1,5 @@
 # utils/load_entries_in_time_range.py
-# version 1.1, aug 2025
+# version 2.0, aug 2025
 
 import os
 import json
@@ -28,16 +28,20 @@ def load_entries_in_time_range(
 
     if symbols:
         for sym in symbols:
-            entries = load_latest_entry(
-                file_path=file_path,
-                use_timestamp=True,
-                symbol=sym,
-                start_time=start_time,
-                end_time=end_time,
-                limit=999999 
-            )
-            if entries:
-                results[sym] = entries
+
+            try:
+                entries = load_latest_entry(
+                    file_path=file_path,
+                    use_timestamp=True,
+                    symbol=sym,
+                    start_time=start_time,
+                    end_time=end_time,
+                    limit=999999
+                )
+                if entries:
+                    results[sym] = entries
+            except ValueError:
+                results[sym] = []
     else:
         entries = load_latest_entry(
             file_path=file_path,
@@ -51,7 +55,6 @@ def load_entries_in_time_range(
             results.setdefault(sym, []).append(entry)
 
     return results
-
 
 if __name__ == "__main__":
     file_path = "../AI-crypto-trader-logs/_TEST/fetch_logs/multi_ohlcv_fetch_log.jsonl"

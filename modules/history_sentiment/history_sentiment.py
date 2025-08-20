@@ -38,6 +38,7 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
     }
 
     # Save results to log
+    print(f"⏭  Result: {combined_results}")
     print(f"\n❇️  Saving new result to {sentiment_log_path}")
     save_and_validate(
         data=combined_results,
