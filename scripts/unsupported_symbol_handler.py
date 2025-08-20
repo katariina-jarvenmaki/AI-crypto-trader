@@ -95,7 +95,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
         print(f"❌ Failed to analyze datetime preferences: {e}")
 
     latest_entry = next(iter(get_latest_two_log_entries_for_symbol(
-        "../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl", bybit_symbol)), None)
+        "../AI-crypto-trader-logs/analysis_logs/history_analyzer_log.jsonl", bybit_symbol)), None)
 
     if not latest_entry:
         print(f"❌ No history data for {bybit_symbol}, skipping trade.")
