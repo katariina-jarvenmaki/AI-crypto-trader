@@ -10,37 +10,6 @@ from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from utils.load_entries_in_time_range import load_entries_in_time_range
 
-def trend_reversal_analyzer(bias_24h, bias_1h):
-
-    print(f"bias_24h: {bias_24h}")
-    print(f"bias_1h: {bias_1h}")
-
-
-    # result = bias_analysis_24h.copy()
-    
-    # if "last_hour_bias" in bias_analysis_1h:
-    #     result["last_hour_state"] = bias_analysis_1h.get("last_hour_state")
-    #     result["last_hour_bias"] = bias_analysis_1h.get("last_hour_bias")
-    #     if bias_analysis_24h["broad_state"] != bias_analysis_1h.get("last_hour_state") and \
-    #        abs(bias_analysis_1h.get("last_hour_bias") - bias_analysis_24h["broad_bias"]) > 0.5:
-    #         result["warning"] = f"Market trend reversal detected (24h: {bias_analysis_24h['broad_state']}, 1h: {bias_analysis_1h.get('last_hour_state')})"
-    #         result["adjusted_bias"] = round((bias_analysis_24h["broad_bias"] + bias_analysis_1h.get("last_hour_bias")) / 2.0, 3)
-
-    # print result
-
-    # recent = aggregate_bias(timedelta(hours=1.0))
-
-    # if recent:
-    #     recent_state = determine_market_state(recent["avg_score"])
-    #     result["last_hour_state"] = recent_state
-    #     result["last_hour_bias"] = round(recent["bias"], 3)
-
-    #     if broad_state != recent_state and abs(recent["bias"] - daily["bias"]) > 0.5:
-    #         result["warning"] = f"Market trend reversal detected (24h: {broad_state}, 1h: {recent_state})"
-    #         result["adjusted_bias"] = round((daily["bias"] + recent["bias"]) / 2.0, 3)
-
-    # return result    
-
 def sentiment_analyzer(all_symbols, history_config, log_entries):
 
     print(f"\nRunning Sentiment Analyzer...")
@@ -53,7 +22,7 @@ def sentiment_analyzer(all_symbols, history_config, log_entries):
     bias_analysis_24h = compute_bias(latest_values, time_window_hours=24.0)
     bias_analysis_1h = compute_bias(latest_values, time_window_hours=1.0)
 
-    trend_reversal_analyzer(bias_analysis_24h, bias_analysis_1h)
+    trend_reversal_analyzer(bias_analysis_24h, bias_analysis_1h, log_entries)
 
 if __name__ == "__main__":
 
