@@ -4,7 +4,7 @@
 from typing import List, Dict
 from utils.get_timestamp import get_timestamp
 
-def analyze_log_data(symbol, latest, previous):
+def analyze_log_data(symbol, latest, previous, thresholds):
 
     print(f"🔍 Analyzing symbol: {symbol}")
     print(f"⏱  Time: {latest['timestamp']}  vs.  {previous['timestamp']}")
@@ -58,31 +58,37 @@ def analyze_log_data(symbol, latest, previous):
     macd_change, macd_change_percent = calc_change_and_percent(avg_macd, prev_macd) if avg_macd is not None and prev_macd is not None else (None, None)
 
     # Bollinger Status
+    bollinger_mode = thresholds["bollinger_mode"]
     bb_upper_float = to_float(latest["bb_upper"]["1d"])
     bb_lower_float = to_float(latest["bb_lower"]["1d"])
-    bollinger_status = analyze_bollinger(price, bb_upper_float, bb_lower_float)
+    bollinger_status = analyze_bollinger(price, bb_upper_float, bb_lower_float, bollinger_mode)
 
     # Trends
+    ema_trend_percent = thresholds["ema_trend_percent"]
     ema_1d_float = to_float(latest["ema"]["1d"])
     macd_1d_float = to_float(latest["macd"]["1d"])
-    ema_trend = detect_ema_trend(price, ema_1d_float)
+    ema_trend = detect_ema_trend(price, ema_1d_float, ema_trend_percent)
     macd_trend = detect_macd_trend(price, macd_1d_float)
 
     # Flag
-    flag = detect_flag(avg_rsi, prev_rsi)
+    rsi_flag_delta = thresholds["rsi_flag_delta"]
+    flag = detect_flag(avg_rsi, prev_rsi, rsi_flag_delta)
 
     # Signal strength
+    signal_strength_rules = thresholds["signal_strength_rules"]
     signal_strength = estimate_signal_strength(
         flag,
         macd_trend,
         bollinger_status,
-        ema_trend
+        ema_trend,
+        signal_strength_rules
     )
 
     # Turnover status
+    turnover_deviation = thresholds["turnover_deviation"]
     turnover_float = to_float(fetched["turnover"])
     volume_float = to_float(fetched["volume"])
-    turnover_status = detect_turnover_anomaly(turnover_float, volume_float, price)
+    turnover_status = detect_turnover_anomaly(turnover_float, volume_float, price, turnover_deviation)
 
     # RSI Divergence
     history = [{"avg_rsi": prev_rsi},{"avg_rsi": avg_rsi}]
@@ -126,7 +132,7 @@ def analyze_log_data(symbol, latest, previous):
         "rsi_divergence": rsi_divergence
     }
 
-def analyze_latest_only(symbol, latest: dict) -> dict:
+def analyze_latest_only(symbol, latest: dict, thresholds) -> dict:
     """
     Analyzes only symbol data for last entry (without previous-data).
     Returns same structure as analyze_log_data, but missing the fields are = None.
@@ -139,7 +145,7 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
         except (TypeError, ValueError):
             return None
 
-    price_raw = latest["fetched"]["price"]   # säilytetään stringinä lokia varten
+    price_raw = latest["fetched"]["price"]
     price = to_float(price_raw)
 
     avg_rsi = sum(v for v in latest["rsi"].values() if v is not None) / max(
@@ -158,8 +164,10 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
     ]
     avg_macd = sum(macd_diffs) / len(macd_diffs) if macd_diffs else None
 
-    bollinger_status = analyze_bollinger(price, latest["bb_upper"]["1d"], latest["bb_lower"]["1d"])
-    ema_trend = detect_ema_trend(price, latest["ema"]["1d"])
+    bollinger_mode = thresholds["bollinger_mode"]
+    bollinger_status = analyze_bollinger(price, latest["bb_upper"]["1d"], latest["bb_lower"]["1d"], bollinger_mode)
+    ema_trend_percent = thresholds["ema_trend_percent"]
+    ema_trend = detect_ema_trend(price, latest["ema"]["1d"], ema_trend_percent)
     macd_trend = detect_macd_trend(price, latest["macd"]["1d"])
 
     print(f"✅ Analysis complete")
@@ -194,47 +202,57 @@ def analyze_latest_only(symbol, latest: dict) -> dict:
         "rsi_divergence": None,
     }
 
-def analyze_bollinger(price, bb_upper, bb_lower):
+def analyze_bollinger(price, bb_upper, bb_lower, mode="strict"):
     if price is None or bb_upper is None or bb_lower is None:
         return "unknown"
-    if price >= bb_upper:
-        return "overbought"
-    elif price <= bb_lower:
-        return "oversold"
+    if mode == "strict":
+        if price >= bb_upper:
+            return "overbought"
+        elif price <= bb_lower:
+            return "oversold"
     return "neutral"
 
-def detect_ema_trend(price, ema_1d):
+def detect_ema_trend(price, ema_1d, threshold=0.01):
     if price is None or ema_1d is None:
         return "unknown"
-    if price > ema_1d * 1.01:
+    if price > ema_1d * (1 + threshold):
         return "strong_above"
-    elif price < ema_1d * 0.99:
+    elif price < ema_1d * (1 - threshold):
         return "strong_below"
     return "near_ema"
 
-def detect_turnover_anomaly(turnover, volume, price):
+def detect_turnover_anomaly(turnover, volume, price, deviation_threshold=0.02):
     if turnover is None or volume is None or price is None:
         return "invalid"
     if volume == 0:
         return "invalid"
     avg_price = turnover / volume
     deviation = abs(avg_price - price) / price
-    return "mismatch" if deviation > 0.02 else "normal"
+    return "mismatch" if deviation > deviation_threshold else "normal"
 
-def detect_flag(curr_rsi, prev_rsi):
-    if prev_rsi is None:
+def detect_flag(curr_rsi, prev_rsi, delta=5):
+    try:
+        curr_rsi = float(curr_rsi) if curr_rsi is not None else None
+        prev_rsi = float(prev_rsi) if prev_rsi is not None else None
+    except (TypeError, ValueError):
         return "neutral"
-    if curr_rsi > prev_rsi + 5:
+    if prev_rsi is None or curr_rsi is None:
+        return "neutral"
+    if curr_rsi > prev_rsi + delta:
         return "bullish"
-    elif curr_rsi < prev_rsi - 5:
+    elif curr_rsi < prev_rsi - delta:
         return "bearish"
     return "neutral"
 
-def estimate_signal_strength(flag, macd_trend, bollinger_status, ema_trend):
-    if flag == "bullish" and macd_trend == "bullish" and bollinger_status == "oversold" and ema_trend == "strong_above":
-        return "very_strong_bullish"
-    if flag == "bearish" and macd_trend == "bearish" and bollinger_status == "overbought" and ema_trend == "strong_below":
-        return "very_strong_bearish"
+def estimate_signal_strength(flag, macd_trend, bollinger_status, ema_trend, rules=None):
+    if rules is None:
+        rules = {
+            "very_strong_bullish": ["bullish", "bullish", "oversold", "strong_above"],
+            "very_strong_bearish": ["bearish", "bearish", "overbought", "strong_below"],
+        }
+    for label, conditions in rules.items():
+        if [flag, macd_trend, bollinger_status, ema_trend] == conditions:
+            return label
     if flag != "neutral":
         return "watch_for_reversal"
     return "neutral"
@@ -256,23 +274,36 @@ def detect_rsi_divergence(history: List[Dict], current_avg: float) -> str:
     prev = history[-1]
     prev2 = history[-2]
 
-    if prev["avg_rsi"] is None or prev2["avg_rsi"] is None or current_avg is None:
+    try:
+        prev_val = float(prev.get("avg_rsi")) if prev.get("avg_rsi") is not None else None
+        prev2_val = float(prev2.get("avg_rsi")) if prev2.get("avg_rsi") is not None else None
+        curr_val = float(current_avg) if current_avg is not None else None
+    except (TypeError, ValueError):
         return "none"
 
-    if prev["avg_rsi"] > prev2["avg_rsi"] and current_avg < prev["avg_rsi"]:
+    if prev_val is None or prev2_val is None or curr_val is None:
+        return "none"
+
+    if prev_val > prev2_val and curr_val < prev_val:
         return "bearish-divergence"
-    elif prev["avg_rsi"] < prev2["avg_rsi"] and current_avg > prev["avg_rsi"]:
+    elif prev_val < prev2_val and curr_val > prev_val:
         return "bullish-divergence"
 
     return "none"
 
 def analysis_engine(symbol: str, history_config: Dict, collection_entry: Dict, analysis_entry: Dict):
 
-    timestamp = get_timestamp()
+    config = history_config.get("history_analyzer")
+    thresholds = config.get("analysis_thresholds", {})
+
     latest = collection_entry
     previous = analysis_entry if analysis_entry else None
 
     if previous:
-        return analyze_log_data(symbol, latest, previous)
+        return analyze_log_data(
+            symbol, latest, previous, thresholds
+        )
     else:
-        return analyze_latest_only(symbol, latest)
+        return analyze_latest_only(
+            symbol, latest, thresholds
+        )
