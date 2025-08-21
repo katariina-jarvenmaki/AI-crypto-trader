@@ -2,6 +2,18 @@
 # version 2.0, aug 2025
 
 from utils.load_configs_and_logs import load_configs_and_logs
+from modules.history_archiver.utils import analysis_entries_loader
+
+def history_archiver(max_age_hours, history_log_path):
+    """
+    Does history archiving and deleting old history archives
+    """
+
+    # Load current log entries
+    analysis_entries = analysis_entries_loader(max_age_hours, history_log_path)
+    # print(analysis_entries)
+
+    # Checking time and date
 
 # modules/history_analyzer/history_archiver.py
 
@@ -445,4 +457,4 @@ if __name__ == "__main__":
     print(f"logs_path: {logs_path}")
     print(f"log: {log}")
 
-    history_archiver()
+    history_archiver(max_age_hours=1500, history_log_path=history_log_path)
