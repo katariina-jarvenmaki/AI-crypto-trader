@@ -30,16 +30,6 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
         if isinstance(d, (int, float)):
             values.append(d)
 
-    combined_bias = None
-    if values:
-        if method == "average":
-            combined_bias = round(sum(values) / len(values), 3)
-        elif method == "weighted" and weights and len(weights) == len(values):
-            total = sum(w * v for w, v in zip(weights, values))
-            combined_bias = round(total / sum(weights), 3)
-        elif method == "last":
-            combined_bias = round(values[-1], 3)
-
     shift_cfg = config.get("trend_shift", {})
 
     metric = shift_cfg.get("metric", "broad_bias")
@@ -64,7 +54,6 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
         print(f"❌ Trend Shift Analysis failed")
 
     return {
-        "combined_bias": combined_bias,
         "direction": direction,
         "change": change
     }
@@ -142,4 +131,5 @@ def detect_trend_shifts(
         return True, "rise", round(change, 5)
     else:
         print(f"⏭  Change below the threshold: old_bias: {old_bias}, current_bias: {current_bias}, change: {change}")
-        return True, None, None
+        direction = (old_biases[0].get('trend_shift') or {}).get('direction') or None
+        return True, direction, round(change, 5)
