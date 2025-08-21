@@ -13,7 +13,33 @@ def history_archiver(max_age_hours, history_log_path):
     analysis_entries = analysis_entries_loader(max_age_hours, history_log_path)
     # print(analysis_entries)
 
-    # Checking time and date
+    def datetime_manager(mode=None):
+        from dateutil.parser import isoparse
+        from datetime import datetime, timedelta
+        from utils.get_timestamp import get_timestamp
+
+        timestamp = get_timestamp()
+        now = isoparse(get_timestamp())
+        current_day = now.strftime("%Y-%m-%d")
+
+        if mode == "monthly":
+            first_day_this_month = now.replace(day=1)
+            last_day_last_month = first_day_this_month - timedelta(days=1)
+            first_day_last_month = last_day_last_month.replace(day=1)
+            last_month = first_day_last_month.strftime("%Y-%m")
+
+            return {
+                "timestamp": timestamp,
+                "first_day_this_month": first_day_this_month.isoformat(),
+                "last_day_last_month": last_day_last_month.isoformat(),
+                "first_day_last_month": first_day_last_month.isoformat(),
+                "current_day": current_day,
+                "last_month": last_month
+            }
+
+    monthly = datetime_manager("monthly")
+    print(monthly)
+
 
 # modules/history_analyzer/history_archiver.py
 
