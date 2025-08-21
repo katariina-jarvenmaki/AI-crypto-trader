@@ -131,32 +131,15 @@ def detect_trend_shifts(
         print("⚠️  No old_biases found within lookback window")
         return False, None, None
 
-    df_window.sort_values("timestamp", inplace=True)
+    df_window = df_window.sort_values("timestamp")
     old_bias = df_window[metric].iloc[0]
 
-    print(f"df_window: {df_window}")
-    print(f"old_bias: {old_bias}")
-    print(f"current_bias: {current_bias}")
-
-#     df.sort_values("timestamp", inplace=True)
-#     df.reset_index(drop=True, inplace=True)
-
-#     cutoff_time = df["timestamp"].max() - timedelta(minutes=lookback_minutes)
-#     df_recent = df[df["timestamp"] >= cutoff_time]
-
-#     if len(df_recent) < 2:
-#         return False, None, None
-
-#     start_val = df_recent[metric].iloc[0]
-#     end_val = df_recent[metric].iloc[-1]
-#     change = end_val - start_val
-#     print(f"start_val: {start_val}")
-#     print(f"end_val: {end_val}")
-#     print(f"change: {change}")
-
-#     if direction in ("down", "both") and -change >= threshold:
-#         return True, "drop", round(-change, 5)
-#     elif direction in ("up", "both") and change >= threshold:
-#         return True, "rise", round(change, 5)
-#     else:
-#         return False, None, None
+    change = current_bias - old_bias
+    
+    if direction in ("down", "both") and -change >= threshold:
+        return True, "drop", round(-change, 5)
+    elif direction in ("up", "both") and change >= threshold:
+        return True, "rise", round(change, 5)
+    else:
+        print(f"⏭  Change below the threshold: old_bias: {old_bias}, current_bias: {current_bias}, change: {change}")
+        return True, None, None
