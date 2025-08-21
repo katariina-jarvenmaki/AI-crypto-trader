@@ -47,8 +47,8 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
         metric = "hour-sentiment.bias"
 
     found, direction, change = detect_trend_shifts(
-        entries=entries,
-        combined_bias=combined_bias,
+        old_biases=entries,
+        current_bias=bias_results,
         metric=metric,
         threshold=shift_cfg.get("threshold", 0.02),
         direction=shift_cfg.get("direction", "both"),
@@ -67,36 +67,41 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
     }
 
 def detect_trend_shifts(
-    entries: list,
-    combined_bias: str,
+    old_biases: list,
+    current_bias: list,
     metric: str = "broad-sentiment.bias",
     threshold: float = 0.02,
     direction: str = "both",
     lookback_minutes: int = 15
 ):
-    # entries = log data
-    # combined_bias = current data
+    """
+    Detecting Trends Shifts:
+     * Analysis works only, if previous data (old_biases) is available 
+    """
 
-    if not entries:
-        print(f"⚠️  No previous data found for Trend Shift Analysis")
+    if not old_biases:
+        print(f"⚠️  No previous data found for Trend Shift Analysis (That's totally ok, if it's first runs after break)")
         return False, None, None
 
-#     parsed_entries = []
-#     for item in entries:
-#         if isinstance(item, str):
-#             item = item.strip()
-#             if not item:
-#                 continue
-#             try:
-#                 parsed_entries.append(json.loads(item))
-#             except json.JSONDecodeError:
-#                 continue
-#         elif isinstance(item, dict):
-#             parsed_entries.append(item)
-#         else:
-#             continue
+    parsed_old_biases = []
+    for item in old_biases:
+        if isinstance(item, str):
+            item = item.strip()
+            if not item:
+                continue
+            try:
+                parsed_old_biases.append(json.loads(item))
+            except json.JSONDecodeError:
+                continue
+        elif isinstance(item, dict):
+            parsed_old_biases.append(item)
+        else:
+            continue
 
-#     if not parsed_entries:
+    print(f"parsed_old_biases: {parsed_old_biases}")
+    print(f"current_bias: {current_bias}")
+
+#     if not parsed_old_biases:
 #         return False, None, None
 
 #     def get_nested_value(d, path: str):
@@ -113,7 +118,7 @@ def detect_trend_shifts(
 #             "timestamp": datetime.fromisoformat(item["timestamp"]),
 #             metric: get_nested_value(item, metric)
 #         }
-#         for item in parsed_entries
+#         for item in parsed_old_biases
 #         if get_nested_value(item, metric) is not None
 #     ])
 # 
