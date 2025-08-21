@@ -1,9 +1,11 @@
 # modules/history_sentiment/trend_shift.py
 # version 2.0, aug 2025
 
-# import json
-# import pandas as pd
-# from datetime import datetime, timedelta
+import json
+import pandas as pd
+from dateutil.parser import isoparse
+from datetime import datetime, timedelta
+from utils.get_timestamp import get_timestamp
 
 def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
 
@@ -46,9 +48,10 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
     elif metric == "hour_bias":
         metric = "hour-sentiment.bias"
 
+    broad_bias = bias_results['broad-sentiment']['bias']
     found, direction, change = detect_trend_shifts(
         old_biases=entries,
-        current_bias=bias_results,
+        current_bias=broad_bias,
         metric=metric,
         threshold=shift_cfg.get("threshold", 0.02),
         direction=shift_cfg.get("direction", "both"),
@@ -68,62 +71,72 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
 
 def detect_trend_shifts(
     old_biases: list,
-    current_bias: list,
+    current_bias: dict,
     metric: str = "broad-sentiment.bias",
     threshold: float = 0.02,
     direction: str = "both",
     lookback_minutes: int = 15
 ):
     """
-    Detecting Trends Shifts:
-     * Analysis works only, if previous data (old_biases) is available 
+    Detecting Trend Shifts:
+     * Compares the current bias with the oldest available bias
+       within the lookback window from old_biases.
     """
 
     if not old_biases:
-        print(f"⚠️  No previous data found for Trend Shift Analysis (That's totally ok, if it's first runs after break)")
+        print("⚠️  No previous data found for Trend Shift Analysis")
         return False, None, None
+
+    def get_nested_value(d, path: str):
+        keys = path.split(".")
+        for k in keys:
+            if isinstance(d, dict) and k in d:
+                d = d[k]
+            else:
+                return None
+        return d
 
     parsed_old_biases = []
     for item in old_biases:
         if isinstance(item, str):
-            item = item.strip()
-            if not item:
-                continue
             try:
                 parsed_old_biases.append(json.loads(item))
             except json.JSONDecodeError:
                 continue
         elif isinstance(item, dict):
             parsed_old_biases.append(item)
-        else:
-            continue
 
-    print(f"parsed_old_biases: {parsed_old_biases}")
+    if not parsed_old_biases:
+        print("⚠️  [ERROR]: Parsing old biases from History Sentiment -log failed!")
+        return False, None, None
+
+    df = pd.DataFrame([
+        {
+            "timestamp": datetime.fromisoformat(item["timestamp"]),
+            metric: get_nested_value(item, metric)
+        }
+        for item in parsed_old_biases
+        if get_nested_value(item, metric) is not None
+    ])
+
+    if df.empty:
+        print("⚠️  [ERROR]: Empty DataFrame after parsing old_biases!")
+        return False, None, None
+
+    curr_time = isoparse(get_timestamp())
+    cutoff_time = curr_time - timedelta(minutes=lookback_minutes)
+    df_window = df[df["timestamp"] >= cutoff_time]
+
+    if df_window.empty:
+        print("⚠️  No old_biases found within lookback window")
+        return False, None, None
+
+    df_window.sort_values("timestamp", inplace=True)
+    old_bias = df_window[metric].iloc[0]
+
+    print(f"df_window: {df_window}")
+    print(f"old_bias: {old_bias}")
     print(f"current_bias: {current_bias}")
-
-#     if not parsed_old_biases:
-#         return False, None, None
-
-#     def get_nested_value(d, path: str):
-#         keys = path.split(".")
-#         for k in keys:
-#             if isinstance(d, dict) and k in d:
-#                 d = d[k]
-#             else:
-#                 return None
-#         return d
-
-#     df = pd.DataFrame([
-#         {
-#             "timestamp": datetime.fromisoformat(item["timestamp"]),
-#             metric: get_nested_value(item, metric)
-#         }
-#         for item in parsed_old_biases
-#         if get_nested_value(item, metric) is not None
-#     ])
-# 
-#     if df.empty:
-#         return False, None, None
 
 #     df.sort_values("timestamp", inplace=True)
 #     df.reset_index(drop=True, inplace=True)
