@@ -85,34 +85,39 @@ def compute_bias(values: List[Dict], config: Dict, time_window_hours: float = 24
             score = score_entry(log, config)
             symbol_scores.setdefault(symbol, []).append(score)
 
-        print(f"symbol_scores: {symbol_scores}")
+        avg_scores = {s: sum(v) / len(v) for s, v in symbol_scores.items()}
+        all_avg = sum(avg_scores.values()) / len(avg_scores)
 
-#         avg_scores = {s: sum(v) / len(v) for s, v in symbol_scores.items()}
-#         all_avg = sum(avg_scores.values()) / len(avg_scores)
+        divisor = config['compute_bias']['bias_normalization_divisor']
+        bias = max(-1.0, min(1.0, all_avg / divisor))
 
-#         divisor = config['compute_bias']['bias_normalization_divisor']
-#         bias = max(-1.0, min(1.0, all_avg / divisor))
+        for symbol, scores in symbol_scores.items():
+            if len(scores) < 2:
+                continue
+            deltas = [abs(scores[i] - scores[i - 1]) for i in range(1, len(scores))]
+            symbol_movements[symbol] = sum(deltas) / len(deltas)
 
-#         for symbol, scores in symbol_scores.items():
-#             if len(scores) < 2:
-#                 continue
-#             deltas = [abs(scores[i] - scores[i - 1]) for i in range(1, len(scores))]
-#             symbol_movements[symbol] = sum(deltas) / len(deltas)
+        volume = sum(symbol_movements.values()) / len(symbol_movements) if symbol_movements else 0.0
 
-#         volume = sum(symbol_movements.values()) / len(symbol_movements) if symbol_movements else 0.0
-
-#         return {
-#             "avg_score": all_avg,
-#             "bias": bias,
-#             "volume": volume,
-#             "coins_counted": len(avg_scores),
-#             "entries_counted": len(filtered),
-#         }
+        return {
+            "avg_score": all_avg,
+            "bias": bias,
+            "volume": volume,
+            "coins_counted": len(avg_scores),
+            "entries_counted": len(filtered),
+        }
 
     biases = aggregate_bias(timedelta(hours=time_window_hours))
     if not biases:
         return None
-    print(f"biases: {biases}")
+
+#     print(f"biases: {biases}")
+#     print(f"state: {determine_market_state(biases['avg_score'], config)}")
+#     print(f"bias: {round(biases['bias'], 3)}")
+#     print(f"avg_score: {round(biases['avg_score'], 3)}")
+#     print(f"volume: {round(biases['volume'], 3)}")
+#     print(f"coins_counted: {biases['coins_counted']}")
+#     print(f"entries_counted: {biases['entries_counted']}")
 
 #     return {
 #         "state": determine_market_state(biases["avg_score"], config),
