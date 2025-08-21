@@ -37,7 +37,6 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
         print(f"\n❌ Bias Analysis failed")
 
     trend_shift_config = sentiment_config['trend_shift']
-    print(f"\ntrend_shift_config: {trend_shift_config}")
     trend_analysis = trend_shift_analyzer(
         bias_results,
         sentiment_entries,

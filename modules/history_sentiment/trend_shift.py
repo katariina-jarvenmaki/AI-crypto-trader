@@ -38,56 +38,48 @@ def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
         elif method == "last":
             combined_bias = round(values[-1], 3)
 
-    print(f"=== Current data ===")
-    print(f"bias_results: {bias_results}")
-    print(f"entries: {entries}")
-    print(f"config: {config}")
-    print(f"combine_cfg: {combine_cfg}")
-    print(f"method: {method}")
-    print(f"keys: {keys}")
-    print(f"weights: {weights}")
-    print(f"bias values: {values}")
-    print(f"combined_bias: {combined_bias}")
+    shift_cfg = config.get("trend_shift", {})
 
+    metric = shift_cfg.get("metric", "broad_bias")
+    if metric == "broad_bias":
+        metric = "broad-sentiment.bias"
+    elif metric == "hour_bias":
+        metric = "hour-sentiment.bias"
 
+    found, direction, change = detect_trend_shifts(
+        entries=entries,
+        combined_bias=combined_bias,
+        metric=metric,
+        threshold=shift_cfg.get("threshold", 0.02),
+        direction=shift_cfg.get("direction", "both"),
+        lookback_minutes=shift_cfg.get("lookback_minutes", 15)
+    )
 
-#     shift_cfg = config.get("trend_shift", {})
+    if found:
+        print(f"✅ Trend Shift Analysis complete")
+    else:
+        print(f"❌ Trend Shift Analysis failed")
 
-#     metric = shift_cfg.get("metric", "broad_bias")
-#     if metric == "broad_bias":
-#         metric = "broad-sentiment.bias"
-#     elif metric == "hour_bias":
-#         metric = "hour-sentiment.bias"
+    return {
+        "combined_bias": combined_bias,
+        "direction": direction,
+        "change": change
+    }
 
-#     found, direction, change = detect_trend_shifts(
-#         entries=entries,
-#         metric=metric,
-#         threshold=shift_cfg.get("threshold", 0.02),
-#         direction=shift_cfg.get("direction", "both"),
-#         lookback_minutes=shift_cfg.get("lookback_minutes", 15)
-#     )
+def detect_trend_shifts(
+    entries: list,
+    combined_bias: str,
+    metric: str = "broad-sentiment.bias",
+    threshold: float = 0.02,
+    direction: str = "both",
+    lookback_minutes: int = 15
+):
+    # entries = log data
+    # combined_bias = current data
 
-#     if combined_bias is not None:
-#         print(f"✅ Trend Reversal Analysis complete")
-#     else:
-#         print(f"❌ Trend Reversal Analysis failed")
-# 
-#     return {
-#         "combined_bias": combined_bias,
-#         "direction": direction,
-#         "change": change
-#     }
-
-# def detect_trend_shifts(
-#     entries: list,
-#     metric: str = "broad-sentiment.bias",
-#     threshold: float = 0.02,
-#     direction: str = "both",
-#     lookback_minutes: int = 15
-# ):
-
-#     if not entries:
-#         return False, None, None
+    if not entries:
+        print(f"⚠️  No previous data found for Trend Shift Analysis")
+        return False, None, None
 
 #     parsed_entries = []
 #     for item in entries:
