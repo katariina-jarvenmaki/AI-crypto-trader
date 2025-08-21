@@ -59,14 +59,14 @@ def score_entry(entry: Dict, config: Dict) -> float:
 
     return score
 
-# def determine_market_state(avg_score: float, config: Dict) -> str:
-#     threshold = config['compute_bias']['market_state_threshold']
-#     if avg_score > threshold:
-#         return "bull"
-#     elif avg_score < -threshold:
-#         return "bear"
-#     else:
-#         return "neutral"
+def determine_market_state(avg_score: float, config: Dict) -> str:
+    threshold = config['compute_bias']['market_state_threshold']
+    if avg_score > threshold:
+        return "bull"
+    elif avg_score < -threshold:
+        return "bear"
+    else:
+        return "neutral"
 
 def compute_bias(values: List[Dict], config: Dict, time_window_hours: float = 24.0) -> Optional[Dict]:
 
@@ -111,19 +111,11 @@ def compute_bias(values: List[Dict], config: Dict, time_window_hours: float = 24
     if not biases:
         return None
 
-#     print(f"biases: {biases}")
-#     print(f"state: {determine_market_state(biases['avg_score'], config)}")
-#     print(f"bias: {round(biases['bias'], 3)}")
-#     print(f"avg_score: {round(biases['avg_score'], 3)}")
-#     print(f"volume: {round(biases['volume'], 3)}")
-#     print(f"coins_counted: {biases['coins_counted']}")
-#     print(f"entries_counted: {biases['entries_counted']}")
-
-#     return {
-#         "state": determine_market_state(biases["avg_score"], config),
-#         "bias": round(biases["bias"], 3),
-#         "avg_score": round(biases["avg_score"], 3),
-#         "volume": round(biases["volume"], 3),
-#         "coins_counted": biases["coins_counted"],
-#         "entries_counted": biases["entries_counted"],
-#     }
+    return {
+        "state": determine_market_state(biases["avg_score"], config),
+        "bias": round(biases["bias"], 3),
+        "avg_score": round(biases["avg_score"], 3),
+        "volume": round(biases["volume"], 3),
+        "coins_counted": biases["coins_counted"],
+        "entries_counted": biases["entries_counted"],
+    }

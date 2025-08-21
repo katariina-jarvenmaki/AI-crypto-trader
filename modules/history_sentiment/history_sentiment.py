@@ -28,16 +28,15 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
     result_keys = sentiment_config['main']['result_keys']
     for window in bias_time_windows_hours:
         result = compute_bias(latest_values, sentiment_config, time_window_hours=window)
-        # print(f"\n{result}")
+        key_name = result_keys.get(str(window), f"bias_{window}h")
+        bias_results[key_name] = result
+
+    if bias_results:
+        print(f"\n✅ Bias Analysis complete")
+    else:
+        print(f"\n❌ Bias Analysis failed")
 
 
-#         key_name = result_keys.get(str(window), f"bias_{window}h")
-#         bias_results[key_name] = result
-
-#     if any(v is not None for v in bias_results.values()):
-#         print(f"\n✅ Bias Analysis complete")
-#     else:
-#         print(f"\n❌ Bias Analysis failed")
 
 #     trend_reversal_config = sentiment_config['trend_reversal']
 #     trend_analysis = trend_reversal_analyzer(
