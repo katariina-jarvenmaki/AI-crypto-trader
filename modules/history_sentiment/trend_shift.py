@@ -1,41 +1,55 @@
-# modules/history_sentiment/trend_reversal.py
+# modules/history_sentiment/trend_shift.py
 # version 2.0, aug 2025
 
 # import json
 # import pandas as pd
 # from datetime import datetime, timedelta
 
-# def trend_reversal_analyzer(bias_results: dict, entries: list, config: dict):
+def trend_shift_analyzer(bias_results: dict, entries: list, config: dict):
 
-#     combine_cfg = config.get("combine_bias", {})
-#     method = combine_cfg.get("method", "average")
-#     keys = combine_cfg.get("keys", [])
-#     weights = combine_cfg.get("weights", [])
+    combine_cfg = config.get("combine_bias", {})
+    method = combine_cfg.get("method", "average")
+    keys = combine_cfg.get("keys", [])
+    weights = combine_cfg.get("weights", [])
 
-#     values = []
-#     if bias_results is None:
-#         bias_results = {}
+    values = []
+    if bias_results is None:
+        bias_results = {}
 
-#     for k in keys:
-#         parts = k.split(".")
-#         d = bias_results
-#         for p in parts:
-#             if not isinstance(d, dict):   # safeguard
-#                 d = {}
-#                 break
-#             d = d.get(p, {})
-#         if isinstance(d, (int, float)):
-#             values.append(d)
+    for k in keys:
+        parts = k.split(".")
+        d = bias_results
+        for p in parts:
+            if not isinstance(d, dict):   
+                safeguard
+                d = {}
+                break
+            d = d.get(p, {})
+        if isinstance(d, (int, float)):
+            values.append(d)
 
-#     combined_bias = None
-#     if values:
-#         if method == "average":
-#             combined_bias = round(sum(values) / len(values), 3)
-#         elif method == "weighted" and weights and len(weights) == len(values):
-#             total = sum(w * v for w, v in zip(weights, values))
-#             combined_bias = round(total / sum(weights), 3)
-#         elif method == "last":
-#             combined_bias = round(values[-1], 3)
+    combined_bias = None
+    if values:
+        if method == "average":
+            combined_bias = round(sum(values) / len(values), 3)
+        elif method == "weighted" and weights and len(weights) == len(values):
+            total = sum(w * v for w, v in zip(weights, values))
+            combined_bias = round(total / sum(weights), 3)
+        elif method == "last":
+            combined_bias = round(values[-1], 3)
+
+    print(f"=== Current data ===")
+    print(f"bias_results: {bias_results}")
+    print(f"entries: {entries}")
+    print(f"config: {config}")
+    print(f"combine_cfg: {combine_cfg}")
+    print(f"method: {method}")
+    print(f"keys: {keys}")
+    print(f"weights: {weights}")
+    print(f"bias values: {values}")
+    print(f"combined_bias: {combined_bias}")
+
+
 
 #     shift_cfg = config.get("trend_shift", {})
 

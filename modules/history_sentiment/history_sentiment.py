@@ -10,7 +10,7 @@ from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_sentiment.compute_bias import compute_bias
 from utils.load_entries_in_time_range import load_entries_in_time_range
 # from modules.save_and_validate.save_and_validate import save_and_validate
-# from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
+from modules.history_sentiment.trend_shift import trend_shift_analyzer
 
 def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_entries, sentiment_log_path, sentiment_log_schema_path):
 
@@ -36,15 +36,16 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
     else:
         print(f"\n❌ Bias Analysis failed")
 
+    trend_shift_config = sentiment_config['trend_shift']
+    print(f"\ntrend_shift_config: {trend_shift_config}")
+    trend_analysis = trend_shift_analyzer(
+        bias_results,
+        sentiment_entries,
+        trend_shift_config
+    )
+    print(f"\ntrend_analysis: {trend_analysis}")
 
-
-#     trend_reversal_config = sentiment_config['trend_reversal']
-#     trend_analysis = trend_reversal_analyzer(
-#         bias_results,
-#         sentiment_entries,
-#         trend_reversal_config
-#     )
-#     bias_results[result_keys.get("trend", "trend_shift")] = trend_analysis
+    # bias_results[result_keys.get("trend", "trend_shift")] = trend_analysis
 
 #     combined_results = {"timestamp": get_timestamp(), **bias_results}
 
