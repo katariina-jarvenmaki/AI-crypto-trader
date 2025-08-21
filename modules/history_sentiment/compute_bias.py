@@ -13,7 +13,6 @@ def parse_log_entry(entry: Dict) -> Dict:
         dt = parser.isoparse(ts)
     else:
         dt = ts
-
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
 
@@ -60,14 +59,14 @@ def score_entry(entry: Dict, config: Dict) -> float:
 
     return score
 
-def determine_market_state(avg_score: float, config: Dict) -> str:
-    threshold = config['compute_bias']['market_state_threshold']
-    if avg_score > threshold:
-        return "bull"
-    elif avg_score < -threshold:
-        return "bear"
-    else:
-        return "neutral"
+# def determine_market_state(avg_score: float, config: Dict) -> str:
+#     threshold = config['compute_bias']['market_state_threshold']
+#     if avg_score > threshold:
+#         return "bull"
+#     elif avg_score < -threshold:
+#         return "bear"
+#     else:
+#         return "neutral"
 
 def compute_bias(values: List[Dict], config: Dict, time_window_hours: float = 24.0) -> Optional[Dict]:
 
@@ -86,37 +85,40 @@ def compute_bias(values: List[Dict], config: Dict, time_window_hours: float = 24
             score = score_entry(log, config)
             symbol_scores.setdefault(symbol, []).append(score)
 
-        avg_scores = {s: sum(v) / len(v) for s, v in symbol_scores.items()}
-        all_avg = sum(avg_scores.values()) / len(avg_scores)
+        print(f"symbol_scores: {symbol_scores}")
 
-        divisor = config['compute_bias']['bias_normalization_divisor']
-        bias = max(-1.0, min(1.0, all_avg / divisor))
+#         avg_scores = {s: sum(v) / len(v) for s, v in symbol_scores.items()}
+#         all_avg = sum(avg_scores.values()) / len(avg_scores)
 
-        for symbol, scores in symbol_scores.items():
-            if len(scores) < 2:
-                continue
-            deltas = [abs(scores[i] - scores[i - 1]) for i in range(1, len(scores))]
-            symbol_movements[symbol] = sum(deltas) / len(deltas)
+#         divisor = config['compute_bias']['bias_normalization_divisor']
+#         bias = max(-1.0, min(1.0, all_avg / divisor))
 
-        volume = sum(symbol_movements.values()) / len(symbol_movements) if symbol_movements else 0.0
+#         for symbol, scores in symbol_scores.items():
+#             if len(scores) < 2:
+#                 continue
+#             deltas = [abs(scores[i] - scores[i - 1]) for i in range(1, len(scores))]
+#             symbol_movements[symbol] = sum(deltas) / len(deltas)
 
-        return {
-            "avg_score": all_avg,
-            "bias": bias,
-            "volume": volume,
-            "coins_counted": len(avg_scores),
-            "entries_counted": len(filtered),
-        }
+#         volume = sum(symbol_movements.values()) / len(symbol_movements) if symbol_movements else 0.0
+
+#         return {
+#             "avg_score": all_avg,
+#             "bias": bias,
+#             "volume": volume,
+#             "coins_counted": len(avg_scores),
+#             "entries_counted": len(filtered),
+#         }
 
     biases = aggregate_bias(timedelta(hours=time_window_hours))
     if not biases:
         return None
+    print(f"biases: {biases}")
 
-    return {
-        "state": determine_market_state(biases["avg_score"], config),
-        "bias": round(biases["bias"], 3),
-        "avg_score": round(biases["avg_score"], 3),
-        "volume": round(biases["volume"], 3),
-        "coins_counted": biases["coins_counted"],
-        "entries_counted": biases["entries_counted"],
-    }
+#     return {
+#         "state": determine_market_state(biases["avg_score"], config),
+#         "bias": round(biases["bias"], 3),
+#         "avg_score": round(biases["avg_score"], 3),
+#         "volume": round(biases["volume"], 3),
+#         "coins_counted": biases["coins_counted"],
+#         "entries_counted": biases["entries_counted"],
+#     }

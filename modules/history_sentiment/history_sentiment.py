@@ -9,8 +9,8 @@ from utils.get_symbols_to_use import get_symbols_to_use
 from utils.load_configs_and_logs import load_configs_and_logs
 from modules.history_sentiment.compute_bias import compute_bias
 from utils.load_entries_in_time_range import load_entries_in_time_range
-from modules.save_and_validate.save_and_validate import save_and_validate
-from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
+# from modules.save_and_validate.save_and_validate import save_and_validate
+# from modules.history_sentiment.trend_reversal import trend_reversal_analyzer
 
 def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_entries, sentiment_log_path, sentiment_log_schema_path):
 
@@ -28,36 +28,39 @@ def sentiment_analyzer(all_symbols, history_config, history_entries, sentiment_e
     result_keys = sentiment_config['main']['result_keys']
     for window in bias_time_windows_hours:
         result = compute_bias(latest_values, sentiment_config, time_window_hours=window)
-        key_name = result_keys.get(str(window), f"bias_{window}h")
-        bias_results[key_name] = result
+        # print(f"\n{result}")
 
-    if any(v is not None for v in bias_results.values()):
-        print(f"\n✅ Bias Analysis complete")
-    else:
-        print(f"\n❌ Bias Analysis failed")
 
-    trend_reversal_config = sentiment_config['trend_reversal']
-    trend_analysis = trend_reversal_analyzer(
-        bias_results,
-        sentiment_entries,
-        trend_reversal_config
-    )
-    bias_results[result_keys.get("trend", "trend-reversal")] = trend_analysis
+#         key_name = result_keys.get(str(window), f"bias_{window}h")
+#         bias_results[key_name] = result
 
-    combined_results = {"timestamp": get_timestamp(), **bias_results}
+#     if any(v is not None for v in bias_results.values()):
+#         print(f"\n✅ Bias Analysis complete")
+#     else:
+#         print(f"\n❌ Bias Analysis failed")
+
+#     trend_reversal_config = sentiment_config['trend_reversal']
+#     trend_analysis = trend_reversal_analyzer(
+#         bias_results,
+#         sentiment_entries,
+#         trend_reversal_config
+#     )
+#     bias_results[result_keys.get("trend", "trend_shift")] = trend_analysis
+
+#     combined_results = {"timestamp": get_timestamp(), **bias_results}
 
     # Save results to log
-    print(f"⏭  Result: {combined_results}")
-    print(f"\n❇️  Saving new result to {sentiment_log_path}")
-    save_and_validate(
-        data=combined_results,
-        path=sentiment_log_path,
-        schema=sentiment_log_schema_path,
-        verbose=False
-    )
+#     print(f"⏭  Result: {combined_results}")
+#     print(f"\n❇️  Saving new result to {sentiment_log_path}")
+#     save_and_validate(
+#         data=combined_results,
+#         path=sentiment_log_path,
+#         schema=sentiment_log_schema_path,
+#         verbose=False
+#     )
 
-    print(f"✅ History Sentiment Analysis complete\n")
-    return combined_results
+#     print(f"✅ History Sentiment Analysis complete\n")
+#     return combined_results
 
 if __name__ == "__main__":
 
