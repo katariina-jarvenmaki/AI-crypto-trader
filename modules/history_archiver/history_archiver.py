@@ -2,7 +2,7 @@
 # version 2.0, aug 2025
 
 from utils.load_configs_and_logs import load_configs_and_logs
-from modules.history_archiver.utils import analysis_entries_loader
+from modules.history_archiver.utils import analysis_entries_loader, datetime_manager, get_archive_log_paths
 
 def history_archiver(max_age_hours, history_log_path):
     """
@@ -11,35 +11,28 @@ def history_archiver(max_age_hours, history_log_path):
 
     # Load current log entries
     analysis_entries = analysis_entries_loader(max_age_hours, history_log_path)
+
+    # Define archive paths & filenames
+    datetime_data = datetime_manager()
+    archive_log_paths = get_archive_log_paths(datetime_data)
+
     # print(analysis_entries)
+    # print(datetime_data)
+    # print(archive_log_paths)
 
-    def datetime_manager(mode=None):
-        from dateutil.parser import isoparse
-        from datetime import datetime, timedelta
-        from utils.get_timestamp import get_timestamp
+    # logs_path = CONFIG["analysis_daily_logs_path"]
+    # weekly_log_file = os.path.join(logs_path, f"analysis_log_week_{week_str}.jsonl")
+    # monthly_log_file = os.path.join(logs_path, f"analysis_log_month_{month_str}.jsonl")
 
-        timestamp = get_timestamp()
-        now = isoparse(get_timestamp())
-        current_day = now.strftime("%Y-%m-%d")
+    # Tarkista onko:
+    # * Eiliselle jo archive
+    # * Viime viikolle jo archive
+    # * Viime kuulle jo archive
 
-        if mode == "monthly":
-            first_day_this_month = now.replace(day=1)
-            last_day_last_month = first_day_this_month - timedelta(days=1)
-            first_day_last_month = last_day_last_month.replace(day=1)
-            last_month = first_day_last_month.strftime("%Y-%m")
-
-            return {
-                "timestamp": timestamp,
-                "first_day_this_month": first_day_this_month.isoformat(),
-                "last_day_last_month": last_day_last_month.isoformat(),
-                "first_day_last_month": first_day_last_month.isoformat(),
-                "current_day": current_day,
-                "last_month": last_month
-            }
-
-    monthly = datetime_manager("monthly")
-    print(monthly)
-
+    # Archivin analysis logs
+    # archive_analysis_logs("daily")
+    # archive_analysis_logs("weekly")
+    # archive_analysis_logs("monthly")
 
 # modules/history_analyzer/history_archiver.py
 
