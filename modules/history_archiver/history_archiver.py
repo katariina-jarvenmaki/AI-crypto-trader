@@ -2,7 +2,9 @@
 # version 2.0, aug 2025
 
 from utils.load_configs_and_logs import load_configs_and_logs
-from modules.history_archiver.utils import analysis_entries_loader, datetime_manager, get_archive_log_paths, check_if_analysis_log_file_exists, archive_analysis_logs
+from modules.history_archiver.archive_analysis import archive_analysis
+from modules.history_archiver.utils import analysis_entries_loader, datetime_manager, get_archive_log_paths, check_if_analysis_log_file_exists
+
 
 def history_archiver(max_age_hours, history_log_path):
     """
@@ -22,24 +24,15 @@ def history_archiver(max_age_hours, history_log_path):
     is_monthly_archived = check_if_analysis_log_file_exists(archive_log_paths["monthly_log_path"])
 
     # Run the archivers, if there is no existing archive 
-    if not is_daily_archived:
-        archive_analysis_logs(
-            "daily", 
-            analysis_entries, 
-            archive_log_paths["daily_log_path"]
-        )
-    if not is_weekly_archived:
-        archive_analysis_logs(
-            "weekly", 
-            analysis_entries, 
-            archive_log_paths["weekly_log_path"]
-        )
-    if not is_monthly_archived:
-        archive_analysis_logs(
-            "monthly", 
-            analysis_entries, 
-            archive_log_paths["monthly_log_path"]
-        )
+    archive_conditions = {
+        "daily": (is_daily_archived, archive_log_paths["daily_log_path"]),
+        "weekly": (is_weekly_archived, archive_log_paths["weekly_log_path"]),
+        "monthly": (is_monthly_archived, archive_log_paths["monthly_log_path"]),
+    }
+
+    for period, (is_archived, log_path) in archive_conditions.items():
+        if not is_archived:
+            archive_analysis(period, analysis_entries, datetime_data, log_path)
 
     # REMOVING THE OLD ARCHIVERS
 
