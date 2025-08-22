@@ -1,6 +1,11 @@
 # modules/history_archiver/utils.py
 # version 2.0, aug 2025
 
+import os
+
+def check_if_analysis_log_file_exists(full_path: str) -> bool:
+    return os.path.exists(full_path)
+
 def analysis_entries_loader(max_age_hours, history_log_path):
 
     from dateutil.parser import isoparse
