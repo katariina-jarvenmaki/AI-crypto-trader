@@ -7,17 +7,18 @@ def archive_analysis(mode, entries, datetime_data, log_path):
     if mode not in ["daily", "weekly", "monthly"]:
         raise ValueError(f"Invalid mode: {mode}")
 
-    if not entries:
-        print(f"[INFO] No analysis entries found for mode '{mode}'")
-        return
+    flattened_entries = flatten_analysis_entries(entries)
 
-    if isinstance(entries, dict):
-        entries = [entries]
+    # Go through the entries
+    for i, entry in enumerate(flattened_entries):
+        
+        ts = entry.get('timestamp')
+        # print(ts)
 
-    def parse_ts(ts):
-        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
-
-    filtered_entries = []
+#         if ts is None:
+#             print(f"[WARNING] Entry {i} missing 'timestamp': {entry}")
+#         else:
+#             print(f"[INFO] Entry {i} timestamp: {ts}")
 
 #     if mode == "daily":
 #         target_date = datetime.fromisoformat(datetime_data["yesterday_datetime"])
@@ -128,8 +129,7 @@ def archive_analysis(mode, entries, datetime_data, log_path):
     # print(f"first_day_last_month: {datetime_data['first_day_last_month']}")
 
 
-    print(f"Archive Analysis Logs:")
-    print(f"mode: {mode}")
+    
 
     # Lue kaikki merkinnät viime kuulta
 #     current_day = first_day_last_month
@@ -323,3 +323,21 @@ def archive_analysis(mode, entries, datetime_data, log_path):
 #     print(f"[✔] Archived {len(monthly_entries)} entries to {monthly_log_file}")
 #     print(f"[✔] Cleaned to {len(cleaned_entries)} entries (retained weekly last + current month)")
 
+def flatten_analysis_entries(entries):
+
+    if isinstance(entries, dict):
+        entries = [entries]
+    elif not isinstance(entries, list):
+        raise ValueError("Entries must be a list of dict or a single dict object")
+
+    if not all(isinstance(e, dict) for e in entries):
+        raise ValueError("All entries must be dict objects")
+
+    flattened_entries = []
+
+    for symbol, symbol_entries in entries[0].items():
+        for e in symbol_entries:
+            e['symbol'] = symbol
+            flattened_entries.append(e)
+
+    return flattened_entries
