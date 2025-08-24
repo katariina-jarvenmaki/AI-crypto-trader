@@ -1,10 +1,9 @@
 import os
 import json
 from datetime import datetime
+from modules.save_and_validate.save_and_validate import save_and_validate
 
-from datetime import datetime
-
-def archive_analysis(mode, entries, datetime_data, log_path):
+def archive_analysis(mode, entries, datetime_data, log_path, log_schema_path):
     if mode not in ["daily", "weekly", "monthly"]:
         raise ValueError(f"Invalid mode: {mode}")
 
@@ -33,25 +32,23 @@ def archive_analysis(mode, entries, datetime_data, log_path):
             if start <= ts_date <= end:
                 filtered_entries.append(entry)
 
-    print(filtered_entries)
-#     print(f"[RESULT] Filtered {len(filtered_entries)} entries for mode {mode}")
-#     for entry in filtered_entries:
-#         print(entry)
+    print(f"💹 Filtered {len(filtered_entries)} entries for mode {mode}")
+    if len(filtered_entries) == 0:
+        print(f"⏭  Skipping Archieving, because no analysis entries found for mode {mode}")
+        return
 
-# WEEKLY DATA:
-#     current_day = first_day_last_month
-#     monthly_entries = []
-#     while current_day <= last_day_last_month:
-#         date_str = current_day.strftime("%Y-%m-%d")
-#         monthly_entries.extend(read_entries_by_date(analysis_log_path, date_str))
-#         current_day += timedelta(days=1)
+    # Save results to log
+    print(f"\n❇️  Saving new result to {log_path}\n")
+    save_and_validate(
+        data=filtered_entries,
+        path=log_path,
+        schema=log_schema_path,
+        verbose=False
+    )
 
-#     week_dates = [(last_monday + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
-#     weekly_entries = []
-#     for date_str in week_dates:
-#         weekly_entries.extend(read_entries_by_date(analysis_log_path, date_str))
+    # SAVE THE FILTERED ENTIES
+    # REWRITE WITH RETAINED
 
-#     entries = read_entries_by_date(analysis_log_path, yesterday_str)
 
 # DAILY DATA:
 

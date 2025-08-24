@@ -6,7 +6,7 @@ from modules.history_archiver.archive_analysis import archive_analysis
 from modules.history_archiver.utils import analysis_entries_loader, datetime_manager, get_archive_log_paths, check_if_analysis_log_file_exists
 
 
-def history_archiver(max_age_hours, history_log_path):
+def history_archiver(max_age_hours, history_log_path, log_schema):
     """
     Does history archiving and deleting old history archives
     """
@@ -32,7 +32,7 @@ def history_archiver(max_age_hours, history_log_path):
 
     for period, (is_archived, log_path) in archive_conditions.items():
         if not is_archived:
-            archive_analysis(period, analysis_entries, datetime_data, log_path)
+            archive_analysis(period, analysis_entries, datetime_data, log_path, log_schema)
 
     # REMOVING THE OLD ARCHIVERS
 
@@ -496,4 +496,4 @@ if __name__ == "__main__":
     print(f"logs_path: {logs_path}")
     print(f"log: {log}")
 
-    history_archiver(max_age_hours=1500, history_log_path=history_log_path)
+    history_archiver(max_age_hours=1500, history_log_path=history_log_path, log_schema=history_log_schema_path)
