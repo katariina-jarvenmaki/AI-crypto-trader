@@ -2,49 +2,38 @@ import os
 import json
 from datetime import datetime
 
-def archive_analysis(mode, entries, datetime_data, log_path):
+from datetime import datetime
 
+def archive_analysis(mode, entries, datetime_data, log_path):
     if mode not in ["daily", "weekly", "monthly"]:
         raise ValueError(f"Invalid mode: {mode}")
 
     flattened_entries = flatten_analysis_entries(entries)
+    filtered_entries = []
 
-    # Go through the entries
-    for i, entry in enumerate(flattened_entries):
-        
-        ts = entry.get('timestamp')
-        # print(ts)
+    for entry in flattened_entries:
+        ts_date = datetime.fromisoformat(entry.get('timestamp')).date()
 
-#         if ts is None:
-#             print(f"[WARNING] Entry {i} missing 'timestamp': {entry}")
-#         else:
-#             print(f"[INFO] Entry {i} timestamp: {ts}")
+        if mode == "daily":
+            target_date = datetime.fromisoformat(datetime_data["yesterday_datetime"]).date()
+            # print(f"[DEBUG] Entry date: {ts_date}, Target: {target_date}")
+            if ts_date == target_date:
+                filtered_entries.append(entry)
 
-#     if mode == "daily":
-#         target_date = datetime.fromisoformat(datetime_data["yesterday_datetime"])
-#         for e in entries:
-#             ts_date = parse_ts(e["timestamp"]).date()
-#             print(f"[DEBUG] Entry date: {ts_date}, Target: {target_date.date()}")
-#             if ts_date == target_date.date():
-#                 filtered_entries.append(e)
+        elif mode == "weekly":
+            week_dates = [datetime.strptime(d, "%d-%m-%Y").date() for d in datetime_data["week_dates"]]
+            # print(f"[DEBUG] Entry date: {ts_date}, Week Dates: {week_dates}")
+            if ts_date in week_dates:
+                filtered_entries.append(entry)
 
-#     elif mode == "weekly":
-#         week_dates = [datetime.strptime(d, "%d-%m-%Y").date() for d in datetime_data["week_dates"]]
-#         for e in entries:
-#             ts_date = parse_ts(e["timestamp"]).date()
-#             print(f"[DEBUG] Entry date: {ts_date}, Week Dates: {week_dates}")
-#             if ts_date in week_dates:
-#                 filtered_entries.append(e)
+        elif mode == "monthly":
+            start = datetime.fromisoformat(datetime_data["first_day_last_month"]).date()
+            end = datetime.fromisoformat(datetime_data["last_day_last_month"]).date()
+            # print(f"[DEBUG] Entry date: {ts_date}, Range: {start} - {end}")
+            if start <= ts_date <= end:
+                filtered_entries.append(entry)
 
-#     elif mode == "monthly":
-#         start = datetime.fromisoformat(datetime_data["first_day_last_month"])
-#         end = datetime.fromisoformat(datetime_data["last_day_last_month"])
-#         for e in entries:
-#             ts_date = parse_ts(e["timestamp"]).date()
-#             print(f"[DEBUG] Entry date: {ts_date}, Range: {start.date()} - {end.date()}")
-#             if start.date() <= ts_date <= end.date():
-#                 filtered_entries.append(e)
-
+    print(filtered_entries)
 #     print(f"[RESULT] Filtered {len(filtered_entries)} entries for mode {mode}")
 #     for entry in filtered_entries:
 #         print(entry)
