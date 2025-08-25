@@ -32,7 +32,7 @@ def history_archiver(max_age_hours, history_log_path, log_schema):
 
     for period, (is_archived, log_path) in archive_conditions.items():
         if not is_archived:
-            archive_analysis(period, analysis_entries, datetime_data, log_path, log_schema)
+            archive_analysis(period, analysis_entries, datetime_data, history_log_path, log_path, log_schema)
 
     # REMOVING THE OLD ARCHIVERS
 
