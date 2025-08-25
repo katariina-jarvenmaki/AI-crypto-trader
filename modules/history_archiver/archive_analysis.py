@@ -31,7 +31,7 @@ def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, l
     retained_entries = retain_only_relevant_entries_per_symbol(mode, flattened_entries)
     future_entries = get_future_entries(mode, flattened_entries, datetime_data)
 
-    # Compine retained and new entries
+    # Combine retained and new entries
     cleaned_entries = retained_entries + future_entries
     cleaned_entries = sort_by_timestamp(cleaned_entries)
 
@@ -39,8 +39,8 @@ def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, l
         print(f"⏭  Skipping Rewrite, because no retained entries found for mode {mode}")
 
     else:
-        # Retained results to archives log
-        print(f"❇️  Rewriting retained entries to {history_log_path}")
+        # Retained + new results to archives log
+        print(f"❇️  Rewriting retained and new entries to {history_log_path}")
         save_and_validate(
             data=cleaned_entries,
             path=history_log_path,
