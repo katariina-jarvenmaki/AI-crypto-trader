@@ -1,53 +1,52 @@
 import os
 import json
-from datetime import datetime
+from typing import List
+from dateutil.parser import isoparse
 from modules.save_and_validate.save_and_validate import save_and_validate
 
 def archive_analysis(mode, entries, datetime_data, log_path, log_schema_path):
+
     if mode not in ["daily", "weekly", "monthly"]:
         raise ValueError(f"Invalid mode: {mode}")
 
     flattened_entries = flatten_analysis_entries(entries)
-    filtered_entries = []
 
-    for entry in flattened_entries:
-        ts_date = datetime.fromisoformat(entry.get('timestamp')).date()
-
-        if mode == "daily":
-            target_date = datetime.fromisoformat(datetime_data["yesterday_datetime"]).date()
-            # print(f"[DEBUG] Entry date: {ts_date}, Target: {target_date}")
-            if ts_date == target_date:
-                filtered_entries.append(entry)
-
-        elif mode == "weekly":
-            week_dates = [datetime.strptime(d, "%d-%m-%Y").date() for d in datetime_data["week_dates"]]
-            # print(f"[DEBUG] Entry date: {ts_date}, Week Dates: {week_dates}")
-            if ts_date in week_dates:
-                filtered_entries.append(entry)
-
-        elif mode == "monthly":
-            start = datetime.fromisoformat(datetime_data["first_day_last_month"]).date()
-            end = datetime.fromisoformat(datetime_data["last_day_last_month"]).date()
-            # print(f"[DEBUG] Entry date: {ts_date}, Range: {start} - {end}")
-            if start <= ts_date <= end:
-                filtered_entries.append(entry)
-
+    filtered_entries = filter_analysis_entries(mode, flattened_entries, datetime_data)
     print(f"💹 Filtered {len(filtered_entries)} entries for mode {mode}")
+
     if len(filtered_entries) == 0:
         print(f"⏭  Skipping Archieving, because no analysis entries found for mode {mode}")
-        return
 
-    # Save results to log
-    print(f"\n❇️  Saving new result to {log_path}\n")
-    save_and_validate(
-        data=filtered_entries,
-        path=log_path,
-        schema=log_schema_path,
-        verbose=False
-    )
+    else:
+        # Save filtered results to archives log
+        print(f"\n❇️  Saving new result to {log_path}\n")
+        save_and_validate(
+            data=filtered_entries,
+            path=log_path,
+            schema=log_schema_path,
+            verbose=False
+        )
+
+    retained = retain_only_relevant_entries_per_symbol(mode, flattened_entries)
+    print(retained)
+
+
 
     # SAVE THE FILTERED ENTIES
     # REWRITE WITH RETAINED
+
+#            key = (symbol, ts.strftime("%Y-%m-%dT%H"))
+#            if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+#                latest[key] = entry
+
+#            key = (symbol, ts.strftime("%Y-%m-%d"))
+#            if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+#                latest[key] = entry
+
+#            iso_year, iso_week, _ = ts.isocalendar()
+#            key = (symbol, f"{iso_year}-W{iso_week:02d}")
+#            if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+#                latest[key] = entry
 
 
 # DAILY DATA:
@@ -327,3 +326,72 @@ def flatten_analysis_entries(entries):
             flattened_entries.append(e)
 
     return flattened_entries
+
+def filter_analysis_entries(mode, flattened_entries, datetime_data):
+
+    from datetime import datetime
+
+    filtered_entries = []
+
+    for entry in flattened_entries:
+        ts_date = datetime.fromisoformat(entry.get('timestamp')).date()
+
+        if mode == "daily":
+            target_date = datetime.fromisoformat(datetime_data["yesterday_datetime"]).date()
+            # print(f"[DEBUG] Entry date: {ts_date}, Target: {target_date}")
+            if ts_date == target_date:
+                filtered_entries.append(entry)
+
+        elif mode == "weekly":
+            week_dates = [datetime.strptime(d, "%d-%m-%Y").date() for d in datetime_data["week_dates"]]
+            # print(f"[DEBUG] Entry date: {ts_date}, Week Dates: {week_dates}")
+            if ts_date in week_dates:
+                filtered_entries.append(entry)
+
+        elif mode == "monthly":
+            start = datetime.fromisoformat(datetime_data["first_day_last_month"]).date()
+            end = datetime.fromisoformat(datetime_data["last_day_last_month"]).date()
+            # print(f"[DEBUG] Entry date: {ts_date}, Range: {start} - {end}")
+            if start <= ts_date <= end:
+                filtered_entries.append(entry)
+
+    return filtered_entries
+
+def sort_by_timestamp(entries: List[dict]) -> List[dict]:
+    return sorted(entries, key=lambda e: isoparse(e["timestamp"]))
+
+def retain_only_relevant_entries_per_symbol(mode, entries):
+
+    from dateutil.parser import isoparse
+    from typing import Dict, Tuple
+
+    latest: Dict[Tuple[str, str], dict] = {}
+
+    for entry in entries:
+        timestamp_str, symbol = entry.get("timestamp"), entry.get("symbol")
+        print(timestamp_str)
+        print(symbol)
+        if not timestamp_str or not symbol:
+            continue
+        try:
+            ts = isoparse(timestamp_str) 
+            if(mode == "daily"):
+                key = (symbol, ts.strftime("%Y-%m-%dT%H")) 
+                # print(f"KEY: {key}")
+                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+                    latest[key] = entry
+            elif(mode == "weekly"):  
+                key = (symbol, ts.strftime("%Y-%m-%d"))
+                # print(f"KEY: {key}")
+                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+                    latest[key] = entry
+            elif(mode == "monthly"):  
+                iso_year, iso_week, _ = ts.isocalendar()
+                key = (symbol, f"{iso_year}-W{iso_week:02d}")
+                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+                    latest[key] = entry
+        except Exception as e:
+            print(f"Virhe: {e}")
+            continue
+
+    return sort_by_timestamp(list(latest.values()))
