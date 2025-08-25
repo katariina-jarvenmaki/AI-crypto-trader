@@ -47,9 +47,15 @@ TZ=Europe/Helsinki
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/fetch_symbols_data.lock -c "/usr/bin/python3 -m modules.symbol_data_fetcher.tasks.fetch_symbols_data >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log 2>&1" || echo "$(date) fetch_symbols_data skipped (already running)" >> ../AI-crypto-trader-logs/cron/fetch_symbols_data.log
 
-*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/price_data_fetcher.lock -c "/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log 2>&1" || echo \"$(date) price_data_fetcher skipped (already running)\" >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/price_data_fetcher.lock -c "/usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log 2>&1" || echo "$(date) price_data_fetcher skipped (already running)" >> ../AI-crypto-trader-logs/cron/price_data_fetcher.log
 
 */1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_data_collector.lock -c "/usr/bin/python3 -m modules.history_data_collector.history_data_collector >> ../AI-crypto-trader-logs/cron/history_data_collector.log 2>&1" || echo "$(date) history_data_collector skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_data_collector.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_analyzer.lock -c "/usr/bin/python3 -m modules.history_analyzer.history_analyzer >> ../AI-crypto-trader-logs/cron/history_analyzer.log 2>&1" || echo "$(date) history_analyzer skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_analyzer.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_sentiment.lock -c "/usr/bin/python3 -m modules.history_sentiment.history_sentiment >> ../AI-crypto-trader-logs/cron/history_sentiment.log 2>&1" || echo "$(date) history_sentiment skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_sentiment.log
+
+*/1 * * * * cd /opt/kjc/int/AI-crypto-trader && flock -n /tmp/history_archiver.lock -c "/usr/bin/python3 -m modules.history_archiver.history_archiver >> ../AI-crypto-trader-logs/cron/history_archiver.log 2>&1" || echo "$(date) history_archiver skipped (already running)" >> ../AI-crypto-trader-logs/cron/history_archiver.log
 ```
 
 **Check cron log**
@@ -213,6 +219,21 @@ Test Price Data Fetcher manually:
 Test History Data Collector manually:
 ```bash
 /usr/bin/python3 -m modules.history_data_collector.history_data_collector
+```
+
+Test History Analyzer manually:
+```bash
+/usr/bin/python3 -m modules.history_analyzer.history_analyzer
+```
+
+Test History Sentiment manually:
+```bash
+/usr/bin/python3 -m modules.history_sentiment.history_sentiment
+```
+
+Test History Archiver manually:
+```bash
+/usr/bin/python3 -m modules.history_archiver.history_archiver
 ```
 
 Test Load Configs and Logs manually:
