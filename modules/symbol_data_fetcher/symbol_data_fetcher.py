@@ -62,7 +62,6 @@ def symbol_data_fetcher():
         help="Available tasks"
     )
 
-    # Lisää alikomennot
     subparsers.add_parser("potential_trades_checker", help="Run potential traders check")
     subparsers.add_parser("fetch_symbols_data", help="Fetch symbols data")
 

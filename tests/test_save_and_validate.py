@@ -4,7 +4,6 @@ import tempfile
 import os
 from modules.save_and_validate.save_and_validate import save_and_validate
 
-# Dummy schema, vaatii symbolin ja timestampin
 schema = {
     "type": "object",
     "properties": {

@@ -69,12 +69,10 @@ def print_and_save_recommendations(latest_entries, module_config, module_log_pat
 
     # Saving...
     for result in analysis_results:
-        # print(f"🔍 Result type: {type(result)}, value: {result}")
         
         new_timestamp_str = result.get("timestamp")
         new_timestamp = dateutil.parser.isoparse(new_timestamp_str) if new_timestamp_str else None
 
-        # Estetään tallennus jos alle tunti edellisestä
         min_interval = timedelta(hours=module_config.get("analysis_min_interval_hours", 1))
         if last_timestamp and new_timestamp and new_timestamp - last_timestamp < min_interval:
             print(f"⏱️  Skipping save — less than 1h since last log entry at {last_timestamp.isoformat()}\n")

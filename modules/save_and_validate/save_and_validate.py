@@ -8,8 +8,7 @@ from jsonschema import validate, ValidationError
 from modules.save_and_validate.file_checker import file_checker
 from utils.load_configs_and_logs import load_configs_and_logs
 
-def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=True):
-
+def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=True, mode=None):
     if data is None:
         raise ValueError("❌ Data argument is missing.")
     if path is None:
@@ -17,26 +16,23 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
     if schema is None:
         raise ValueError("❌ Schema argument is missing.")
 
-    # Jos skeema on tiedostopolku, ladataan se
     if isinstance(schema, str) and os.path.isfile(schema):
         with open(schema, "r", encoding="utf-8") as f:
             try:
                 schema = json.load(f)
             except json.JSONDecodeError as e:
-                raise ValueError(f"❌ Failed to parse schema at {schema_path}: {e}")
+                raise ValueError(f"❌ Failed to parse schema at {schema}: {e}")
             
             if not isinstance(schema, (dict, bool)):
                 raise TypeError(f"❌ Invalid schema type: {type(schema)}. Expected dict or bool.")
 
-    # 🔁 Uusi korvaava validointilogiikka
     file_checker(path, verbose=verbose)
 
     is_jsonl = path.endswith(".jsonl")
+    file_mode = "w" if mode == "overwrite" else ("a" if is_jsonl else "w")
 
-    # ✍️ Tallenna data tiedostoon
-    with open(path, "a" if is_jsonl else "w", encoding="utf-8") as f:
+    with open(path, file_mode, encoding="utf-8") as f:
         if is_jsonl:
-            # If schema is array schema, use its 'items' schema for each item validation
             item_schema = schema.get("items") if isinstance(schema, dict) and "items" in schema else schema
 
             if isinstance(data, list):
@@ -55,7 +51,6 @@ def save_and_validate(data=None, path: str = None, schema: dict = None, verbose=
 
 if __name__ == "__main__":
 
-    # Lataa ja tarkista konfiguraatio
     configs_and_logs = load_configs_and_logs([
         {
             "name": "multi_interval_ohlcv",
@@ -72,7 +67,6 @@ if __name__ == "__main__":
     }
     general_config = configs_and_logs["general_config"]
 
-    # Esimerkkidata
     jsonl = {
         "timestamp": "2025-07-30T10:46:31.708804",
         "source_exchange": "Okx",
@@ -95,5 +89,4 @@ if __name__ == "__main__":
         "end_time": None
     }
 
-    # Tallenna ja validoi
-    save_and_validate(data=jsonl, path=paths["full_log_path"], schema=paths["full_log_schema_path"])
+    save_and_validate(data=jsonl, path=paths["full_log_path"], schema=paths["full_log_schema_path"], mode="overwrite")

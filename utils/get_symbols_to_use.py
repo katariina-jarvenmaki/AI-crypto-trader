@@ -82,7 +82,6 @@ if __name__ == "__main__":
         }
     ])
 
-    # Asetetaan tarvittavat muuttujat aiemmista arvoista
     module_config = configs_and_logs["symbol_config"]
     module_log_path = configs_and_logs["symbol_full_log_path"]
     general_config = configs_and_logs["general_config"]
