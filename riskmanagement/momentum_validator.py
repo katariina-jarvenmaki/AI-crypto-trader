@@ -31,7 +31,7 @@ def verify_signal_with_momentum_and_volume(
 
     # Market state status
     sentiment_entry = get_latest_log_entry(
-        "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
+        "../AI-crypto-trader-logs/analysis_logs/history_sentiment_log.jsonl"
     )
 
     if sentiment_entry and "result" in sentiment_entry:
@@ -48,7 +48,7 @@ def verify_signal_with_momentum_and_volume(
 
     # MACD check
     bybit_symbol = symbol.replace("USDC", "USDT")
-    history_analysis_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl", bybit_symbol)
+    history_analysis_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/analysis_logs/history_analyzer_log.jsonl", bybit_symbol)
     macd_trend = history_analysis_entry['macd_trend']
     if macd_trend == "bullish" and signal == "sell":
         volume_multiplier += 0.3

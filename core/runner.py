@@ -115,8 +115,8 @@ def run_analysis_for_symbol(selected_symbols, symbol, is_first_run, initiated_co
     bybit_symbol = symbol.replace("USDC", "USDT")
     ohlcv_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/fetch_logs/multi_ohlcv_fetch_log.jsonl", bybit_symbol)
     price_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/fetch_logs/price_data_fetcher_log.jsonl", bybit_symbol)
-    history_analysis_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl", bybit_symbol)
-    history_sentiment_entry = get_latest_log_entry("../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl")
+    history_analysis_entry = get_latest_log_entry_for_symbol("../AI-crypto-trader-logs/analysis_logs/history_analyzer_log.jsonl", bybit_symbol)
+    history_sentiment_entry = get_latest_log_entry("../AI-crypto-trader-logs/analysis_logs/history_sentiment_log.jsonl")
     if risk_strength in ("strong", "weak", "none") and (
         mode not in ("momentum", "log", "override") or ((mode == "log" or mode == "momentum") and status == "completed")
     ):

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from configs.config import LOCAL_TIMEZONE
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config_datetime_analyzer.json")
-SENTIMENT_LOG_FILE = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
+SENTIMENT_LOG_FILE = "../AI-crypto-trader-logs/analysis_logs/history_sentiment_log.jsonl"
 
 def load_config():
     with open(CONFIG_FILE, "r", encoding="utf-8") as file:

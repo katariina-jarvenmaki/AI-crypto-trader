@@ -12,7 +12,7 @@ def main():
         print("Esim:   python poimi_symboli.py AEROUSDT 2025-07-24T09:00:00 2025-07-24T10:00:00")
         sys.exit(1)
 
-    tiedosto = "../AI-crypto-trader-logs/analysis-data/history_analysis_log.jsonl"
+    tiedosto = "../AI-crypto-trader-logs/analysis_logs/history_analyzer_log.jsonl"
     haluttu_symboli = sys.argv[1]
 
     # Käytetään +03:00 aikavyöhykettä

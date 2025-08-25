@@ -60,7 +60,7 @@ def process_stop_loss_logic(symbol, side, size, entry_price, leverage, stop_loss
                             set_sl_percent, full_sl_percent, trailing_percent, threshold_percent,
                             tight_sl_percent_long, tight_sl_percent_short, formatted=None):
 
-    sentiment_log_path = "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl"
+    sentiment_log_path = "../AI-crypto-trader-logs/analysis_logs/history_sentiment_log.jsonl"
 
     print(f"⚙️  Processing stop loss for {symbol} ({side})")
     if formatted is not None:

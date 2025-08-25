@@ -41,8 +41,10 @@ def rsi_analyzer(symbol):
         if df is None or df.empty or thresholds is None:
             continue
 
-        rsi_series = calculate_rsi(df['close'])
-        latest_rsi = rsi_series.dropna().iloc[-1]
+        rsi_series = calculate_rsi(df['close']).dropna()
+        if rsi_series.empty:
+            continue
+        latest_rsi = rsi_series.iloc[-1]
         if isinstance(df.index, pd.DatetimeIndex):
             last_timestamp = df.index[-1]
             if last_timestamp.tzinfo is None:

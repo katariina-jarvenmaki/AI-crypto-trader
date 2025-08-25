@@ -40,6 +40,8 @@ paths = {
 
 def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, end_time=None, log_path = paths["full_log_path"]):
 
+    data_by_interval = {}
+    source_exchange = None
     intervals = intervals or config.get("intervals")
     limit = limit or config.get("ohlcv_limit")
     errors = {}
@@ -96,7 +98,10 @@ def fetch_ohlcv_fallback(symbol, intervals=None, limit=None, start_time=None, en
                     schema=paths["full_log_schema_path"],
                     verbose=False
                 )
-                return to_save
+                return {
+                    **to_save,
+                    "data_by_interval": data_by_interval
+                }
                 
             else:
                 errors[exchange] = "Empty DataFrames"

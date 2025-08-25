@@ -106,7 +106,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
     price_entry = get_latest_log_entry_for_symbol(
         "../AI-crypto-trader-logs/fetch_logs/price_data_fetcher_log.jsonl", bybit_symbol)
     sentiment_entry = get_latest_log_entry(
-        "../AI-crypto-trader-logs/analysis-data/history_sentiment_log.jsonl")
+        "../AI-crypto-trader-logs/analysis_logs/history_sentiment_log.jsonl")
  
     price_data = price_entry.get("data_preview", {}) if price_entry else {}
     turnover = price_data.get("turnover")
