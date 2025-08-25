@@ -9,31 +9,25 @@ def check_if_analysis_log_file_exists(full_path: str) -> bool:
 def analysis_entries_loader(max_age_hours, history_log_path):
 
     from dateutil.parser import isoparse
-    from datetime import datetime, timedelta
+    from datetime import timedelta
     from utils.get_timestamp import get_timestamp
-    from utils.load_configs_and_logs import load_configs_and_logs
     from utils.load_entries_in_time_range import load_entries_in_time_range
 
     now = isoparse(get_timestamp())
     newest_allowed = now.isoformat()
     oldest_allowed = (now - timedelta(hours=max_age_hours)).isoformat()
 
-    # Load current log entries
-    analysis_entries = load_entries_in_time_range(
+    return load_entries_in_time_range(
         file_path=history_log_path,
         start_time=oldest_allowed,
         end_time=newest_allowed
     )
 
-    return analysis_entries
-
-def datetime_manager(mode=None):
-
+def datetime_manager(mode=None, config: dict = None):
     from dateutil.parser import isoparse
-    from datetime import datetime, timedelta
+    from datetime import timedelta
     from utils.get_timestamp import get_timestamp
 
-    # Daily
     timestamp = get_timestamp()
     now = isoparse(timestamp)
     current_day = now.strftime("%d-%m-%Y")
@@ -41,8 +35,17 @@ def datetime_manager(mode=None):
     yesterday_datetime = now - timedelta(days=1)
     yesterday = yesterday_datetime.strftime("%d-%m-%Y")
 
-    # Weekly
-    last_monday = now - timedelta(days=now.weekday() + 7)
+    # Week start configurable (default monday)
+    week_start_day = (config or {}).get("datetime", {}).get("week_start_day", "monday").lower()
+    weekday = now.weekday()  # Monday=0
+
+    if week_start_day == "monday":
+        last_monday = now - timedelta(days=weekday + 7)
+    elif week_start_day == "sunday":
+        last_monday = now - timedelta(days=(weekday + 8) % 7 + 7)
+    else:
+        last_monday = now - timedelta(days=weekday + 7)  # fallback monday
+
     last_sunday = last_monday + timedelta(days=6)
     week = f"{last_monday.strftime('%d-%m-%Y')}_to_{last_sunday.strftime('%d-%m-%Y')}"
     week_dates = [(last_monday + timedelta(days=i)).strftime('%d-%m-%Y') for i in range(7)]
@@ -53,10 +56,10 @@ def datetime_manager(mode=None):
     last_day_last_month = first_day_this_month - timedelta(days=1)
     first_day_last_month = last_day_last_month.replace(day=1)
     last_month = first_day_last_month.strftime("%m-%Y")
-    
+
     return {
         "timestamp": timestamp,
-        "current_day": current_day,                
+        "current_day": current_day,
         "yesterday_datetime": yesterday_datetime.isoformat(),
         "yesterday": yesterday,
         "week": week,
@@ -70,27 +73,22 @@ def datetime_manager(mode=None):
         "first_day_last_month": first_day_last_month.isoformat()
     }
 
-def get_archive_log_paths(datetime_data):
+def get_archive_log_paths(datetime_data, config: dict = None):
+    cfg = (config or {}).get("paths", {})
+    archive_log_path = cfg.get("archive_folder", "../AI-crypto-trader-logs/analysis_logs/history_archives/")
+    extension = cfg.get("extension", ".jsonl")
+    base_name = cfg.get("base_log_name", "history_analyzer_log_")
 
-    archive_log_path = "../AI-crypto-trader-logs/analysis_logs/history_archives/"
-    extension = ".jsonl"
-
-    history_analysis_log_name_base = "history_analyzer_log_"
-
-    daily_log_name = f"{history_analysis_log_name_base}daily_{datetime_data['yesterday']}"
-    weekly_log_name = f"{history_analysis_log_name_base}weekly_{datetime_data['week']}"
-    monthly_log_name = f"{history_analysis_log_name_base}monthly_{datetime_data['last_month']}"
-
-    daily_log_path = f"{archive_log_path}{daily_log_name}{extension}"
-    weekly_log_path = f"{archive_log_path}{weekly_log_name}{extension}"
-    monthly_log_path = f"{archive_log_path}{monthly_log_name}{extension}"
+    daily_log_name = f"{base_name}daily_{datetime_data['yesterday']}"
+    weekly_log_name = f"{base_name}weekly_{datetime_data['week']}"
+    monthly_log_name = f"{base_name}monthly_{datetime_data['last_month']}"
 
     return {
         "log_path": archive_log_path,
-        "daily_log_name": daily_log_name,                
+        "daily_log_name": daily_log_name,
         "weekly_log_name": weekly_log_name,
         "monthly_log_name": monthly_log_name,
-        "daily_log_path": daily_log_path,                
-        "weekly_log_path": weekly_log_path,
-        "monthly_log_path": monthly_log_path
+        "daily_log_path": os.path.join(archive_log_path, f"{daily_log_name}{extension}"),
+        "weekly_log_path": os.path.join(archive_log_path, f"{weekly_log_name}{extension}"),
+        "monthly_log_path": os.path.join(archive_log_path, f"{monthly_log_name}{extension}")
     }

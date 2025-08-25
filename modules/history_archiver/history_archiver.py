@@ -6,46 +6,41 @@ from modules.history_archiver.archive_analysis import archive_analysis
 from modules.history_archiver.remove_old_archives import remove_old_archives
 from modules.history_archiver.utils import analysis_entries_loader, datetime_manager, get_archive_log_paths, check_if_analysis_log_file_exists
 
-def history_archiver(max_age_hours, history_log_path, log_schema, logs_path):
+def history_archiver(history_config, history_log_path, log_schema, logs_path):
     """
     Does history archiving and deleting old history archives
     """
 
     print(f"\nStarting History Archiver...")
 
+    # Config init
+    config = history_config["history_archiver"]
+    archive_settings = config.get("archive", {"daily": True, "weekly": True, "monthly": True})
+    remove_old = config.get("remove_old_archives", True)
+
     # Load current log entries
-    analysis_entries = analysis_entries_loader(max_age_hours, history_log_path)
+    analysis_entries = analysis_entries_loader(config.get("max_age_hours", 1500), history_log_path)
 
     # Define archive paths & filenames
-    datetime_data = datetime_manager()
-    archive_log_paths = get_archive_log_paths(datetime_data)
-
-    # Check archive exisistence
-    is_daily_archived = check_if_analysis_log_file_exists(archive_log_paths["daily_log_path"])
-    is_weekly_archived = check_if_analysis_log_file_exists(archive_log_paths["weekly_log_path"])
-    is_monthly_archived = check_if_analysis_log_file_exists(archive_log_paths["monthly_log_path"])
-    if(is_daily_archived == True):
-        print("\n⏭  Daily archiving is already done.")
-    if(is_weekly_archived == True):
-        print("\n⏭  Weekly archiving is already done.")
-    if(is_monthly_archived == True):
-        print("\n⏭  Monthly archiving is already done.")
+    datetime_data = datetime_manager(None, config)
+    archive_log_paths = get_archive_log_paths(datetime_data, config)
 
     # ARCHIEVING THE HISTORY ANALYSIS LOGS
+    for period in ["daily", "weekly", "monthly"]:
+        if not archive_settings.get(period, False):
+            continue
 
-    # Run the archivers, if there is no existing archive 
-    archive_conditions = {
-        "daily": (is_daily_archived, archive_log_paths["daily_log_path"]),
-        "weekly": (is_weekly_archived, archive_log_paths["weekly_log_path"]),
-        "monthly": (is_monthly_archived, archive_log_paths["monthly_log_path"]),
-    }
+        log_path = archive_log_paths[f"{period}_log_path"]
+        already_done = check_if_analysis_log_file_exists(log_path)
 
-    for period, (is_archived, log_path) in archive_conditions.items():
-        if not is_archived:
-            archive_analysis(period, analysis_entries, datetime_data, history_log_path, log_path, log_schema)
+        if already_done:
+            print(f"\n⏭  {period.capitalize()} archiving is already done.")
+        else:
+            archive_analysis(period, analysis_entries, datetime_data, config, history_log_path, log_path, log_schema)
 
     # REMOVING OLD ARCHIVES
-    remove_old_archives(logs_path)
+    if remove_old:
+        remove_old_archives(logs_path, config)
 
 if __name__ == "__main__":
 
@@ -74,7 +69,7 @@ if __name__ == "__main__":
     print(f"log: {log}")
 
     history_archiver(
-        max_age_hours=1500, 
+        history_config=history_config,
         history_log_path=history_log_path, 
         log_schema=history_log_schema_path,
         logs_path=logs_path

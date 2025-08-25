@@ -7,7 +7,7 @@ from typing import List
 from dateutil.parser import isoparse
 from modules.save_and_validate.save_and_validate import save_and_validate
 
-def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, log_schema_path):
+def archive_analysis(mode, entries, datetime_data, config, history_log_path, log_path, log_schema_path):
 
     if mode not in ["daily", "weekly", "monthly"]:
         raise ValueError(f"Invalid mode: {mode}")
@@ -17,8 +17,12 @@ def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, l
     filtered_entries = filter_analysis_entries(mode, flattened_entries, datetime_data)
     print(f"\n💹 Filtered {len(filtered_entries)} entries for mode {mode}")
 
+    save_cfg = config.get("save", {})
+    verbose = save_cfg.get("verbose", False)
+    overwrite_mode = save_cfg.get("overwrite_mode", "overwrite")
+
     if len(filtered_entries) == 0:
-        print(f"⏭  Skipping Archieving, because no analysis entries found for mode {mode}")
+        print(f"⏭  Skipping Archiving, because no analysis entries found for mode {mode}")
 
     else:
         # Save filtered results to archives log
@@ -27,12 +31,14 @@ def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, l
             data=filtered_entries,
             path=log_path,
             schema=log_schema_path,
-            verbose=False
+            verbose=verbose
         )
 
     # Get retained entries
-    retained_entries = retain_only_relevant_entries_per_symbol(mode, flattened_entries)
-    future_entries = get_future_entries(mode, flattened_entries, datetime_data)
+    retained_entries = retain_only_relevant_entries_per_symbol(mode, flattened_entries, config)
+    future_entries = []
+    if config.get("future_entries", {}).get(mode, True):
+        future_entries = get_future_entries(mode, flattened_entries, datetime_data)
 
     # Combine retained and new entries
     cleaned_entries = retained_entries + future_entries
@@ -42,18 +48,17 @@ def archive_analysis(mode, entries, datetime_data, history_log_path, log_path, l
         print(f"⏭  Skipping Rewrite, because no retained entries found for mode {mode}")
 
     else:
-        # Retained + new results to archives log
         print(f"❇️  Rewriting retained and new entries to {history_log_path}")
         save_and_validate(
             data=cleaned_entries,
             path=history_log_path,
             schema=log_schema_path,
-            verbose=False,
-            mode="overwrite"
+            verbose=verbose,
+            mode=overwrite_mode
         )
 
         print(f"[✔] Archived {len(filtered_entries)} analysis entries to {log_path}")
-        print(f"[✔] Cleaned to {len(retained_entries)} hourly last entries per symbol")
+        print(f"[✔] Cleaned to {len(retained_entries)} last entries per symbol")
 
 def flatten_analysis_entries(entries):
 
@@ -107,10 +112,18 @@ def filter_analysis_entries(mode, flattened_entries, datetime_data):
 def sort_by_timestamp(entries: List[dict]) -> List[dict]:
     return sorted(entries, key=lambda e: isoparse(e["timestamp"]))
 
-def retain_only_relevant_entries_per_symbol(mode, entries):
+def retain_only_relevant_entries_per_symbol(mode, entries, config):
 
     from dateutil.parser import isoparse
     from typing import Dict, Tuple
+
+    retention_cfg = config.get("retention", {
+        "daily": "hourly_last",
+        "weekly": "daily_last",
+        "monthly": "weekly_last"
+    })
+
+    strategy = retention_cfg.get(mode, "default")
 
     latest: Dict[Tuple[str, str], dict] = {}
 
@@ -120,21 +133,20 @@ def retain_only_relevant_entries_per_symbol(mode, entries):
             continue
         try:
             ts = isoparse(timestamp_str) 
-            if(mode == "daily"):
-                key = (symbol, ts.strftime("%Y-%m-%dT%H")) 
-                # print(f"KEY: {key}")
-                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
-                    latest[key] = entry
-            elif(mode == "weekly"):  
+            if strategy == "hourly_last":
+                key = (symbol, ts.strftime("%Y-%m-%dT%H"))
+            elif strategy == "daily_last":
                 key = (symbol, ts.strftime("%Y-%m-%d"))
-                # print(f"KEY: {key}")
-                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
-                    latest[key] = entry
-            elif(mode == "monthly"):  
+            elif strategy == "weekly_last":
                 iso_year, iso_week, _ = ts.isocalendar()
                 key = (symbol, f"{iso_year}-W{iso_week:02d}")
-                if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
-                    latest[key] = entry
+            else:
+                # fallback = timestamp day
+                key = (symbol, ts.strftime("%Y-%m-%d"))
+
+            if key not in latest or isoparse(latest[key]["timestamp"]) < ts:
+                latest[key] = entry
+
         except Exception as e:
             print(f"Virhe: {e}")
             continue
