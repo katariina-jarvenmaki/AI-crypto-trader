@@ -83,6 +83,8 @@ cd /opt/kjc/int/AI-crypto-traderr
 /usr/bin/python3 -m integrations.price_data_fetcher.price_data_fetcher
 /usr/bin/python3 -m modules.history_data_collector.history_data_collector
 /usr/bin/python3 -m modules.history_analyzer.history_analyzer
+/usr/bin/python3 -m modules.history_sentiment.history_sentiment
+/usr/bin/python3 -m modules.history_archiver.history_archiver
 /usr/bin/python3 -m modules.master_balance_logger.master_balance_logger
 ```
 

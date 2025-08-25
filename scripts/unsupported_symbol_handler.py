@@ -60,7 +60,7 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
     if not pos_result or not isinstance(pos_result, dict):
         print("⛔ POSITIONS_RESULT is not set or invalid. Skipping trade execution.")
         return
-    print(f"Global function data: {pos_result}")
+    # print(f"Global function data: {pos_result}")
 
     selected_symbols = selected_symbols or [symbol]
     bybit_symbol = normalize_symbol(symbol)
@@ -166,24 +166,24 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
         macd_signal = data_1h.get("macd_signal")
         macd_diff = macd - macd_signal if macd is not None and macd_signal is not None else None
 
-        allow_short = (
-            (rsi_1h > (78 if tighten_short else 75) and macd_diff <= 0) or
-            (rsi_1h > (78 if tighten_short else 75) and rsi_15m < (63 if tighten_short else 65))
-        ) if rsi_1h and macd_diff is not None else False
+        # allow_short = (
+        #     (rsi_1h > (78 if tighten_short else 75) and macd_diff <= 0) or
+        #     (rsi_1h > (78 if tighten_short else 75) and rsi_15m < (63 if tighten_short else 65))
+        # ) if rsi_1h and macd_diff is not None else False
 
-        if not allow_short:
-            log_and_skip("RSI/MACD suodatin: ei shorttia – trendi liian vahva", "short",
-                         {"rsi_1h": rsi_1h, "rsi_15m": rsi_15m, "macd_diff": macd_diff})
-            print("⛔ Skipping SHORT: RSI/MACD suodatin esti position avaamisen.")
-            return
+        # if not allow_short:
+        #     log_and_skip("RSI/MACD suodatin: ei shorttia – trendi liian vahva", "short",
+        #                  {"rsi_1h": rsi_1h, "rsi_15m": rsi_15m, "macd_diff": macd_diff})
+        #     print("⛔ Skipping SHORT: RSI/MACD suodatin esti position avaamisen.")
+        #     return
 
         bb_upper = data_1h.get("bb_upper")
 
         # 🔹>=18% price change erityisehdot
         if price_change_percent and price_change_percent >= 18:
-            if price_change_percent > 35:
-                print(f"skip: Way too bullish")
-                return
+        #     if price_change_percent > 35:
+        #         print(f"skip: Way too bullish")
+        #         return
             if bb_upper == 0.0:
                 print(f"skip: BB-arvo puuttuu – ei shorttia")
                 return
@@ -267,6 +267,20 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 history_analysis_data=latest_entry,
                 history_sentiment=sentiment_entry
             )
+
+            limit_price = round(result["price"] * 1.4, 4)
+            limit_qty = result["qty"]
+
+            limit_result = place_leveraged_bybit_limit_order(
+                client=bybit_client,
+                symbol=bybit_symbol,
+                qty=limit_qty,
+                price=limit_price,
+                leverage=result["leverage"],
+                side="Short"
+            )
+            if limit_result:
+                print(f"✅ Hedge LIMIT order asetettu shortin jälkeen hintaan {limit_price}")
 
     if should_try_long:
 
@@ -405,6 +419,21 @@ def handle_unsupported_symbol(symbol, long_only=False, short_only=False, no_trad
                 history_analysis_data=latest_entry,
                 history_sentiment= sentiment_entry
             )
+
+            limit_price = round(result["price"] * 0.6, 4)
+            limit_qty = result["qty"]
+
+            limit_result = place_leveraged_bybit_limit_order(
+                client=bybit_client,
+                symbol=bybit_symbol,
+                qty=limit_qty,
+                price=limit_price,
+                leverage=result["leverage"],
+                side="Buy"
+            )
+            if limit_result:
+                print(f"✅ Hedge LIMIT order asetettu longin jälkeen hintaan {limit_price}")
+
     else:
         print(f"⚠️  No direction specified or both long_only and short_only are False, skipping trades for {symbol}.")
         return
