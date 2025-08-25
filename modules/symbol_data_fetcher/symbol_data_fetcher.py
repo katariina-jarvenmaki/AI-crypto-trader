@@ -42,7 +42,7 @@ def conf_and_paths():
     symbol_full_log_schema_path = configs_and_logs.get("symbol_full_log_schema_path")
     ohlcv_full_log_path = configs_and_logs.get("ohlcv_full_log_path")
     ohlcv_full_log_schema_path = configs_and_logs.get("ohlcv_full_log_schema_path")
-    
+
     return {
         "general_config": general_config,
         "module_config": symbol_config,
@@ -81,7 +81,7 @@ def symbol_data_fetcher():
         run_fetch_symbols_data(
             conf["general_config"],
             conf["module_config"],
-            conf["module_logs_path"],
+            conf["module_log_path"],
             conf["module_schema_path"],
             conf["ohlcv_log_path"],
             conf["ohlcv_schema_path"]
